@@ -7,13 +7,14 @@
  * score ramp's colour, exactly the bands the prototype used.
  */
 
-import { landingAccents, landingScoreBand, landingScoreRamp, shadows } from "@patch-careers/tokens";
+import { landingScoreBand, shadows } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useState } from "react";
 import { Pressable } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useI18n } from "@/providers/i18n-provider";
+import { useLandingAccents, useLandingScoreRamp } from "../hooks/use-landing-palettes";
 import { landingSans } from "../lib/landing-fonts";
 import { landingSound } from "../lib/landing-sound";
 import { landingGrid } from "../lib/layout";
@@ -33,6 +34,8 @@ export interface LivingResumeCardProps {
 }
 
 export function LivingResumeCard({ width, active = true }: LivingResumeCardProps): ReactElement {
+  const accents = useLandingAccents();
+  const scoreRamp = useLandingScoreRamp();
   const { t } = useI18n();
   const palette = useEditorialPalette();
   const [job, setJob] = useState<DemoJobKey>("vendas");
@@ -51,7 +54,7 @@ export function LivingResumeCard({ width, active = true }: LivingResumeCardProps
   }, [active, job]);
 
   const spec = DEMO_JOBS[job];
-  const matchColor = landingScoreRamp[landingScoreBand(spec.match)].ink;
+  const matchColor = scoreRamp[landingScoreBand(spec.match)].ink;
   const available = landingGrid(width).copyWidth;
   const stacked = available < 640;
   // Floor minus a hair: yoga wraps when the pair lands exactly on the inner
@@ -171,8 +174,8 @@ export function LivingResumeCard({ width, active = true }: LivingResumeCardProps
                       <XStack
                         borderRadius={999}
                         borderWidth={1}
-                        borderColor={promoted ? landingAccents.indigo.accent : palette.hairline}
-                        backgroundColor={promoted ? landingAccents.indigo.soft : palette.surface}
+                        borderColor={promoted ? accents.indigo.accent : palette.hairline}
+                        backgroundColor={promoted ? accents.indigo.soft : palette.surface}
                         paddingHorizontal={10}
                         paddingVertical={4}
                       >
@@ -220,7 +223,7 @@ export function LivingResumeCard({ width, active = true }: LivingResumeCardProps
                         <Text
                           fontFamily={editorialFonts.mono}
                           fontSize={11}
-                          color={landingAccents.indigo.accent}
+                          color={accents.indigo.accent}
                           marginTop={2}
                         >
                           {t("landing.demo.labels.collapsed")}

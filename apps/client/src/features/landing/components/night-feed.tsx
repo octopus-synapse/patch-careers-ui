@@ -7,11 +7,12 @@
  * chapter's headline as a little mono tag.
  */
 
-import { landingAccents, shadows } from "@patch-careers/tokens";
+import { shadows } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/providers/i18n-provider";
+import { useLandingAccents } from "../hooks/use-landing-palettes";
 import { landingSans } from "../lib/landing-fonts";
 import { landingSound } from "../lib/landing-sound";
 import {
@@ -31,6 +32,7 @@ function clockAt(minute: number): string {
 }
 
 export function NightFeed({ active }: { readonly active: boolean }): ReactElement {
+  const accents = useLandingAccents();
   const { t } = useI18n();
   const palette = useEditorialPalette();
   const [minute, setMinute] = useState(0);
@@ -120,7 +122,7 @@ export function NightFeed({ active }: { readonly active: boolean }): ReactElemen
             width={40}
             height={24}
             borderRadius={999}
-            backgroundColor={active ? landingAccents.indigo.accent : palette.hairline}
+            backgroundColor={active ? accents.indigo.accent : palette.hairline}
             padding={4}
             justifyContent={active ? "flex-end" : "flex-start"}
           >
@@ -134,15 +136,14 @@ export function NightFeed({ active }: { readonly active: boolean }): ReactElemen
         <YStack
           height={3}
           width={`${Math.min(100, (minute / NIGHT_TOTAL_MINUTES) * 100)}%`}
-          backgroundColor={landingAccents.indigo.accent}
+          backgroundColor={accents.indigo.accent}
         />
       </YStack>
 
       {NIGHT_ROWS.map((row, at) => {
         const state = rows[at] ?? "pending";
         const live = state !== "pending";
-        const matchColor =
-          row.match >= AUTO_APPLY_THRESHOLD ? landingAccents.mint.accent : palette.muted;
+        const matchColor = row.match >= AUTO_APPLY_THRESHOLD ? accents.mint.accent : palette.muted;
         return (
           <XStack
             key={row.key}
@@ -166,7 +167,7 @@ export function NightFeed({ active }: { readonly active: boolean }): ReactElemen
                   <Text
                     fontFamily={editorialFonts.mono}
                     fontSize={10}
-                    color={landingAccents.indigo.accent}
+                    color={accents.indigo.accent}
                   >
                     {t("landing.night.openedAt")}
                   </Text>
@@ -190,6 +191,7 @@ export function NightFeed({ active }: { readonly active: boolean }): ReactElemen
 }
 
 function RowStatus({ state }: { readonly state: RowState }): ReactElement | null {
+  const accents = useLandingAccents();
   const { t } = useI18n();
   const palette = useEditorialPalette();
   if (state === "pending") {
@@ -201,19 +203,14 @@ function RowStatus({ state }: { readonly state: RowState }): ReactElement | null
   }
   if (state === "adapting") {
     return (
-      <Text fontFamily={landingSans} fontSize={11.5} color={landingAccents.indigo.accent}>
+      <Text fontFamily={landingSans} fontSize={11.5} color={accents.indigo.accent}>
         {t("landing.night.adapting")}
       </Text>
     );
   }
   if (state === "sent") {
     return (
-      <Text
-        fontFamily={landingSans}
-        fontSize={11.5}
-        fontWeight="500"
-        color={landingAccents.mint.accent}
-      >
+      <Text fontFamily={landingSans} fontSize={11.5} fontWeight="500" color={accents.mint.accent}>
         {t("landing.night.sent")}
       </Text>
     );

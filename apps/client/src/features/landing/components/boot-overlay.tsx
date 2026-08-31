@@ -5,8 +5,8 @@
  * the prototype (`bootA`/`bootB`, 0.9s; curtain off at 950ms).
  */
 
-import { editorialPalette, landingAccents } from "@patch-careers/tokens";
 import { YStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useState } from "react";
 import Animated, {
   Easing,
@@ -17,6 +17,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
+import { useLandingAccents } from "../hooks/use-landing-palettes";
 import { landingSound } from "../lib/landing-sound";
 
 const PIECE_A =
@@ -28,6 +29,8 @@ const PIECE_B =
 const SNAP = Easing.bezier(0.36, 0.07, 0.19, 0.97);
 
 export function BootOverlay(): ReactElement | null {
+  const palette = useEditorialPalette();
+  const accents = useLandingAccents();
   const [gone, setGone] = useState(false);
   const slide = useSharedValue(46);
   const pieces = useSharedValue(0);
@@ -74,21 +77,16 @@ export function BootOverlay(): ReactElement | null {
       ]}
       pointerEvents="none"
     >
-      <YStack
-        flex={1}
-        backgroundColor={editorialPalette.bg}
-        alignItems="center"
-        justifyContent="center"
-      >
+      <YStack flex={1} backgroundColor={palette.bg} alignItems="center" justifyContent="center">
         <YStack width={120} height={105} position="relative">
           <Animated.View style={[{ position: "absolute", top: 0, left: 0 }, aStyle]}>
             <Svg width={120} height={105} viewBox="-60 -20 400 330">
-              <Path d={PIECE_A} fill={landingAccents.ink.accent} />
+              <Path d={PIECE_A} fill={accents.ink.accent} />
             </Svg>
           </Animated.View>
           <Animated.View style={[{ position: "absolute", top: 0, left: 0 }, bStyle]}>
             <Svg width={120} height={105} viewBox="-60 -20 400 330">
-              <Path d={PIECE_B} fill={landingAccents.indigo.accent} />
+              <Path d={PIECE_B} fill={accents.indigo.accent} />
             </Svg>
           </Animated.View>
         </YStack>

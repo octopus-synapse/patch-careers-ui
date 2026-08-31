@@ -130,20 +130,64 @@ export const landingRobotPalettes = {
  * The navbar brandmark's face — the prototype's "a logo é o mascote": sclera,
  * pupil and highlight drawn over the two puzzle pieces.
  */
+export type LandingBrandFacePalette = {
+  sclera: string;
+  pupil: string;
+  highlight: string;
+};
+
 export const landingBrandFace = {
   sclera: "#DDE3F5",
   pupil: "#151A30",
   highlight: "#FFFFFF",
-} as const;
+} as const satisfies LandingBrandFacePalette;
+
+/**
+ * In dark the pieces invert (near-white ink piece, lifted indigo), so the
+ * face flips with them: deep indigo-slate sclera, warm-paper pupil, and an
+ * indigo glint — a white one would vanish inside the light pupil.
+ */
+export const landingBrandFaceDark = {
+  sclera: "#2E3450",
+  pupil: "#E9E5D9",
+  highlight: "#8B96F5",
+} as const satisfies LandingBrandFacePalette;
+
+export const landingBrandFacePalettes = {
+  light: landingBrandFace,
+  dark: landingBrandFaceDark,
+} as const satisfies Record<EditorialTheme, LandingBrandFacePalette>;
 
 /**
  * The mascot's legs (scene + finale walks): limb stroke matches each piece,
  * boots are the piece colour with the prototype's sole/outline accents.
  */
+export type LandingMascotLegPalette = {
+  limb: string;
+  boot: string;
+  sole: string;
+  outline: string;
+};
+
 export const landingMascotLegs = {
   left: { limb: "#111111", boot: "#111111", sole: "#3A4160", outline: "rgba(221,227,245,0.55)" },
   right: { limb: "#5766E8", boot: "#5766E8", sole: "#8A95F5", outline: "#3B47B8" },
-} as const;
+} as const satisfies Record<"left" | "right", LandingMascotLegPalette>;
+
+/**
+ * Dark legs follow the inverted pieces: the left limb/boot go near-white
+ * (an #111 leg would sink into the dark paper), the right lifts with the
+ * dark indigo. Outlines flip polarity — dark rim around the light boot.
+ */
+export const landingMascotLegsDark = {
+  left: { limb: "#F5F5F0", boot: "#F5F5F0", sole: "#2E3450", outline: "rgba(21,26,48,0.55)" },
+  right: { limb: "#8C97FF", boot: "#8C97FF", sole: "#B9C1FF", outline: "#4C58CC" },
+} as const satisfies Record<"left" | "right", LandingMascotLegPalette>;
+
+export const landingMascotLegsPalettes = {
+  light: landingMascotLegs,
+  dark: landingMascotLegsDark,
+} as const satisfies Record<EditorialTheme, Record<"left" | "right", LandingMascotLegPalette>>;
 
 export type LandingScoreBand = "excellent" | "good" | "fair" | "poor";
 
@@ -158,6 +202,23 @@ export const landingScoreRamp = {
   fair: { ink: "#F0743A", wash: "#FDEEE5" },
   poor: { ink: "#E5484D", wash: "#FDECEC" },
 } as const satisfies Record<LandingScoreBand, LandingScoreColor>;
+
+/**
+ * Dark ramp: inks brighten to hold ~4.5:1 on the dark washes (same family
+ * the robot's dark LEDs use); washes become deep tints of each hue instead
+ * of pastels, so the grade chips read as lit panels on the dark paper.
+ */
+export const landingScoreRampDark = {
+  excellent: { ink: "#4ADE80", wash: "#1D2E28" },
+  good: { ink: "#E3B23C", wash: "#332B18" },
+  fair: { ink: "#FB923C", wash: "#33241A" },
+  poor: { ink: "#F87171", wash: "#3A2222" },
+} as const satisfies Record<LandingScoreBand, LandingScoreColor>;
+
+export const landingScoreRampPalettes = {
+  light: landingScoreRamp,
+  dark: landingScoreRampDark,
+} as const satisfies Record<EditorialTheme, Record<LandingScoreBand, LandingScoreColor>>;
 
 export function landingScoreBand(value: number): LandingScoreBand {
   if (value >= 85) return "excellent";

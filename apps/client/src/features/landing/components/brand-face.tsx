@@ -4,10 +4,10 @@
  * round eyes (pupils that follow the cursor on web) and a little smile.
  */
 
-import { landingAccents, landingBrandFace } from "@patch-careers/tokens";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { Platform } from "react-native";
 import Svg, { Circle, G, Path } from "react-native-svg";
+import { useLandingAccents, useLandingBrandFace } from "../hooks/use-landing-palettes";
 
 const PIECE_DARK =
   "M 20 0 H 135 V 66 H 149 A 22 22 0 1 1 149 94 H 135 V 157.9 A 42 42 0 1 0 95 228.5 V 282 A 8 8 0 0 1 87 290 H 20 A 20 20 0 0 1 0 270 V 20 A 20 20 0 0 1 20 0 Z";
@@ -19,6 +19,8 @@ export interface BrandFaceProps {
 }
 
 export function BrandFace({ height = 54 }: BrandFaceProps): ReactElement {
+  const accents = useLandingAccents();
+  const face = useLandingBrandFace();
   const [pupil, setPupil] = useState({ x: 0, y: 0 });
   const frame = useRef(0);
 
@@ -45,26 +47,26 @@ export function BrandFace({ height = 54 }: BrandFaceProps): ReactElement {
   const width = (height / 290) * 280;
   return (
     <Svg width={width} height={height} viewBox="0 0 280 290" aria-hidden>
-      <Path d={PIECE_DARK} fill={landingAccents.ink.accent} />
-      <Path d={PIECE_BLUE} fill={landingAccents.indigo.accent} />
+      <Path d={PIECE_DARK} fill={accents.ink.accent} />
+      <Path d={PIECE_BLUE} fill={accents.indigo.accent} />
       <G x={78} y={110}>
-        <Circle r={30} fill={landingBrandFace.sclera} />
+        <Circle r={30} fill={face.sclera} />
         <G x={pupil.x} y={pupil.y}>
-          <Circle r={15} fill={landingBrandFace.pupil} />
-          <Circle cx={7} cy={-8} r={5} fill={landingBrandFace.highlight} />
+          <Circle r={15} fill={face.pupil} />
+          <Circle cx={7} cy={-8} r={5} fill={face.highlight} />
         </G>
       </G>
       <G x={212} y={110}>
-        <Circle r={30} fill={landingBrandFace.sclera} />
+        <Circle r={30} fill={face.sclera} />
         <G x={pupil.x} y={pupil.y}>
-          <Circle r={15} fill={landingBrandFace.pupil} />
-          <Circle cx={7} cy={-8} r={5} fill={landingBrandFace.highlight} />
+          <Circle r={15} fill={face.pupil} />
+          <Circle cx={7} cy={-8} r={5} fill={face.highlight} />
         </G>
       </G>
       <Path
         d="M146 168 Q162 184 178 168"
         fill="none"
-        stroke={landingBrandFace.pupil}
+        stroke={face.pupil}
         strokeWidth={9}
         strokeLinecap="round"
       />

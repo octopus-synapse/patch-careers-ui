@@ -9,7 +9,6 @@
  * for the handshake. The whole bot bobs gently like the demo's `bob` loop.
  */
 
-import { landingRobotPalettes } from "@patch-careers/tokens";
 import { type ReactElement, useEffect } from "react";
 import Animated, {
   cancelAnimation,
@@ -21,6 +20,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Circle, G, Path, Rect, Text as SvgText } from "react-native-svg";
+import { useLandingRobot } from "../hooks/use-landing-palettes";
 
 export type RobotFace = "idle" | "scan" | "happy" | "sad";
 
@@ -37,7 +37,7 @@ export function LandingRobot({
   chest = "· · ·",
   shake = false,
 }: LandingRobotProps): ReactElement {
-  const bot = landingRobotPalettes.light;
+  const bot = useLandingRobot();
   const height = (width / 200) * 250;
   const bob = useSharedValue(0);
   const arm = useSharedValue(0);

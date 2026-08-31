@@ -7,7 +7,6 @@
  * their own files. Everything else is final.
  */
 
-import { landingAccents, landingScoreRamp } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
@@ -16,6 +15,7 @@ import { Pressable, useWindowDimensions } from "react-native";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
 import { useI18n } from "@/providers/i18n-provider";
 import { useCountUp } from "../hooks/use-count-up";
+import { useLandingAccents, useLandingScoreRamp } from "../hooks/use-landing-palettes";
 import { landingSans } from "../lib/landing-fonts";
 import { INLINE_COUNTERS } from "../model/chapters";
 import type { ChapterKey, ChapterSpec } from "../types";
@@ -54,6 +54,7 @@ export function ChapterContent(props: ChapterContentProps): ReactElement {
 type BodyProps = ChapterContentProps;
 
 function Hero({ accent, width }: BodyProps): ReactElement {
+  const accents = useLandingAccents();
   const { t } = useI18n();
   return (
     <YStack maxWidth={980}>
@@ -73,7 +74,7 @@ function Hero({ accent, width }: BodyProps): ReactElement {
         <YStack marginTop={32}>
           <ChapterParagraph size={24} maxWidth={576}>
             {`${t("landing.chapters.hero.bodyLead")} `}
-            <UnderlinedEmphasis color={landingAccents.indigo.accent}>
+            <UnderlinedEmphasis color={accents.indigo.accent}>
               {t("landing.chapters.hero.bodyEm")}
             </UnderlinedEmphasis>
             {t("landing.chapters.hero.bodyTail")}
@@ -193,6 +194,7 @@ function Scene({ width, active, sceneStep }: BodyProps): ReactElement {
 }
 
 function LivingResume({ accent, width, active }: BodyProps): ReactElement {
+  const accents = useLandingAccents();
   const { t } = useI18n();
   const interviews = useCountUp(INLINE_COUNTERS.tailoredInterviews, 1, active);
   return (
@@ -209,7 +211,7 @@ function LivingResume({ accent, width, active }: BodyProps): ReactElement {
       <ChapterLayer depth={1}>
         <ChapterParagraph>
           {`${t("landing.chapters.vivo.bodyLead")} `}
-          <UnderlinedEmphasis color={landingAccents.indigo.accent}>
+          <UnderlinedEmphasis color={accents.indigo.accent}>
             {t("landing.chapters.vivo.bodyEm")}
           </UnderlinedEmphasis>
           {t("landing.chapters.vivo.bodyTail")}
@@ -287,6 +289,7 @@ function Scores({ accent, width }: BodyProps): ReactElement {
 }
 
 function ScoresDemo({ accent, width }: BodyProps): ReactElement {
+  const scoreRamp = useLandingScoreRamp();
   const { t } = useI18n();
   return (
     <ChapterStack>
@@ -303,16 +306,16 @@ function ScoresDemo({ accent, width }: BodyProps): ReactElement {
       </ChapterLayer>
       <ChapterLayer depth={1}>
         <XStack gap={18} flexWrap="wrap">
-          <LegendSwatch color={landingScoreRamp.poor.ink}>
+          <LegendSwatch color={scoreRamp.poor.ink}>
             {t("landing.chapters.notas2.legendPoor")}
           </LegendSwatch>
-          <LegendSwatch color={landingScoreRamp.fair.ink}>
+          <LegendSwatch color={scoreRamp.fair.ink}>
             {t("landing.chapters.notas2.legendFair")}
           </LegendSwatch>
-          <LegendSwatch color={landingScoreRamp.good.ink}>
+          <LegendSwatch color={scoreRamp.good.ink}>
             {t("landing.chapters.notas2.legendGood")}
           </LegendSwatch>
-          <LegendSwatch color={landingScoreRamp.excellent.ink}>
+          <LegendSwatch color={scoreRamp.excellent.ink}>
             {t("landing.chapters.notas2.legendExcellent")}
           </LegendSwatch>
         </XStack>
@@ -322,6 +325,7 @@ function ScoresDemo({ accent, width }: BodyProps): ReactElement {
 }
 
 function AutoApply({ accent, width }: BodyProps): ReactElement {
+  const accents = useLandingAccents();
   const { t } = useI18n();
   return (
     <ChapterStack>
@@ -346,7 +350,7 @@ function AutoApply({ accent, width }: BodyProps): ReactElement {
         <YStack gap={20}>
           <ChapterParagraph size={17}>
             {`${t("landing.chapters.auto.bodyLead")} `}
-            <UnderlinedEmphasis color={landingAccents.indigo.accent}>
+            <UnderlinedEmphasis color={accents.indigo.accent}>
               {t("landing.chapters.auto.bodyEm")}
             </UnderlinedEmphasis>
             {t("landing.chapters.auto.bodyTail")}

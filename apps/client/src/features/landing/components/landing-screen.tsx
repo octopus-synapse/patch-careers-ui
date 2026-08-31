@@ -12,9 +12,9 @@
  * every other screen is a centred 960px document; the landing is full bleed.
  */
 
-import { editorialPalette, landingAccents } from "@patch-careers/tokens";
-import { YStack } from "@patch-careers/ui";
-import { Theme } from "@tamagui/core";
+import { landingAccentPalettes } from "@patch-careers/tokens";
+import { useThemeName, YStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Stack } from "expo-router";
 import { type ReactElement, useCallback, useRef } from "react";
 import { useWindowDimensions } from "react-native";
@@ -38,25 +38,20 @@ import { MascotStage, type MascotStageMode } from "./mascot-stage";
 import { SoundToggle } from "./sound-toggle";
 
 /**
- * The landing is deliberately light-only. It's a marketing page with a fixed
- * art direction — warm paper, ink serif, the mascot's own palette — not a
- * surface the reader configures. `<Theme name="light">` pins everything inside,
- * including the design-system mascot and brand mark, which resolve their own
- * colours from the active Tamagui theme.
+ * The landing follows the app's colour scheme: warm paper by day, the warm
+ * dark paper of the DS by night. Every component below resolves colours from
+ * the active Tamagui theme (`useEditorialPalette` / `landing*Palettes`), so
+ * the whole deck re-paints when the scheme changes.
  */
 export function LandingScreen(): ReactElement {
   ensureLandingFonts();
-  return (
-    <Theme name="light">
-      <LandingDeck />
-    </Theme>
-  );
+  return <LandingDeck />;
 }
 
 function LandingDeck(): ReactElement {
   const { width, height } = useWindowDimensions();
-  const palette = editorialPalette;
-  const accents = landingAccents;
+  const palette = useEditorialPalette();
+  const accents = landingAccentPalettes[useThemeName()];
   const isDesktop = useIsDesktopWeb();
   const { t } = useI18n();
   const grid = landingGrid(width);

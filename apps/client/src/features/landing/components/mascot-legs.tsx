@@ -10,7 +10,6 @@
  * x=60 and x=220.
  */
 
-import { landingMascotLegs } from "@patch-careers/tokens";
 import { YStack } from "@patch-careers/ui";
 import { type ReactElement, useEffect } from "react";
 import Animated, {
@@ -23,6 +22,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Svg, { G, Path } from "react-native-svg";
+import { useLandingMascotLegs } from "../hooks/use-landing-palettes";
 
 /** The artwork's unit → px scale (viewBox 500 wide → 375 px). */
 const SCALE = 0.75;
@@ -32,7 +32,7 @@ const SWING_DEG = 14;
 
 /** One leg: limb + boot in the demo's exact paths. Origin is the hip. */
 function Leg({ side }: { readonly side: "left" | "right" }): ReactElement {
-  const colors = landingMascotLegs[side];
+  const colors = useLandingMascotLegs()[side];
   const flip = side === "left" ? -0.8 : 0.8;
   return (
     <Svg width={90 * SCALE} height={100 * SCALE} viewBox="-45 -6 90 100">

@@ -7,11 +7,12 @@
  * "how far along" read the product uses, painted in the band's ink.
  */
 
-import { landingScoreBand, landingScoreRamp, shadows } from "@patch-careers/tokens";
+import { landingScoreBand, shadows } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { useI18n } from "@/providers/i18n-provider";
+import { useLandingScoreRamp } from "../hooks/use-landing-palettes";
 import { landingSans } from "../lib/landing-fonts";
 import { landingGrid } from "../lib/layout";
 import { DEMO_SCORES, type DemoScore, type DemoSubScore } from "../model/demo-data";
@@ -42,9 +43,10 @@ export function ScoreGrid({ width }: ScoreGridProps): ReactElement {
 }
 
 function ScoreCard({ score }: { readonly score: DemoScore }): ReactElement {
+  const scoreRamp = useLandingScoreRamp();
   const { t } = useI18n();
   const palette = useEditorialPalette();
-  const band = landingScoreRamp[landingScoreBand(score.value)];
+  const band = scoreRamp[landingScoreBand(score.value)];
 
   return (
     <YStack
@@ -125,9 +127,10 @@ function ScoreCard({ score }: { readonly score: DemoScore }): ReactElement {
 }
 
 function SubScoreRow({ sub }: { readonly sub: DemoSubScore }): ReactElement {
+  const scoreRamp = useLandingScoreRamp();
   const { t } = useI18n();
   const palette = useEditorialPalette();
-  const band = landingScoreRamp[landingScoreBand(sub.value)];
+  const band = scoreRamp[landingScoreBand(sub.value)];
 
   return (
     <XStack
