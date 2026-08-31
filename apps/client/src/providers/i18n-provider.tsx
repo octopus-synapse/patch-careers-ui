@@ -43,6 +43,10 @@ interface I18nContextValue {
   readonly locale: Locale;
   readonly t: Translator;
   readonly setLocale: (locale: Locale) => void;
+  /** True once the persisted choice has been read (or an explicit prop
+   *  made hydration moot). Gates decisions that must not fire on the
+   *  device-seeded value — e.g. the `/` → `/en` locale redirect. */
+  readonly hydrated: boolean;
 }
 
 const dictForLocale = (locale: Locale) => (locale === "en" ? en : ptBR);
@@ -67,6 +71,7 @@ const I18nContext = createContext<I18nContextValue>({
   locale: defaultLocale,
   t: createTranslator(dictForLocale(defaultLocale), defaultLocale),
   setLocale: () => undefined,
+  hydrated: true,
 });
 
 interface I18nProviderProps {
@@ -76,10 +81,13 @@ interface I18nProviderProps {
 
 export function I18nProvider({ children, locale }: I18nProviderProps): ReactElement {
   const [active, setActive] = useState<Locale>(() => locale ?? deviceLocale());
+  const [hydrated, setHydrated] = useState<boolean>(() => locale !== undefined);
 
   // An explicit prop (tests/storybook) always wins and is authoritative.
   useEffect(() => {
-    if (locale) setActive(locale);
+    if (!locale) return;
+    setActive(locale);
+    setHydrated(true);
   }, [locale]);
 
   // Hydrate the persisted user choice once; it overrides the device
@@ -90,9 +98,13 @@ export function I18nProvider({ children, locale }: I18nProviderProps): ReactElem
     mundane
       .getItem(LOCALE_STORE_KEY)
       .then((stored) => {
-        if (!cancelled && isLocale(stored)) setActive(stored);
+        if (cancelled) return;
+        if (isLocale(stored)) setActive(stored);
+        setHydrated(true);
       })
-      .catch(() => undefined);
+      .catch(() => {
+        if (!cancelled) setHydrated(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -108,8 +120,9 @@ export function I18nProvider({ children, locale }: I18nProviderProps): ReactElem
       locale: active,
       t: createTranslator(dictForLocale(active), active),
       setLocale,
+      hydrated,
     }),
-    [active, setLocale],
+    [active, setLocale, hydrated],
   );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
