@@ -158,6 +158,22 @@ export default function RootLayout(): ReactElement {
                             }}
                           >
                             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                            {/* The `/en` tree renders its own Stack with the same
+                              column default — the scene wrapper here must stay
+                              full-bleed or the whole English subtree (landing
+                              included) gets squeezed into the 960px column. */}
+                            <Stack.Screen
+                              name="en"
+                              options={{
+                                headerShown: false,
+                                contentStyle: {
+                                  backgroundColor: palette.bg,
+                                  width: "100%",
+                                  maxWidth: undefined,
+                                  alignSelf: "stretch",
+                                },
+                              }}
+                            />
                             <Stack.Screen
                               name="conversation/[id]"
                               options={{ headerShown: false, animation: "slide_from_right" }}

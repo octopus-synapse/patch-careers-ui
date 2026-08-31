@@ -72,8 +72,12 @@ const CHROMELESS_PREFIXES = [
 ] as const;
 
 function isChromePath(pathname: string): boolean {
-  if (pathname === "/") return false;
-  return !CHROMELESS_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  // `/en/*` twins mirror their unprefixed siblings for chrome purposes —
+  // the English landing and auth pages are just as chromeless.
+  const path =
+    pathname === "/en" ? "/" : pathname.startsWith("/en/") ? pathname.slice(3) : pathname;
+  if (path === "/") return false;
+  return !CHROMELESS_PREFIXES.some((prefix) => path.startsWith(prefix));
 }
 
 // Stacked details keep their section lit (job detail → Vagas, a conversation
