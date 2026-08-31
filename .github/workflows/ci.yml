@@ -13,6 +13,9 @@ on:
 
 permissions:
   contents: read
+  # @octopus-synapse/precommit vem do GitHub Packages (npm.pkg.github.com);
+  # sem packages:read o GITHUB_TOKEN toma 403 no pnpm install.
+  packages: read
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}

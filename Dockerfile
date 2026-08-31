@@ -1,49 +1,21 @@
-FROM oven/bun:1.3.11-alpine AS deps
-WORKDIR /app
-COPY package.json bun.lock* bunfig.toml ./
-COPY apps/web/package.json ./apps/web/package.json
-COPY packages/api-client/package.json ./packages/api-client/package.json
-COPY packages/i18n/package.json ./packages/i18n/package.json
-COPY packages/ui/package.json ./packages/ui/package.json
-RUN --mount=type=secret,id=GITHUB_TOKEN,env=GITHUB_TOKEN \
-    --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile --ignore-scripts
+# Runtime image for the web frontend: nginx serving the Expo static
+# export. The export itself (apps/client/dist) is built in CI *before*
+# `docker build` — pnpm install + `expo export --platform web` on the
+# GitHub runner, where the pnpm cache lives — so this image is a plain
+# copy, not a build stage.
+FROM nginx:1.27-alpine
 
-FROM deps AS builder
-WORKDIR /app
-COPY . .
-ARG VITE_API_URL=https://backend.patchcareers.org
-ENV VITE_API_URL=$VITE_API_URL
-RUN cd apps/web && bun run build
-
-FROM oven/bun:1.3.11-alpine AS prod-deps
-WORKDIR /app
-COPY package.json bun.lock* ./
-COPY apps/web/package.json ./apps/web/package.json
-COPY packages/api-client/package.json ./packages/api-client/package.json
-COPY packages/i18n/package.json ./packages/i18n/package.json
-COPY packages/ui/package.json ./packages/ui/package.json
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile --production --ignore-scripts
-
-FROM oven/bun:1.3.11-alpine AS runner
-# OCI labels — the `org.opencontainers.image.source` label is what GHCR
-# uses to auto-link a container package to its source repo. Without this
-# the package ends up unlinked and GITHUB_TOKEN from the repo's release
-# workflow cannot push new layers (blob HEAD → 403 Forbidden), which is
-# exactly what blocked the v0.0.2 docker push.
+# `org.opencontainers.image.source` is what GHCR uses to auto-link the
+# container package to this repo. Without it the package ends up
+# unlinked and GITHUB_TOKEN cannot push new layers (blob HEAD → 403).
 LABEL org.opencontainers.image.source="https://github.com/octopus-synapse/patch-careers-ui"
-LABEL org.opencontainers.image.description="Patch Careers web UI (SvelteKit)"
+LABEL org.opencontainers.image.description="Patch Careers web UI (Expo static export)"
 LABEL org.opencontainers.image.licenses="UNLICENSED"
-WORKDIR /app/apps/web
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 sveltekit
-COPY --from=builder --chown=sveltekit:nodejs /app/apps/web/build ./build
-COPY --from=builder --chown=sveltekit:nodejs /app/apps/web/package.json ./package.json
-COPY --from=prod-deps --chown=sveltekit:nodejs /app/node_modules /app/node_modules
-COPY --from=prod-deps --chown=sveltekit:nodejs /app/apps/web/node_modules ./node_modules
-USER sveltekit
-ARG PORT=7142
-ENV PORT=$PORT
-EXPOSE $PORT
-CMD ["bun", "./build/index.js"]
+
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY apps/client/dist /usr/share/nginx/html
+
+EXPOSE 7142
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget -q -O /dev/null http://localhost:7142/ || exit 1

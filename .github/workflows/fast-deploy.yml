@@ -1,0 +1,144 @@
+name: Fast Deploy (web)
+
+# Deploy da web (Expo static export) pra produção: builda o HEAD atual,
+# empacota em nginx e sobe pra patchcareers.org. A imagem vai pro GHCR
+# como `main-<short-sha>` (imutável) e também atualiza `:latest`.
+#
+# Build roda em runner do GitHub (pnpm + expo export + push GHCR).
+# Deploy roda num runner SELF-HOSTED na própria VPS (label profile-vps,
+# registrado a nível de org): o firewall do provedor bloqueia SSH de
+# entrada dos runners do GitHub, então o runner local faz polling de
+# saída e roda `docker compose` direto no host — sem SSH.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: production-web
+  cancel-in-progress: false
+
+env:
+  PNPM_VERSION: 9.15.4
+  NODE_VERSION: 20.x
+  # @octopus-synapse/precommit is served from GitHub Packages (see .npmrc)
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    name: Build & push (HEAD)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      image_tag: ${{ steps.tag.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Kubb output (src/generated/{hooks,ts,zod}) is gitignored and
+      # regenerated from the committed swagger contract. Without it the
+      # SDK barrel exports unresolved modules and the export fails.
+      - name: Generate API SDK
+        run: pnpm --filter @patch-careers/api-client sdk:generate
+
+      # Production bundle: __DEV__=false makes the app resolve
+      # https://backend.patchcareers.org (see apps/client/src/config/api.ts).
+      - name: Export web bundle
+        working-directory: apps/client
+        run: pnpm exec expo export --platform web
+
+      - name: Compute image tag (main-<short-sha>)
+        id: tag
+        run: echo "image_tag=main-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.image_tag }}
+            ghcr.io/${{ github.repository }}:latest
+
+      - name: Summary
+        run: |
+          echo "## 🚀 Fast Deploy (web) — build" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Property | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|----------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Image | \`ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.image_tag }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Also tagged | \`:latest\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Ref | \`${{ github.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    name: Deploy to VPS
+    needs: build
+    # Runner self-hosted na VPS (container DooD, label profile-vps).
+    runs-on: [self-hosted, profile-vps]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to ghcr.io
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Sync deploy files
+        run: |
+          mkdir -p /opt/patch-careers-ui
+          cp deploy/docker-compose.yml /opt/patch-careers-ui/docker-compose.yml
+
+      - name: Write deploy env
+        working-directory: /opt/patch-careers-ui
+        env:
+          IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
+        run: |
+          touch .env
+          if grep -q '^IMAGE_TAG=' .env; then
+            sed -i "s|^IMAGE_TAG=.*|IMAGE_TAG=${IMAGE_TAG}|" .env
+          else
+            printf 'IMAGE_TAG=%s\n' "$IMAGE_TAG" >> .env
+          fi
+
+      - name: Pull + recreate web (${{ needs.build.outputs.image_tag }})
+        working-directory: /opt/patch-careers-ui
+        run: |
+          docker compose pull web
+          docker compose up -d --force-recreate web
+
+      - name: Wait for health
+        run: |
+          for i in $(seq 1 20); do
+            s="$(docker inspect patchcareers-web --format '{{.State.Health.Status}}' 2>/dev/null || echo none)"
+            echo "attempt ${i}: health=${s}"
+            [ "$s" = "healthy" ] && { echo "✅ web healthy"; exit 0; }
+            sleep 5
+          done
+          echo "::error::patchcareers-web did not become healthy"
+          docker logs --tail 50 patchcareers-web || true
+          exit 1
+
+      - name: Logout ghcr.io
+        if: always()
+        run: docker logout ghcr.io

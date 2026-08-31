@@ -1,12 +1,16 @@
+# The image only needs deploy/nginx.conf + apps/client/dist (built in
+# CI before `docker build`). Everything heavy stays out of the context.
 node_modules
 .git
 .github
 *.md
-.svelte-kit
 .vscode
 .idea
 .env*
 !.env.example
+.nx
+.expo
+# root-level dist only — apps/client/dist is the payload
 dist
 coverage
 .turbo
