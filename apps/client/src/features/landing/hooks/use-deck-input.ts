@@ -1,5 +1,5 @@
 /**
- * `useDeckInput` — wheel, keyboard and hash, on web only.
+ * `useDeckInput` — wheel and keyboard, on web only.
  *
  * Every listener here is a raw DOM listener, which is deliberate: `wheel` must
  * be registered with `{ passive: false }` to be preventable (the page must not
@@ -11,7 +11,7 @@
 import { useEffect } from "react";
 import { Platform } from "react-native";
 import { IDLE_WHEEL_STREAM, reduceWheel, type WheelStream } from "../lib/wheel-stream";
-import { CHAPTERS, chapterIndexOfHash } from "../model/chapters";
+import { CHAPTERS } from "../model/chapters";
 
 /** Number keys map 1–9 to chapters 1–9 and 0 to the tenth. */
 function chapterFromDigit(key: string): number | null {
@@ -78,18 +78,11 @@ export function useDeckInput({ step, goTo }: DeckInputHandlers): void {
       }
     };
 
-    const onHashChange = (): void => {
-      const target = chapterIndexOfHash(window.location.hash);
-      if (target >= 0) goTo(target);
-    };
-
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("hashchange", onHashChange);
     return () => {
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("hashchange", onHashChange);
     };
   }, [goTo, step]);
 }

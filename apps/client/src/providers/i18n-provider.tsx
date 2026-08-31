@@ -6,12 +6,13 @@
  *   1. explicit `<I18nProvider locale="pt-BR">` prop (tests/storybook)
  *   2. the user's persisted choice (set via `setLocale`, stored in
  *      `mundane` — the same adapter the onboarding drafts use)
- *   3. fallback to `pt-BR` (D66 — pt-BR is the default)
- *
- * The device locale is deliberately NOT consulted: the product is
- * pt-BR-first and most feature copy is authored in pt-BR, so seeding from
- * an en-US device produced a half-translated UI. Only the explicit choice
- * in the onboarding "Idioma" step switches to English.
+ *   3. the browser language (web only — `navigator.language`; `en*`
+ *      seeds English, everything else stays pt-BR). Supersedes D66's
+ *      "never consult the device": the parity specs now guarantee a
+ *      complete `en` dictionary, so the original half-translated-UI
+ *      concern is gone. On native the onboarding "Idioma" step remains
+ *      the switch.
+ *   4. fallback to `pt-BR` (pt-BR-first product)
  *
  * Changing the locale re-binds the translator and (because the onboarding
  * session query is keyed by `locale`) refetches a translated session.
@@ -48,6 +49,20 @@ const dictForLocale = (locale: Locale) => (locale === "en" ? en : ptBR);
 
 const defaultLocale: Locale = "pt-BR";
 
+/**
+ * Map a BCP-47 language tag to a supported locale. `pt*` and anything
+ * unrecognised stay on pt-BR (primary market); `en*` gets English.
+ */
+export function localeFromLanguageTag(tag: string | undefined): Locale {
+  return tag?.toLowerCase().startsWith("en") ? "en" : defaultLocale;
+}
+
+/** The browser language, on web; the product default elsewhere. */
+function deviceLocale(): Locale {
+  if (typeof navigator === "undefined") return defaultLocale;
+  return localeFromLanguageTag(navigator.language);
+}
+
 const I18nContext = createContext<I18nContextValue>({
   locale: defaultLocale,
   t: createTranslator(dictForLocale(defaultLocale), defaultLocale),
@@ -60,7 +75,7 @@ interface I18nProviderProps {
 }
 
 export function I18nProvider({ children, locale }: I18nProviderProps): ReactElement {
-  const [active, setActive] = useState<Locale>(() => locale ?? defaultLocale);
+  const [active, setActive] = useState<Locale>(() => locale ?? deviceLocale());
 
   // An explicit prop (tests/storybook) always wins and is authoritative.
   useEffect(() => {

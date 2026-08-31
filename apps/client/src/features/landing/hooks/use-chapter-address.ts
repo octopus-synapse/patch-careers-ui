@@ -1,10 +1,16 @@
 /**
- * `useChapterAddress` — keeps the URL hash and the tab title on the chapter.
+ * `useChapterAddress` — keeps the tab title on the chapter and the URL clean.
  *
- * Deliberately NOT routed through expo-router: the chapter is not a route
- * segment, and `router.setParams` would fight the deck for control of the
- * address bar. `replaceState` keeps the back button meaning "leave the
- * landing", not "walk back one chapter".
+ * The chapter is deliberately NOT published to the address bar: the URL
+ * stays `patchcareers.org` while the deck scrolls, and the tab title is
+ * what tracks the chapter. An inbound `#robo` deep link (old shared
+ * links) is still honoured on first paint via `initialChapterIndex`,
+ * then stripped so the address ends up clean.
+ *
+ * Also deliberately NOT routed through expo-router: the chapter is not a
+ * route segment, and `router.setParams` would fight the deck for control
+ * of the address bar. `replaceState` keeps the back button meaning
+ * "leave the landing", not "walk back one chapter".
  */
 
 import { useEffect } from "react";
@@ -22,8 +28,9 @@ export function useChapterAddress(index: number): void {
 
     const title = t(`landing.rail.${chapter.key}`);
     document.title = `${title} — Patch`;
+    if (!window.location.hash) return;
     try {
-      window.history.replaceState(null, "", `#${chapter.key}`);
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
     } catch {
       // Some embedded browsers reject replaceState; the deck works regardless.
     }

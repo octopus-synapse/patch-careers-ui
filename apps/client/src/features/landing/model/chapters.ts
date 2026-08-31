@@ -36,9 +36,3 @@ export const INLINE_COUNTERS = {
 export function chapterIndexOf(key: ChapterKey): number {
   return CHAPTERS.findIndex((chapter) => chapter.key === key);
 }
-
-/** Resolve a URL hash (`#robo`) to a chapter index; -1 when it names nothing. */
-export function chapterIndexOfHash(hash: string): number {
-  const key = hash.replace(/^#/, "");
-  return CHAPTERS.findIndex((chapter) => chapter.key === key);
-}
