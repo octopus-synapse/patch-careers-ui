@@ -10,6 +10,7 @@
 
 import { Redirect, Stack, usePathname } from "expo-router";
 import type { ReactElement } from "react";
+import { PublicNavBar } from "@/components/public-nav-bar";
 import { getAuthenticatedRoute, VERIFY_EMAIL_ROUTE } from "@/navigation/auth-redirect";
 import { useEnglishTwinRedirect, useLocalizedHref } from "@/navigation/locale-prefix";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
@@ -34,5 +35,20 @@ export default function AuthLayout(): ReactElement | null {
   }
   if (isAuthenticated) return <Redirect href={getAuthenticatedRoute(currentUser)} />;
 
-  return <Stack screenOptions={{ headerShown: false, animation: "fade" }} />;
+  // The public navbar rides over sign-in/sign-up only (web; the native
+  // stub renders null). Deeper flow screens (forgot-password,
+  // verify-email, 2fa) stay chromeless — they own the full window.
+  const bare = pathname.startsWith("/en/") ? pathname.slice(3) : pathname;
+  const navCta = bare.startsWith("/sign-in")
+    ? ("signIn" as const)
+    : bare.startsWith("/sign-up")
+      ? ("signUp" as const)
+      : null;
+
+  return (
+    <>
+      {navCta !== null && <PublicNavBar cta={navCta} />}
+      <Stack screenOptions={{ headerShown: false, animation: "fade" }} />
+    </>
+  );
 }

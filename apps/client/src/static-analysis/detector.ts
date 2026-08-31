@@ -100,6 +100,8 @@ const SHOW_LIKE_METHODS = new Set([
 const NON_UX_RECEIVERS = new Set(["console", "logger", "log", "Sentry", "process", "posthog"]);
 
 const BRAND_NAMES = new Set([
+  // Type specimen glyph (theme swatches), not user copy.
+  "Aa",
   "Patch",
   "Patch Careers",
   "LinkedIn",

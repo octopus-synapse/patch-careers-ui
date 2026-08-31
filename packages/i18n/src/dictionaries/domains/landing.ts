@@ -28,6 +28,24 @@ export const landingPtBR: TranslationDict = {
     signUp: "Criar conta",
   },
 
+  // Navbar pública (menu hambúrguer padrão Airbnb + modal de idioma/tema).
+  nav: {
+    openMenu: "Abrir menu",
+    close: "Fechar",
+    langRegion: "Idioma e região",
+    theme: "Tema",
+    translateTitle: "Tradução",
+    translateSub: "O Patch fala a sua língua — currículos saem no idioma da vaga.",
+    seeDemo: "Ver o demo",
+    seeDemoSub: "Cole uma vaga e veja seu currículo reescrito.",
+    suggested: "Sugeridos",
+    langPt: "Português",
+    langPtRegion: "Brasil",
+    langEn: "English",
+    langEnRegion: "United States",
+    systemHint: "Segue o dispositivo",
+  },
+
   // Títulos curtos do trilho lateral de capítulos.
   rail: {
     hero: "Você é bom",
@@ -343,6 +361,23 @@ export const landingEn: TranslationDict = {
   header: {
     signIn: "Sign in",
     signUp: "Create account",
+  },
+
+  nav: {
+    openMenu: "Open menu",
+    close: "Close",
+    langRegion: "Language & region",
+    theme: "Theme",
+    translateTitle: "Translation",
+    translateSub: "Patch speaks your language — resumes ship in the job's language.",
+    seeDemo: "See the demo",
+    seeDemoSub: "Paste a job and watch your resume rewrite.",
+    suggested: "Suggested",
+    langPt: "Português",
+    langPtRegion: "Brasil",
+    langEn: "English",
+    langEnRegion: "United States",
+    systemHint: "Follows your device",
   },
 
   rail: {

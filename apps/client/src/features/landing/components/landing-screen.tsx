@@ -16,7 +16,7 @@ import { landingAccentPalettes } from "@patch-careers/tokens";
 import { useThemeName, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Stack } from "expo-router";
-import { type ReactElement, useCallback, useRef } from "react";
+import { type ReactElement, type ReactNode, useCallback, useRef } from "react";
 import { useWindowDimensions } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
@@ -33,7 +33,6 @@ import { BootOverlay } from "./boot-overlay";
 import { ChapterContent } from "./chapter-content";
 import { ChapterFrame } from "./chapter-frame";
 import { ChapterRail } from "./chapter-rail";
-import { LandingHeader } from "./landing-header";
 import { MascotStage, type MascotStageMode } from "./mascot-stage";
 import { SoundToggle } from "./sound-toggle";
 
@@ -43,12 +42,19 @@ import { SoundToggle } from "./sound-toggle";
  * the active Tamagui theme (`useEditorialPalette` / `landing*Palettes`), so
  * the whole deck re-paints when the scheme changes.
  */
-export function LandingScreen(): ReactElement {
-  ensureLandingFonts();
-  return <LandingDeck />;
+export interface LandingScreenProps {
+  /** The public navbar, injected by the route so the feature never
+   *  imports app-level chrome (ADR-0003 direction). Rendered inside the
+   *  deck's stacking context, where the BootOverlay still covers it. */
+  readonly header?: ReactNode;
 }
 
-function LandingDeck(): ReactElement {
+export function LandingScreen({ header }: LandingScreenProps): ReactElement {
+  ensureLandingFonts();
+  return <LandingDeck header={header} />;
+}
+
+function LandingDeck({ header }: LandingScreenProps): ReactElement {
   const { width, height } = useWindowDimensions();
   const palette = useEditorialPalette();
   const accents = landingAccentPalettes[useThemeName()];
@@ -149,7 +155,7 @@ function LandingDeck(): ReactElement {
         />
       ) : null}
 
-      <LandingHeader />
+      {header}
       {isDesktop ? <ChapterRail index={index} onSelect={goTo} /> : null}
       {isDesktop ? <SoundToggle /> : null}
       <BootOverlay />

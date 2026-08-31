@@ -6,7 +6,9 @@
  * in the app imports it, and it imports no other feature.
  */
 
+export { BrandFace } from "./components/brand-face";
 export { LandingHead } from "./components/landing-head";
 export { LandingScreen } from "./components/landing-screen";
+export { landingSans } from "./lib/landing-fonts";
 export { CHAPTERS } from "./model/chapters";
 export type { ChapterKey, ChapterSpec } from "./types";

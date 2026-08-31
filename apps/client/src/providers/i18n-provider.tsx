@@ -82,6 +82,11 @@ interface I18nProviderProps {
 export function I18nProvider({ children, locale }: I18nProviderProps): ReactElement {
   const [active, setActive] = useState<Locale>(() => locale ?? deviceLocale());
   const [hydrated, setHydrated] = useState<boolean>(() => locale !== undefined);
+  // A pinned provider (the `/en` tree) renders a fixed locale; a language
+  // switch there must reach the ROOT provider, or the persisted choice and
+  // the in-memory root state drift apart and the `/en` bounce sends the
+  // user right back. Chain writes to the parent when a prop pins us.
+  const parent = useContext(I18nContext);
 
   // An explicit prop (tests/storybook) always wins and is authoritative.
   useEffect(() => {
@@ -110,10 +115,21 @@ export function I18nProvider({ children, locale }: I18nProviderProps): ReactElem
     };
   }, [locale]);
 
-  const setLocale = useCallback((next: Locale) => {
-    setActive(next);
-    mundane.setItem(LOCALE_STORE_KEY, next).catch(() => undefined);
-  }, []);
+  const pinned = locale !== undefined;
+  const parentSetLocale = parent.setLocale;
+  const setLocale = useCallback(
+    (next: Locale) => {
+      if (pinned) {
+        // The prop wins locally; forward the choice so the root updates
+        // state + storage (the default context's setLocale is a no-op).
+        parentSetLocale(next);
+        return;
+      }
+      setActive(next);
+      mundane.setItem(LOCALE_STORE_KEY, next).catch(() => undefined);
+    },
+    [pinned, parentSetLocale],
+  );
 
   const value = useMemo<I18nContextValue>(
     () => ({
