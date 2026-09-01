@@ -15,7 +15,7 @@ import { Text, XStack } from "@patch-careers/ui";
 import { editorialFonts, InlineLink, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
-import { type ReactElement, useRef } from "react";
+import { type ReactElement, useRef, useState } from "react";
 import { Pressable } from "react-native";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
 import { useTranslator } from "@/providers/i18n-provider";
@@ -32,6 +32,9 @@ export function BackToSignInLink({
   const localized = useLocalizedHref();
   const palette = useEditorialPalette();
   const leaving = useRef(false);
+  // Pointer feedback on web — hover events never fire on touch, so this is
+  // desktop-only by nature.
+  const [hovered, setHovered] = useState(false);
   const goBack = (): void => {
     if (leaving.current) return;
     leaving.current = true;
@@ -50,9 +53,11 @@ export function BackToSignInLink({
         accessibilityRole="button"
         accessibilityLabel={t("common.back")}
         hitSlop={10}
+        onHoverIn={() => setHovered(true)}
+        onHoverOut={() => setHovered(false)}
         {...(testID ? { testID } : {})}
       >
-        {({ hovered, pressed }) => (
+        {({ pressed }) => (
           <XStack alignItems="center" gap={10} opacity={pressed ? 0.6 : hovered ? 0.8 : 1}>
             <ArrowLeft size={30} color={palette.ink} strokeWidth={1.75} />
             <Text fontFamily={editorialFonts.sans} fontSize={22} fontWeight="500" color="$ink">
