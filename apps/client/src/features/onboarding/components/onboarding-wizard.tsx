@@ -1,4 +1,9 @@
-import { FieldError, PrimaryAction } from "@patch-careers/ui/editorial";
+import {
+  AuthMascotCard,
+  FieldError,
+  PrimaryAction,
+  useAuthMascot,
+} from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, View } from "react-native";
 import { PUBLIC_NAV_BAR_HEIGHT, PublicNavBar } from "@/components/public-nav-bar";
@@ -94,6 +99,28 @@ function OnboardingWizardInner(): ReactElement {
 
   const scheme = useColorSchemeStore((s) => s.scheme);
   const setScheme = useColorSchemeStore((s) => s.setScheme);
+
+  // The mascot that watched the sign-up keeps watching here — same
+  // AuthMascotCard as the auth dialog, so onboarding reads as the next
+  // page of the same scene rather than a new app.
+  const mascot = useAuthMascot();
+  const total = countedTotal();
+  const stepNumber = editStep ? total : countedIndexOf(flowStepId) + 1;
+  // His eyes travel with the progress: step 1 looks left, the review looks
+  // right — the same 0..1 → pupil mapping the OTP cells use.
+  useEffect(() => {
+    mascot.lookAt(total > 1 ? (stepNumber - 1) / (total - 1) : 0.5, 6);
+  }, [mascot, stepNumber, total]);
+  const hasInlineErrors = Object.keys(errors).length > 0 || Boolean(saveError);
+  useEffect(() => {
+    // `pose` patches only the grimace flag — `reset()` would also zero the
+    // gaze, undoing the progress-tracking eyes above.
+    mascot.pose({ oops: hasInlineErrors });
+  }, [mascot, hasInlineErrors]);
+  const atReview = !editStep && flowStep?.kind === "review";
+  useEffect(() => {
+    if (atReview) mascot.celebrate({ settle: true });
+  }, [mascot, atReview]);
 
   // Body scroll metrics for the editorial scrollbar (BodyScrollBar): the body
   // is a fixed-height box, so overflow is invisible without an indicator.
@@ -216,8 +243,6 @@ function OnboardingWizardInner(): ReactElement {
       ? suggestHeadlinesFromExperience(getSavedItemsForStep(session, workStep))
       : [];
 
-  const total = countedTotal();
-  const stepNumber = editStep ? total : countedIndexOf(flowStepId) + 1;
   const stepTitle = editStep ? editStep.label : t(flowStep.titleKey);
   const stepSubtitle = editStep
     ? (editStep.description ?? "")
@@ -231,7 +256,10 @@ function OnboardingWizardInner(): ReactElement {
   // The body gets one fixed height for ALL steps so the masthead and footer
   // never shift between steps — short steps just center their content in it,
   // taller steps scroll within it. Scaled to the viewport, clamped for sanity.
-  const bodyHeight = height > 0 ? Math.max(300, Math.min(440, Math.round(height * 0.46))) : 380;
+  // Chrome above/below the body once the mascot card is in: navbar (76) +
+  // the mascot's headroom (200) + card padding, heading and footer. The
+  // remainder is the body; steps taller than it scroll inside (BodyScrollBar).
+  const bodyHeight = height > 0 ? Math.max(240, Math.min(400, height - 620)) : 340;
 
   return (
     <SafeAreaView style={ed.root}>
@@ -274,162 +302,174 @@ function OnboardingWizardInner(): ReactElement {
           ]}
         >
           <View style={[ed.column, { maxWidth: columnMaxWidth }]}>
-            <StepTransition key={headingKey} direction={directionRef.current}>
-              {isDevTestFillEnabled() && !editStep ? (
-                <TestFillBar
-                  flowStepId={flowStepId}
-                  onFillStep={() => testFill.fillStep(flowStepId, currentStep)}
-                  onFillAll={() => void testFill.fillAll()}
-                  disabled={isPending || testFill.isRunning}
+            {/* Same card + peeking mascot as the auth dialog — onboarding is
+                the next page of that scene, not a new app. `width: "100%"`
+                because AuthCard's own 90% is meant for viewport-relative
+                pages; inside this already-sized column it would shrink the
+                panel a second time (the dialog had the same bug). */}
+            <AuthMascotCard mascot={mascot} panelStyle={{ width: "100%" }}>
+              <StepTransition key={headingKey} direction={directionRef.current}>
+                {isDevTestFillEnabled() && !editStep ? (
+                  <TestFillBar
+                    flowStepId={flowStepId}
+                    onFillStep={() => testFill.fillStep(flowStepId, currentStep)}
+                    onFillAll={() => void testFill.fillAll()}
+                    disabled={isPending || testFill.isRunning}
+                  />
+                ) : null}
+                <StepHeading
+                  title={stepTitle}
+                  subtitle={subtitleText}
+                  {...(isOptionalFlow ? { tag: t("onboarding.step.optional") } : {})}
                 />
-              ) : null}
-              <StepHeading
-                title={stepTitle}
-                subtitle={subtitleText}
-                {...(isOptionalFlow ? { tag: t("onboarding.step.optional") } : {})}
-              />
-            </StepTransition>
+              </StepTransition>
 
-            {/* Fixed-height body: same on every step. Content centers inside it;
+              {/* Fixed-height body: same on every step. Content centers inside it;
                 if a step is taller than the box, it scrolls within the box —
                 with the editorial scrollbar signalling the overflow. */}
-            <View style={[ed.body, { height: bodyHeight }]}>
-              <ScrollView
-                key={`scroll:${headingKey}`}
-                style={ed.flex}
-                contentContainerStyle={ed.bodyScroll}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-                scrollEventThrottle={16}
-                onScroll={(event) =>
-                  setBodyScroll({ key: headingKey, y: event.nativeEvent.contentOffset.y })
-                }
-                onContentSizeChange={(_w, h) => setBodyContentHeight(h)}
-                onLayout={(event) => setBodyViewportHeight(event.nativeEvent.layout.height)}
-              >
-                <StepTransition key={`body:${headingKey}`} direction={directionRef.current}>
-                  {isLocal ? (
-                    flowStepId === "theme" ? (
-                      <ThemeStep
-                        scheme={scheme}
-                        onSelect={(next) => selectAndAdvance(() => setScheme(next))}
+              <View style={[ed.body, { height: bodyHeight }]}>
+                <ScrollView
+                  key={`scroll:${headingKey}`}
+                  style={ed.flex}
+                  contentContainerStyle={ed.bodyScroll}
+                  keyboardShouldPersistTaps="handled"
+                  showsVerticalScrollIndicator={false}
+                  scrollEventThrottle={16}
+                  onScroll={(event) =>
+                    setBodyScroll({ key: headingKey, y: event.nativeEvent.contentOffset.y })
+                  }
+                  onContentSizeChange={(_w, h) => setBodyContentHeight(h)}
+                  onLayout={(event) => setBodyViewportHeight(event.nativeEvent.layout.height)}
+                >
+                  <StepTransition key={`body:${headingKey}`} direction={directionRef.current}>
+                    {isLocal ? (
+                      flowStepId === "theme" ? (
+                        <ThemeStep
+                          scheme={scheme}
+                          onSelect={(next) => selectAndAdvance(() => setScheme(next))}
+                          t={t}
+                        />
+                      ) : (
+                        <LanguageStep
+                          locale={locale}
+                          onSelect={(next) => selectAndAdvance(() => setLocale(next))}
+                          t={t}
+                        />
+                      )
+                    ) : isReview ? (
+                      <ReviewSummary
+                        session={session}
+                        steps={session.steps}
+                        onEdit={handleGoto}
+                        onAddSection={(extraId) => void handleAddSection(extraId)}
+                        addPending={extras.isPending || gotoStep.isPending}
+                        t={t}
+                      />
+                    ) : !currentStep ? null : isResumeStyleStep(currentStep) ? (
+                      <>
+                        <ResumeStylePicker
+                          step={currentStep}
+                          selectedId={formData.resumeStyleId ?? session.resumeStyleId ?? ""}
+                          t={t}
+                          onSelect={(resumeStyleId) => {
+                            setFormData({ resumeStyleId });
+                            setErrors({});
+                          }}
+                        />
+                        {errors.resumeStyleId ? <FieldError text={errors.resumeStyleId} /> : null}
+                      </>
+                    ) : isSectionStep(currentStep) ? (
+                      <SectionItemEditor
+                        step={currentStep}
+                        items={items}
+                        onChange={setItems}
+                        isPending={isPending}
+                        art={sectionArtFor(currentStep.sectionTypeKey)}
+                        t={t}
+                      />
+                    ) : !editStep && flowStepId === "links" ? (
+                      <LinksEditor
+                        fields={flowFields}
+                        data={formData}
+                        onChange={setFormData}
                         t={t}
                       />
                     ) : (
-                      <LanguageStep
-                        locale={locale}
-                        onSelect={(next) => selectAndAdvance(() => setLocale(next))}
-                        t={t}
+                      <StepForm
+                        fields={labeledFields}
+                        data={formData}
+                        errors={errors}
+                        onChange={setFormData}
+                        onSubmit={goNext}
+                        phoneCountryIso={phoneCountryIso}
+                        onPhoneCountry={setPhoneCountry}
+                        {...(headlineSuggestions.length > 0
+                          ? { suggestions: { key: "headline", values: headlineSuggestions } }
+                          : {})}
                       />
-                    )
-                  ) : isReview ? (
-                    <ReviewSummary
+                    )}
+
+                    <StepContext
+                      flowStepId={flowStepId}
+                      formData={formData}
                       session={session}
-                      steps={session.steps}
-                      onEdit={handleGoto}
-                      onAddSection={(extraId) => void handleAddSection(extraId)}
-                      addPending={extras.isPending || gotoStep.isPending}
                       t={t}
                     />
-                  ) : !currentStep ? null : isResumeStyleStep(currentStep) ? (
-                    <>
-                      <ResumeStylePicker
-                        step={currentStep}
-                        selectedId={formData.resumeStyleId ?? session.resumeStyleId ?? ""}
-                        t={t}
-                        onSelect={(resumeStyleId) => {
-                          setFormData({ resumeStyleId });
-                          setErrors({});
-                        }}
-                      />
-                      {errors.resumeStyleId ? <FieldError text={errors.resumeStyleId} /> : null}
-                    </>
-                  ) : isSectionStep(currentStep) ? (
-                    <SectionItemEditor
-                      step={currentStep}
-                      items={items}
-                      onChange={setItems}
-                      isPending={isPending}
-                      art={sectionArtFor(currentStep.sectionTypeKey)}
-                      t={t}
-                    />
-                  ) : !editStep && flowStepId === "links" ? (
-                    <LinksEditor fields={flowFields} data={formData} onChange={setFormData} t={t} />
-                  ) : (
-                    <StepForm
-                      fields={labeledFields}
-                      data={formData}
-                      errors={errors}
-                      onChange={setFormData}
-                      onSubmit={goNext}
-                      phoneCountryIso={phoneCountryIso}
-                      onPhoneCountry={setPhoneCountry}
-                      {...(headlineSuggestions.length > 0
-                        ? { suggestions: { key: "headline", values: headlineSuggestions } }
-                        : {})}
-                    />
-                  )}
+                  </StepTransition>
+                </ScrollView>
+                <BodyScrollBar
+                  contentHeight={bodyContentHeight}
+                  viewportHeight={bodyViewportHeight}
+                  scrollY={bodyScrollY}
+                />
+              </View>
 
-                  <StepContext
-                    flowStepId={flowStepId}
-                    formData={formData}
-                    session={session}
-                    t={t}
-                  />
-                </StepTransition>
-              </ScrollView>
-              <BodyScrollBar
-                contentHeight={bodyContentHeight}
-                viewportHeight={bodyViewportHeight}
-                scrollY={bodyScrollY}
-              />
-            </View>
-
-            <View style={ed.footer}>
-              {showBack ? (
-                <GhostButton label={t("onboarding.back")} onPress={goBack} disabled={isPending} />
-              ) : (
-                <View />
-              )}
-              {/* Local single-choice steps auto-advance on tap — no CTA. The
+              <View style={ed.footer}>
+                {showBack ? (
+                  <GhostButton label={t("onboarding.back")} onPress={goBack} disabled={isPending} />
+                ) : (
+                  <View />
+                )}
+                {/* Local single-choice steps auto-advance on tap — no CTA. The
                   CTA is otherwise always pressable (never a dead button):
                   pressing it validates and surfaces inline errors. */}
-              {isLocal ? null : showComplete ? (
-                <PrimaryAction
-                  label={t("onboarding.complete")}
-                  loading={complete.isPending}
-                  disabled={isPending}
-                  onPress={handleComplete}
-                  testID="onboarding.complete"
-                />
-              ) : (
-                <PrimaryAction
-                  label={
-                    editStep
-                      ? t("common.save")
-                      : showSkipCta
-                        ? t("onboarding.skipCta")
-                        : t("onboarding.next")
-                  }
-                  loading={nextStep.isPending || gotoStep.isPending}
-                  disabled={isPending}
-                  onPress={goNext}
-                  testID="onboarding.next"
-                />
-              )}
-            </View>
-            {saveError ? (
-              <RetryBanner
-                label={saveError}
-                onRetry={() => void retrySave()}
-                disabled={isPending}
-              />
-            ) : null}
-            {completeError ? (
-              <View style={ed.footerError}>
-                <FieldError text={completeError} />
+                {isLocal ? null : showComplete ? (
+                  <PrimaryAction
+                    label={t("onboarding.complete")}
+                    loading={complete.isPending}
+                    disabled={isPending}
+                    onPress={handleComplete}
+                    testID="onboarding.complete"
+                  />
+                ) : (
+                  <PrimaryAction
+                    label={
+                      editStep
+                        ? t("common.save")
+                        : showSkipCta
+                          ? t("onboarding.skipCta")
+                          : t("onboarding.next")
+                    }
+                    loading={nextStep.isPending || gotoStep.isPending}
+                    disabled={isPending}
+                    onPress={goNext}
+                    testID="onboarding.next"
+                  />
+                )}
               </View>
-            ) : null}
+              {saveError ? (
+                <RetryBanner
+                  label={saveError}
+                  onRetry={() => void retrySave()}
+                  disabled={isPending}
+                />
+              ) : null}
+              {completeError ? (
+                <View style={ed.footerError}>
+                  <FieldError text={completeError} />
+                </View>
+              ) : null}
+            </AuthMascotCard>
           </View>
         </View>
       </KeyboardAvoidingView>

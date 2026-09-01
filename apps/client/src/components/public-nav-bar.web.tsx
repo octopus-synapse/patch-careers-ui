@@ -15,7 +15,7 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import { logout } from "@patch-careers/auth";
-import { editorialOverlays, editorialPalettes } from "@patch-careers/tokens";
+import { editorialOverlays, editorialPalettes, landingAccentPalettes } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
@@ -66,6 +66,7 @@ export function PublicNavBar({
   const localized = useLocalizedHref();
   const { width } = useWindowDimensions();
   const compact = width < COMPACT_BREAKPOINT;
+  const resolvedScheme = useResolvedScheme();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [modalTab, setModalTab] = useState<ModalTab | null>(null);
@@ -138,10 +139,12 @@ export function PublicNavBar({
               backgroundColor={palette.hairline}
               overflow="hidden"
             >
+              {/* Brand indigo, not ink: the one horizontal line of colour in
+                  the flow, and it is the brand doing the counting. */}
               <YStack
                 height="100%"
                 width={`${Math.max(0, Math.min(100, progress.pct))}%`}
-                backgroundColor={palette.ink}
+                backgroundColor={landingAccentPalettes[resolvedScheme].indigo.accent}
                 borderRadius={999}
               />
             </YStack>

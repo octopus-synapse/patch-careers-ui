@@ -112,7 +112,7 @@ export function StepHeading({
       <AnimatedField delay={80}>
         <RNText style={ed.heading}>
           {head ? <RNText style={ed.headingRegular}>{head}</RNText> : null}
-          <RNText style={ed.headingItalic}>{tail}</RNText>
+          <RNText style={ed.headingAccent}>{tail}</RNText>
         </RNText>
       </AnimatedField>
       {subtitle ? (
