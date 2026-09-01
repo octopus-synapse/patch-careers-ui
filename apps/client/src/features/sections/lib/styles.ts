@@ -10,6 +10,7 @@ import {
   editorialOverlays,
   editorialPalette,
   editorialPaletteDark,
+  landingAccentPalettes,
 } from "@patch-careers/tokens";
 import { editorialFonts as fonts, useThemeName } from "@patch-careers/ui/editorial";
 import { Platform, StyleSheet, type ViewStyle } from "react-native";
@@ -29,7 +30,11 @@ export const eyebrow = {
 export const webNoOutline =
   Platform.OS === "web" ? ({ outlineStyle: "none" } as unknown as ViewStyle) : null;
 
-const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
+const createEd = (
+  authTokens: EditorialPalette,
+  overlay: EditorialOverlays,
+  theme: "light" | "dark",
+) =>
   // @style-allow stylesheet: themed editorial style factory consumed by N components (parity with DS internal pattern)
   StyleSheet.create({
     root: { flex: 1, backgroundColor: authTokens.bg },
@@ -93,6 +98,10 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     },
     headingRegular: { fontStyle: "normal" },
     headingItalic: { fontStyle: "italic" },
+    // The serif italic tail of the step title, in the brand indigo — the
+    // same gesture as the auth dialog's "ou". Scoped to its own key so the
+    // section editors that share this factory keep their ink italics.
+    headingAccent: { fontStyle: "italic", color: landingAccentPalettes[theme].indigo.accent },
     subtitle: {
       fontFamily: fonts.sans,
       fontSize: 15,
@@ -807,8 +816,8 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
 
 // Precomputed per theme so style-object identity is stable across renders.
 const edByTheme = {
-  light: createEd(editorialPalette, editorialOverlays.light),
-  dark: createEd(editorialPaletteDark, editorialOverlays.dark),
+  light: createEd(editorialPalette, editorialOverlays.light, "light"),
+  dark: createEd(editorialPaletteDark, editorialOverlays.dark, "dark"),
 } as const;
 
 /** Theme-aware accessor for the shared editorial wizard/editor styles. */
