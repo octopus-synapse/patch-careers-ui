@@ -10,6 +10,7 @@
 
 import { useEffect } from "react";
 import { Platform } from "react-native";
+import { isOverlayOpen } from "../lib/landing-overlay";
 import { IDLE_WHEEL_STREAM, reduceWheel, type WheelStream } from "../lib/wheel-stream";
 import { CHAPTERS } from "../model/chapters";
 
@@ -40,7 +41,11 @@ export function useDeckInput({ step, goTo }: DeckInputHandlers): void {
 
     let stream: WheelStream = IDLE_WHEEL_STREAM;
 
+    // While an overlay is mounted the deck is inert: the wheel must reach the
+    // overlay's own scroll areas (the terms ScrollView!) and keys must not
+    // step chapters behind the scrim.
     const onWheel = (event: WheelEvent): void => {
+      if (isOverlayOpen()) return;
       event.preventDefault();
       const result = reduceWheel(stream, event.deltaY, event.timeStamp);
       stream = result.state;
@@ -48,7 +53,7 @@ export function useDeckInput({ step, goTo }: DeckInputHandlers): void {
     };
 
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (isTypingTarget(event.target)) return;
+      if (isOverlayOpen() || isTypingTarget(event.target)) return;
       const { key } = event;
 
       if (key === "ArrowDown" || key === "PageDown" || key === " ") {

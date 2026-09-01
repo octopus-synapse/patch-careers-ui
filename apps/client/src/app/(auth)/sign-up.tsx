@@ -28,6 +28,7 @@ import { type ReactElement, useCallback, useEffect, useRef, useState } from "rea
 import { Keyboard, type LayoutChangeEvent, Platform, type TextInput } from "react-native";
 import { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { ConsentDialog } from "@/components/auth/consent-dialog";
+import { PRIVACY_VERSION, TOS_VERSION } from "@/components/auth/consent-versions";
 import { CREATED_STAGE_CARD_HEIGHT, CREATED_TIMELINE } from "@/components/auth/created-stage";
 import { CredentialsCard, type CredentialsTransit } from "@/components/auth/credentials-card";
 import { fieldErrorsSetter } from "@/components/auth/helpers/apply-field-errors";
@@ -41,12 +42,6 @@ import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
 import { validateSignup } from "@/components/auth/validation";
 import { FormEmailField, FormNameField, FormPasswordField, useFieldErrorsForm } from "@/forms";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
-
-// Versions sent with the consent payload. Backend rejects with
-// CONSENT_VERSION_MISMATCH if these don't match the live published
-// versions (currently 1.0.0 semver).
-const TOS_VERSION = "1.0.0";
-const PRIVACY_VERSION = "1.0.0";
 
 type SignUpForm = { name: string; email: string; password: string };
 type Phase = "form" | "created";

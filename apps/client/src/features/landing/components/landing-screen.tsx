@@ -25,6 +25,7 @@ import { initialChapterIndex, useChapterAddress } from "../hooks/use-chapter-add
 import { useChapterDeck } from "../hooks/use-chapter-deck";
 import { useDeckInput } from "../hooks/use-deck-input";
 import { useLandingMascot } from "../hooks/use-landing-mascot";
+import { useOverlayPresence } from "../hooks/use-overlay-presence";
 import { useSceneDirector } from "../hooks/use-scene-director";
 import { ensureLandingFonts } from "../lib/landing-fonts";
 import { landingGrid, sceneLayout, walkMsFor } from "../lib/layout";
@@ -69,6 +70,10 @@ function LandingDeck({ header }: LandingScreenProps): ReactElement {
 
   useDeckInput({ step, goTo });
   useChapterAddress(index);
+
+  // The auth dialog borrows the mascot for its own card, so the stage lets
+  // him go while it is open — one character, one place.
+  const overlayOpen = useOverlayPresence();
 
   const chapter = CHAPTERS[index] ?? CHAPTERS[0];
   const stageMode: MascotStageMode =
@@ -152,6 +157,7 @@ function LandingDeck({ header }: LandingScreenProps): ReactElement {
           petLine={scene.petLine}
           direction={direction}
           index={index}
+          hidden={overlayOpen}
         />
       ) : null}
 

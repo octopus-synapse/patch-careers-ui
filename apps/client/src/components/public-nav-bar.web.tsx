@@ -20,6 +20,7 @@ import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { type ReactElement, type ReactNode, useEffect, useRef, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
+import { AuthDialog } from "@/components/auth/auth-dialog/auth-dialog";
 import { BrandFace, landingSans } from "@/features/landing";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
 import { useLocaleSwitch } from "@/navigation/use-locale-switch";
@@ -48,7 +49,13 @@ export function PublicNavBar({ cta }: { readonly cta: PublicNavCta }): ReactElem
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [modalTab, setModalTab] = useState<ModalTab | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
   const menuWrapRef = useRef<View | null>(null);
+
+  // On the landing the auth entries open the unified dialog in place
+  // (identifier-first); on the auth pages they keep navigating between
+  // the standalone screens, which remain the deep-link/URL surface.
+  const unifiedAuth = cta === "landing";
 
   // Close the dropdown on any click outside its anchor, or on Escape — the
   // web-native dismissal pattern a popover needs (same as the MeMenu's).
@@ -92,23 +99,36 @@ export function PublicNavBar({ cta }: { readonly cta: PublicNavCta }): ReactElem
 
         <XStack alignItems="center" gap={compact ? 6 : 10}>
           {!compact && (
-            <Pressable accessibilityRole="link" onPress={() => router.push(localized(ctaTarget))}>
-              <XStack
-                backgroundColor={palette.primary}
-                borderRadius={999}
-                paddingHorizontal={20}
-                paddingVertical={10}
-                hoverStyle={{ backgroundColor: palette.primaryPress }}
-              >
-                <Text
-                  fontFamily={landingSans}
-                  fontSize={15}
-                  fontWeight="600"
-                  color={palette.onPrimary}
+            <Pressable
+              accessibilityRole="link"
+              onPress={() => (unifiedAuth ? setAuthOpen(true) : router.push(localized(ctaTarget)))}
+            >
+              {unifiedAuth ? (
+                // On the landing the CTA is bare text (Airbnb-calm) — the
+                // dialog it opens carries the emphasis, not a pill.
+                <XStack paddingHorizontal={12} paddingVertical={10} hoverStyle={{ opacity: 0.7 }}>
+                  <Text fontFamily={landingSans} fontSize={15} fontWeight="600" color={palette.ink}>
+                    {ctaLabel}
+                  </Text>
+                </XStack>
+              ) : (
+                <XStack
+                  backgroundColor={palette.primary}
+                  borderRadius={999}
+                  paddingHorizontal={20}
+                  paddingVertical={10}
+                  hoverStyle={{ backgroundColor: palette.primaryPress }}
                 >
-                  {ctaLabel}
-                </Text>
-              </XStack>
+                  <Text
+                    fontFamily={landingSans}
+                    fontSize={15}
+                    fontWeight="600"
+                    color={palette.onPrimary}
+                  >
+                    {ctaLabel}
+                  </Text>
+                </XStack>
+              )}
             </Pressable>
           )}
 
@@ -127,6 +147,10 @@ export function PublicNavBar({ cta }: { readonly cta: PublicNavCta }): ReactElem
                 cta={cta}
                 onNavigate={(path) => {
                   setMenuOpen(false);
+                  if (unifiedAuth && path !== "/") {
+                    setAuthOpen(true);
+                    return;
+                  }
                   router.push(localized(path));
                 }}
                 onOpenModal={(tab) => {
@@ -142,6 +166,8 @@ export function PublicNavBar({ cta }: { readonly cta: PublicNavCta }): ReactElem
       {modalTab !== null && (
         <PreferencesModal tab={modalTab} onTab={setModalTab} onClose={() => setModalTab(null)} />
       )}
+
+      {authOpen && <AuthDialog onClose={() => setAuthOpen(false)} />}
     </>
   );
 }
@@ -214,7 +240,7 @@ function PublicMenu({
       }}
     >
       <MenuRow
-        icon={<Ionicons name="globe-outline" size={16} color={palette.ink} />}
+        icon={<Ionicons name="language-outline" size={16} color={palette.ink} />}
         label={t("landing.nav.langRegion")}
         onPress={() => onOpenModal("lang")}
       />
@@ -255,12 +281,27 @@ function PublicMenu({
           <Divider />
         </>
       )}
-      <MenuRow label={t("landing.header.signIn")} onPress={() => onNavigate("/(auth)/sign-in")} />
-      <MenuRow
-        label={t("landing.header.signUp")}
-        bold
-        onPress={() => onNavigate("/(auth)/sign-up")}
-      />
+      {cta === "landing" ? (
+        // One unified entry — the identifier-first dialog decides between
+        // sign-in and sign-up, so the menu shouldn't pre-split the choice.
+        <MenuRow
+          label={t("auth.dialogMenuEntry")}
+          bold
+          onPress={() => onNavigate("/(auth)/sign-in")}
+        />
+      ) : (
+        <>
+          <MenuRow
+            label={t("landing.header.signIn")}
+            onPress={() => onNavigate("/(auth)/sign-in")}
+          />
+          <MenuRow
+            label={t("landing.header.signUp")}
+            bold
+            onPress={() => onNavigate("/(auth)/sign-up")}
+          />
+        </>
+      )}
     </YStack>
   );
 }
@@ -373,6 +414,7 @@ function PreferencesModal({
       }}
       onStartShouldSetResponder={() => true}
       onResponderRelease={onClose}
+      {...{ dataSet: { landingOverlay: "" } }}
     >
       <View
         onStartShouldSetResponder={() => true}
@@ -475,16 +517,8 @@ function PreferencesModal({
             </>
           ) : (
             <>
-              <Text
-                fontSize={19}
-                fontWeight="600"
-                color={palette.ink}
-                marginTop={26}
-                marginBottom={16}
-              >
-                {t("landing.nav.theme")}
-              </Text>
-              <XStack gap={10} flexWrap="wrap">
+              {/* The active tab already says "Theme" — no section heading. */}
+              <XStack gap={10} flexWrap="wrap" marginTop={26}>
                 {themes.map((theme) => (
                   <ModalCell
                     key={theme.value}

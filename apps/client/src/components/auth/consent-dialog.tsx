@@ -19,12 +19,7 @@ import {
   editorialPaletteDark,
   radius,
 } from "@patch-careers/tokens";
-import {
-  editorialFonts,
-  FrostedFill,
-  useEditorialPalette,
-  useThemeName,
-} from "@patch-careers/ui/editorial";
+import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import { X } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -123,7 +118,12 @@ export function ConsentDialog({
 
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={dismiss}>
-      <View style={styles.root}>
+      {/* `data-landingoverlay` puts the landing deck's wheel/key input to
+          sleep while the dialog is up (see use-deck-input.ts). */}
+      <View
+        style={styles.root}
+        {...(Platform.OS === "web" ? { dataSet: { landingOverlay: "" } } : {})}
+      >
         {/* Soft scrim — the same wash the global search modal uses. */}
         <Animated.View style={[StyleSheet.absoluteFill, styles.scrim, { opacity: anim }]}>
           <Pressable
@@ -147,9 +147,6 @@ export function ConsentDialog({
           ]}
           {...(testID ? { testID } : {})}
         >
-          {/* Frosted card: blur + panel wash, so the form reads through the
-              dialog instead of vanishing under an opaque surface. */}
-          <FrostedFill variant="panel" />
           <View style={styles.header}>
             <Text style={styles.title}>{t("auth.consentDialogTitle")}</Text>
             <Pressable
@@ -224,7 +221,10 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     root: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
     scrim: { backgroundColor: ov.scrimDialog },
     card: {
-      backgroundColor: "transparent",
+      // Opaque on purpose: over the landing deck (auth dialog flow) a
+      // frosted card reads as a rendering glitch — legal text needs a
+      // solid page behind it.
+      backgroundColor: p.panel,
       borderRadius: 24,
       borderWidth: 1,
       borderColor: p.hairline,

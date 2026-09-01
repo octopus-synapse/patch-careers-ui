@@ -54,6 +54,13 @@ export interface MascotStageProps {
   /** Deck travel direction — drives the glow's counter-drift. */
   readonly direction: ChapterDirection;
   readonly index: number;
+  /**
+   * He is one character, so he cannot be in two places at once: while an
+   * overlay leans him on its own card (the auth dialog's `AuthMascotCard`),
+   * the stage fades out — the demo's `body.authing`. Kept mounted so the walk
+   * state, the glow drift and the chapter's placard survive the round trip.
+   */
+  readonly hidden?: boolean;
 }
 
 /**
@@ -103,6 +110,7 @@ export function MascotStage({
   petLine,
   direction,
   index,
+  hidden = false,
 }: MascotStageProps): ReactElement {
   const grid = landingGrid(windowWidth);
   const palette = useEditorialPalette();
@@ -191,7 +199,9 @@ export function MascotStage({
       bottom={0}
       alignItems="center"
       justifyContent="center"
-      pointerEvents="box-none"
+      opacity={hidden ? 0 : 1}
+      animation="medium"
+      pointerEvents={hidden ? "none" : "box-none"}
     >
       {/* The demo kills the glow for the whole scene (`body.scene #glow`). */}
       <Animated.View

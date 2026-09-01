@@ -79,6 +79,18 @@ export const en: TranslationDict = {
   },
   auth: {
     signIn: "Sign in",
+    dialogMenuEntry: "Sign in or create account",
+    dialogTitlePre: "Sign in",
+    dialogTitleOr: "or",
+    dialogTitlePost: "create an account.",
+    dialogContinue: "Continue",
+    dialogWelcomeBack: "Good to see you again.",
+    dialogCreatePasswordTitle: "Nice to meet you. Create a password.",
+    dialogChangeEmail: "change",
+    dialogIdentifyFailed: "Couldn't continue. Try again.",
+    dialogOauthOnlyTitle: "You signed in with a social account.",
+    dialogOauthOnlyBody:
+      "This account has no password — continue with the provider you used last time.",
     signOut: "Sign out",
     signUp: "Create account",
     signInTitle: "Sign in to your account",

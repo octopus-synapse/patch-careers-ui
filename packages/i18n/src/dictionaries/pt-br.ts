@@ -79,6 +79,18 @@ export const ptBR: TranslationDict = {
   },
   auth: {
     signIn: "Entrar",
+    dialogMenuEntry: "Entrar ou criar conta",
+    dialogTitlePre: "Entrar",
+    dialogTitleOr: "ou",
+    dialogTitlePost: "criar conta.",
+    dialogContinue: "Continuar",
+    dialogWelcomeBack: "Que bom te ver de novo.",
+    dialogCreatePasswordTitle: "Prazer. Crie uma senha.",
+    dialogChangeEmail: "trocar",
+    dialogIdentifyFailed: "Não foi possível continuar. Tente de novo.",
+    dialogOauthOnlyTitle: "Você entrou com uma conta social.",
+    dialogOauthOnlyBody:
+      "Essa conta não tem senha — continue com o provedor que você usou da última vez.",
     signOut: "Sair",
     signUp: "Criar conta",
     signInTitle: "Entre na sua conta",
