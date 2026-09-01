@@ -19,6 +19,7 @@ export const profilePtBR: TranslationDict = {
     viewProfile: "Ver meu perfil",
     applications: "Candidaturas",
     settings: "Configurações",
+    signedInAs: "Conectado como",
     signOut: "Sair da conta",
     signOutConfirm: {
       title: "Sair da conta?",
@@ -196,6 +197,7 @@ export const profileEn: TranslationDict = {
     viewProfile: "View my profile",
     applications: "Applications",
     settings: "Settings",
+    signedInAs: "Signed in as",
     signOut: "Sign out",
     signOutConfirm: {
       title: "Sign out?",

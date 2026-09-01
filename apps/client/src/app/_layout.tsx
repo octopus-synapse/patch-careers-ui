@@ -209,7 +209,24 @@ export default function RootLayout(): ReactElement {
                               name="settings"
                               options={{ headerShown: false, animation: "slide_from_right" }}
                             />
-                            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+                            {/* Full-bleed like the `en` subtree: onboarding wears the
+                              landing's overlay navbar, which is `position: absolute;
+                              left: 0; right: 0`. Inside the 960px column those edges
+                              are the COLUMN's, so the mark and the hamburger drifted
+                              inward instead of sitting against the viewport. The
+                              wizard centres its own 460px column regardless. */}
+                            <Stack.Screen
+                              name="onboarding"
+                              options={{
+                                headerShown: false,
+                                contentStyle: {
+                                  backgroundColor: palette.bg,
+                                  width: "100%",
+                                  maxWidth: undefined,
+                                  alignSelf: "stretch",
+                                },
+                              }}
+                            />
                             <Stack.Screen
                               name="fit-questionnaire"
                               options={{ headerShown: false, animation: "slide_from_bottom" }}

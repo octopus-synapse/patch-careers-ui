@@ -1,8 +1,10 @@
 import { FieldError, PrimaryAction } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, View } from "react-native";
+import { PUBLIC_NAV_BAR_HEIGHT, PublicNavBar } from "@/components/public-nav-bar";
 import { isDevTestFillEnabled } from "@/config/dev-flags";
 import { GhostButton, SectionItemEditor, useEd } from "@/features/sections";
+import { useAuthState } from "@/providers/auth-provider";
 import { useColorSchemeStore } from "@/providers/color-scheme";
 import { countedIndexOf, countedTotal, prevFlowStep } from "../lib/flow-plan";
 import { getSavedItemsForStep, isResumeStyleStep, isSectionStep } from "../lib/helpers";
@@ -17,7 +19,6 @@ import { TestFillBar } from "./test-fill-bar";
 import {
   BodyScrollBar,
   CenteredState,
-  Masthead,
   RetryBanner,
   StepHeading,
   StepTransition,
@@ -45,6 +46,7 @@ export function OnboardingWizard(): ReactElement {
 
 function OnboardingWizardInner(): ReactElement {
   const ed = useEd();
+  const { currentUser } = useAuthState();
   const {
     locale,
     t,
@@ -233,6 +235,29 @@ function OnboardingWizardInner(): ReactElement {
 
   return (
     <SafeAreaView style={ed.root}>
+      {/* The landing's chrome, in its signed-in variant. The step counter and
+          progress ride inside it (see PublicNavProgress) instead of the
+          Masthead they used to draw — two stacked horizontal bands before the
+          content read as heavy on a flow whose body is already fixed-height. */}
+      <PublicNavBar
+        cta="onboarding"
+        {...(editStep || !flowStep.hideMasthead
+          ? {
+              progress: {
+                pct: (stepNumber / total) * 100,
+                label: `${stepNumber} / ${total}`,
+              },
+            }
+          : {})}
+        {...(currentUser?.email
+          ? {
+              account: {
+                email: currentUser.email,
+                ...(currentUser.name ? { name: currentUser.name } : {}),
+              },
+            }
+          : {})}
+      />
       <KeyboardAvoidingView
         style={ed.flex}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -240,15 +265,15 @@ function OnboardingWizardInner(): ReactElement {
         {/* Cluster centered in the viewport. The body below is a fixed height on
             every step, so the masthead and footer never shift between steps —
             only the body's own content moves (centered, or scrolled if taller). */}
-        <View style={[ed.page, { paddingHorizontal: horizontalPadding }]}>
+        <View
+          style={[
+            ed.page,
+            // Clear the overlaid bar: `page` centres the cluster in the full
+            // viewport, so without this the first step can sit under it.
+            { paddingHorizontal: horizontalPadding, paddingTop: PUBLIC_NAV_BAR_HEIGHT + 12 },
+          ]}
+        >
           <View style={[ed.column, { maxWidth: columnMaxWidth }]}>
-            {editStep || !flowStep.hideMasthead ? (
-              <Masthead
-                counter={`${stepNumber} / ${total}`}
-                progressPct={(stepNumber / total) * 100}
-              />
-            ) : null}
-
             <StepTransition key={headingKey} direction={directionRef.current}>
               {isDevTestFillEnabled() && !editStep ? (
                 <TestFillBar
