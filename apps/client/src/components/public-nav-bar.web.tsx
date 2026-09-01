@@ -14,6 +14,7 @@
  */
 
 import { Ionicons } from "@expo/vector-icons";
+import { logout } from "@patch-careers/auth";
 import { editorialOverlays, editorialPalettes } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
@@ -22,15 +23,26 @@ import { type ReactElement, type ReactNode, useEffect, useRef, useState } from "
 import { Pressable, useWindowDimensions, View } from "react-native";
 import { AuthDialog } from "@/components/auth/auth-dialog/auth-dialog";
 import { BrandFace, landingSans } from "@/features/landing";
+import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
 import { useLocaleSwitch } from "@/navigation/use-locale-switch";
 import { useColorSchemeStore, useResolvedScheme } from "@/providers/color-scheme";
 import { useI18n } from "@/providers/i18n-provider";
-import type { PublicNavCta } from "./public-nav-bar";
+import {
+  PUBLIC_NAV_BAR_HEIGHT,
+  type PublicNavAccount,
+  type PublicNavCta,
+  type PublicNavProgress,
+} from "./public-nav-bar.contract";
 
-export type { PublicNavCta };
+export {
+  PUBLIC_NAV_BAR_HEIGHT,
+  type PublicNavAccount,
+  type PublicNavCta,
+  type PublicNavProgress,
+} from "./public-nav-bar.contract";
 
-const BAR_HEIGHT = 76;
+const BAR_HEIGHT = PUBLIC_NAV_BAR_HEIGHT;
 const COMPACT_BREAKPOINT = 480;
 /** Under the ChapterRail (50) and the BootOverlay (100) on the landing. */
 const BAR_Z_INDEX = 40;
@@ -39,7 +51,15 @@ const MODAL_MAX_WIDTH = 720;
 
 type ModalTab = "lang" | "theme";
 
-export function PublicNavBar({ cta }: { readonly cta: PublicNavCta }): ReactElement {
+export function PublicNavBar({
+  cta,
+  progress,
+  account,
+}: {
+  readonly cta: PublicNavCta;
+  readonly progress?: PublicNavProgress;
+  readonly account?: PublicNavAccount;
+}): ReactElement {
   const palette = useEditorialPalette();
   const { t } = useI18n();
   const router = useRouter();
@@ -56,6 +76,9 @@ export function PublicNavBar({ cta }: { readonly cta: PublicNavCta }): ReactElem
   // (identifier-first); on the auth pages they keep navigating between
   // the standalone screens, which remain the deep-link/URL surface.
   const unifiedAuth = cta === "landing";
+  // Signed-in variant: the visitor already has an account, so the CTA goes and
+  // the brand stops being a link out of the flow.
+  const onboarding = cta === "onboarding";
 
   // Close the dropdown on any click outside its anchor, or on Escape — the
   // web-native dismissal pattern a popover needs (same as the MeMenu's).
@@ -93,12 +116,43 @@ export function PublicNavBar({ cta }: { readonly cta: PublicNavCta }): ReactElem
         paddingHorizontal={compact ? 16 : 28}
         zIndex={BAR_Z_INDEX}
       >
-        <Pressable accessibilityRole="link" onPress={() => router.push(localized("/"))}>
+        {onboarding ? (
+          // Not a link mid-flow: clicking the mark would drop the visitor out
+          // of onboarding onto the landing page.
           <BrandFace height={compact ? 40 : 54} />
-        </Pressable>
+        ) : (
+          <Pressable accessibilityRole="link" onPress={() => router.push(localized("/"))}>
+            <BrandFace height={compact ? 40 : 54} />
+          </Pressable>
+        )}
+
+        {progress ? (
+          // Takes the empty middle the CTA leaves behind, so the bar keeps the
+          // landing's shape — mark hard left, hamburger hard right — and the
+          // wizard's progress reads as the thing between them.
+          <XStack flex={1} alignItems="center" gap={14} paddingHorizontal={compact ? 14 : 32}>
+            <YStack
+              flex={1}
+              height={3}
+              borderRadius={999}
+              backgroundColor={palette.hairline}
+              overflow="hidden"
+            >
+              <YStack
+                height="100%"
+                width={`${Math.max(0, Math.min(100, progress.pct))}%`}
+                backgroundColor={palette.ink}
+                borderRadius={999}
+              />
+            </YStack>
+            <Text fontFamily={landingSans} fontSize={13} color={palette.muted}>
+              {progress.label}
+            </Text>
+          </XStack>
+        ) : null}
 
         <XStack alignItems="center" gap={compact ? 6 : 10}>
-          {!compact && (
+          {!compact && !onboarding && (
             <Pressable
               accessibilityRole="link"
               onPress={() => (unifiedAuth ? setAuthOpen(true) : router.push(localized(ctaTarget)))}
@@ -145,6 +199,7 @@ export function PublicNavBar({ cta }: { readonly cta: PublicNavCta }): ReactElem
             {menuOpen && (
               <PublicMenu
                 cta={cta}
+                {...(account ? { account } : {})}
                 onNavigate={(path) => {
                   setMenuOpen(false);
                   if (unifiedAuth && path !== "/") {
@@ -209,10 +264,12 @@ function CircleButton({
 /** The Airbnb dropdown card: icon rows, dividers, featured mascot row. */
 function PublicMenu({
   cta,
+  account,
   onNavigate,
   onOpenModal,
 }: {
   readonly cta: PublicNavCta;
+  readonly account?: PublicNavAccount;
   readonly onNavigate: (path: "/" | "/(auth)/sign-in" | "/(auth)/sign-up") => void;
   readonly onOpenModal: (tab: ModalTab) => void;
 }): ReactElement {
@@ -256,7 +313,7 @@ function PublicMenu({
         onPress={() => onOpenModal("theme")}
       />
       <Divider />
-      {cta !== "landing" && (
+      {cta !== "landing" && !account && (
         <>
           <Pressable accessibilityRole="link" onPress={() => onNavigate("/")}>
             <XStack
@@ -281,7 +338,9 @@ function PublicMenu({
           <Divider />
         </>
       )}
-      {cta === "landing" ? (
+      {account ? (
+        <AccountSection account={account} />
+      ) : cta === "landing" ? (
         // One unified entry — the identifier-first dialog decides between
         // sign-in and sign-up, so the menu shouldn't pre-split the choice.
         <MenuRow
@@ -303,6 +362,68 @@ function PublicMenu({
         </>
       )}
     </YStack>
+  );
+}
+
+/**
+ * Who you are, in the one menu the onboarding flow exposes. Deliberately
+ * quieter than the app's `MeMenu` profile card: mid-onboarding there is no
+ * photo and often no name yet, so this shows the initial on a grey disc and
+ * the e-mail that identifies the account — enough to answer "am I signed in,
+ * and as whom?" without pretending to be a profile.
+ */
+function AccountSection({ account }: { readonly account: PublicNavAccount }): ReactElement {
+  const palette = useEditorialPalette();
+  const { t } = useI18n();
+  const router = useRouter();
+  const initial = (account.name ?? account.email).trim().charAt(0).toUpperCase();
+
+  const signOut = async (): Promise<void> => {
+    await logout();
+    // Signing out drops `hasCompletedOnboarding`, so the onboarding gate would
+    // bounce anyway — replace makes it immediate instead of a flash of wizard.
+    router.replace(AUTH_SIGN_IN_ROUTE);
+  };
+
+  return (
+    <>
+      <XStack alignItems="center" gap={12} paddingHorizontal={18} paddingVertical={10}>
+        <YStack
+          width={32}
+          height={32}
+          borderRadius={999}
+          backgroundColor={palette.hairline}
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Text fontFamily={landingSans} fontSize={13} fontWeight="600" color={palette.muted}>
+            {initial}
+          </Text>
+        </YStack>
+        <YStack flex={1} gap={1}>
+          <Text fontFamily={landingSans} fontSize={12} color={palette.muted}>
+            {t("profile.menu.signedInAs")}
+          </Text>
+          <Text
+            fontFamily={landingSans}
+            fontSize={13.5}
+            color={palette.ink}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {account.email}
+          </Text>
+        </YStack>
+      </XStack>
+      <Divider />
+      <MenuRow
+        icon={<Ionicons name="log-out-outline" size={16} color={palette.ink} />}
+        label={t("profile.menu.signOut")}
+        onPress={() => {
+          void signOut();
+        }}
+      />
+    </>
   );
 }
 

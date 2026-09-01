@@ -92,7 +92,12 @@ export function AuthDialog({ onClose }: { readonly onClose: () => void }): React
         onResponderRelease={() => undefined}
         style={{ width: Math.min(PANEL_WIDTH, width * 0.92), maxHeight: height * 0.94 }}
       >
-        <AuthMascotCard mascot={mascot} animateIn>
+        {/* AuthCard is 90%-of-parent by default, which is right on the auth
+            PAGES (90% of the viewport, capped at 460). Here the dialog already
+            sizes itself, so that rule constrained the card a second time and
+            it rendered at 414px instead of 460 — narrower than the 375px
+            mascot sitting on top of it. */}
+        <AuthMascotCard mascot={mascot} animateIn panelStyle={{ width: "100%" }}>
           <YStack position="relative">
             <YStack position="absolute" top={-14} right={-6} zIndex={2}>
               <Pressable

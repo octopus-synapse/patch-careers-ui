@@ -2,12 +2,19 @@
  * `BrandFace` — the navbar brandmark with the mascot's face on it, straight
  * from the prototype's "a logo é o mascote": the two puzzle pieces with big
  * round eyes (pupils that follow the cursor on web) and a little smile.
+ *
+ * Since it IS the mascot, the pieces come from the same shared palette the
+ * mascot uses. They used to come from the landing accents, whose dark values
+ * (#F5F5F0 warm ivory, #8C97FF washed periwinkle) had drifted well away from
+ * the mascot's pure white and brand indigo.
  */
 
+import { brandPiecePalettes } from "@patch-careers/tokens";
+import { useThemeName } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { Platform } from "react-native";
 import Svg, { Circle, G, Path } from "react-native-svg";
-import { useLandingAccents, useLandingBrandFace } from "../hooks/use-landing-palettes";
+import { useLandingBrandFace } from "../hooks/use-landing-palettes";
 
 const PIECE_DARK =
   "M 20 0 H 135 V 66 H 149 A 22 22 0 1 1 149 94 H 135 V 157.9 A 42 42 0 1 0 95 228.5 V 282 A 8 8 0 0 1 87 290 H 20 A 20 20 0 0 1 0 270 V 20 A 20 20 0 0 1 20 0 Z";
@@ -19,7 +26,7 @@ export interface BrandFaceProps {
 }
 
 export function BrandFace({ height = 54 }: BrandFaceProps): ReactElement {
-  const accents = useLandingAccents();
+  const pieces = brandPiecePalettes[useThemeName()];
   const face = useLandingBrandFace();
   const [pupil, setPupil] = useState({ x: 0, y: 0 });
   const frame = useRef(0);
@@ -47,8 +54,8 @@ export function BrandFace({ height = 54 }: BrandFaceProps): ReactElement {
   const width = (height / 290) * 280;
   return (
     <Svg width={width} height={height} viewBox="0 0 280 290" aria-hidden>
-      <Path d={PIECE_DARK} fill={accents.ink.accent} />
-      <Path d={PIECE_BLUE} fill={accents.indigo.accent} />
+      <Path d={PIECE_DARK} fill={pieces.plain} />
+      <Path d={PIECE_BLUE} fill={pieces.indigo} />
       <G x={78} y={110}>
         <Circle r={30} fill={face.sclera} />
         <G x={pupil.x} y={pupil.y}>

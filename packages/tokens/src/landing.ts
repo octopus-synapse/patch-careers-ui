@@ -136,6 +136,38 @@ export type LandingBrandFacePalette = {
   highlight: string;
 };
 
+/**
+ * The two puzzle pieces — the mascot's body AND every brandmark.
+ *
+ * "A logo é o mascote", so these cannot be allowed to drift apart. They had:
+ * the mascot on #000/#FFF + #5766E8, BrandMark on #151A30/#E9E5D9 + #5766E8/
+ * #6272F2, BrandLockup on a third pair, and BrandFace on the landing accents
+ * (#111111/#F5F5F0 + #5766E8/#8C97FF). In dark the marks drifted to a warm
+ * ivory and a washed-out periwinkle that no longer looked like the mascot.
+ *
+ * `indigo` never changes — it IS the brand colour. `plain` flips with the
+ * scheme so the piece always reads against the page.
+ */
+export type BrandPiecePalette = {
+  plain: string;
+  indigo: string;
+};
+
+export const brandPieces = {
+  plain: "#000000",
+  indigo: "#5766E8",
+} as const satisfies BrandPiecePalette;
+
+export const brandPiecesDark = {
+  plain: "#FFFFFF",
+  indigo: "#5766E8",
+} as const satisfies BrandPiecePalette;
+
+export const brandPiecePalettes = {
+  light: brandPieces,
+  dark: brandPiecesDark,
+} as const satisfies Record<EditorialTheme, BrandPiecePalette>;
+
 export const landingBrandFace = {
   sclera: "#DDE3F5",
   pupil: "#151A30",
@@ -143,14 +175,19 @@ export const landingBrandFace = {
 } as const satisfies LandingBrandFacePalette;
 
 /**
- * In dark the pieces invert (near-white ink piece, lifted indigo), so the
- * face flips with them: deep indigo-slate sclera, warm-paper pupil, and an
- * indigo glint — a white one would vanish inside the light pupil.
+ * The face does NOT flip with the pieces. Inverting it — dark sclera, light
+ * pupil — turned both eyes into holes punched through the mark at navbar
+ * size, which is the opposite of the reading a face wants.
+ *
+ * Eyes are eyes in either scheme: the mascot proves it, carrying one sclera
+ * and one pupil across both themes (`SCLERA`/`PUPIL` in mascot-model.ts, and
+ * `landingRobot.eye` identical light and dark). The logo is the mascot, so it
+ * uses the mascot's eyes. Only the pieces underneath change with the theme.
  */
 export const landingBrandFaceDark = {
-  sclera: "#2E3450",
-  pupil: "#E9E5D9",
-  highlight: "#8B96F5",
+  sclera: landingBrandFace.sclera,
+  pupil: landingBrandFace.pupil,
+  highlight: landingBrandFace.highlight,
 } as const satisfies LandingBrandFacePalette;
 
 export const landingBrandFacePalettes = {

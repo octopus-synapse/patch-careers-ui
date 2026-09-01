@@ -13,6 +13,7 @@
  * the pieces span x 0…280, the card's top edge sits at y = 232.
  */
 
+import { brandPieces, brandPiecesDark } from "@patch-careers/tokens";
 import type { ThemeName } from "./types";
 
 export interface MascotFlags {
@@ -216,14 +217,16 @@ export interface MascotPalette {
   seriousShadowOpacity: number;
 }
 
-const EAGER = "#5766E8";
+// Shared with every brandmark via @patch-careers/tokens — the logo IS the
+// mascot, so neither may drift from the other.
+const EAGER = brandPieces.indigo;
 const SCLERA = "#DDE3F5";
 const PUPIL = "#151A30";
 
 export function mascotPaletteFor(theme: ThemeName, success: string): MascotPalette {
   if (theme === "dark") {
     return {
-      serious: "#FFFFFF",
+      serious: brandPiecesDark.plain,
       eager: EAGER,
       sclera: SCLERA,
       pupil: PUPIL,
@@ -237,7 +240,7 @@ export function mascotPaletteFor(theme: ThemeName, success: string): MascotPalet
     };
   }
   return {
-    serious: "#000000",
+    serious: brandPieces.plain,
     eager: EAGER,
     sclera: SCLERA,
     pupil: PUPIL,
