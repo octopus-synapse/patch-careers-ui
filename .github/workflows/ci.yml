@@ -7,8 +7,15 @@ name: CI
 on:
   pull_request:
     branches: [main, homolog, dev]
+  # Deploy is gated on this workflow's verdict (deploy.yml listens for a
+  # successful `workflow_run` on main), so `paths-ignore` doubles as the deploy
+  # filter: a docs-only push produces no CI run, so nothing deploys.
   push:
     branches: [main]
+    paths-ignore:
+      - "CHANGELOG.md"
+      - "*.md"
+      - "docs/**"
   workflow_dispatch:
 
 permissions:
@@ -34,13 +41,13 @@ jobs:
     outputs:
       cache-key: ${{ steps.cache-key.outputs.value }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
@@ -53,11 +60,11 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
         with:
           version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
@@ -69,13 +76,13 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
@@ -92,7 +99,7 @@ jobs:
       # projects; pushes to main run the full graph via run-many.
       - name: Set Nx SHAs
         if: github.event_name == 'pull_request'
-        uses: nrwl/nx-set-shas@v4
+        uses: nrwl/nx-set-shas@v5
 
       - name: Typecheck (affected on PR, all on push)
         run: |
