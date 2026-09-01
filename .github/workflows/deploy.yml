@@ -1,0 +1,215 @@
+name: Deploy (web)
+
+# The only deploy path for patchcareers.org. Absorbs fast-deploy.yml.
+#
+# Two ways in:
+#   - automatic: CI concludes successfully on main → build HEAD and ship it.
+#   - manual: the Actions button. Leave `image_tag` empty to build HEAD; set it
+#     to a previously published tag to ROLL BACK to that image.
+#
+# Build runs on a GitHub runner (pnpm + expo export + push to GHCR). Deploy
+# runs on a SELF-HOSTED runner on the VPS (label profile-vps, registered at org
+# level): inbound SSH is firewalled, so the box polls outward and runs
+# `docker compose` locally.
+#
+# Images are tagged `main-<short-sha>` and nothing else — no moving `:latest`,
+# so every past deploy stays a valid rollback target.
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Existing tag to roll back to (e.g. main-aba1811). Empty = build HEAD."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  PNPM_VERSION: 9.15.4
+  NODE_VERSION: 20.x
+
+jobs:
+  prepare:
+    name: Resolve target
+    runs-on: ubuntu-latest
+    # `AUTO_DEPLOY` is the pause switch: unset the repository variable during an
+    # incident, or while landing a change to this workflow, and main stops
+    # shipping on its own. Manual dispatch ignores it — the break-glass path.
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && vars.AUTO_DEPLOY == 'true')
+    outputs:
+      sha: ${{ steps.r.outputs.sha }}
+      image_tag: ${{ steps.r.outputs.image_tag }}
+      is_rollback: ${{ steps.r.outputs.is_rollback }}
+    steps:
+      - id: r
+        env:
+          # On `workflow_run`, `github.sha` is the default branch — not the
+          # commit CI validated. `head_sha` is the real one.
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          REQUESTED_TAG: ${{ inputs.image_tag }}
+        run: |
+          set -euo pipefail
+          if [ -n "${REQUESTED_TAG}" ]; then
+            if ! printf '%s' "$REQUESTED_TAG" | grep -qE '^[a-z0-9][a-z0-9._-]{0,127}$'; then
+              echo "::error::invalid image tag: ${REQUESTED_TAG}"; exit 1
+            fi
+            echo "image_tag=${REQUESTED_TAG}" >> "$GITHUB_OUTPUT"
+            echo "is_rollback=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "image_tag=main-${HEAD_SHA:0:7}" >> "$GITHUB_OUTPUT"
+            echo "is_rollback=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "sha=${HEAD_SHA}" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build & push
+    needs: prepare
+    if: needs.prepare.outputs.is_rollback == 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Rapid pushes: keep only the newest build. The deploy job is NOT
+    # cancellable — a container swap must never be interrupted halfway.
+    concurrency:
+      group: production-web-build
+      cancel-in-progress: true
+    env:
+      # @octopus-synapse/precommit is served from GitHub Packages (see .npmrc)
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Kubb output (src/generated/{hooks,ts,zod}) is gitignored and
+      # regenerated from the committed swagger contract. Without it the SDK
+      # barrel exports unresolved modules and the export fails.
+      - name: Generate API SDK
+        run: pnpm --filter @patch-careers/api-client sdk:generate
+
+      - name: Export web bundle
+        working-directory: apps/client
+        env:
+          # Expo INLINES EXPO_PUBLIC_* at build time. `apps/client/.env` is
+          # gitignored, so anything not passed here is simply absent from the
+          # production bundle — which is how company logos ended up broken on
+          # patchcareers.org. Keep this in sync with apps/client/.env.example.
+          EXPO_PUBLIC_LOGO_DEV_PUBLISHABLE_KEY: ${{ secrets.EXPO_PUBLIC_LOGO_DEV_PUBLISHABLE_KEY }}
+        run: |
+          set -euo pipefail
+          [ -n "${EXPO_PUBLIC_LOGO_DEV_PUBLISHABLE_KEY}" ] || {
+            echo "::error::EXPO_PUBLIC_LOGO_DEV_PUBLISHABLE_KEY is empty — company logos would ship broken"
+            exit 1
+          }
+          # Production bundle: __DEV__=false makes the app resolve
+          # https://backend.patchcareers.org (see src/config/api.ts).
+          pnpm exec expo export --platform web
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ needs.prepare.outputs.image_tag }}
+
+  deploy:
+    name: Deploy to VPS
+    needs: [prepare, build]
+    # `always()` so a rollback (build skipped) still reaches this job, while a
+    # genuine build failure still stops it.
+    if: always() && needs.prepare.result == 'success' && needs.build.result != 'failure' && needs.build.result != 'cancelled'
+    runs-on: [self-hosted, profile-vps]
+    timeout-minutes: 10
+    concurrency:
+      group: production-web-deploy
+      cancel-in-progress: false
+    env:
+      DEPLOY_PATH: /opt/patch-careers-ui
+      IMAGE_TAG: ${{ needs.prepare.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+
+      - name: Login to ghcr.io
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Sync compose file
+        run: |
+          set -euo pipefail
+          mkdir -p "$DEPLOY_PATH"
+          cp deploy/docker-compose.yml "$DEPLOY_PATH/docker-compose.yml"
+
+      - name: Pin image tag
+        working-directory: /opt/patch-careers-ui
+        run: |
+          set -euo pipefail
+          touch .env
+          if grep -q '^IMAGE_TAG=' .env; then
+            sed -i "s|^IMAGE_TAG=.*|IMAGE_TAG=${IMAGE_TAG}|" .env
+          else
+            printf 'IMAGE_TAG=%s\n' "$IMAGE_TAG" >> .env
+          fi
+
+      - name: Pull + recreate web
+        working-directory: /opt/patch-careers-ui
+        run: |
+          set -euo pipefail
+          docker compose pull web
+          # --force-recreate: compose compares images by NAME, so without it a
+          # container already running would be left in place.
+          docker compose up -d --force-recreate web
+
+      - name: Wait for health
+        run: |
+          for i in $(seq 1 20); do
+            s="$(docker inspect patchcareers-web --format '{{.State.Health.Status}}' 2>/dev/null || echo none)"
+            echo "attempt ${i}: health=${s}"
+            [ "$s" = "healthy" ] && { echo "✅ web healthy"; exit 0; }
+            sleep 5
+          done
+          echo "::error::patchcareers-web did not become healthy"
+          docker logs --tail 50 patchcareers-web || true
+          exit 1
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "| Property | Value |"
+            echo "|---|---|"
+            echo "| Image | \`ghcr.io/${{ github.repository }}:${IMAGE_TAG}\` |"
+            echo "| Commit | \`${{ needs.prepare.outputs.sha }}\` |"
+            echo "| Rollback | \`${{ needs.prepare.outputs.is_rollback }}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Logout ghcr.io
+        if: always()
+        run: docker logout ghcr.io || true

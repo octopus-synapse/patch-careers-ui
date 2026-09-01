@@ -4,7 +4,10 @@
 # terminates TLS for patchcareers.org and proxies to localhost:7142.
 services:
   web:
-    image: ghcr.io/octopus-synapse/patch-careers-ui:${IMAGE_TAG:-latest}
+    # No `:latest` fallback on purpose: the deploy publishes only immutable
+    # `main-<sha>` tags, so an unset IMAGE_TAG means "I don't know what to
+    # run" — fail loudly instead of resurrecting whatever `latest` points at.
+    image: ghcr.io/octopus-synapse/patch-careers-ui:${IMAGE_TAG:?IMAGE_TAG is required (set it in .env)}
     container_name: patchcareers-web
     restart: unless-stopped
     ports:
