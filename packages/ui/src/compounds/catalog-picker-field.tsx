@@ -169,6 +169,51 @@ export function CatalogPickerSheet({
   );
 }
 
+export interface CatalogPickerTriggerProps {
+  label: string;
+  value: string;
+  error?: string | undefined;
+  placeholder: string;
+  onPress: () => void;
+}
+
+/**
+ * The field half on its own — editorial label, value-or-placeholder row with
+ * a chevron over a hairline, field error — for pickers that bring their own
+ * sheet (e.g. the onboarding location picker's "Prosa" modal) but must stay
+ * pixel-identical to the other catalog fields at rest.
+ */
+export function CatalogPickerTrigger({
+  label,
+  value,
+  error,
+  placeholder,
+  onPress,
+}: CatalogPickerTriggerProps): ReactElement {
+  const styles = stylesByTheme[useThemeName()];
+  const palette = useEditorialPalette();
+  const hasError = Boolean(error);
+
+  return (
+    <View>
+      <EditorialLabel error={hasError}>{label}</EditorialLabel>
+
+      <Pressable accessibilityRole="button" onPress={onPress} style={styles.trigger}>
+        <Text
+          numberOfLines={1}
+          style={[styles.triggerText, value ? styles.valueText : styles.placeholderText]}
+        >
+          {value || placeholder}
+        </Text>
+        <ChevronDown size={18} color={palette.subtle} />
+      </Pressable>
+      <View style={[styles.hairline, hasError ? styles.hairlineError : null]} />
+
+      {error ? <FieldError text={error} /> : null}
+    </View>
+  );
+}
+
 export interface CatalogPickerFieldProps {
   label: string;
   value: string;
@@ -210,26 +255,15 @@ export function CatalogPickerField({
   onUseTyped,
   footer,
 }: CatalogPickerFieldProps): ReactElement {
-  const styles = stylesByTheme[useThemeName()];
-  const palette = useEditorialPalette();
-  const hasError = Boolean(error);
-
   return (
     <View>
-      <EditorialLabel error={hasError}>{label}</EditorialLabel>
-
-      <Pressable accessibilityRole="button" onPress={onTriggerPress} style={styles.trigger}>
-        <Text
-          numberOfLines={1}
-          style={[styles.triggerText, value ? styles.valueText : styles.placeholderText]}
-        >
-          {value || placeholder}
-        </Text>
-        <ChevronDown size={18} color={palette.subtle} />
-      </Pressable>
-      <View style={[styles.hairline, hasError ? styles.hairlineError : null]} />
-
-      {error ? <FieldError text={error} /> : null}
+      <CatalogPickerTrigger
+        label={label}
+        value={value}
+        error={error}
+        placeholder={placeholder}
+        onPress={onTriggerPress}
+      />
 
       <CatalogPickerSheet
         open={open}

@@ -195,12 +195,16 @@ export const en: TranslationDict = {
       close: "Close",
     },
     location: {
-      title: "Select your location",
+      titleHead: "Where are you",
+      titleTail: "based",
       placeholder: "Select your location",
-      searchPlaceholder: "Search city, state, or country…",
-      hintMinChars: "Type at least 2 letters to search.",
+      searchPlaceholder: "Start typing…",
+      idleHint: "City, state, or country",
       hintSearching: "Searching…",
-      hintEmpty: "No results for “{q}”.",
+      emptyTitle: "No matches",
+      emptyHint: "Try just the city name, without the state.",
+      clear: "clear",
+      kbdHint: "enter selects · esc closes",
     },
     institution: {
       title: "Select your institution",
@@ -296,7 +300,7 @@ export const en: TranslationDict = {
     },
     resumeStyle: {
       use: "Use this template",
-      previewHint: "Tap to preview",
+      preview: "Preview",
     },
     section: {
       emptyTitle: "Nothing here yet",

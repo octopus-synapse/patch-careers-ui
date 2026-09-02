@@ -1,16 +1,16 @@
 /**
  * `<LocationPicker>` — País/Estado/Cidade as a modal selection (NOT a free
- * text field), rendered through the shared `<CatalogPickerField>` shell
- * (same chrome as the education institution/course pickers). The trigger
- * shows the chosen location; tapping it opens the shared `<Sheet>` with a
- * search box backed by the geo endpoint. The value can only be set by
- * picking a predefined result (no "use as typed" row) — selecting one also
- * surfaces its `countryCode` so the caller can default the phone country.
+ * text field). The trigger is the shared `<CatalogPickerTrigger>` (same
+ * chrome at rest as the education pickers); tapping it opens the "Prosa"
+ * `<LocationPickerSheet>` backed by the geo endpoint. The value can only be
+ * set by picking a predefined result — selecting one also surfaces its
+ * `countryCode` so the caller can default the phone country.
  */
 
 import { useGetV1GeoLocations } from "@patch-careers/api-client";
-import { CatalogPickerField } from "@patch-careers/ui";
+import { CatalogPickerTrigger, LocationPickerSheet } from "@patch-careers/ui";
 import { useEffect, useState } from "react";
+import { Platform, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 
 export interface LocationMeta {
@@ -23,24 +23,11 @@ export interface LocationPickerProps {
   onChange: (label: string, meta?: LocationMeta) => void;
   placeholder?: string;
   error?: string | undefined;
-  /** Modal header title. */
-  title?: string;
-  /** Search box placeholder. */
-  searchPlaceholder?: string;
 }
 
 const MIN_QUERY = 2;
 const DEBOUNCE_MS = 250;
 const LIMIT = 25;
-
-/** Flag emoji from an ISO-3166 alpha-2 code (two regional-indicator chars). */
-function flagFromIso(iso: string | undefined): string {
-  if (!iso || iso.length !== 2) return "";
-  return iso
-    .toUpperCase()
-    .replace(/[^A-Z]/g, "")
-    .replace(/./g, (c) => String.fromCodePoint(0x1f1e6 + (c.charCodeAt(0) - 65)));
-}
 
 export function LocationPicker({
   label,
@@ -48,8 +35,6 @@ export function LocationPicker({
   onChange,
   placeholder,
   error,
-  title,
-  searchPlaceholder,
 }: LocationPickerProps) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
@@ -75,43 +60,47 @@ export function LocationPicker({
     setOpen(true);
   };
 
-  const hint =
-    query.length < MIN_QUERY
-      ? t("onboarding.location.hintMinChars")
-      : isFetching && items.length === 0
-        ? t("onboarding.location.hintSearching")
-        : items.length === 0
-          ? t("onboarding.location.hintEmpty", { q: query })
-          : null;
-
   const rowKey = (item: (typeof items)[number]) =>
     `${item.label}-${item.countryCode}-${item.stateCode ?? ""}`;
 
   return (
-    <CatalogPickerField
-      label={label}
-      value={value}
-      error={error}
-      placeholder={placeholder ?? t("onboarding.location.placeholder")}
-      sheetTitle={title ?? t("onboarding.location.title")}
-      searchPlaceholder={searchPlaceholder ?? t("onboarding.location.searchPlaceholder")}
-      open={open}
-      onOpenChange={setOpen}
-      onTriggerPress={openModal}
-      searchText={text}
-      onSearchTextChange={setText}
-      hint={hint}
-      rows={items.map((item) => ({
-        key: rowKey(item),
-        title: item.label,
-        leading: flagFromIso(item.countryCode),
-      }))}
-      onSelectRow={(row) => {
-        const picked = items.find((item) => rowKey(item) === row.key);
-        if (!picked) return;
-        onChange(picked.label, { countryCode: picked.countryCode });
-        setOpen(false);
-      }}
-    />
+    <View>
+      <CatalogPickerTrigger
+        label={label}
+        value={value}
+        error={error}
+        placeholder={placeholder ?? t("onboarding.location.placeholder")}
+        onPress={openModal}
+      />
+
+      <LocationPickerSheet
+        open={open}
+        onOpenChange={setOpen}
+        titleHead={t("onboarding.location.titleHead")}
+        titleTail={t("onboarding.location.titleTail")}
+        searchPlaceholder={t("onboarding.location.searchPlaceholder")}
+        searchText={text}
+        onSearchTextChange={setText}
+        clearLabel={t("onboarding.location.clear")}
+        kbdHint={Platform.OS === "web" ? t("onboarding.location.kbdHint") : undefined}
+        idleHint={t("onboarding.location.idleHint")}
+        searchingLabel={t("onboarding.location.hintSearching")}
+        emptyTitle={t("onboarding.location.emptyTitle")}
+        emptyHint={t("onboarding.location.emptyHint")}
+        searching={isFetching}
+        minQueryLength={MIN_QUERY}
+        items={items.map((item) => ({
+          key: rowKey(item),
+          label: item.label,
+          countryCode: item.countryCode,
+        }))}
+        onSelectItem={(picked) => {
+          const item = items.find((candidate) => rowKey(candidate) === picked.key);
+          if (!item) return;
+          onChange(item.label, { countryCode: item.countryCode });
+          setOpen(false);
+        }}
+      />
+    </View>
   );
 }

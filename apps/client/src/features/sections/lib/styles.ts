@@ -491,7 +491,6 @@ const createEd = (
     styleBody: { flex: 1, gap: 4, justifyContent: "center" },
     styleNameRow: { flexDirection: "row", alignItems: "center", gap: 8 },
     styleName: { fontFamily: fonts.serif, fontSize: 18, color: authTokens.ink },
-    // Still used by the resumes derive-wizard style picker (not onboarding).
     styleDesc: {
       fontFamily: fonts.sans,
       fontSize: 13,
@@ -768,6 +767,17 @@ const createEd = (
       letterSpacing: 0.4,
       color: authTokens.subtle,
       marginTop: 2,
+    },
+    // Secondary "Visualizar" action inside the style card (the card itself
+    // selects; the underline marks the smaller tap target as a link).
+    stylePreviewAction: {
+      fontFamily: fonts.sans,
+      fontSize: 12,
+      letterSpacing: 0.3,
+      color: authTokens.muted,
+      textDecorationLine: "underline",
+      marginTop: 2,
+      alignSelf: "flex-start",
     },
     modalScroll: {
       gap: 16,

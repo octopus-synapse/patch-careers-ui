@@ -83,8 +83,15 @@ export function ScoreChip({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       hitSlop={8}
+      // The pill hugs its content, but inside a stretch column the PRESSABLE
+      // would still fill the row — an invisible full-width tap target that
+      // swallowed card taps (the onboarding style card opened the score
+      // breakdown instead of the preview). Hug the pill here too.
+      style={pressableHug}
     >
       {pill}
     </Pressable>
   );
 }
+
+const pressableHug = { alignSelf: "flex-start" } as const;
