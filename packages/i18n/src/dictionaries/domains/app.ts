@@ -14,6 +14,10 @@ export const appPtBR: TranslationDict = {
     notifications: "Notificações",
     notificationsUnread: "Notificações, {count} não lidas",
   },
+  menu: {
+    // Stands in for the name in the nav panel when nobody is signed in.
+    guest: "Visitante",
+  },
   netInfoBanner: {
     offline: "Erro — offline",
   },
@@ -36,6 +40,9 @@ export const appEn: TranslationDict = {
     messagesUnread: "Messages, {count} unread",
     notifications: "Notifications",
     notificationsUnread: "Notifications, {count} unread",
+  },
+  menu: {
+    guest: "Guest",
   },
   netInfoBanner: {
     offline: "Error — offline",

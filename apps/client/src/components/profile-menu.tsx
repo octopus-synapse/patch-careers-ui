@@ -13,10 +13,10 @@
 
 import { logout } from "@patch-careers/auth";
 import { type EditorialOverlays, editorialOverlays } from "@patch-careers/tokens";
-import { Avatar } from "@patch-careers/ui";
 import {
   editorialFonts,
   FrostedFill,
+  IdentityAvatar,
   useEditorialPalette,
   useThemeName,
 } from "@patch-careers/ui/editorial";
@@ -217,7 +217,7 @@ export function ProfileMenu({
                 onPress={() => go("/profile")}
                 style={({ pressed }) => [styles.card, pressed ? styles.cardPressed : null]}
               >
-                <Avatar src={photoURL} name={name} size="xl" />
+                <IdentityAvatar photoURL={photoURL} name={name} size={80} />
                 <View style={styles.cardText}>
                   <Text style={styles.name} numberOfLines={2}>
                     {name}

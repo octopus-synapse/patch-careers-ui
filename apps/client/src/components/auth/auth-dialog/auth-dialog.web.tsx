@@ -1,6 +1,6 @@
 /**
  * AuthDialog — the unified "sign in or create account" modal on web,
- * opened from the landing's `PublicNavBar` (Airbnb pattern). One e-mail
+ * opened from the landing's `NavBar` CTA. One e-mail
  * field decides the branch via `POST /v1/auth/identify`; each later step
  * reuses the corresponding screen's logic (sign-in submit flow, sign-up
  * consent gate, verify cells), so the standalone `(auth)` routes and this

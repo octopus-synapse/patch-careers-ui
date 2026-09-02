@@ -30,6 +30,7 @@ export {
   toneToIntent,
 } from "./internal/score-scale";
 export type { ButtonVariant, Intent, Size, ThemeName } from "./internal/types";
+export { useEditorialMenu } from "./internal/use-editorial-menu";
 export { useEditorialPalette } from "./internal/use-editorial-palette";
 export { useThemeName } from "./internal/use-theme-name";
 export * from "./primitives";

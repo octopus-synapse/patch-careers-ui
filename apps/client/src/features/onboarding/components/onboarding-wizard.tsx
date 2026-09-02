@@ -6,7 +6,7 @@ import {
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, View } from "react-native";
-import { PUBLIC_NAV_BAR_HEIGHT, PublicNavBar } from "@/components/public-nav-bar";
+import { NAV_BAR_HEIGHT_PUBLIC, NavBar } from "@/components/nav-bar/nav-bar";
 import { isDevTestFillEnabled } from "@/config/dev-flags";
 import { GhostButton, SectionItemEditor, useEd } from "@/features/sections";
 import { useAuthState } from "@/providers/auth-provider";
@@ -278,11 +278,11 @@ function OnboardingWizardInner(): ReactElement {
   return (
     <SafeAreaView style={ed.root}>
       {/* The landing's chrome, in its signed-in variant. The step counter and
-          progress ride inside it (see PublicNavProgress) instead of the
+          progress ride inside it (see NavProgress) instead of the
           Masthead they used to draw — two stacked horizontal bands before the
           content read as heavy on a flow whose body is already fixed-height. */}
-      <PublicNavBar
-        cta="onboarding"
+      <NavBar
+        variant="onboarding"
         {...(editStep || !flowStep.hideMasthead
           ? {
               progress: {
@@ -312,7 +312,7 @@ function OnboardingWizardInner(): ReactElement {
             ed.page,
             // Clear the overlaid bar: `page` centres the cluster in the full
             // viewport, so without this the first step can sit under it.
-            { paddingHorizontal: horizontalPadding, paddingTop: PUBLIC_NAV_BAR_HEIGHT + 12 },
+            { paddingHorizontal: horizontalPadding, paddingTop: NAV_BAR_HEIGHT_PUBLIC + 12 },
           ]}
         >
           <View style={[ed.column, { maxWidth: columnMaxWidth }]}>

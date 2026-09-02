@@ -9,17 +9,17 @@
  *     down. Adopts the "V5" treatment: a bigger, lighter search glyph, a taller
  *     near-transparent pill and a quieter placeholder, so the icon carries the
  *     emphasis while the field melts into the (now transparent) header.
- *   • `inset` — the desktop-web navbar base: a darker well (paper bg sunk into
- *     the surface bar) with a serif-italic placeholder, so the field reads as
- *     an editorial inset rather than a bordered control. Hover (pointer-only)
- *     lifts the hairline + placeholder.
+ *   • `inset` — the desktop-web navbar base: the same glass wash the bar's
+ *     circular controls wear, an accent magnifier at a heavier stroke, and a
+ *     trailing ⌘K. Hover lifts the wash and the hairline.
  *   • `active` — the search is engaged (modal open) or the pill is pressed.
  *     Adopts the "V3" treatment: an accent focus ring + accent glyph. Applies
  *     over EVERY base.
  */
 
+import { editorialOverlays } from "@patch-careers/tokens";
 import { Icon, Text, XStack } from "@patch-careers/ui";
-import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import { Search } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Pressable } from "react-native";
@@ -34,13 +34,14 @@ export function SearchTrigger({
   onPress: () => void;
   /** Vagas header collapsed to just the search (scroll down) → "V5" base. */
   collapsed?: boolean;
-  /** Desktop-web navbar base: darker inset well + serif-italic placeholder. */
+  /** Desktop-web navbar base: glass wash + accent magnifier + ⌘K hint. */
   inset?: boolean;
   /** Search engaged (modal open) → "V3" accent focus ring. */
   active?: boolean;
 }): ReactElement {
   const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
+  const overlays = editorialOverlays[useThemeName()];
   // Pointer feedback for the inset (navbar) base — never fires on touch.
   const [hovered, setHovered] = useState(false);
 
@@ -56,23 +57,23 @@ export function SearchTrigger({
       {({ pressed }) => {
         // V3 ring whenever the field is engaged or pressed — over any base.
         const focused = active || pressed;
+        // The inset base draws its own accent magnifier, so this ramp only
+        // serves the mobile bases.
         const iconColor = focused
           ? editorialPalette.accent
           : collapsed
             ? // V5: bigger + lighter (ink at ~80% alpha).
               `${editorialPalette.ink}CC`
-            : inset && hovered
-              ? editorialPalette.body
-              : editorialPalette.subtle;
+            : editorialPalette.subtle;
 
         if (inset) {
           return (
             <XStack
               alignItems="center"
-              gap={9}
-              height={38}
-              paddingHorizontal={14}
-              borderRadius={19}
+              gap={10}
+              height={42}
+              paddingHorizontal={18}
+              borderRadius={21}
               borderWidth={focused ? 2 : 1}
               borderColor={
                 focused
@@ -81,17 +82,32 @@ export function SearchTrigger({
                     ? editorialPalette.hairlineStrong
                     : editorialPalette.hairline
               }
-              // The well: paper sunk into the surface bar, not a raised card.
-              backgroundColor={editorialPalette.bg}
+              // The same glass the bell and the hamburger wear — the three
+              // controls read as one material riding the bar.
+              backgroundColor={hovered ? overlays.navGlassHover : overlays.navGlass}
             >
-              <Icon as={Search} size={15} color={iconColor} />
+              {/* The one spot of colour in the row: the magnifier carries the
+                  accent at a heavier weight, so the field reads as the bar's
+                  active affordance without a fill or a shadow. */}
+              <Icon as={Search} size={15} color={editorialPalette.accent} strokeWidth={2.5} />
               <Text
-                fontFamily={editorialFonts.serif}
-                fontStyle="italic"
-                fontSize={13.5}
-                color={hovered || focused ? editorialPalette.body : editorialPalette.muted}
+                flex={1}
+                fontFamily={editorialFonts.sans}
+                fontSize={14}
+                color={hovered || focused ? editorialPalette.ink : editorialPalette.body}
+                numberOfLines={1}
               >
-                {t("search.placeholder")}
+                {t("search.navPlaceholder")}
+              </Text>
+              {/* The bar is wide enough to advertise the shortcut that opens
+                  the same palette from anywhere. */}
+              <Text
+                fontFamily={editorialFonts.mono}
+                fontSize={11}
+                letterSpacing={0.55}
+                color={editorialPalette.subtle}
+              >
+                {t("search.shortcutKbd")}
               </Text>
             </XStack>
           );

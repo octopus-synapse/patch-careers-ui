@@ -10,6 +10,10 @@ export const searchPtBR: TranslationDict = {
   closeA11y: "Fechar busca",
   clearA11y: "Limpar busca",
   placeholder: "Buscar…",
+  // The navbar pill is wide enough to say what it searches; the mobile
+  // header's is not, which is why `placeholder` stays terse.
+  navPlaceholder: "Buscar vagas, empresas…",
+  shortcutKbd: "⌘K",
   noResults: "Nenhum resultado para “{term}”",
   noResultsHint: "Tente outro termo — cargos, pessoas ou empresas.",
   recents: "Buscas recentes",
@@ -27,6 +31,8 @@ export const searchEn: TranslationDict = {
   closeA11y: "Close search",
   clearA11y: "Clear search",
   placeholder: "Search…",
+  navPlaceholder: "Search jobs, companies…",
+  shortcutKbd: "⌘K",
   noResults: "No results for “{term}”",
   noResultsHint: "Try another term — roles, people, or companies.",
   recents: "Recent searches",

@@ -27,21 +27,36 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     mainColWide: { flex: 1, minWidth: 0, gap: 26 },
     railWide: { width: 320, gap: 20 },
 
-    // header
-    header: { alignItems: "center", gap: 12, paddingTop: 20 },
-    // Desktop header: avatar left, identity text beside it, page-aligned left,
-    // closed by a hairline rule so it reads as the page's masthead.
+    // header — cover banner, then the avatar overlapping it from below.
+    header: { alignItems: "center", gap: 12 },
+    // Desktop header: cover, then avatar left with the identity text beside
+    // it, page-aligned left, closed by a hairline rule so the whole thing
+    // reads as the page's masthead.
     headerWide: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 30,
-      paddingTop: 36,
+      gap: 14,
       paddingBottom: 30,
       borderBottomWidth: 1,
       borderBottomColor: p.hairline,
     },
+    // `flex-start` so the avatar's negative top margin actually lifts it over
+    // the banner instead of being re-centred against the taller text block.
+    headerWideRow: { flexDirection: "row", alignItems: "flex-start", gap: 30 },
     headerWideBody: { flex: 1, minWidth: 0, gap: 7, alignItems: "flex-start" },
-    settingsButton: { position: "absolute", top: 16, right: 0, padding: 6, zIndex: 1 },
+    // The banner runs edge to edge: it cancels the scroll's 22pt page gutter.
+    coverWrap: { alignSelf: "stretch", marginHorizontal: -22 },
+    coverBadge: {
+      position: "absolute",
+      right: 14,
+      bottom: 14,
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: p.primary,
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth: 2,
+      borderColor: p.bg,
+    },
     avatarWrap: { position: "relative" },
     avatarUploading: {
       position: "absolute",
@@ -49,13 +64,13 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       left: 0,
       right: 0,
       bottom: 0,
-      borderRadius: 40,
+      // Fully rounded rather than half-of-80: the avatar box now varies with
+      // the bezel and the breakpoint, and this has to stay a circle in both.
+      borderRadius: 999,
       backgroundColor: ov.scrimMedia,
       alignItems: "center",
       justifyContent: "center",
     },
-    // Matches the larger desktop avatar (112px) so the scrim stays circular.
-    avatarUploadingWide: { borderRadius: 56 },
     avatarBadge: {
       position: "absolute",
       right: -2,

@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { StyleScoreBadge } from "@/components/style-score-badge";
 import { ResumeSectionsManager, type SectionsManagerHandle } from "@/features/sections";
+import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useI18n } from "@/providers/i18n-provider";
 import { useMasterResumeId, useResumeDetail, useResumeMutations } from "../hooks/queries";
 import { editedAgo, resumeLanguageToLocale } from "../lib/helpers";
@@ -56,6 +57,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
   const rz = useRz();
   const palette = useEditorialPalette();
   const insets = useSafeAreaInsets();
+  const navInset = useNavBarInset();
   const router = useRouter();
   const detail = useResumeDetail(id);
   const { resumeId: masterResumeId } = useMasterResumeId();
@@ -93,7 +95,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
 
   if (detail.isLoading) {
     return (
-      <View style={[rz.detailRoot, rz.centered, { paddingTop: insets.top }]}>
+      <View style={[rz.detailRoot, rz.centered, { paddingTop: insets.top + navInset }]}>
         <ActivityIndicator color={palette.ink} />
       </View>
     );
@@ -101,7 +103,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
 
   if (detail.isError || !resume) {
     return (
-      <View style={[rz.detailRoot, rz.centered, { paddingTop: insets.top }]}>
+      <View style={[rz.detailRoot, rz.centered, { paddingTop: insets.top + navInset }]}>
         <Text style={rz.centeredText}>{t("resumes.detail.notFound")}</Text>
         <ActionPill label={t("resumes.detail.back")} icon={ChevronLeft} onPress={back} />
       </View>
@@ -109,7 +111,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
   }
 
   return (
-    <View style={[rz.detailRoot, { paddingTop: insets.top }]}>
+    <View style={[rz.detailRoot, { paddingTop: insets.top + navInset }]}>
       <View style={rz.detailHeader}>
         <Pressable
           accessibilityRole="button"

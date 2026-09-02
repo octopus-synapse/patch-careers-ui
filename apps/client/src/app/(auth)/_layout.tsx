@@ -10,7 +10,7 @@
 
 import { Redirect, Stack, usePathname } from "expo-router";
 import type { ReactElement } from "react";
-import { PublicNavBar } from "@/components/public-nav-bar";
+import { NavBar } from "@/components/nav-bar/nav-bar";
 import { getAuthenticatedRoute, VERIFY_EMAIL_ROUTE } from "@/navigation/auth-redirect";
 import { useEnglishTwinRedirect, useLocalizedHref } from "@/navigation/locale-prefix";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
@@ -35,19 +35,16 @@ export default function AuthLayout(): ReactElement | null {
   }
   if (isAuthenticated) return <Redirect href={getAuthenticatedRoute(currentUser)} />;
 
-  // The public navbar rides over sign-in/sign-up only (web; the native
-  // stub renders null). Deeper flow screens (forgot-password,
-  // verify-email, 2fa) stay chromeless — they own the full window.
+  // The navbar rides over sign-in/sign-up only (web; the native stub renders
+  // null). Deeper flow screens (forgot-password, verify-email, 2fa) stay
+  // chromeless — they own the full window. Both pages get the SAME bar: no
+  // CTA, since a button pointing at the page you are already on is furniture.
   const bare = pathname.startsWith("/en/") ? pathname.slice(3) : pathname;
-  const navCta = bare.startsWith("/sign-in")
-    ? ("signIn" as const)
-    : bare.startsWith("/sign-up")
-      ? ("signUp" as const)
-      : null;
+  const showNav = bare.startsWith("/sign-in") || bare.startsWith("/sign-up");
 
   return (
     <>
-      {navCta !== null && <PublicNavBar cta={navCta} />}
+      {showNav && <NavBar variant="auth" />}
       <Stack screenOptions={{ headerShown: false, animation: "fade" }} />
     </>
   );

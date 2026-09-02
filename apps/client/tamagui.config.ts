@@ -198,16 +198,25 @@ const serifFamily = Platform.select({
   default: "Georgia",
 });
 
+// The default face for any Text that does not name a family. On web that is
+// Inter (loaded as a stylesheet by `ensureAppSansFont`, so `fontWeight` still
+// picks a real face); on native it stays the system face — see
+// `packages/ui/src/editorial/fonts.ts` for why Inter is web-only.
+const sansFamily = Platform.select({
+  web: "Inter, system-ui, sans-serif",
+  default: fontFamily.body,
+});
+
 const fonts = {
   body: {
-    family: fontFamily.body,
+    family: sansFamily,
     size: fontSizeMap,
     lineHeight: lineHeightMap,
     weight: fontWeight,
     letterSpacing,
   },
   heading: {
-    family: fontFamily.heading,
+    family: sansFamily,
     size: fontSizeMap,
     lineHeight: lineHeightMap,
     weight: fontWeight,

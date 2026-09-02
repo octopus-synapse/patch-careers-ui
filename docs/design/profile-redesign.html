@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Patch Careers — Perfil (repaginação)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        },
+        colors: {
+          /* editorial palette (packages/tokens/src/editorial.ts) */
+          paper:    '#F2F1EC',
+          surface:  '#FAFAF7',
+          panel:    '#FDFDFC',
+          ink:      '#0A0A0A',
+          body:     '#3F3F46',
+          muted:    '#71717A',
+          subtle:   '#A1A1AA',
+          hair:     '#E4E4E7',
+          hairs:    '#D4D4D8',
+          primary:  '#0F172A',
+          /* landing accents (packages/tokens/src/landing.ts) */
+          indigo:   '#5766E8',
+          blush:    '#D9457A',
+          mint:     '#1FA274',
+          amber:    '#C08A00',
+          violet:   '#7A4FD6',
+          crimson:  '#E5484D',
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  html, body { background: #F2F1EC; }
+  body { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  /* the page column the app uses: 960 box, 22px gutter → 916 of content,
+     and the cover banner cancels the gutter to run the full 960. */
+  .col { width: 100%; max-width: 960px; margin: 0 auto; padding: 0 22px; }
+
+  .smallcaps {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10.5px; font-weight: 500;
+    letter-spacing: .16em; text-transform: uppercase;
+  }
+
+  /* paper grain — barely there, but it keeps the flat colour honest */
+  .grain::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+    background-image: radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: 4px 4px;
+  }
+
+  .lift { transition: transform .18s cubic-bezier(.3,1.1,.5,1), box-shadow .18s ease, border-color .18s ease; }
+  .lift:hover { transform: translateY(-2px); }
+
+  /* the section-index chip rail sticks under the 88px navbar */
+  .rail-sticky { position: sticky; top: 88px; z-index: 30; }
+
+  ::selection { background: #5766E8; color: #fff; }
+
+  /* thin scrollbar for the chip rail */
+  .no-bar::-webkit-scrollbar { display: none; }
+  .no-bar { scrollbar-width: none; }
+
+  @keyframes breathe { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-5px) rotate(-1.2deg); } }
+  .breathe { animation: breathe 3.4s ease-in-out infinite; transform-origin: 50% 100%; }
+  @media (prefers-reduced-motion: reduce) { .breathe { animation: none; } }
+</style>
+</head>
+
+<body class="text-ink">
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     NAVBAR — INTOCADA
+     ══════════════════════════════════════════════════════════════════ -->
+<header class="fixed inset-x-0 top-0 z-50 h-[88px] border-b border-hair bg-[rgba(247,244,238,.62)] backdrop-blur-xl">
+  <div class="relative mx-auto flex h-full max-w-[1920px] items-center px-9">
+
+    <!-- brandmark: a logo é o mascote -->
+    <a href="#" class="shrink-0" aria-label="Patch Careers">
+      <svg width="48.3" height="50" viewBox="0 0 280 290" aria-hidden="true">
+        <path d="M 20 0 H 135 V 66 H 149 A 22 22 0 1 1 149 94 H 135 V 157.9 A 42 42 0 1 0 95 228.5 V 282 A 8 8 0 0 1 87 290 H 20 A 20 20 0 0 1 0 270 V 20 A 20 20 0 0 1 20 0 Z" fill="#000000"/>
+        <path d="M 153 23 H 256 A 24 24 0 0 1 280 47 V 163 A 22 22 0 0 0 280 207 V 266 A 24 24 0 0 1 256 290 H 115 A 8 8 0 0 1 107 282 V 224 A 8 8 0 0 0 98 217 A 30 30 0 1 1 128 168 A 11 11 0 0 0 147 160 V 108.2 A 34 34 0 1 0 147 51.8 V 29 A 6 6 0 0 1 153 23 Z" fill="#5766E8"/>
+        <g transform="translate(78, 110)"><circle r="30" fill="#DDE3F5"/><g transform="translate(10, 6)"><circle r="15" fill="#151A30"/><circle cx="7" cy="-8" r="5" fill="#FFFFFF"/></g></g>
+        <g transform="translate(212, 110)"><circle r="30" fill="#DDE3F5"/><g transform="translate(10, 6)"><circle r="15" fill="#151A30"/><circle cx="7" cy="-8" r="5" fill="#FFFFFF"/></g></g>
+      </svg>
+    </a>
+
+    <!-- search pill -->
+    <button class="absolute left-1/2 flex h-[42px] w-[290px] -translate-x-[358px] items-center gap-2 rounded-full bg-[rgba(255,255,255,.42)] px-4 text-left ring-1 ring-hair transition hover:bg-[rgba(255,255,255,.85)]">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      <span class="flex-1 text-[13.5px] text-muted">Search jobs, companies…</span>
+      <span class="font-mono text-[10.5px] text-subtle">⌘K</span>
+    </button>
+
+    <!-- tabs -->
+    <nav class="absolute left-1/2 flex -translate-x-[38px] items-stretch">
+      <button class="group flex h-[88px] w-[88px] flex-col items-center justify-center gap-[7px] pt-1">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
+        <span class="text-[11.5px] text-muted">Jobs</span>
+      </button>
+      <button class="group flex h-[88px] w-[88px] flex-col items-center justify-center gap-[7px] pt-1">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></svg>
+        <span class="text-[11.5px] text-muted">Messages</span>
+      </button>
+      <button class="group flex h-[88px] w-[88px] flex-col items-center justify-center gap-[7px] pt-1">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+        <span class="text-[11.5px] text-muted">Resumes</span>
+      </button>
+      <button class="group relative flex h-[88px] w-[88px] flex-col items-center justify-center gap-[7px] pt-1">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
+        <span class="text-[11.5px] font-semibold text-ink">Me</span>
+        <span class="absolute bottom-[14px] h-[1.5px] w-[26px] rounded-full bg-ink"></span>
+      </button>
+    </nav>
+
+    <!-- right controls -->
+    <div class="ml-auto flex items-center gap-3">
+      <button class="grid h-[42px] w-[42px] place-items-center rounded-full bg-[rgba(255,255,255,.42)] ring-1 ring-hair transition hover:bg-[rgba(255,255,255,.85)]" aria-label="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+      </button>
+      <button class="grid h-[42px] w-[42px] place-items-center rounded-full bg-[rgba(255,255,255,.42)] ring-1 ring-hair transition hover:bg-[rgba(255,255,255,.85)]" aria-label="Open menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+
+<main class="pt-[88px]">
+
+  <!-- ════════════════════════════════════════════════════════════════
+       HEADER DE IDENTIDADE — INTOCADO
+       banner 196px · avatar 112+5 bezel · -72 overlap · Playfair 36/44
+       ════════════════════════════════════════════════════════════ -->
+  <section class="col">
+    <div class="flex flex-col gap-[14px] border-b border-hair pb-[30px]">
+
+      <!-- PuzzleBanner, full-bleed (cancela o gutter de 22px) -->
+      <button class="relative -mx-[22px] block h-[196px] overflow-hidden" aria-label="Change cover image">
+        <svg width="100%" height="100%" viewBox="0 0 290 72" preserveAspectRatio="xMidYMid slice">
+          <path d="M0,0 H88 V25 c15,-6.5 15,28 0,21.5 V72 H0 Z" fill="#E2E8F0"/>
+          <path d="M290,0 H88 V25 c15,-6.5 15,28 0,21.5 V72 H290 Z" fill="#C3CDDA"/>
+          <path d="M88,0 V25 c15,-6.5 15,28 0,21.5 V72" fill="none" stroke="rgba(15,23,42,0.10)" stroke-width="1"/>
+        </svg>
+        <span class="absolute bottom-[14px] right-[14px] grid h-8 w-8 place-items-center rounded-full border-2 border-paper bg-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        </span>
+      </button>
+
+      <div class="flex items-start gap-[30px]">
+        <!-- avatar -->
+        <button class="relative -mt-[72px] shrink-0" aria-label="Change profile photo">
+          <span class="block overflow-hidden rounded-full border-[5px] border-paper">
+            <span class="grid h-28 w-28 place-items-center overflow-hidden rounded-full bg-[#33322E]">
+              <svg width="112" height="112" viewBox="0 0 24 24">
+                <path d="M12 3.7a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8Z" fill="#F7F4EE"/>
+                <path d="M12 15.2c-5.4 0-9.8 3.6-10.4 8.2-.1.9.6 1.6 1.5 1.6h17.8c.9 0 1.6-.7 1.5-1.6-.6-4.6-5-8.2-10.4-8.2Z" fill="#F7F4EE"/>
+              </svg>
+            </span>
+          </span>
+          <span class="absolute -bottom-[2px] -right-[2px] grid h-[30px] w-[30px] place-items-center rounded-full border-2 border-paper bg-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+          </span>
+        </button>
+
+        <!-- nome / headline / local -->
+        <div class="flex min-w-0 flex-1 flex-col items-start gap-[7px]">
+          <h1 class="font-serif text-[36px] leading-[44px] tracking-[-0.6px] text-ink">Maria Oliveira de Souza</h1>
+          <p class="text-[15.5px] leading-[22px] tracking-[.1px] text-body">Engenheira de Software Plena</p>
+          <div class="flex items-center gap-[5px]">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="text-[13px] tracking-[.2px] text-muted">São Paulo, Brazil</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ═══════════ FIM DA PARTE INTOCADA ═══════════ -->
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+       A BANCADA — o mascote, o score e as peças do perfil
+       ════════════════════════════════════════════════════════════ -->
+  <section class="col mt-7">
+    <div class="grain relative overflow-hidden rounded-[22px] bg-[#0F1117] text-white">
+      <!-- glow de marca atrás do mascote -->
+      <div class="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-indigo opacity-25 blur-3xl"></div>
+
+      <div class="relative flex items-center gap-7 px-8 pb-0 pt-5">
+
+        <!-- mascote — de pé sobre a régua de peças -->
+        <div class="relative hidden w-[196px] shrink-0 items-end justify-center self-end md:flex">
+          <svg class="breathe" width="196" viewBox="0 0 280 292" aria-hidden="true">
+            <!-- peça séria -->
+            <path d="M 20 0 H 135 V 66 H 149 A 22 22 0 1 1 149 94 H 135 V 157.9 A 42 42 0 1 0 95 228.5 V 282 A 8 8 0 0 1 87 290 H 20 A 20 20 0 0 1 0 270 V 20 A 20 20 0 0 1 20 0 Z" fill="#FFFFFF"/>
+            <ellipse cx="64" cy="152" rx="9" ry="5.5" fill="#F4A0BE" opacity=".95"/>
+            <g transform="translate(100,116)"><circle r="28" fill="#DDE3F5"/><circle r="13" fill="#151A30"/><circle cx="7.5" cy="-9" r="4.5" fill="#FFFFFF"/></g>
+            <g transform="translate(100,86)"><path d="M -16 1.5 Q 0 -2 16 -3.5 L 16 3 Q 0 2.5 -16 4.5 Z" fill="#5766E8"/></g>
+            <!-- peça ansiosa -->
+            <path d="M 153 23 H 256 A 24 24 0 0 1 280 47 V 163 A 22 22 0 0 0 280 207 V 266 A 24 24 0 0 1 256 290 H 115 A 8 8 0 0 1 107 282 V 224 A 8 8 0 0 0 98 217 A 30 30 0 1 1 128 168 A 11 11 0 0 0 147 160 V 108.2 A 34 34 0 1 0 147 51.8 V 29 A 6 6 0 0 1 153 23 Z" fill="#5766E8"/>
+            <ellipse cx="258" cy="152" rx="9" ry="5.5" fill="#F4A0BE" opacity=".95"/>
+            <g transform="translate(222,116)"><circle r="28" fill="#DDE3F5"/><circle r="13" fill="#151A30"/><circle cx="7.5" cy="-9" r="4.5" fill="#FFFFFF"/></g>
+            <g transform="translate(222,76)"><path d="M -16 -2 Q -2 -9 16 -1 L 16 2.5 Q -2 -3 -16 4.5 Z" fill="#FFFFFF"/></g>
+            <!-- boca -->
+            <path d="M147 150 Q161 171 175 150 Q161 156 147 150 Z" fill="#151A30"/>
+          </svg>
+        </div>
+
+        <!-- fala -->
+        <div class="flex min-w-0 flex-1 flex-col justify-center gap-2 pb-6">
+          <span class="smallcaps text-indigo">Suas peças</span>
+          <p class="font-serif text-[26px] leading-[33px] tracking-[-.4px] text-white">
+            Você montou <em class="not-italic text-indigo"><span id="pieceCount"></span> peças</em>.<br />
+            Faltam justo as que o robô mais lê.
+          </p>
+        </div>
+
+        <!-- score -->
+        <div class="hidden w-[196px] shrink-0 flex-col justify-center border-l border-white/10 pb-6 pl-7 lg:flex">
+          <div>
+            <span class="smallcaps text-white/45">Profile score</span>
+            <div class="mt-1 flex items-end gap-3">
+              <span class="font-serif text-[58px] leading-none tracking-[-2px] text-white">72</span>
+              <span class="mb-2 rounded-md bg-mint px-2 py-[3px] font-mono text-[12px] font-semibold text-white">B</span>
+            </div>
+          </div>
+          <div class="mt-4 space-y-[10px]">
+            <div>
+              <div class="mb-[5px] flex justify-between text-[11.5px]"><span class="text-white/60">Conteúdo (IA)</span><span class="font-mono text-white/85">74</span></div>
+              <div class="h-[3px] rounded-full bg-white/12"><div class="h-full rounded-full bg-amber" style="width:74%"></div></div>
+            </div>
+            <div>
+              <div class="mb-[5px] flex justify-between text-[11.5px]"><span class="text-white/60">Completude</span><span class="font-mono text-white/85">58</span></div>
+              <div class="h-[3px] rounded-full bg-white/12"><div class="h-full rounded-full bg-crimson" style="width:58%"></div></div>
+            </div>
+            <div>
+              <div class="mb-[5px] flex justify-between text-[11.5px]"><span class="text-white/60">Estilo</span><span class="font-mono text-white/85">100</span></div>
+              <div class="h-[3px] rounded-full bg-white/12"><div class="h-full rounded-full bg-mint" style="width:100%"></div></div>
+            </div>
+            <button class="mt-3 flex items-center gap-1.5 text-[12.5px] font-medium text-indigo transition hover:gap-2.5">
+              Ver desempenho
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- as 17 peças: o perfil inteiro em uma régua -->
+      <div class="relative border-t border-white/10 px-8 py-5">
+        <div class="flex items-center justify-between gap-6">
+          <div id="pieceStrip" class="flex flex-wrap gap-[7px]"></div>
+          <p class="hidden shrink-0 text-right text-[11.5px] leading-[16px] text-white/40 lg:block">
+            Uma peça por seção.<br />Clique pra ir direto nela.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+       ÍNDICE DE SEÇÕES — sticky, todas visíveis, sem menu nenhum
+       ════════════════════════════════════════════════════════════ -->
+  <div class="rail-sticky mt-6 border-y border-hair bg-[rgba(242,241,236,.86)] backdrop-blur-md">
+    <div class="col relative">
+      <div id="chipRail" class="no-bar flex items-center gap-[7px] overflow-x-auto py-3"></div>
+      <!-- o trilho rola: a borda desaparece em vez de ser cortada -->
+      <div class="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-paper to-transparent"></div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+       CORPO
+       ════════════════════════════════════════════════════════════ -->
+  <section class="col mt-9 flex items-start gap-9 pb-16">
+
+    <!-- ───────── coluna principal: todas as seções preenchidas, abertas ───────── -->
+    <div id="mainCol" class="min-w-0 flex-1 space-y-14"></div>
+
+    <!-- ───────── trilho ───────── -->
+    <aside class="sticky top-[152px] hidden w-[268px] shrink-0 space-y-4 xl:block">
+
+      <!-- fit profile -->
+      <div class="grain relative overflow-hidden rounded-2xl bg-indigo p-5 text-white">
+        <div class="pointer-events-none absolute -right-8 -top-10 h-28 w-28 rounded-full bg-white/15 blur-2xl"></div>
+        <span class="smallcaps text-white/60">Fit Profile</span>
+        <p class="relative mt-2 font-serif text-[19px] leading-[25px]">
+          5 minutos destravam o <em class="not-italic underline decoration-white/40 underline-offset-4">Match</em> por vaga.
+        </p>
+        <p class="mt-2 text-[12.5px] leading-[18px] text-white/70">
+          Um questionário curto sobre como você gosta de trabalhar.
+        </p>
+        <button class="lift mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white py-[11px] text-[13.5px] font-semibold text-indigo hover:shadow-lg">
+          Começar
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- currículo -->
+      <div class="rounded-2xl border border-hair bg-panel p-5">
+        <div class="flex items-center justify-between">
+          <span class="smallcaps text-muted">Currículo mestre</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+        <div class="lift mt-3 cursor-pointer overflow-hidden rounded-lg border border-hair bg-white p-3 shadow-sm hover:shadow-md">
+          <div class="mb-2 border-b border-hair pb-1.5 text-center">
+            <div class="font-serif text-[7px] text-ink">Maria Oliveira de Souza</div>
+            <div class="text-[4px] text-muted">Engenheira de Software Plena</div>
+          </div>
+          <div class="space-y-[3px]">
+            <div class="h-[2px] w-1/3 rounded bg-ink/60"></div>
+            <div class="h-[2px] w-full rounded bg-hairs"></div>
+            <div class="h-[2px] w-[92%] rounded bg-hairs"></div>
+            <div class="h-[2px] w-[78%] rounded bg-hairs"></div>
+            <div class="mt-2 h-[2px] w-1/4 rounded bg-ink/60"></div>
+            <div class="h-[2px] w-full rounded bg-hairs"></div>
+            <div class="h-[2px] w-[84%] rounded bg-hairs"></div>
+            <div class="h-[2px] w-[60%] rounded bg-hairs"></div>
+          </div>
+        </div>
+        <p class="mt-2.5 text-center text-[11.5px] text-muted">Clique para ver e baixar em PDF</p>
+      </div>
+
+      <!-- o que o robô reclamou -->
+      <div class="rounded-2xl border border-hair bg-panel p-5">
+        <span class="smallcaps text-muted">O que falta pro A</span>
+        <ul class="mt-3 space-y-3">
+          <li class="flex gap-2.5">
+            <span class="mt-[6px] h-1.5 w-1.5 shrink-0 rounded-full bg-crimson"></span>
+            <span class="text-[12.5px] leading-[17px] text-body"><strong class="font-semibold text-ink">Resumo profissional</strong> vazio — é a primeira coisa que o ATS lê.</span>
+          </li>
+          <li class="flex gap-2.5">
+            <span class="mt-[6px] h-1.5 w-1.5 shrink-0 rounded-full bg-amber"></span>
+            <span class="text-[12.5px] leading-[17px] text-body">Nenhuma <strong class="font-semibold text-ink">habilidade técnica</strong> cadastrada.</span>
+          </li>
+          <li class="flex gap-2.5">
+            <span class="mt-[6px] h-1.5 w-1.5 shrink-0 rounded-full bg-amber"></span>
+            <span class="text-[12.5px] leading-[17px] text-body">Só 1 conquista em <strong class="font-semibold text-ink">Loja Online BR</strong>.</span>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+       PEÇAS QUE FALTAM — as 14 seções vazias, todas visíveis
+       ════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-hair bg-surface py-14">
+    <div class="col">
+      <div class="mb-1 flex items-end justify-between gap-6">
+        <div>
+          <span class="smallcaps text-muted">O resto do quebra-cabeça</span>
+          <h2 class="mt-1.5 font-serif text-[30px] leading-[36px] tracking-[-.5px]">Peças que faltam</h2>
+        </div>
+        <p class="max-w-[330px] pb-1 text-right text-[12.5px] leading-[18px] text-muted">
+          Nada aqui está escondido atrás de um menu. Clique numa peça e ela abre já no lugar dela.
+        </p>
+      </div>
+      <div id="emptyGrid" class="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
+    </div>
+  </section>
+
+  <footer class="border-t border-hair py-8 text-center">
+    <p class="text-[11.5px] text-subtle">Demo estática — Patch Careers · repaginação do /profile · web</p>
+  </footer>
+</main>
+
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   ÍCONES — lucide, inline (o app usa lucide-react-native)
+   ═══════════════════════════════════════════════════════════════════ */
+const ICON = {
+  user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  briefcase:'<path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/>',
+  'graduation-cap':'<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
+  zap:'<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
+  handshake:'<path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/>',
+  'badge-check':'<path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/>',
+  rocket:'<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91 0z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+  trophy:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+  'git-branch':'<line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+  'book-open':'<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+  medal:'<path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/>',
+  bug:'<path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/>',
+  mic:'<path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  lightbulb:'<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+  star:'<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  'map-pin':'<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  phone:'<path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/>',
+  'file-text':'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+  'arrow-right':'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  pencil:'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
+  sparkles:'<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
+};
+const icon = (name, size = 16, stroke = 'currentColor', w = 1.75) =>
+  `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[name] || ''}</svg>`;
+
+/* peça de quebra-cabeça, o glifo da marca */
+const piece = (fill, size = 13) =>
+  `<svg width="${size}" height="${size}" viewBox="0 0 280 290" aria-hidden="true"><path d="M 20 0 H 135 V 66 H 149 A 22 22 0 1 1 149 94 H 135 V 157.9 A 42 42 0 1 0 95 228.5 V 282 A 8 8 0 0 1 87 290 H 20 A 20 20 0 0 1 0 270 V 20 A 20 20 0 0 1 20 0 Z" fill="${fill}"/></svg>`;
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AS 17 SEÇÕES — chaves, títulos e ordem vêm do backend
+   (GET /v1/resumes/:id/sections/types, ordenadas por recommendedPosition)
+   ═══════════════════════════════════════════════════════════════════ */
+const A = { ink:'#111111', indigo:'#5766E8', blush:'#D9457A', mint:'#1FA274', amber:'#C08A00', violet:'#7A4FD6', crimson:'#E5484D' };
+
+const SECTIONS = [
+  { key:'identity',           title:'Identidade',                 icon:'user',           color:A.ink,     desc:'Quem você é, em uma linha.' },
+  { key:'work_experience_v1', title:'Experiência Profissional',   icon:'briefcase',      color:A.indigo,  desc:'Onde você trabalhou e o que entregou.' },
+  { key:'education_v1',       title:'Formação Acadêmica',         icon:'graduation-cap', color:A.violet,  desc:'Histórico acadêmico e qualificações.' },
+  { key:'skill_set_v1',       title:'Habilidades Técnicas',       icon:'zap',            color:A.mint,    desc:'As ferramentas que você domina.' },
+  { key:'certification_v1',   title:'Certificações',              icon:'badge-check',    color:A.amber,   desc:'Credenciais profissionais.' },
+  { key:'soft_skill_set_v1',  title:'Habilidades Comportamentais',icon:'handshake',      color:A.blush,   desc:'Como você trabalha com gente.' },
+  { key:'project_v1',         title:'Projetos',                   icon:'rocket',         color:A.indigo,  desc:'O que você construiu por conta.' },
+  { key:'award_v1',           title:'Prêmios',                    icon:'trophy',         color:A.amber,   desc:'Reconhecimentos que você recebeu.' },
+  { key:'open_source_v1',     title:'Contribuições Open Source',  icon:'git-branch',     color:A.mint,    desc:'Código seu rodando na casa dos outros.' },
+  { key:'language_v1',        title:'Idiomas',                    icon:'globe',          color:A.violet,  desc:'Em quantas línguas você entrega.' },
+  { key:'publication_v1',     title:'Publicações',                icon:'book-open',      color:A.ink,     desc:'Artigos, papers, textos técnicos.' },
+  { key:'hackathon_v1',       title:'Hackathons',                 icon:'medal',          color:A.blush,   desc:'48 horas que valeram a pena.' },
+  { key:'bug_bounty_v1',      title:'Bug Bounties',               icon:'bug',            color:A.crimson, desc:'Vulnerabilidades que você achou.' },
+  { key:'talk_v1',            title:'Palestras e Apresentações',  icon:'mic',            color:A.amber,   desc:'Onde você subiu no palco.' },
+  { key:'recommendation_v1',  title:'Recomendações',              icon:'users',          color:A.mint,    desc:'O que dizem de você.' },
+  { key:'interest_v1',        title:'Interesses',                 icon:'lightbulb',      color:A.violet,  desc:'O que te move fora do expediente.' },
+  { key:'achievement_v1',     title:'Conquistas',                 icon:'star',           color:A.blush,   desc:'Realizações notáveis.' },
+  { key:'links_v1',           title:'Links',                      icon:'link',           color:A.indigo,  desc:'GitHub, LinkedIn, portfólio.' },
+];
+
+/* dados reais do perfil da Maria (GET /v1/resumes/:id/sections) */
+const IDENTITY = [
+  { key:'name',     label:'Nome',                icon:'user',      value:'Maria Oliveira de Souza' },
+  { key:'headline', label:'Título profissional', icon:'briefcase', value:'Engenheira de Software Plena' },
+  { key:'location', label:'Localização',         icon:'map-pin',   value:'São Paulo, Brazil' },
+  { key:'bio',      label:'Resumo profissional', icon:'file-text', value:null, hint:'A primeira coisa que o ATS lê. Vale 20 pontos.' },
+  { key:'phone',    label:'Telefone',            icon:'phone',     value:null, hint:'Recrutador não liga pra quem não deixou número.' },
+];
+
+const EXPERIENCE = [
+  { company:'Patch Tech',        role:'Engenheira de Software Plena', start:'Mar 2022', end:'Jun 2024', current:false,
+    description:'Liderei a migração do app para Expo + React Native Web.',
+    achievements:['Reduzi o tempo de build em 40%','Migrei 30 telas para a nova stack'] },
+  { company:'Loja Online BR',    role:'Desenvolvedora Júnior',        start:'Jan 2020', end:'Fev 2022', current:false,
+    description:'Desenvolvi o checkout e a integração de pagamentos.',
+    achievements:['Integrei 3 gateways de pagamento'] },
+  { company:'Startup Educação',  role:'Estagiária de Desenvolvimento', start:'Jun 2019', end:'Dez 2019', current:false,
+    description:'Apoiei o time de frontend em features de gamificação.',
+    achievements:['Implementei o sistema de pontos'] },
+];
+
+const EDUCATION = [
+  { institution:'Universidade de São Paulo', degree:'Bacharelado em Ciência da Computação', field:'Ciência da Computação',
+    start:'Fev 2016', end:'Dez 2019', type:'Bacharelado', status:'Concluído' },
+  { institution:'FIAP', degree:'Mestrado em Engenharia de Software', field:'Engenharia de Software',
+    start:'Fev 2020', end:'Jun 2021', type:'Mestrado', status:'Concluído' },
+];
+
+const COUNTS = { identity:3, work_experience_v1:3, education_v1:2 };
+const FILLED = new Set(['identity','work_experience_v1','education_v1']);
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FITA DE PEÇAS + ÍNDICE STICKY
+   ═══════════════════════════════════════════════════════════════════ */
+/* o acento `ink` é #111111 — invisível sobre a bancada preta. Sobre fundo
+   escuro ele vira ivory, exatamente como em `landingAccentsDark.ink`. */
+const onDark = c => (c === A.ink ? '#F5F5F0' : c);
+const onDarkInk = c => (c === A.ink ? '#0F1117' : '#fff');
+
+document.getElementById('pieceCount').textContent = `${FILLED.size} de ${SECTIONS.length}`;
+
+document.getElementById('pieceStrip').innerHTML = SECTIONS.map(s => {
+  const on = FILLED.has(s.key);
+  const c  = onDark(s.color);
+  const fg = onDarkInk(s.color);
+  const bg = on ? c : 'rgba(255,255,255,.06)';
+  const ic = on ? fg : 'rgba(255,255,255,.38)';
+  return `<a href="#s-${s.key}" title="${s.title}"
+    class="lift group grid h-[30px] w-[30px] place-items-center rounded-[9px] transition"
+    style="background:${bg};color:${ic}"
+    onmouseover="this.style.background='${c}';this.style.color='${fg}'"
+    onmouseout="this.style.background='${bg}';this.style.color='${ic}'">
+    ${icon(s.icon, 15, 'currentColor', 1.9)}
+  </a>`;
+}).join('');
+
+document.getElementById('chipRail').innerHTML = SECTIONS.map(s => {
+  const on = FILLED.has(s.key);
+  const n  = COUNTS[s.key];
+  return `<a href="#s-${s.key}" data-chip="${s.key}"
+    class="chip flex shrink-0 items-center gap-[7px] rounded-full border px-[13px] py-[6px] text-[12.5px] font-medium transition"
+    style="${on
+      ? `border-color:${s.color}33;background:${s.color}12;color:${s.color}`
+      : 'border-color:#E4E4E7;background:transparent;color:#A1A1AA'}">
+    ${icon(s.icon, 13, 'currentColor', 2)}
+    <span>${s.title}</span>
+    ${on ? `<span class="font-mono text-[10.5px] opacity-70">${n}</span>`
+         : `<span class="opacity-60">${icon('plus', 12, 'currentColor', 2.4)}</span>`}
+  </a>`;
+}).join('');
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CABEÇALHO DE SEÇÃO — tile colorido + serifa + régua até a margem
+   ═══════════════════════════════════════════════════════════════════ */
+function sectionHead(s, count, addLabel) {
+  return `
+  <div class="mb-6 flex items-center gap-4">
+    <span class="grid h-11 w-11 shrink-0 place-items-center rounded-[13px]" style="background:${s.color}14;color:${s.color}">
+      ${icon(s.icon, 20, 'currentColor', 1.9)}
+    </span>
+    <div class="flex items-baseline gap-2.5">
+      <h2 class="font-serif text-[26px] leading-none tracking-[-.4px] text-ink">${s.title}</h2>
+      <span class="font-mono text-[12px] text-subtle">${String(count).padStart(2,'0')}</span>
+    </div>
+    <span class="h-px flex-1" style="background:${s.color}2E"></span>
+    <button class="lift flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-[7px] text-[12.5px] font-medium transition"
+      style="border-color:${s.color}40;color:${s.color}"
+      onmouseover="this.style.background='${s.color}0F'" onmouseout="this.style.background='transparent'">
+      ${icon('plus', 13, 'currentColor', 2.4)} ${addLabel}
+    </button>
+  </div>`;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   BLOCOS
+   ═══════════════════════════════════════════════════════════════════ */
+const sIdentity   = SECTIONS.find(s => s.key === 'identity');
+const sExperience = SECTIONS.find(s => s.key === 'work_experience_v1');
+const sEducation  = SECTIONS.find(s => s.key === 'education_v1');
+
+/* ── Identidade: os 5 campos abertos na tela. Sem lista, sem sheet. ── */
+const identityBlock = `
+<section id="s-identity" class="scroll-mt-[170px]">
+  ${sectionHead(sIdentity, IDENTITY.filter(f => f.value).length, 'Campo')}
+  <div class="grid gap-2.5 sm:grid-cols-2">
+    ${IDENTITY.map(f => f.value ? `
+      <div class="lift group cursor-pointer rounded-2xl border border-hair bg-panel px-5 py-4 hover:border-hairs hover:shadow-[0_2px_14px_rgba(10,10,10,.05)]">
+        <div class="flex items-center gap-2 text-subtle">
+          ${icon(f.icon, 13, 'currentColor', 2)}
+          <span class="smallcaps">${f.label}</span>
+          <span class="ml-auto opacity-0 transition group-hover:opacity-100">${icon('pencil', 13, '#71717A', 2)}</span>
+        </div>
+        <p class="mt-1.5 text-[15px] leading-[21px] text-ink">${f.value}</p>
+      </div>` : `
+      <div class="lift group cursor-pointer rounded-2xl border border-dashed border-hairs bg-transparent px-5 py-4 hover:border-indigo hover:bg-indigo/[.03]">
+        <div class="flex items-center gap-2 text-subtle transition group-hover:text-indigo">
+          ${icon(f.icon, 13, 'currentColor', 2)}
+          <span class="smallcaps">${f.label}</span>
+          <span class="ml-auto">${icon('plus', 14, 'currentColor', 2.4)}</span>
+        </div>
+        <p class="mt-1.5 text-[12.5px] leading-[17px] text-muted">${f.hint}</p>
+      </div>`).join('')}
+  </div>
+</section>`;
+
+/* ── Experiência: espinha vertical, monograma, conquistas como pastilhas ── */
+const experienceBlock = `
+<section id="s-work_experience_v1" class="scroll-mt-[170px]">
+  ${sectionHead(sExperience, EXPERIENCE.length, 'Experiência')}
+  <ol class="relative space-y-3 pl-[26px]">
+    <span class="absolute bottom-6 left-[7px] top-6 w-px" style="background:linear-gradient(#5766E8 0%, #5766E833 70%, transparent 100%)"></span>
+    ${EXPERIENCE.map((e, i) => `
+      <li class="relative">
+        <span class="absolute -left-[26px] top-[26px] grid h-[15px] w-[15px] place-items-center rounded-full bg-paper">
+          <span class="h-[9px] w-[9px] rounded-[3px]" style="background:${i === 0 ? '#5766E8' : '#5766E866'}"></span>
+        </span>
+        <article class="lift group cursor-pointer rounded-2xl border border-hair bg-panel p-5 hover:border-indigo/40 hover:shadow-[0_3px_20px_rgba(87,102,232,.10)]">
+          <header class="flex items-start gap-3.5">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl font-serif text-[17px] text-white" style="background:#5766E8">
+              ${e.company.charAt(0)}
+            </span>
+            <div class="min-w-0 flex-1">
+              <h3 class="font-serif text-[19px] leading-[24px] tracking-[-.2px] text-ink">${e.role}</h3>
+              <p class="mt-[3px] text-[13.5px] text-body">${e.company}</p>
+            </div>
+            <div class="shrink-0 text-right">
+              <span class="font-mono text-[11px] tracking-wide text-muted">${e.start} — ${e.end}</span>
+              <span class="mt-1 block opacity-0 transition group-hover:opacity-100">${icon('pencil', 13, '#71717A', 2)}</span>
+            </div>
+          </header>
+          <p class="mt-3.5 text-[13.5px] leading-[20px] text-body">${e.description}</p>
+          <ul class="mt-3 flex flex-wrap gap-2">
+            ${e.achievements.map(a => `
+              <li class="flex items-center gap-[7px] rounded-lg bg-indigo/[.07] px-2.5 py-[6px] text-[12.5px] text-indigo">
+                ${piece('#5766E8', 10)} ${a}
+              </li>`).join('')}
+            <li class="flex items-center gap-1.5 rounded-lg border border-dashed border-hairs px-2.5 py-[6px] text-[12.5px] text-subtle transition hover:border-indigo hover:text-indigo">
+              ${icon('plus', 12, 'currentColor', 2.4)} conquista
+            </li>
+          </ul>
+        </article>
+      </li>`).join('')}
+  </ol>
+</section>`;
+
+/* ── Formação ── */
+const educationBlock = `
+<section id="s-education_v1" class="scroll-mt-[170px]">
+  ${sectionHead(sEducation, EDUCATION.length, 'Formação')}
+  <div class="space-y-3">
+    ${EDUCATION.map(e => `
+      <article class="lift group cursor-pointer rounded-2xl border border-hair bg-panel p-5 hover:border-violet/40 hover:shadow-[0_3px_20px_rgba(122,79,214,.10)]">
+        <div class="flex items-start gap-3.5">
+          <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl" style="background:#7A4FD614;color:#7A4FD6">
+            ${icon('graduation-cap', 20, 'currentColor', 1.9)}
+          </span>
+          <div class="min-w-0 flex-1">
+            <h3 class="font-serif text-[19px] leading-[24px] tracking-[-.2px] text-ink">${e.institution}</h3>
+            <p class="mt-[3px] text-[13.5px] text-body">${e.degree}</p>
+            <div class="mt-2.5 flex flex-wrap items-center gap-2">
+              <span class="rounded-md px-2 py-[3px] font-mono text-[10.5px] font-semibold uppercase tracking-wider" style="background:#7A4FD614;color:#7A4FD6">${e.type}</span>
+              <span class="rounded-md bg-mint/10 px-2 py-[3px] font-mono text-[10.5px] font-semibold uppercase tracking-wider text-mint">${e.status}</span>
+              <span class="text-[12.5px] text-muted">${e.field}</span>
+            </div>
+          </div>
+          <div class="shrink-0 text-right">
+            <span class="font-mono text-[11px] tracking-wide text-muted">${e.start} — ${e.end}</span>
+            <span class="mt-1 block opacity-0 transition group-hover:opacity-100">${icon('pencil', 13, '#71717A', 2)}</span>
+          </div>
+        </div>
+      </article>`).join('')}
+  </div>
+</section>`;
+
+document.getElementById('mainCol').innerHTML = identityBlock + experienceBlock + educationBlock;
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AS 14 SEÇÕES VAZIAS — cada uma é uma peça, todas na tela
+   ═══════════════════════════════════════════════════════════════════ */
+/* 15 peças vazias = 5 linhas cheias; o mascote fecha ocupando a linha inteira */
+const mascotCard = `
+  <div class="grain relative flex items-center gap-5 overflow-hidden rounded-2xl bg-[#0F1117] px-6 py-5 text-white sm:col-span-2 lg:col-span-3">
+    <div class="pointer-events-none absolute -bottom-16 left-16 h-40 w-40 rounded-full bg-indigo opacity-25 blur-3xl"></div>
+    <svg class="breathe relative shrink-0" width="70" viewBox="0 0 280 292" aria-hidden="true">
+      <path d="M 20 0 H 135 V 66 H 149 A 22 22 0 1 1 149 94 H 135 V 157.9 A 42 42 0 1 0 95 228.5 V 282 A 8 8 0 0 1 87 290 H 20 A 20 20 0 0 1 0 270 V 20 A 20 20 0 0 1 20 0 Z" fill="#FFFFFF"/>
+      <ellipse cx="64" cy="152" rx="9" ry="5.5" fill="#F4A0BE" opacity=".95"/>
+      <g transform="translate(100,116)"><circle r="28" fill="#DDE3F5"/><circle r="13" fill="#151A30"/><circle cx="7.5" cy="-9" r="4.5" fill="#FFFFFF"/></g>
+      <path d="M 153 23 H 256 A 24 24 0 0 1 280 47 V 163 A 22 22 0 0 0 280 207 V 266 A 24 24 0 0 1 256 290 H 115 A 8 8 0 0 1 107 282 V 224 A 8 8 0 0 0 98 217 A 30 30 0 1 1 128 168 A 11 11 0 0 0 147 160 V 108.2 A 34 34 0 1 0 147 51.8 V 29 A 6 6 0 0 1 153 23 Z" fill="#5766E8"/>
+      <ellipse cx="258" cy="152" rx="9" ry="5.5" fill="#F4A0BE" opacity=".95"/>
+      <g transform="translate(222,116)"><circle r="28" fill="#DDE3F5"/><circle r="13" fill="#151A30"/><circle cx="7.5" cy="-9" r="4.5" fill="#FFFFFF"/></g>
+      <path d="M147 150 Q161 171 175 150 Q161 156 147 150 Z" fill="#151A30"/>
+    </svg>
+    <div class="relative min-w-0 flex-1">
+      <p class="font-serif text-[19px] leading-[25px] text-white">Sem ideia de por onde começar?</p>
+      <p class="mt-1 text-[13px] leading-[18px] text-white/55">Escreve o resumo profissional — é a peça que mais pesa na leitura do robô.</p>
+    </div>
+    <button class="lift relative shrink-0 rounded-xl bg-indigo px-5 py-[11px] text-[13.5px] font-semibold text-white hover:shadow-[0_6px_24px_rgba(87,102,232,.45)]">
+      <span class="flex items-center gap-2">Escrever agora ${icon('arrow-right', 14, 'currentColor', 2.2)}</span>
+    </button>
+  </div>`;
+
+document.getElementById('emptyGrid').innerHTML = SECTIONS.filter(s => !FILLED.has(s.key)).map(s => `
+  <button id="s-${s.key}" class="lift group scroll-mt-[170px] rounded-2xl border border-dashed border-hairs bg-transparent p-5 text-left transition hover:bg-panel hover:shadow-[0_3px_20px_rgba(10,10,10,.05)]"
+    style="--c:${s.color}"
+    onmouseover="this.style.borderColor='${s.color}';this.style.borderStyle='solid'"
+    onmouseout="this.style.borderColor='#D4D4D8';this.style.borderStyle='dashed'">
+    <div class="flex items-start gap-3">
+      <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl transition" style="background:${s.color}12;color:${s.color}">
+        ${icon(s.icon, 18, 'currentColor', 1.9)}
+      </span>
+      <div class="min-w-0 flex-1">
+        <h3 class="font-serif text-[17px] leading-[22px] tracking-[-.2px] text-ink">${s.title}</h3>
+        <p class="mt-1 text-[12.5px] leading-[17px] text-muted">${s.desc}</p>
+      </div>
+      <span class="grid h-6 w-6 shrink-0 place-items-center rounded-full opacity-0 transition group-hover:opacity-100" style="background:${s.color};color:#fff">
+        ${icon('plus', 13, 'currentColor', 2.6)}
+      </span>
+    </div>
+  </button>`).join('') + mascotCard;
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SCROLL-SPY do índice
+   ═══════════════════════════════════════════════════════════════════ */
+const chips = new Map([...document.querySelectorAll('[data-chip]')].map(c => [c.dataset.chip, c]));
+const sectionColor = Object.fromEntries(SECTIONS.map(s => [s.key, s.color]));
+
+const spy = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    const key  = entry.target.id.replace(/^s-/, '');
+    const chip = chips.get(key);
+    if (!chip || !FILLED.has(key)) return;
+    const c = sectionColor[key];
+    if (entry.isIntersecting) {
+      chip.style.background = c;
+      chip.style.borderColor = c;
+      chip.style.color = '#fff';
+      chip.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+    } else {
+      chip.style.background = c + '12';
+      chip.style.borderColor = c + '33';
+      chip.style.color = c;
+    }
+  });
+}, { rootMargin: '-160px 0px -60% 0px' });
+
+[...FILLED].forEach(k => {
+  const el = document.getElementById('s-' + k);
+  if (el) spy.observe(el);
+});
+
+document.querySelectorAll('a[href^="#s-"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

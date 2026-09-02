@@ -8,13 +8,11 @@
 import {
   type LandingAccent,
   type LandingAccentKey,
-  type LandingBrandFacePalette,
   type LandingMascotLegPalette,
   type LandingRobotPalette,
   type LandingScoreBand,
   type LandingScoreColor,
   landingAccentPalettes,
-  landingBrandFacePalettes,
   landingMascotLegsPalettes,
   landingRobotPalettes,
   landingScoreRampPalettes,
@@ -31,10 +29,6 @@ export function useLandingScoreRamp(): Record<LandingScoreBand, LandingScoreColo
 
 export function useLandingRobot(): LandingRobotPalette {
   return landingRobotPalettes[useThemeName()];
-}
-
-export function useLandingBrandFace(): LandingBrandFacePalette {
-  return landingBrandFacePalettes[useThemeName()];
 }
 
 export function useLandingMascotLegs(): Record<"left" | "right", LandingMascotLegPalette> {

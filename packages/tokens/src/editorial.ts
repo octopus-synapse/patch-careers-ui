@@ -142,6 +142,15 @@ export type EditorialOverlays = {
   onGlassSubtle: string;
   onGlassPressed: string;
   onGlassHairline: string;
+  /**
+   * The web navbar's own material. The bar is translucent so page content
+   * scrolls visibly under it (`navBar`), and the circular controls riding it
+   * (bell, hamburger) are a lighter wash of the same idea, lifting toward
+   * opaque on hover (`navGlass` → `navGlassHover`).
+   */
+  navBar: string;
+  navGlass: string;
+  navGlassHover: string;
 };
 
 export const editorialOverlays = {
@@ -158,6 +167,9 @@ export const editorialOverlays = {
     onGlassSubtle: "rgba(255,255,255,0.42)",
     onGlassPressed: "rgba(255,255,255,0.09)",
     onGlassHairline: "rgba(255,255,255,0.14)",
+    navBar: "rgba(247,244,238,0.62)",
+    navGlass: "rgba(255,255,255,0.42)",
+    navGlassHover: "rgba(255,255,255,0.85)",
   },
   dark: {
     scrimPanel: "rgba(0,0,0,0.5)",
@@ -172,8 +184,60 @@ export const editorialOverlays = {
     onGlassSubtle: "rgba(255,255,255,0.42)",
     onGlassPressed: "rgba(255,255,255,0.08)",
     onGlassHairline: "rgba(255,255,255,0.12)",
+    navBar: "rgba(26,25,22,0.62)",
+    navGlass: "rgba(43,42,38,0.42)",
+    navGlassHover: "rgba(43,42,38,0.85)",
   },
 } as const satisfies Record<EditorialTheme, EditorialOverlays>;
+
+/**
+ * The nav menu panel's own palette — a self-contained set, not slots on
+ * `EditorialPalette`.
+ *
+ * Two reasons it stands apart. The panel's indigo is deliberately COLDER than
+ * the brand's `accent`: inside a small paper card the brand blue reads hot and
+ * pulls focus off the labels, so the curtain and the hover glyph run on a
+ * bluer, quieter ramp. And the puzzle banner's seam needs alpha, which the
+ * opaque-hex palette cannot carry.
+ *
+ * `indigo` tints the glyph on hover, `indigoDeep` the label (it has to survive
+ * against `indigoSoft`, which is the curtain sweeping in behind the row).
+ */
+export type EditorialMenuTokens = {
+  indigo: string;
+  indigoDeep: string;
+  indigoSoft: string;
+  /** The panel's own avatar disc — inverted against the page, not the palette. */
+  avatarBg: string;
+  avatarInk: string;
+  /** The banner's two interlocking pieces and the crease between them. */
+  puzzleLeft: string;
+  puzzleRight: string;
+  puzzleSeam: string;
+};
+
+export const editorialMenu = {
+  light: {
+    indigo: "#0056B3",
+    indigoDeep: "#3B47B8",
+    indigoSoft: "#E9EBFC",
+    avatarBg: "#33322E",
+    avatarInk: "#F7F4EE",
+    puzzleLeft: "#E2E8F0",
+    puzzleRight: "#C3CDDA",
+    puzzleSeam: "rgba(15,23,42,0.10)",
+  },
+  dark: {
+    indigo: "#0073B1",
+    indigoDeep: "#B9C1FA",
+    indigoSoft: "#272B44",
+    avatarBg: "#DAD8D1",
+    avatarInk: "#2B2A27",
+    puzzleLeft: "#4C565B",
+    puzzleRight: "#394145",
+    puzzleSeam: "rgba(0,0,0,0.35)",
+  },
+} as const satisfies Record<EditorialTheme, EditorialMenuTokens>;
 
 /**
  * A frosted translucent surface: a blur, its strength, and the wash laid over

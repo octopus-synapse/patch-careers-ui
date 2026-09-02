@@ -11,6 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { type ReactElement, useState } from "react";
 import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { MarketPulseCard, type RecommendedJob } from "@/features/match";
+import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useI18n } from "@/providers/i18n-provider";
 import { useRz } from "../lib/styles";
 import { ResumeListTab } from "./resume-list-tab";
@@ -27,6 +28,7 @@ export function ResumesScreen({
   const rz = useRz();
   // Bar floats over content; pad the scroll so the last items clear it.
   const tabBarHeight = useBottomTabBarHeight();
+  const navInset = useNavBarInset();
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -42,7 +44,10 @@ export function ResumesScreen({
   return (
     <View style={rz.screenRoot}>
       <ScrollView
-        contentContainerStyle={[rz.screenScroll, { paddingBottom: tabBarHeight + 32 }]}
+        contentContainerStyle={[
+          rz.screenScroll,
+          { paddingTop: navInset, paddingBottom: tabBarHeight + 32 },
+        ]}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl

@@ -30,6 +30,7 @@ import {
   MessageComposer,
   useConversationThread,
 } from "@/features/messages";
+import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 
@@ -45,6 +46,7 @@ const FILL = { flex: 1 };
 export default function ConversationScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
+  const navInset = useNavBarInset();
   const router = useRouter();
   const { t } = useI18n();
   const params = useLocalSearchParams<{
@@ -93,7 +95,7 @@ export default function ConversationScreen(): ReactElement {
       style={{
         flex: 1,
         backgroundColor: editorialPalette.bg,
-        paddingTop: insets.top,
+        paddingTop: insets.top + navInset,
         paddingBottom: insets.bottom,
       }}
     >

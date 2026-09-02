@@ -28,6 +28,7 @@ import {
   useUserSearch,
 } from "@/features/messages";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
+import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useI18n } from "@/providers/i18n-provider";
 
 function RowSeparator(): ReactElement {
@@ -46,6 +47,7 @@ export default function MessagesScreen(): ReactElement {
 function MobileMessagesScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   const tabBarHeight = useBottomTabBarHeight();
+  const navInset = useNavBarInset();
   const router = useRouter();
   const { t } = useI18n();
   const queryClient = useQueryClient();
@@ -119,7 +121,7 @@ function MobileMessagesScreen(): ReactElement {
             <ConversationRow conversation={item} now={now} onPress={openConversation} />
           )}
           ItemSeparatorComponent={RowSeparator}
-          contentContainerStyle={{ paddingBottom: tabBarHeight + 16 }}
+          contentContainerStyle={{ paddingTop: navInset, paddingBottom: tabBarHeight + 16 }}
           keyboardShouldPersistTaps="handled"
         />
       )}

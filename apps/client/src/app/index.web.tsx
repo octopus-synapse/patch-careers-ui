@@ -12,7 +12,7 @@
 
 import { Redirect } from "expo-router";
 import type { ReactElement } from "react";
-import { PublicNavBar } from "@/components/public-nav-bar";
+import { NavBar } from "@/components/nav-bar/nav-bar";
 import { LandingHead, LandingScreen } from "@/features/landing";
 import { getAuthenticatedRoute } from "@/navigation/auth-redirect";
 import { useEnglishTwinRedirect } from "@/navigation/locale-prefix";
@@ -33,7 +33,7 @@ export default function Index(): ReactElement | null {
   return (
     <>
       <LandingHead />
-      <LandingScreen header={<PublicNavBar cta="landing" />} />
+      <LandingScreen header={<NavBar variant="landing" />} />
     </>
   );
 }
