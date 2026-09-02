@@ -1,27 +1,19 @@
 /**
  * <LocationEditModal> — tapping the "Localização" row opens the geo search
- * modal DIRECTLY (no intermediate sheet): the same CatalogPickerSheet chrome as
- * onboarding, backed by GET /v1/geo/locations. Picking a result saves it via
- * PATCH /v1/users/profile and closes. Value can only be a picked (geo-valid)
- * location — never free text.
+ * modal DIRECTLY (no intermediate sheet): the same "Prosa"
+ * `<LocationPickerSheet>` as onboarding, backed by GET /v1/geo/locations.
+ * Picking a result saves it via PATCH /v1/users/profile and closes. Value
+ * can only be a picked (geo-valid) location — never free text.
  */
 import { useGetV1GeoLocations } from "@patch-careers/api-client";
-import { CatalogPickerSheet } from "@patch-careers/ui";
+import { LocationPickerSheet } from "@patch-careers/ui";
 import { type ReactElement, useEffect, useState } from "react";
+import { Platform } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 
 const MIN_QUERY = 2;
 const DEBOUNCE_MS = 250;
 const LIMIT = 25;
-
-/** Flag emoji from an ISO-3166 alpha-2 code (two regional-indicator chars). */
-function flagFromIso(iso: string | undefined): string {
-  if (iso?.length !== 2) return "";
-  return iso
-    .toUpperCase()
-    .replace(/[^A-Z]/g, "")
-    .replace(/./g, (c) => String.fromCodePoint(0x1f1e6 + (c.charCodeAt(0) - 65)));
-}
 
 export function LocationEditModal({
   open,
@@ -57,38 +49,37 @@ export function LocationEditModal({
   );
   const items = data?.items ?? [];
 
-  const hint =
-    query.length < MIN_QUERY
-      ? t("onboarding.location.hintMinChars")
-      : isFetching && items.length === 0
-        ? t("onboarding.location.hintSearching")
-        : items.length === 0
-          ? t("onboarding.location.hintEmpty", { q: query })
-          : null;
-
   const rowKey = (item: (typeof items)[number]) =>
     `${item.label}-${item.countryCode}-${item.stateCode ?? ""}`;
 
   return (
-    <CatalogPickerSheet
+    <LocationPickerSheet
       open={open}
       onOpenChange={(next) => {
         if (!next) onClose();
       }}
-      title={t("onboarding.location.title")}
+      titleHead={t("onboarding.location.titleHead")}
+      titleTail={t("onboarding.location.titleTail")}
       searchPlaceholder={t("onboarding.location.searchPlaceholder")}
       searchText={text}
       onSearchTextChange={setText}
-      hint={hint}
-      rows={items.map((item) => ({
+      clearLabel={t("onboarding.location.clear")}
+      kbdHint={Platform.OS === "web" ? t("onboarding.location.kbdHint") : undefined}
+      idleHint={t("onboarding.location.idleHint")}
+      searchingLabel={t("onboarding.location.hintSearching")}
+      emptyTitle={t("onboarding.location.emptyTitle")}
+      emptyHint={t("onboarding.location.emptyHint")}
+      searching={isFetching}
+      minQueryLength={MIN_QUERY}
+      items={items.map((item) => ({
         key: rowKey(item),
-        title: item.label,
-        leading: flagFromIso(item.countryCode),
+        label: item.label,
+        countryCode: item.countryCode,
       }))}
-      onSelectRow={(row) => {
-        const picked = items.find((item) => rowKey(item) === row.key);
-        if (!picked) return;
-        void onSave(picked.label).then(onClose);
+      onSelectItem={(picked) => {
+        const item = items.find((candidate) => rowKey(candidate) === picked.key);
+        if (!item) return;
+        void onSave(item.label).then(onClose);
       }}
     />
   );

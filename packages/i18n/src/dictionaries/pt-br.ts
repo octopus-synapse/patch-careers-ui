@@ -195,12 +195,16 @@ export const ptBR: TranslationDict = {
       close: "Fechar",
     },
     location: {
-      title: "Selecione a localização",
+      titleHead: "Onde você",
+      titleTail: "está",
       placeholder: "Selecione a localização",
-      searchPlaceholder: "Buscar cidade, estado ou país…",
-      hintMinChars: "Digite ao menos 2 letras para buscar.",
+      searchPlaceholder: "Comece a digitar…",
+      idleHint: "Cidade, estado ou país",
       hintSearching: "Buscando…",
-      hintEmpty: "Nenhum resultado para “{q}”.",
+      emptyTitle: "Nada por aqui",
+      emptyHint: "Tente só o nome da cidade, sem o estado.",
+      clear: "limpar",
+      kbdHint: "enter seleciona · esc fecha",
     },
     institution: {
       title: "Selecione a instituição",
@@ -297,7 +301,7 @@ export const ptBR: TranslationDict = {
     },
     resumeStyle: {
       use: "Usar este modelo",
-      previewHint: "Toque para visualizar",
+      preview: "Visualizar",
     },
     section: {
       emptyTitle: "Nada por aqui ainda",

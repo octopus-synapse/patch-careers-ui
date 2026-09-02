@@ -540,8 +540,9 @@ export function ResumeStylePicker({
             option={style}
             liveScore={scoreById.get(style.id)}
             selected={style.id === selectedId}
-            previewHint={t("onboarding.resumeStyle.previewHint")}
-            onPress={() => setPreviewId(style.id)}
+            previewLabel={t("onboarding.resumeStyle.preview")}
+            onPress={() => onSelect(style.id)}
+            onPreview={() => setPreviewId(style.id)}
           />
         </AnimatedField>
       ))}
@@ -559,17 +560,23 @@ export function ResumeStylePicker({
   );
 }
 
+/** Tapping the card SELECTS the style (same gesture as the derive-wizard
+ *  picker); the underlined "Visualizar" is the smaller, secondary target
+ *  that opens the full preview. Nested Pressables: the inner one wins the
+ *  touch, so previewing never toggles the selection. */
 function ResumeStyleCard({
   onPress,
+  onPreview,
   option,
   liveScore,
-  previewHint,
+  previewLabel,
   selected,
 }: {
   onPress: () => void;
+  onPreview: () => void;
   option: ResumeStyleOption;
   liveScore?: number | undefined;
-  previewHint: string;
+  previewLabel: string;
   selected: boolean;
 }): ReactElement {
   const ed = useEd();
@@ -589,10 +596,17 @@ function ResumeStyleCard({
           <RNText style={ed.styleName}>{option.name}</RNText>
           {selected ? <Check size={16} color={authTokens.ink} strokeWidth={2} /> : null}
         </View>
+        {option.description ? (
+          <RNText style={ed.styleDesc} numberOfLines={2}>
+            {option.description}
+          </RNText>
+        ) : null}
         {typeof liveScore === "number" ? (
           <StyleScoreBadge styleId={option.id} styleScore={liveScore} />
         ) : null}
-        <RNText style={ed.stylePreviewHint}>{previewHint}</RNText>
+        <Pressable accessibilityRole="button" hitSlop={6} onPress={onPreview}>
+          <RNText style={ed.stylePreviewAction}>{previewLabel}</RNText>
+        </Pressable>
       </View>
     </Pressable>
   );

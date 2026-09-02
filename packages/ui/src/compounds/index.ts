@@ -3,6 +3,8 @@ export {
   type CatalogPickerFieldProps,
   CatalogPickerSheet,
   type CatalogPickerSheetProps,
+  CatalogPickerTrigger,
+  type CatalogPickerTriggerProps,
   type CatalogRow,
 } from "./catalog-picker-field";
 export { ConfirmModal, type ConfirmModalProps, DangerConfirmModal } from "./confirm-modal";
@@ -14,6 +16,11 @@ export {
   type ListPickerOption,
   type ListPickerProps,
 } from "./list-picker";
+export {
+  LocationPickerSheet,
+  type LocationPickerSheetProps,
+  type LocationSheetItem,
+} from "./location-picker-sheet";
 export {
   LongPressMenu,
   type LongPressMenuItem,

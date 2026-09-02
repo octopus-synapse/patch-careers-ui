@@ -40,6 +40,14 @@ import {
   WelcomeScreen,
 } from "./wizard-steps";
 
+/**
+ * The wizard card is deliberately fatter than the auth card's 460: its steps
+ * are working surfaces (section lists, editors, autocompletes), and at 460
+ * the panel read as a thin strip on a desktop viewport. The mascot (375 wide)
+ * still fits comfortably on the wider top edge.
+ */
+const WIZARD_CARD_MAX_WIDTH = 640;
+
 export function OnboardingWizard(): ReactElement {
   // Scope the draft store to one wizard mount; it is discarded on exit.
   return (
@@ -252,7 +260,13 @@ function OnboardingWizardInner(): ReactElement {
 
   // Tighten gutters on small phones; cap the column to the available width.
   const horizontalPadding = width > 0 && width < 375 ? 20 : 28;
-  const columnMaxWidth = width > 0 ? Math.min(460, width - horizontalPadding * 2) : 460;
+  // Wider than the auth card's 460: a wizard step is a working surface
+  // (lists, editors, autocompletes), not a credentials form, and at 460 the
+  // card read as a thin strip on desktop.
+  const columnMaxWidth =
+    width > 0
+      ? Math.min(WIZARD_CARD_MAX_WIDTH, width - horizontalPadding * 2)
+      : WIZARD_CARD_MAX_WIDTH;
   // The body gets one fixed height for ALL steps so the masthead and footer
   // never shift between steps — short steps just center their content in it,
   // taller steps scroll within it. Scaled to the viewport, clamped for sanity.
@@ -307,7 +321,13 @@ function OnboardingWizardInner(): ReactElement {
                 because AuthCard's own 90% is meant for viewport-relative
                 pages; inside this already-sized column it would shrink the
                 panel a second time (the dialog had the same bug). */}
-            <AuthMascotCard mascot={mascot} panelStyle={{ width: "100%" }}>
+            <AuthMascotCard
+              mascot={mascot}
+              // AuthCard's own 90%/460 sizing is meant for viewport-relative
+              // auth pages; inside this already-sized column both rules would
+              // shrink the panel again (the dialog had the same 90% bug).
+              panelStyle={{ width: "100%", maxWidth: WIZARD_CARD_MAX_WIDTH }}
+            >
               <StepTransition key={headingKey} direction={directionRef.current}>
                 {isDevTestFillEnabled() && !editStep ? (
                   <TestFillBar
