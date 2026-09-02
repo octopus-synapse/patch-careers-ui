@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   editorialGlass,
+  editorialMenu,
   editorialOverlays,
   editorialPalette,
   editorialPaletteDark,
@@ -133,6 +134,52 @@ describe("editorialOverlays", () => {
 
     expect(rgbOf(editorialOverlays.light.dangerWash)).toBe(asRgb(editorialPalette.danger));
     expect(rgbOf(editorialOverlays.dark.dangerWash)).toBe(asRgb(editorialPaletteDark.danger));
+  });
+});
+
+describe("editorialMenu", () => {
+  it("covers the same themes as the palettes", () => {
+    expect(Object.keys(editorialMenu).sort()).toEqual(Object.keys(editorialPalettes).sort());
+  });
+
+  it("dark mirrors light's slots exactly", () => {
+    expect(Object.keys(editorialMenu.dark).sort()).toEqual(Object.keys(editorialMenu.light).sort());
+  });
+
+  it("keeps the panel's indigo colder than the brand accent", () => {
+    // "Colder" = a hue nearer cyan. Both blues sit in the 200-230° band; the
+    // brand accent leans violet, the menu's leans cyan, and that gap is the
+    // whole reason this set exists.
+    const hue = (hex: string): number => {
+      const [r, g, b] = [1, 3, 5].map((i) => Number.parseInt(hex.slice(i, i + 2), 16) / 255) as [
+        number,
+        number,
+        number,
+      ];
+      const max = Math.max(r, g, b);
+      const delta = max - Math.min(r, g, b);
+      // Every colour here is blue-dominant, so only the blue branch applies.
+      return (60 * (4 + (r - g) / delta) + 360) % 360;
+    };
+
+    expect(hue(editorialMenu.light.indigo)).toBeLessThan(hue(editorialPalette.accent));
+    expect(hue(editorialMenu.dark.indigo)).toBeLessThan(hue(editorialPaletteDark.accent));
+  });
+
+  it("inverts the avatar disc against the panel in each scheme", () => {
+    const luminance = (hex: string): number =>
+      Number.parseInt(hex.slice(1, 3), 16) +
+      Number.parseInt(hex.slice(3, 5), 16) +
+      Number.parseInt(hex.slice(5, 7), 16);
+
+    expect(luminance(editorialMenu.light.avatarBg)).toBeLessThan(luminance(editorialPalette.panel));
+    expect(luminance(editorialMenu.dark.avatarBg)).toBeGreaterThan(
+      luminance(editorialPaletteDark.panel),
+    );
+  });
+
+  it("gives the banner seam alpha — the reason this set is not palette slots", () => {
+    for (const menu of Object.values(editorialMenu)) expect(menu.puzzleSeam).toMatch(RGBA);
   });
 });
 

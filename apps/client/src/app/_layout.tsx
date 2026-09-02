@@ -33,9 +33,10 @@ import { type ReactElement, useEffect, useMemo } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { NavBar } from "@/components/nav-bar/nav-bar";
 import { NetInfoBanner } from "@/components/net-info-banner";
-import { WebNavBar } from "@/components/web-nav-bar";
 import { DESKTOP_CONTENT_MAX_WIDTH, useIsDesktopWeb } from "@/hooks/use-desktop-web";
+import { ensureAppSansFont } from "@/lib/app-sans-font";
 import { ensureWebButtonTextReset } from "@/lib/web-button-text-reset";
 import { AppTamaguiProvider } from "@/providers/app-tamagui-provider";
 import { AuthProvider } from "@/providers/auth-provider";
@@ -66,6 +67,7 @@ const ROOT_FLEX = { flex: 1 };
 // Web-only global CSS patch (see the module doc) — before first render so no
 // centered-text flash. No-op on native.
 ensureWebButtonTextReset();
+ensureAppSansFont();
 
 export default function RootLayout(): ReactElement {
   const scheme = useResolvedScheme();
@@ -145,9 +147,9 @@ export default function RootLayout(): ReactElement {
                         <StatusBar style={scheme === "dark" ? "light" : "dark"} />
                         <NetInfoBanner />
                         <ThemeProvider value={navigationTheme}>
-                          {/* Desktop-web chrome: the LinkedIn-style top navbar.
-                            Self-gates to authed desktop-web app screens. */}
-                          <WebNavBar />
+                          {/* Desktop-web chrome: the app variant of the one top
+                            bar. Self-gates to authed desktop-web app screens. */}
+                          <NavBar variant="app" />
                           <Stack
                             screenOptions={{
                               headerShown: false,

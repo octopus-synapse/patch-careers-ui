@@ -1,6 +1,7 @@
 /**
- * Profile bottom-tab icon — the user's avatar (photo, with initials fallback)
- * inside a soft border ring instead of a generic person glyph. The ring uses
+ * Profile bottom-tab icon — the user's avatar (the shared `IdentityAvatar`:
+ * photo, else the silhouette the account menu draws) inside a soft border ring
+ * instead of a generic person glyph. The ring uses
  * editorial palette tokens so it adapts to light/dark, and turns ink when the
  * tab is focused to signal the active tab. A green presence dot sits at the
  * top-right (decorative for now; `showPresence` lets a real signal drive it
@@ -8,8 +9,8 @@
  * (shared React Query cache — no extra request).
  */
 import { useGetV1UsersProfile } from "@patch-careers/api-client";
-import { Avatar, YStack } from "@patch-careers/ui";
-import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import { YStack } from "@patch-careers/ui";
+import { IdentityAvatar, useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { View } from "react-native";
 
@@ -56,7 +57,7 @@ export function ProfileTabIcon({
           backgroundColor: palette.surface,
         }}
       >
-        <Avatar src={photoURL} name={name || "?"} size={avatarSize} />
+        <IdentityAvatar photoURL={photoURL} name={name || "?"} size={avatarSize} />
       </View>
       {showPresence ? (
         <View

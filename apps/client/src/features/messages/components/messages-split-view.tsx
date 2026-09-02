@@ -19,6 +19,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { MessageCircle, Search as SearchIcon } from "lucide-react-native";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, ScrollView } from "react-native";
+import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 import {
@@ -102,6 +103,7 @@ export function MessagesSplitView(): ReactElement {
     });
   }
 
+  const navInset = useNavBarInset();
   const isSelected = useCallback(
     (conversation: Conversation): boolean => {
       if (selection === null) return false;
@@ -117,7 +119,8 @@ export function MessagesSplitView(): ReactElement {
   return (
     <XStack
       flex={1}
-      marginVertical={24}
+      marginTop={24 + navInset}
+      marginBottom={24}
       borderWidth={1}
       borderColor={editorialPalette.hairline}
       borderRadius={18}

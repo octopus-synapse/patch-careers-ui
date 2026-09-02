@@ -1,14 +1,16 @@
 /**
  * Grouped inbox list — a SectionList over `groupByDate` (Hoje / Esta semana /
  * Antes) with small-caps editorial section headers, hairline row separators and
- * bottom padding that clears the floating tab bar.
+ * bottom padding that clears the floating tab bar (0 where there is none —
+ * the stacked `/notifications` screen sits outside the tab navigator).
  */
 
 import { Divider, Text } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import type { ReactElement } from "react";
+import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
+import { type ReactElement, useContext } from "react";
 import { SectionList, View } from "react-native";
+import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useI18n } from "@/providers/i18n-provider";
 import { groupByDate } from "../lib/date-groups";
 import type { NotificationItem } from "../types";
@@ -29,7 +31,11 @@ export function NotificationSectionList({
   onPressItem: (item: NotificationItem) => void;
 }): ReactElement {
   const palette = useEditorialPalette();
-  const tabBarHeight = useBottomTabBarHeight();
+  // Read the context rather than `useBottomTabBarHeight()`, which THROWS when
+  // there is no tab bar above it: this list also renders on `/notifications`,
+  // a root Stack screen that is a sibling of the tab navigator, not a child.
+  const tabBarHeight = useContext(BottomTabBarHeightContext) ?? 0;
+  const navInset = useNavBarInset();
   const { t } = useI18n();
   const sections = groupByDate(items, now);
 
@@ -60,7 +66,7 @@ export function NotificationSectionList({
       )}
       ItemSeparatorComponent={RowSeparator}
       stickySectionHeadersEnabled={false}
-      contentContainerStyle={{ paddingBottom: tabBarHeight + 16 }}
+      contentContainerStyle={{ paddingTop: navInset, paddingBottom: tabBarHeight + 16 }}
     />
   );
 }

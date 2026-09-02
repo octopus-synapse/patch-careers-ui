@@ -168,10 +168,14 @@ jobs:
           cp deploy/docker-compose.yml "$DEPLOY_PATH/docker-compose.yml"
 
       - name: Pin image tag
+        id: pin
         working-directory: /opt/patch-careers-ui
         run: |
           set -euo pipefail
           touch .env
+          # Record what was running BEFORE the swap — the rollback target.
+          PREV="$(grep -m1 '^IMAGE_TAG=' .env | cut -d= -f2- || true)"
+          echo "prev=${PREV}" >> "$GITHUB_OUTPUT"
           if grep -q '^IMAGE_TAG=' .env; then
             sed -i "s|^IMAGE_TAG=.*|IMAGE_TAG=${IMAGE_TAG}|" .env
           else
@@ -188,6 +192,7 @@ jobs:
           docker compose up -d --force-recreate web
 
       - name: Wait for health
+        id: health
         run: |
           for i in $(seq 1 20); do
             s="$(docker inspect patchcareers-web --format '{{.State.Health.Status}}' 2>/dev/null || echo none)"
@@ -198,6 +203,42 @@ jobs:
           echo "::error::patchcareers-web did not become healthy"
           docker logs --tail 50 patchcareers-web || true
           exit 1
+
+      - name: Smoke test (public URL)
+        # The container healthcheck runs from inside the container, so it
+        # stays green while TLS, Caddy or DNS are broken and nobody can
+        # actually load the site. This hits the real address from outside.
+        id: smoke
+        run: |
+          set -euo pipefail
+          URL="https://patchcareers.org/"
+          for i in $(seq 1 12); do
+            code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "$URL" || echo 000)"
+            echo "attempt ${i}: ${URL} -> ${code}"
+            [ "$code" = "200" ] && { echo "✅ reachable from the public internet"; exit 0; }
+            sleep 5
+          done
+          echo "::error::${URL} did not answer 200"
+          exit 1
+
+      - name: Roll back (deploy verification failed)
+        # The web bundle is stateless — no schema to disagree with — so unlike
+        # the backend it is ALWAYS safe to put the previous image back, whether
+        # the container never went healthy or the public URL stopped answering.
+        # The job still ends red: the rollback is damage control, not success.
+        if: >-
+          failure()
+          && (steps.health.outcome == 'failure' || steps.smoke.outcome == 'failure')
+          && steps.pin.outputs.prev != ''
+          && steps.pin.outputs.prev != env.IMAGE_TAG
+        working-directory: /opt/patch-careers-ui
+        run: |
+          set -euo pipefail
+          PREV="${{ steps.pin.outputs.prev }}"
+          echo "::warning::deploy verification failed; rolling back to ${PREV}"
+          sed -i "s|^IMAGE_TAG=.*|IMAGE_TAG=${PREV}|" .env
+          docker compose up -d --force-recreate web
+          echo "Rolled back to ${PREV}."
 
       - name: Summary
         if: always()
@@ -213,3 +254,34 @@ jobs:
       - name: Logout ghcr.io
         if: always()
         run: docker logout ghcr.io || true
+
+  notify:
+    name: E-mail on failure
+    needs: [prepare, build, deploy]
+    # Active alert on any red job — GitHub's own notification is easy to miss.
+    # Green deploys stay silent. Runs on a GitHub runner so it still fires
+    # when the self-hosted box is the thing that broke mid-job.
+    if: always() && contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Send failure e-mail via Resend
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          IMAGE_TAG: ${{ needs.prepare.outputs.image_tag }}
+          SHA: ${{ needs.prepare.outputs.sha }}
+        run: |
+          set -euo pipefail
+          [ -n "$RESEND_API_KEY" ] || { echo "::warning::RESEND_API_KEY not set — no e-mail sent"; exit 0; }
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          payload=$(jq -n \
+            --arg from "Patch Careers Deploys <noreply@patchcareers.org>" \
+            --arg to "efpatti.dev@gmail.com" \
+            --arg subject "❌ Deploy falhou: ${{ github.repository }} (${IMAGE_TAG:-?})" \
+            --arg html "<p>O deploy de <b>${{ github.repository }}</b> falhou.</p><p>Imagem: <code>${IMAGE_TAG:-?}</code><br>Commit: <code>${SHA:-?}</code></p><p><a href=\"$RUN_URL\">Abrir o run</a></p>" \
+            '{from: $from, to: [$to], subject: $subject, html: $html}')
+          curl -fsS -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer $RESEND_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$payload"
+          echo "alert e-mail sent"

@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Patch Careers — Perfil (repaginação v2)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        },
+        colors: {
+          /* editorial palette — packages/tokens/src/editorial.ts */
+          paper:   '#F2F1EC',
+          surface: '#FAFAF7',
+          panel:   '#FDFDFC',
+          ink:     '#0A0A0A',
+          body:    '#3F3F46',
+          muted:   '#71717A',
+          subtle:  '#A1A1AA',
+          hair:    '#E4E4E7',
+          hairs:   '#D4D4D8',
+          primary: '#0F172A',
+          /* a única cor de marca que sobrou na página */
+          indigo:  '#5766E8',
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  html, body { background: #F2F1EC; }
+  body { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  /* a coluna do app: caixa de 960, gutter de 22 → 916 de conteúdo.
+     a capa cancela o gutter e corre os 960 inteiros. */
+  .col { width: 100%; max-width: 960px; margin: 0 auto; padding: 0 22px; }
+
+  .smallcaps {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10.5px; font-weight: 500;
+    letter-spacing: .16em; text-transform: uppercase;
+  }
+
+  ::selection { background: #5766E8; color: #fff; }
+
+  @keyframes breathe { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-4px) rotate(-1deg); } }
+  .breathe { animation: breathe 3.4s ease-in-out infinite; transform-origin: 50% 100%; }
+  @media (prefers-reduced-motion: reduce) { .breathe { animation: none; } }
+
+  /* a caneta só aparece quando o ponteiro está na linha */
+  .row .pen { opacity: 0; transition: opacity .15s ease; }
+  .row:hover .pen { opacity: 1; }
+</style>
+</head>
+
+<body class="text-ink">
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     NAVBAR — INTOCADA
+     ══════════════════════════════════════════════════════════════════ -->
+<header class="fixed inset-x-0 top-0 z-50 h-[88px] border-b border-hair bg-[rgba(247,244,238,.62)] backdrop-blur-xl">
+  <div class="relative mx-auto flex h-full max-w-[1920px] items-center px-9">
+
+    <a href="#" class="shrink-0" aria-label="Patch Careers">
+      <svg width="48.3" height="50" viewBox="0 0 280 290" aria-hidden="true">
+        <path d="M 20 0 H 135 V 66 H 149 A 22 22 0 1 1 149 94 H 135 V 157.9 A 42 42 0 1 0 95 228.5 V 282 A 8 8 0 0 1 87 290 H 20 A 20 20 0 0 1 0 270 V 20 A 20 20 0 0 1 20 0 Z" fill="#000000"/>
+        <path d="M 153 23 H 256 A 24 24 0 0 1 280 47 V 163 A 22 22 0 0 0 280 207 V 266 A 24 24 0 0 1 256 290 H 115 A 8 8 0 0 1 107 282 V 224 A 8 8 0 0 0 98 217 A 30 30 0 1 1 128 168 A 11 11 0 0 0 147 160 V 108.2 A 34 34 0 1 0 147 51.8 V 29 A 6 6 0 0 1 153 23 Z" fill="#5766E8"/>
+        <g transform="translate(78, 110)"><circle r="30" fill="#DDE3F5"/><g transform="translate(10, 6)"><circle r="15" fill="#151A30"/><circle cx="7" cy="-8" r="5" fill="#FFFFFF"/></g></g>
+        <g transform="translate(212, 110)"><circle r="30" fill="#DDE3F5"/><g transform="translate(10, 6)"><circle r="15" fill="#151A30"/><circle cx="7" cy="-8" r="5" fill="#FFFFFF"/></g></g>
+      </svg>
+    </a>
+
+    <button class="absolute left-1/2 flex h-[42px] w-[290px] -translate-x-[358px] items-center gap-2 rounded-full bg-[rgba(255,255,255,.42)] px-4 text-left ring-1 ring-hair transition hover:bg-[rgba(255,255,255,.85)]">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      <span class="flex-1 text-[13.5px] text-muted">Search jobs, companies…</span>
+      <span class="font-mono text-[10.5px] text-subtle">⌘K</span>
+    </button>
+
+    <nav class="absolute left-1/2 flex -translate-x-[38px] items-stretch">
+      <button class="flex h-[88px] w-[88px] flex-col items-center justify-center gap-[7px] pt-1">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
+        <span class="text-[11.5px] text-muted">Jobs</span>
+      </button>
+      <button class="flex h-[88px] w-[88px] flex-col items-center justify-center gap-[7px] pt-1">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></svg>
+        <span class="text-[11.5px] text-muted">Messages</span>
+      </button>
+      <button class="flex h-[88px] w-[88px] flex-col items-center justify-center gap-[7px] pt-1">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+        <span class="text-[11.5px] text-muted">Resumes</span>
+      </button>
+      <button class="relative flex h-[88px] w-[88px] flex-col items-center justify-center gap-[7px] pt-1">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
+        <span class="text-[11.5px] font-semibold text-ink">Me</span>
+        <span class="absolute bottom-[14px] h-[1.5px] w-[26px] rounded-full bg-ink"></span>
+      </button>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-3">
+      <button class="grid h-[42px] w-[42px] place-items-center rounded-full bg-[rgba(255,255,255,.42)] ring-1 ring-hair transition hover:bg-[rgba(255,255,255,.85)]" aria-label="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+      </button>
+      <button class="grid h-[42px] w-[42px] place-items-center rounded-full bg-[rgba(255,255,255,.42)] ring-1 ring-hair transition hover:bg-[rgba(255,255,255,.85)]" aria-label="Open menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+
+<main class="pt-[88px]">
+
+  <!-- ════════════════════════════════════════════════════════════════
+       HEADER DE IDENTIDADE — INTOCADO
+       ════════════════════════════════════════════════════════════ -->
+  <section class="col">
+    <div class="flex flex-col gap-[14px] border-b border-hair pb-[30px]">
+
+      <button class="relative -mx-[22px] block h-[196px] overflow-hidden" aria-label="Change cover image">
+        <svg width="100%" height="100%" viewBox="0 0 290 72" preserveAspectRatio="xMidYMid slice">
+          <path d="M0,0 H88 V25 c15,-6.5 15,28 0,21.5 V72 H0 Z" fill="#E2E8F0"/>
+          <path d="M290,0 H88 V25 c15,-6.5 15,28 0,21.5 V72 H290 Z" fill="#C3CDDA"/>
+          <path d="M88,0 V25 c15,-6.5 15,28 0,21.5 V72" fill="none" stroke="rgba(15,23,42,0.10)" stroke-width="1"/>
+        </svg>
+        <span class="absolute bottom-[14px] right-[14px] grid h-8 w-8 place-items-center rounded-full border-2 border-paper bg-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        </span>
+      </button>
+
+      <div class="flex items-start gap-[30px]">
+        <button class="relative -mt-[72px] shrink-0" aria-label="Change profile photo">
+          <span class="block overflow-hidden rounded-full border-[5px] border-paper">
+            <span class="grid h-28 w-28 place-items-center overflow-hidden rounded-full bg-[#33322E]">
+              <svg width="112" height="112" viewBox="0 0 24 24">
+                <path d="M12 3.7a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8Z" fill="#F7F4EE"/>
+                <path d="M12 15.2c-5.4 0-9.8 3.6-10.4 8.2-.1.9.6 1.6 1.5 1.6h17.8c.9 0 1.6-.7 1.5-1.6-.6-4.6-5-8.2-10.4-8.2Z" fill="#F7F4EE"/>
+              </svg>
+            </span>
+          </span>
+          <span class="absolute -bottom-[2px] -right-[2px] grid h-[30px] w-[30px] place-items-center rounded-full border-2 border-paper bg-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+          </span>
+        </button>
+
+        <div class="flex min-w-0 flex-1 flex-col items-start gap-[7px]">
+          <h1 class="font-serif text-[36px] leading-[44px] tracking-[-0.6px] text-ink">Maria Oliveira de Souza</h1>
+          <p class="text-[15.5px] leading-[22px] tracking-[.1px] text-body">Engenheira de Software Plena</p>
+          <div class="flex items-center gap-[5px]">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="text-[13px] tracking-[.2px] text-muted">São Paulo, Brazil</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ═══════════ FIM DA PARTE INTOCADA ═══════════ -->
+
+
+  <section class="col mt-[86px] flex items-start gap-9 pb-24">
+
+    <!-- ═════════════ COLUNA PRINCIPAL ═════════════ -->
+    <div class="min-w-0 flex-1">
+
+      <!-- ── SCORE — o card da landing (ScoreGrid), com o mascote sentado na
+           borda de cima: a base das duas peças é reta, então ele apoia
+           exatamente na quina em vez de ser cortado pelo card ── -->
+      <div class="relative">
+        <svg class="breathe absolute -top-[74px] right-6" width="72" viewBox="0 0 280 292" aria-hidden="true">
+          <path d="M 20 0 H 135 V 66 H 149 A 22 22 0 1 1 149 94 H 135 V 157.9 A 42 42 0 1 0 95 228.5 V 282 A 8 8 0 0 1 87 290 H 20 A 20 20 0 0 1 0 270 V 20 A 20 20 0 0 1 20 0 Z" fill="#0A0A0A"/>
+          <ellipse cx="64" cy="152" rx="9" ry="5.5" fill="#F9A8C4" opacity=".95"/>
+          <g transform="translate(100,116)"><circle r="28" fill="#DDE3F5"/><circle r="13" fill="#151A30"/><circle cx="7.5" cy="-9" r="4.5" fill="#FFFFFF"/></g>
+          <g transform="translate(100,86)"><path d="M -16 1.5 Q 0 -2 16 -3.5 L 16 3 Q 0 2.5 -16 4.5 Z" fill="#5766E8"/></g>
+          <path d="M 153 23 H 256 A 24 24 0 0 1 280 47 V 163 A 22 22 0 0 0 280 207 V 266 A 24 24 0 0 1 256 290 H 115 A 8 8 0 0 1 107 282 V 224 A 8 8 0 0 0 98 217 A 30 30 0 1 1 128 168 A 11 11 0 0 0 147 160 V 108.2 A 34 34 0 1 0 147 51.8 V 29 A 6 6 0 0 1 153 23 Z" fill="#5766E8"/>
+          <ellipse cx="258" cy="152" rx="9" ry="5.5" fill="#F9A8C4" opacity=".95"/>
+          <g transform="translate(222,116)"><circle r="28" fill="#DDE3F5"/><circle r="13" fill="#151A30"/><circle cx="7.5" cy="-9" r="4.5" fill="#FFFFFF"/></g>
+          <g transform="translate(222,76)"><path d="M -16 -2 Q -2 -9 16 -1 L 16 2.5 Q -2 -3 -16 4.5 Z" fill="#0A0A0A"/></g>
+          <path d="M147 150 Q161 171 175 150 Q161 156 147 150 Z" fill="#151A30"/>
+        </svg>
+
+        <div id="scoreCard" class="relative z-10 rounded-[20px] border border-hair bg-panel p-[18px] shadow-[0_10px_30px_rgba(10,10,10,.05)]"></div>
+      </div>
+
+      <!-- ── SEÇÕES ── -->
+      <div id="sections" class="mt-14 space-y-14"></div>
+
+      <!-- ── a única porta pras 15 seções que faltam ── -->
+      <button class="mt-12 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-hairs py-[15px] text-[13.5px] font-medium text-muted transition hover:border-ink hover:text-ink">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        Adicionar seção
+      </button>
+    </div>
+
+
+    <!-- ═════════════ TRILHO — só o Fit Profile ═════════════ -->
+    <aside class="sticky top-[112px] hidden w-[268px] shrink-0 xl:block">
+      <div class="overflow-hidden rounded-[20px] bg-indigo text-white">
+        <div class="flex items-center justify-between border-b border-white/15 px-5 py-3">
+          <span class="smallcaps text-white/60">Fit Profile</span>
+          <span class="font-mono text-[10.5px] text-white/60">5 MIN</span>
+        </div>
+        <div class="px-5 py-5">
+          <p class="font-serif text-[20px] leading-[27px]">
+            Destrave o Match por vaga.
+          </p>
+          <p class="mt-2 text-[12.5px] leading-[18px] text-white/65">
+            Doze perguntas sobre como você gosta de trabalhar. Depois disso toda vaga vem com um número.
+          </p>
+          <button class="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-white py-[11px] text-[13.5px] font-semibold text-indigo transition hover:bg-white/90">
+            Começar
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <footer class="border-t border-hair py-8 text-center">
+    <p class="text-[11.5px] text-subtle">Demo estática — Patch Careers · repaginação do /profile · v2 · web</p>
+  </footer>
+</main>
+
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   SCORE — rampa e card da landing
+   (landingScoreRamp + landingScoreBand em packages/tokens/src/landing.ts,
+    layout em features/landing/components/score-grid.tsx)
+   ═══════════════════════════════════════════════════════════════════ */
+const RAMP = {
+  excellent: '#1FB27A',
+  good:      '#D9A400',
+  fair:      '#F0743A',
+  poor:      '#E5484D',
+};
+const band = v => (v >= 85 ? RAMP.excellent : v >= 70 ? RAMP.good : v >= 50 ? RAMP.fair : RAMP.poor);
+
+const SEGMENTS = 20;
+const bar = value => {
+  const on = Math.round(value / (100 / SEGMENTS));
+  const ink = band(value);
+  return `<div class="flex gap-[3px]">${
+    Array.from({ length: SEGMENTS }, (_, at) =>
+      `<div class="h-2 flex-1 rounded-[2px]" style="background:${at < on ? ink : '#E4E4E7'}"></div>`
+    ).join('')
+  }</div>`;
+};
+
+const SCORE = {
+  value: 72,
+  what: 'O quanto seu perfil está pronto pra leitura do robô.',
+  sub: [
+    { value: 74,  name: 'Conteúdo (IA)', fix: 'Bullets sem número não contam.', gain: 9 },
+    { value: 58,  name: 'Completude',    fix: 'Resumo profissional em branco.', gain: 18 },
+    { value: 100, name: 'Estilo',        fix: 'Nada a fazer aqui.',             gain: 0 },
+  ],
+};
+
+document.getElementById('scoreCard').innerHTML = `
+  <div class="flex items-start justify-between gap-3">
+    <div class="flex-1">
+      <p class="text-[15px] font-semibold text-ink">Profile score</p>
+      <p class="mt-[2px] text-[12px] leading-[17px] text-muted">${SCORE.what}</p>
+    </div>
+    <span class="font-serif text-[34px] leading-none" style="color:${band(SCORE.value)}">${SCORE.value}</span>
+  </div>
+
+  <div class="mt-[9px]">${bar(SCORE.value)}</div>
+
+  <div class="mt-1">
+    ${SCORE.sub.map(s => `
+      <div class="flex items-start gap-[10px] border-t border-hair py-2">
+        <span class="w-[26px] font-mono text-[12px]" style="color:${band(s.value)}">${s.value}</span>
+        <span class="w-[110px] text-[12.5px] font-medium text-ink">${s.name}</span>
+        <span class="flex-1 text-[11.5px] leading-4 text-muted">${s.fix}${
+          s.gain ? `<span class="font-mono" style="color:${band(s.value)}"> +${s.gain}</span>` : ''
+        }</span>
+      </div>`).join('')}
+  </div>`;
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DADOS — perfil real da Maria (GET /v1/users/profile + /v1/resumes/:id/sections)
+   ═══════════════════════════════════════════════════════════════════ */
+const IDENTITY = [
+  { label: 'Nome',        value: 'Maria Oliveira de Souza' },
+  { label: 'Título',      value: 'Engenheira de Software Plena' },
+  { label: 'Localização', value: 'São Paulo, Brazil' },
+  { label: 'Resumo',      value: null },
+  { label: 'Telefone',    value: null },
+];
+
+const EXPERIENCE = [
+  { role: 'Engenheira de Software Plena', company: 'Patch Tech',       dates: 'Mar 2022 — Jun 2024',
+    description: 'Liderei a migração do app para Expo + React Native Web.',
+    achievements: ['Reduzi o tempo de build em 40%', 'Migrei 30 telas para a nova stack'] },
+  { role: 'Desenvolvedora Júnior',        company: 'Loja Online BR',   dates: 'Jan 2020 — Fev 2022',
+    description: 'Desenvolvi o checkout e a integração de pagamentos.',
+    achievements: ['Integrei 3 gateways de pagamento'] },
+  { role: 'Estagiária de Desenvolvimento', company: 'Startup Educação', dates: 'Jun 2019 — Dez 2019',
+    description: 'Apoiei o time de frontend em features de gamificação.',
+    achievements: ['Implementei o sistema de pontos'] },
+];
+
+const EDUCATION = [
+  { institution: 'Universidade de São Paulo', degree: 'Bacharelado em Ciência da Computação', meta: 'Concluído', dates: 'Fev 2016 — Dez 2019' },
+  { institution: 'FIAP',                      degree: 'Mestrado em Engenharia de Software',   meta: 'Concluído', dates: 'Fev 2020 — Jun 2021' },
+];
+
+const PEN = `<svg class="pen" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>`;
+
+/* Cabeçalho: serifa, contagem em mono, régua até a margem, ação fantasma. */
+const head = (title, count) => `
+  <div class="mb-5 flex items-baseline gap-3">
+    <h2 class="font-serif text-[24px] leading-none tracking-[-.3px] text-ink">${title}</h2>
+    <span class="font-mono text-[11.5px] text-subtle">${String(count).padStart(2, '0')}</span>
+    <span class="h-px flex-1 bg-hair"></span>
+    <button class="shrink-0 text-[12.5px] font-medium text-muted transition hover:text-ink">+ Adicionar</button>
+  </div>`;
+
+document.getElementById('sections').innerHTML = `
+  <section>
+    ${head('Identidade', IDENTITY.filter(f => f.value).length)}
+    <dl>
+      ${IDENTITY.map(f => `
+        <div class="row flex cursor-pointer items-baseline gap-5 border-b border-hair py-[11px] last:border-b-0">
+          <dt class="w-[104px] shrink-0 text-[12.5px] text-muted">${f.label}</dt>
+          <dd class="flex-1 text-[14.5px] ${f.value ? 'text-ink' : 'italic text-subtle'}">${f.value ?? 'Adicionar'}</dd>
+          ${PEN}
+        </div>`).join('')}
+    </dl>
+  </section>
+
+  <section>
+    ${head('Experiência Profissional', EXPERIENCE.length)}
+    <div>
+      ${EXPERIENCE.map(e => `
+        <article class="row cursor-pointer border-b border-hair py-5 first:pt-0 last:border-b-0 last:pb-0">
+          <div class="flex items-baseline gap-4">
+            <h3 class="flex-1 text-[15px] font-semibold text-ink">${e.role}</h3>
+            <span class="shrink-0 font-mono text-[11px] text-muted">${e.dates}</span>
+            ${PEN}
+          </div>
+          <p class="mt-[3px] text-[13.5px] text-body">${e.company}</p>
+          <p class="mt-2.5 text-[13.5px] leading-[20px] text-body">${e.description}</p>
+          <ul class="mt-2 space-y-[3px]">
+            ${e.achievements.map(a => `
+              <li class="flex gap-2 text-[13px] leading-[19px] text-muted">
+                <span class="text-subtle">—</span><span>${a}</span>
+              </li>`).join('')}
+          </ul>
+        </article>`).join('')}
+    </div>
+  </section>
+
+  <section>
+    ${head('Formação Acadêmica', EDUCATION.length)}
+    <div>
+      ${EDUCATION.map(e => `
+        <article class="row cursor-pointer border-b border-hair py-5 first:pt-0 last:border-b-0 last:pb-0">
+          <div class="flex items-baseline gap-4">
+            <h3 class="flex-1 text-[15px] font-semibold text-ink">${e.institution}</h3>
+            <span class="shrink-0 font-mono text-[11px] text-muted">${e.dates}</span>
+            ${PEN}
+          </div>
+          <p class="mt-[3px] text-[13.5px] text-body">${e.degree} · ${e.meta}</p>
+        </article>`).join('')}
+    </div>
+  </section>`;
+</script>
+</body>
+</html>

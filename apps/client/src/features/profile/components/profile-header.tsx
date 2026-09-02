@@ -1,13 +1,17 @@
 /**
- * Identity header of the Profile tab: avatar (tap to change photo), name,
- * headline, location — plus the compact trigger row for the identity / about
- * / links edit sheets (the old body sections collapsed into entry points; the
- * tab's body now belongs to the sub-tabs).
+ * Identity header of the Profile tab: cover banner (tap to change), avatar
+ * overlapping it (tap to change photo), name, headline, location.
+ *
+ * Both the banner and the avatar are the account menu's — `PuzzleBanner` and
+ * `IdentityAvatar` from `@patch-careers/ui/editorial` — so the two places that
+ * show you to yourself show the same person: a photo when there is one, the
+ * silhouette when there is not (never initials, which the menu never drew).
+ *
+ * The settings gear used to sit up here; it is in the account menu, which is
+ * one tap away on every screen, so the header no longer says it twice.
  */
-import { Avatar } from "@patch-careers/ui";
-import { useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
-import { Camera, MapPin, Settings } from "lucide-react-native";
+import { IdentityAvatar, PuzzleBanner, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { Camera, MapPin } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
@@ -18,6 +22,12 @@ import { CompletenessRing } from "./completeness-ring";
 const AVATAR_PX = 80;
 // Desktop header is a wide identity band; the avatar anchors it larger.
 const AVATAR_PX_WIDE = 112;
+const AVATAR_BEZEL = 5;
+/** Banner height, and how far the avatar rides up over it. */
+const COVER_PX = 132;
+const COVER_PX_WIDE = 196;
+const AVATAR_OVERLAP = 52;
+const AVATAR_OVERLAP_WIDE = 72;
 
 export type HeaderProfile = {
   name?: string | null;
@@ -29,18 +39,23 @@ export type HeaderProfile = {
 export function ProfileHeader({
   profile,
   onChangePhoto,
+  onChangeCover,
+  coverURL,
   uploading = false,
+  coverUploading = false,
   completeness = null,
 }: {
   profile: HeaderProfile | undefined;
   onChangePhoto: () => void;
+  onChangeCover: () => void;
+  coverURL?: string | undefined;
   uploading?: boolean;
+  coverUploading?: boolean;
   completeness?: number | null;
 }): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
   const pf = usePf();
-  const router = useRouter();
   // Desktop web reads left-to-right like a page: avatar beside the identity
   // text instead of the mobile centered stack.
   const isDesktopWeb = useIsDesktopWeb();
@@ -50,24 +65,46 @@ export function ProfileHeader({
 
   const avatarInner = (
     <>
-      <Avatar src={profile?.photoURL ?? undefined} name={name} size={avatarPx} />
+      <IdentityAvatar
+        photoURL={profile?.photoURL ?? undefined}
+        name={name}
+        size={avatarPx}
+        bezel={AVATAR_BEZEL}
+        bezelColor={palette.bg}
+      />
       {uploading ? (
-        <View style={[pf.avatarUploading, isDesktopWeb && pf.avatarUploadingWide]}>
+        <View style={pf.avatarUploading}>
           <ActivityIndicator color={palette.onPrimary} />
         </View>
       ) : null}
     </>
   );
 
-  const settingsButton = (
+  // The banner is full-bleed: it cancels the scroll's page gutter so it runs
+  // edge to edge, the way the menu's does across its panel.
+  const cover = (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={t("profile.header.settingsA11y")}
-      onPress={() => router.push("/settings")}
-      style={pf.settingsButton}
-      hitSlop={8}
+      accessibilityLabel={t("profile.cover.changeA11y")}
+      accessibilityState={{ busy: coverUploading }}
+      disabled={coverUploading}
+      onPress={onChangeCover}
+      style={pf.coverWrap}
     >
-      <Settings size={22} color={palette.muted} strokeWidth={1.75} />
+      <PuzzleBanner
+        height={isDesktopWeb ? COVER_PX_WIDE : COVER_PX}
+        fit="cover"
+        {...(coverURL === undefined ? {} : { coverURL })}
+        {...(coverURL === undefined ? {} : { accessibilityLabel: t("profile.cover.imageA11y") })}
+      >
+        <View style={pf.coverBadge}>
+          {coverUploading ? (
+            <ActivityIndicator color={palette.onPrimary} size="small" />
+          ) : (
+            <Camera size={15} color={palette.onPrimary} strokeWidth={2} />
+          )}
+        </View>
+      </PuzzleBanner>
     </Pressable>
   );
 
@@ -78,10 +115,10 @@ export function ProfileHeader({
       accessibilityState={{ busy: uploading }}
       disabled={uploading}
       onPress={onChangePhoto}
-      style={pf.avatarWrap}
+      style={[pf.avatarWrap, { marginTop: -(isDesktopWeb ? AVATAR_OVERLAP_WIDE : AVATAR_OVERLAP) }]}
     >
       {pct !== null ? (
-        <CompletenessRing percent={pct} size={avatarPx}>
+        <CompletenessRing percent={pct} size={avatarPx + AVATAR_BEZEL * 2}>
           {avatarInner}
         </CompletenessRing>
       ) : (
@@ -125,16 +162,18 @@ export function ProfileHeader({
   if (isDesktopWeb) {
     return (
       <View style={pf.headerWide}>
-        {settingsButton}
-        {avatarPressable}
-        <View style={pf.headerWideBody}>{identityText}</View>
+        {cover}
+        <View style={pf.headerWideRow}>
+          {avatarPressable}
+          <View style={pf.headerWideBody}>{identityText}</View>
+        </View>
       </View>
     );
   }
 
   return (
     <View style={pf.header}>
-      {settingsButton}
+      {cover}
       {avatarPressable}
       {identityText}
     </View>

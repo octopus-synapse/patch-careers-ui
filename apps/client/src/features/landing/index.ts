@@ -6,7 +6,10 @@
  * in the app imports it, and it imports no other feature.
  */
 
-export { BrandFace } from "./components/brand-face";
+// The mascot mark moved to the DS once the app chrome started wearing it too
+// (the web navbar shows it on every page). Re-exported here so the landing's
+// own call sites keep reading as feature-local.
+export { BrandFace } from "@patch-careers/ui/editorial";
 export { LandingHead } from "./components/landing-head";
 export { LandingScreen } from "./components/landing-screen";
 export { landingSans } from "./lib/landing-fonts";

@@ -24,6 +24,7 @@ import { useState } from "react";
 import { Pressable, RefreshControl, ScrollView, useWindowDimensions } from "react-native";
 import { useListMatchScores } from "@/features/match";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
+import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useI18n } from "@/providers/i18n-provider";
 import { useExternalJobs } from "../hooks/queries";
 import { type ApplicationRow, useApplications } from "../hooks/use-applications";
@@ -36,6 +37,8 @@ const PREVIEW_COUNT = 3;
 export function JobsHomeScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   const tabBarHeight = useBottomTabBarHeight();
+  // The desktop navbar floats over the scene; content starts clear of it.
+  const navInset = useNavBarInset();
   const isDesktopWeb = useIsDesktopWeb();
   const router = useRouter();
   const { t } = useI18n();
@@ -77,7 +80,11 @@ export function JobsHomeScreen(): ReactElement {
 
   return (
     <ScrollView
-      contentContainerStyle={{ flexGrow: 1, paddingBottom: tabBarHeight + 32 }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingTop: navInset,
+        paddingBottom: tabBarHeight + 32,
+      }}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl

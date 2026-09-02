@@ -15,8 +15,8 @@
  */
 
 import { useGetV1NotificationsUnreadCount, useGetV1UsersProfile } from "@patch-careers/api-client";
-import { Avatar, XStack } from "@patch-careers/ui";
-import { CountBadge, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { XStack } from "@patch-careers/ui";
+import { CountBadge, IdentityAvatar, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { Bell } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
@@ -120,7 +120,7 @@ export function AppHeader(): ReactElement {
             onPress={() => setMenuOpen(true)}
             hitSlop={8}
           >
-            <Avatar src={photoURL} name={name} size="md" />
+            <IdentityAvatar photoURL={photoURL} name={name} size={40} />
           </Pressable>
         </Animated.View>
 

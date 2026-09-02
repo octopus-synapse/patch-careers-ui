@@ -24,6 +24,7 @@ export {
   scorePassword,
 } from "../internal/editorial-password";
 export { type MascotFlags, poseFor } from "../internal/mascot-model";
+export { useEditorialMenu } from "../internal/use-editorial-menu";
 export { useEditorialPalette } from "../internal/use-editorial-palette";
 export { useThemeName } from "../internal/use-theme-name";
 export { AnimatedField } from "./animated-field";
@@ -38,6 +39,7 @@ export {
 export { AuthMascotCard } from "./auth-mascot-card";
 export { AuthShell } from "./auth-shell";
 export { Banner, type BannerIntent, type BannerProps } from "./banner";
+export { BrandFace, type BrandFaceProps } from "./brand-face";
 export { BrandLockup } from "./brand-lockup";
 export { BrandMark } from "./brand-mark";
 export { CaptionButton, type CaptionButtonProps } from "./caption-button";
@@ -56,6 +58,7 @@ export {
   FrostedPillTabs,
   type FrostedPillTabsProps,
 } from "./frosted-pill-tabs";
+export { IdentityAvatar, type IdentityAvatarProps } from "./identity-avatar";
 export { InlineLink, type InlineLinkProps } from "./inline-link";
 export { editorialFadeInDown } from "./motion";
 export { OAuthButton, type OAuthButtonProps } from "./oauth-button";
@@ -64,6 +67,7 @@ export { PasswordInput, type PasswordInputProps } from "./password-input";
 export { PasswordStrengthMeter } from "./password-strength-meter";
 export { PatchLogo } from "./patch-logo";
 export { PrimaryAction, type PrimaryActionProps } from "./primary-action";
+export { PuzzleBanner, type PuzzleBannerProps } from "./puzzle-banner";
 export { type SegmentedTab, SegmentedTabs, type SegmentedTabsProps } from "./segmented-tabs";
 export { SettingsCard, SettingsRow } from "./settings-surface";
 export {

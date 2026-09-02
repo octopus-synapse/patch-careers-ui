@@ -27,6 +27,7 @@ import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MatchBreakdown } from "@/features/match";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
+import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useI18n } from "@/providers/i18n-provider";
 import { findExternalJob } from "../hooks/queries";
 import { type AppliedCv, useReportApplied } from "../hooks/use-report-applied";
@@ -38,6 +39,7 @@ import { DidYouApplySheet } from "./did-you-apply-sheet";
 export function JobDetailScreen({ id }: { id: string }): ReactElement {
   const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
+  const navInset = useNavBarInset();
   // Desktop web narrows every band (top bar, article, CTA) to the shared jobs
   // reading column so the detail doesn't stretch across the 960 scene.
   const isDesktopWeb = useIsDesktopWeb();
@@ -99,7 +101,9 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: editorialPalette.bg, paddingTop: insets.top }}>
+    <View
+      style={{ flex: 1, backgroundColor: editorialPalette.bg, paddingTop: insets.top + navInset }}
+    >
       <XStack
         alignItems="center"
         justifyContent="space-between"

@@ -27,7 +27,6 @@ import { useDeckInput } from "../hooks/use-deck-input";
 import { useLandingMascot } from "../hooks/use-landing-mascot";
 import { useOverlayPresence } from "../hooks/use-overlay-presence";
 import { useSceneDirector } from "../hooks/use-scene-director";
-import { ensureLandingFonts } from "../lib/landing-fonts";
 import { landingGrid, sceneLayout, walkMsFor } from "../lib/layout";
 import { CHAPTERS } from "../model/chapters";
 import { BootOverlay } from "./boot-overlay";
@@ -51,7 +50,6 @@ export interface LandingScreenProps {
 }
 
 export function LandingScreen({ header }: LandingScreenProps): ReactElement {
-  ensureLandingFonts();
   return <LandingDeck header={header} />;
 }
 

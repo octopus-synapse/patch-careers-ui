@@ -17,7 +17,7 @@ import type { ReactElement } from "react";
  * accent intent so the tab bar follows the theme.
  *
  * Desktop web (≥ breakpoint) drops this chrome entirely — no bottom bar, no
- * AppHeader — because the root layout mounts the WebNavBar, which carries the
+ * AppHeader — because the root layout mounts the NavBar, which carries the
  * same destinations in a single LinkedIn-style top bar.
  */
 
@@ -48,7 +48,7 @@ export default function TabsLayout(): ReactElement | null {
   const insets = useSafeAreaInsets();
   const { t } = useI18n();
   // Desktop web replaces both the bottom bar and the AppHeader with the
-  // root-level WebNavBar (see the header comment).
+  // root-level NavBar (see the header comment).
   const isDesktopWeb = useIsDesktopWeb();
 
   // Opt a tab out of the global AppHeader: drop the navbar *and* reserve the

@@ -26,6 +26,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
+import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 
@@ -92,6 +93,7 @@ export function SettingsScreenShell({
 }): ReactElement {
   const palette = useEditorialPalette();
   const insets = useSafeAreaInsets();
+  const navInset = useNavBarInset();
   const router = useRouter();
   const pathname = usePathname();
   const isDesktopWeb = useIsDesktopWeb();
@@ -142,7 +144,7 @@ export function SettingsScreenShell({
   );
 
   return (
-    <YStack flex={1} backgroundColor={palette.bg} paddingTop={insets.top}>
+    <YStack flex={1} backgroundColor={palette.bg} paddingTop={insets.top + navInset}>
       {header}
       {scroll ? (
         <ScrollView
