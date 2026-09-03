@@ -6,7 +6,7 @@
  */
 
 import { type ReactElement, useState } from "react";
-import { resumeLanguageToLocale, useMasterResumeId } from "@/features/resumes";
+import { useContentLocale, useMasterResumeId } from "@/features/resumes";
 import {
   AddSectionFlowModal,
   type MergedSection,
@@ -25,10 +25,11 @@ export function MasterAddSection({
 }): ReactElement {
   const { t, locale: uiLocale } = useI18n();
   const { resumeId, language } = useMasterResumeId();
+  const contentLocale = useContentLocale(resumeId, language);
   const { catalog } = useResumeSections(resumeId, {
     chrome: uiLocale,
-    content: resumeLanguageToLocale(language) ?? uiLocale,
-    canonical: resumeLanguageToLocale(language) ?? uiLocale,
+    content: contentLocale.content,
+    canonical: contentLocale.canonical,
   });
   const { persistFor, isPending } = useSectionItemMutations(resumeId);
   const [addOpen, setAddOpen] = useState(false);

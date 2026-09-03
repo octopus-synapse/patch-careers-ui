@@ -4,6 +4,7 @@
  * create-derived-resume wizard. All resumes derive from the master as
  * snapshot copies (POST /v1/resumes/:id/duplicate).
  */
+export { ContentLanguageSwitch } from "./components/content-language-switch";
 export { CreateResumeWizard } from "./components/create-resume-wizard";
 export { ResumeDetailScreen } from "./components/resume-detail-screen";
 export { ResumeListTab } from "./components/resume-list-tab";
@@ -20,6 +21,7 @@ export {
   useResumeStyles,
   useTailoredVersions,
 } from "./hooks/queries";
+export { type ContentLocaleState, useContentLocale } from "./hooks/use-content-locale";
 export {
   type LocaleTranslationStatus,
   needsTranslation,

@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, renderApp, screen } from "@/test/render";
-import { ProfileLanguageCard } from "./profile-language-card";
+import { ContentLanguageSwitch } from "./content-language-switch";
 
-describe("<ProfileLanguageCard>", () => {
+describe("<ContentLanguageSwitch>", () => {
   it("renders both options and marks the active one selected", () => {
-    renderApp(<ProfileLanguageCard value="pt-BR" onChange={() => undefined} />);
+    renderApp(<ContentLanguageSwitch value="pt-BR" onChange={() => undefined} />);
     const pt = screen.getByRole("button", { name: /Português/ });
     const en = screen.getByRole("button", { name: /English/ });
     expect(pt).toHaveAttribute("aria-selected", "true");
@@ -13,19 +13,21 @@ describe("<ProfileLanguageCard>", () => {
 
   it("reports the other locale on press", () => {
     const onChange = vi.fn();
-    renderApp(<ProfileLanguageCard value="pt-BR" onChange={onChange} />);
+    renderApp(<ContentLanguageSwitch value="pt-BR" onChange={onChange} />);
     fireEvent.click(screen.getByRole("button", { name: /English/ }));
     expect(onChange).toHaveBeenCalledWith("en");
   });
 
   it("reads its own copy from the UI locale, not the selected value", () => {
-    renderApp(<ProfileLanguageCard value="pt-BR" onChange={() => undefined} />, { locale: "en" });
-    expect(screen.getByRole("heading")).toHaveTextContent(/language/i);
+    renderApp(<ContentLanguageSwitch value="pt-BR" onChange={() => undefined} />, {
+      locale: "en",
+    });
+    expect(screen.getByRole("button", { name: /^View .*Português/ })).toBeInTheDocument();
   });
 
   it("narrates a running translation with the section count", () => {
     renderApp(
-      <ProfileLanguageCard
+      <ContentLanguageSwitch
         value="en"
         onChange={() => undefined}
         progress={{ resumeId: "r", locale: "en", done: 6, total: 11, status: "running" }}
@@ -36,7 +38,7 @@ describe("<ProfileLanguageCard>", () => {
 
   it("says how many items still show the original when the version is incomplete", () => {
     renderApp(
-      <ProfileLanguageCard
+      <ContentLanguageSwitch
         value="en"
         onChange={() => undefined}
         status={{
@@ -52,7 +54,7 @@ describe("<ProfileLanguageCard>", () => {
 
   it("explains a run the monthly cap refused, without hiding the switch", () => {
     renderApp(
-      <ProfileLanguageCard
+      <ContentLanguageSwitch
         value="en"
         onChange={() => undefined}
         progress={{

@@ -18,8 +18,10 @@ import { ResumeSectionsManager, type SectionsManagerHandle } from "@/features/se
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useI18n } from "@/providers/i18n-provider";
 import { useMasterResumeId, useResumeDetail, useResumeMutations } from "../hooks/queries";
-import { editedAgo, resumeLanguageToLocale } from "../lib/helpers";
+import { useContentLocale } from "../hooks/use-content-locale";
+import { editedAgo } from "../lib/helpers";
 import { useRz } from "../lib/styles";
+import { ContentLanguageSwitch } from "./content-language-switch";
 import { CreateResumeWizard } from "./create-resume-wizard";
 import { RenameSheet } from "./rename-sheet";
 import { ResumePreview } from "./resume-preview";
@@ -71,6 +73,10 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
   const managerRef = useRef<SectionsManagerHandle>(null);
 
   const resume = detail.data;
+  // Document surface (ADR-0011): chrome AND content follow the version being
+  // shown — a résumé viewed in English says "Education". The switch in the
+  // metadata row picks it; the résumé's own language stays the canonical.
+  const contentLocale = useContentLocale(id, resume?.language);
   // The detail payload carries no isPrimary — the list query (already cached)
   // identifies the master, which can never be deleted.
   const isMaster = masterResumeId === id;
@@ -136,7 +142,13 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
         <View style={rz.metaBlock}>
           <View style={rz.metaRow}>
             <Text style={rz.metaLabel}>{t("resumes.detail.language")}</Text>
-            <Text style={rz.metaValue}>{resume.language?.toUpperCase() ?? "—"}</Text>
+            <ContentLanguageSwitch
+              align="end"
+              value={contentLocale.content}
+              onChange={contentLocale.switchTo}
+              status={contentLocale.status}
+              progress={contentLocale.progress}
+            />
           </View>
           <View style={rz.metaRow}>
             <Text style={rz.metaLabel}>{t("resumes.detail.style")}</Text>
@@ -200,15 +212,13 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
         <View>
           <Text style={rz.sectionLabel}>{t("resumes.detail.sections")}</Text>
         </View>
-        {/* Document surface (ADR-0011): chrome AND content in the resume's
-            own language — a resume in English says "Education". */}
         <ResumeSectionsManager
           ref={managerRef}
           resumeId={id}
           locales={{
-            chrome: resumeLanguageToLocale(resume.language) ?? locale,
-            content: resumeLanguageToLocale(resume.language) ?? locale,
-            canonical: resumeLanguageToLocale(resume.language) ?? locale,
+            chrome: contentLocale.content,
+            content: contentLocale.content,
+            canonical: contentLocale.canonical,
           }}
         />
       </ScrollView>

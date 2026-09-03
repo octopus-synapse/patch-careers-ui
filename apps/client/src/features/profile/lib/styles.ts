@@ -173,19 +173,6 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     dialogLink: { marginTop: 28 },
 
     // ── Resume language ──
-    langPills: { marginTop: 14, flexDirection: "row", gap: 8 },
-    langPill: {
-      borderWidth: 1,
-      borderColor: p.hairline,
-      borderRadius: 999,
-      backgroundColor: p.surface,
-      paddingHorizontal: 16,
-      paddingVertical: 7,
-    },
-    langPillActive: { borderColor: p.ink, backgroundColor: p.ink },
-    langPillHover: { borderColor: p.hairlineStrong },
-    langPillLabel: { fontFamily: fonts.sans, fontSize: 13, fontWeight: "500", color: p.ink },
-    langPillLabelActive: { color: p.bg },
     railCaption: {
       marginTop: 12,
       fontFamily: fonts.sans,

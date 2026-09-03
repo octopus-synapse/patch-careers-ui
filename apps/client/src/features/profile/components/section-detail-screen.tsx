@@ -7,15 +7,19 @@
 
 import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
-import { resumeLanguageToLocale, useMasterResumeId } from "@/features/resumes";
+import { useContentLocale, useMasterResumeId } from "@/features/resumes";
 import { ResumeSectionsManager, useResumeSections } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
 
 export function SectionDetailScreen({ sectionKey }: { sectionKey: string }): ReactElement {
   const { t, locale: uiLocale } = useI18n();
   const { resumeId, language } = useMasterResumeId();
-  const resumeLocale = resumeLanguageToLocale(language) ?? uiLocale;
-  const locales = { chrome: uiLocale, content: resumeLocale, canonical: resumeLocale };
+  const contentLocale = useContentLocale(resumeId, language);
+  const locales = {
+    chrome: uiLocale,
+    content: contentLocale.content,
+    canonical: contentLocale.canonical,
+  };
   const { catalog } = useResumeSections(resumeId, locales);
   const title = catalog.find((c) => c.key === sectionKey)?.title ?? t("tabs.profile");
 

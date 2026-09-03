@@ -29,13 +29,10 @@ import { TriangleAlert } from "lucide-react-native";
 import { type ReactElement, useRef, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import {
-  needsTranslation,
+  ContentLanguageSwitch,
   ResumeQualityPanel,
-  resumeLanguageToLocale,
+  useContentLocale,
   useMasterResumeId,
-  useTranslateNow,
-  useTranslationProgress,
-  useTranslationStatus,
 } from "@/features/resumes";
 import { ResumeSectionsManager, type SectionsManagerHandle } from "@/features/sections";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
@@ -91,27 +88,21 @@ export function ProfileScreen(): ReactElement {
   // The switcher persists once `UpdateResumeRequest` carries `language`; until
   // then it is the view choice, seeded from the master resume's language.
   const { locale: uiLocale } = useI18n();
-  const [localeOverride, setLocaleOverride] = useState<Locale | null>(null);
-  const contentLocale: Locale = localeOverride ?? resumeLanguageToLocale(language) ?? uiLocale;
-  const canonicalLocale: Locale = resumeLanguageToLocale(language) ?? uiLocale;
+  const contentLocale = useContentLocale(resumeId, language);
   const sectionLocales = {
     chrome: uiLocale,
-    content: contentLocale,
-    canonical: canonicalLocale,
+    content: contentLocale.content,
+    canonical: contentLocale.canonical,
   } as const;
-  // The other version should already exist (created after onboarding, or by
-  // the worker after every change). When it does not — an account from
-  // before, or a brake that held — the first switch derives it now and the
-  // rail shows the run section by section (ADR-003 §10).
-  const translationStatus = useTranslationStatus(resumeId);
-  const translationProgress = useTranslationProgress(resumeId);
-  const { translateNow } = useTranslateNow();
-  const switchContentLocale = (next: Locale): void => {
-    setLocaleOverride(next);
-    if (resumeId && needsTranslation(translationStatus.forLocale(next))) {
-      translateNow(resumeId, next).catch(() => undefined); // the rail reports the outcome
-    }
-  };
+  const mobileLanguageSwitch = (
+    <ContentLanguageSwitch
+      align="center"
+      value={contentLocale.content}
+      onChange={contentLocale.switchTo}
+      status={contentLocale.status}
+      progress={contentLocale.progress}
+    />
+  );
 
   // Pull-to-refresh re-pulls the profile, the resume list (which drives the
   // master sections, completeness gauge, and quality panel), and the scores.
@@ -263,10 +254,10 @@ export function ProfileScreen(): ReactElement {
 
             <View style={pf.railWide}>
               <ProfileLanguageCard
-                value={contentLocale}
-                onChange={switchContentLocale}
-                status={translationStatus.forLocale(contentLocale)}
-                progress={translationProgress}
+                value={contentLocale.content}
+                onChange={contentLocale.switchTo}
+                status={contentLocale.status}
+                progress={contentLocale.progress}
               />
               <PublicProfileCard username={profile?.username ?? null} />
               <ProfileScoreCard onOpen={() => setScoreOpen(true)} />
@@ -289,6 +280,7 @@ export function ProfileScreen(): ReactElement {
               uploading={photoPending}
               coverUploading={coverPending}
               completeness={completeness}
+              trailing={mobileLanguageSwitch}
             />
             <ScoreHero onOpen={() => setPerformanceOpen(true)} />
             <FitProfileCard />

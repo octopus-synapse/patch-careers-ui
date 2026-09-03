@@ -171,6 +171,29 @@ const rzFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     metaLabel: { fontFamily: fonts.sans, fontSize: 12, color: p.muted },
     metaValue: { fontFamily: fonts.sans, fontSize: 13.5, color: p.ink, textAlign: "right" },
 
+    // Language switch (ContentLanguageSwitch): the landing's chip pattern.
+    langPills: { flexDirection: "row", gap: 8 },
+    langPill: {
+      borderWidth: 1,
+      borderColor: p.hairline,
+      borderRadius: 999,
+      backgroundColor: p.surface,
+      paddingHorizontal: 16,
+      paddingVertical: 7,
+    },
+    langPillActive: { borderColor: p.ink, backgroundColor: p.ink },
+    langPillHover: { borderColor: p.hairlineStrong },
+    langPillLabel: { fontFamily: fonts.sans, fontSize: 13, fontWeight: "500", color: p.ink },
+    langPillLabelActive: { color: p.bg },
+    langCaption: {
+      marginTop: 10,
+      fontFamily: fonts.sans,
+      fontSize: 11.5,
+      lineHeight: 16,
+      color: p.subtle,
+    },
+    langCaptionCenter: { textAlign: "center" },
+
     // actions row
     actions: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
     actionPill: {

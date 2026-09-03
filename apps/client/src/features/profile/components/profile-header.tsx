@@ -12,7 +12,7 @@
  */
 import { IdentityAvatar, PuzzleBanner, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Camera, MapPin } from "lucide-react-native";
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
@@ -45,6 +45,7 @@ export function ProfileHeader({
   coverUploading = false,
   completeness = null,
   variant = "page",
+  trailing,
 }: {
   profile: HeaderProfile | undefined;
   onChangePhoto: () => void;
@@ -60,6 +61,8 @@ export function ProfileHeader({
    * that runs beside the rail.
    */
   variant?: "page" | "card";
+  /** Mobile masthead only: a control under the identity (the language switch, decision 9). */
+  trailing?: ReactNode;
 }): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
@@ -202,6 +205,7 @@ export function ProfileHeader({
       {cover}
       {avatarPressable}
       {identityText}
+      {trailing}
     </View>
   );
 }

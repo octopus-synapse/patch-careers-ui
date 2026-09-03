@@ -28,7 +28,7 @@ import { ResumeThumbnail } from "@/components/resume-thumbnail";
 import {
   ResumePreviewModal,
   ResumeQualityPanel,
-  resumeLanguageToLocale,
+  useContentLocale,
   useMasterResumeId,
 } from "@/features/resumes";
 import { type MergedSection, useResumeSections } from "@/features/sections";
@@ -64,10 +64,11 @@ export function MasterSectionsTab({
   const pf = usePf();
   const router = useRouter();
   const { resumeId, language, updatedAt, isLoading } = useMasterResumeId();
+  const contentLocale = useContentLocale(resumeId, language);
   const { visible } = useResumeSections(resumeId, {
     chrome: uiLocale,
-    content: resumeLanguageToLocale(language) ?? uiLocale,
-    canonical: resumeLanguageToLocale(language) ?? uiLocale,
+    content: contentLocale.content,
+    canonical: contentLocale.canonical,
   });
   const [cvOpen, setCvOpen] = useState(false);
 
