@@ -12,6 +12,7 @@ import {
   getV1ResumesResumeIdQueryKey,
   getV1ResumesResumeIdScoresQueryKey,
   getV1ResumesSlotsQueryKey,
+  getV1UsersProfileQueryKey,
   useDeleteV1ResumesResumeId,
   useGetV1ResumeStyles,
   useGetV1Resumes,
@@ -106,6 +107,11 @@ export function useResumeMutations(): {
   duplicateResume: (sourceResumeId: string, data: DuplicateResumeRequest) => Promise<string>;
   /** Set the resume's desired role (drives the market-relative Readiness). */
   setTargetRole: (resumeId: string, label: string | null) => Promise<void>;
+  /**
+   * Headline / summary live on the résumé (ADR-003 §7); the profile reads
+   * them from there, so its query is refreshed too.
+   */
+  updateProse: (resumeId: string, data: { headline?: string; summary?: string }) => Promise<void>;
   isPending: boolean;
 } {
   const queryClient = useQueryClient();
@@ -153,11 +159,23 @@ export function useResumeMutations(): {
     ]);
   };
 
+  const updateProse = async (
+    resumeId: string,
+    data: { headline?: string; summary?: string },
+  ): Promise<void> => {
+    await patch.mutateAsync({ resumeId, data });
+    await Promise.all([
+      invalidateList(),
+      queryClient.invalidateQueries({ queryKey: getV1ResumesResumeIdQueryKey(resumeId) }),
+      queryClient.invalidateQueries({ queryKey: getV1UsersProfileQueryKey() }),
+    ]);
+  };
   return {
     renameResume,
     deleteResume,
     duplicateResume,
     setTargetRole,
+    updateProse,
     isPending: patch.isPending || remove.isPending || duplicate.isPending,
   };
 }

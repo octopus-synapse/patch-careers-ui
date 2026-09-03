@@ -7,7 +7,7 @@
  * which is what made an empty profile look as complete as a finished one.
  *
  * Editing is the same machinery the detail screen uses — `ProfileFieldEditor`
- * over `useProfileMutations().updateProfile` — so location still goes through
+ * over `useSaveProfileField()` — so location still goes through
  * the geo picker and a phone still gets the phone control. Nothing about the
  * write path is new here; only where it is reached from.
  *
@@ -15,14 +15,14 @@
  * and narrow web keep the index + detail-screen flow untouched.
  */
 
-import type { PatchV1UsersProfileMutationRequest } from "@patch-careers/api-client";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Pencil } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { SectionPanelCard, webNoOutline } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
-import { useProfile, useProfileMutations } from "../hooks/queries";
+import { useProfile } from "../hooks/queries";
+import { useSaveProfileField } from "../hooks/use-save-profile-field";
 import { filledProfileFields, missingProfileFields } from "../lib/missing-fields";
 import type { ProfileFieldDescriptor, ProfileFieldKey } from "../lib/profile-fields";
 import { usePf } from "../lib/styles";
@@ -72,7 +72,7 @@ export function IdentityPanelCard(): ReactElement {
   const { t } = useI18n();
   const pf = usePf();
   const profile = useProfile().data;
-  const { updateProfile, isPending } = useProfileMutations();
+  const { saveField, isPending } = useSaveProfileField();
   const [editing, setEditing] = useState<ProfileFieldDescriptor | null>(null);
 
   const filled = filledProfileFields(profile, t);
@@ -82,7 +82,7 @@ export function IdentityPanelCard(): ReactElement {
     const trimmed = value.trim();
     // An emptied field is a delete, and the contract takes the absence of the
     // key rather than an empty string — same shape the detail screen sends.
-    await updateProfile((trimmed ? { [key]: trimmed } : {}) as PatchV1UsersProfileMutationRequest);
+    await saveField(key, trimmed);
   };
 
   return (
