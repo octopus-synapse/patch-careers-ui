@@ -16,9 +16,10 @@
 import { Avatar, Divider, EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
-import { MessageCircle, Search as SearchIcon } from "lucide-react-native";
+import { Ban, MessageCircle, Search as SearchIcon } from "lucide-react-native";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, FlatList, ScrollView } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, ScrollView } from "react-native";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
@@ -28,6 +29,7 @@ import {
   useInbox,
   useUserSearch,
 } from "../hooks/queries";
+import { useBlockUser } from "../hooks/use-block-user";
 import { buildRenderList, participantLabel } from "../lib/helpers";
 import type { ChatUser, Conversation } from "../types";
 import { ConversationListSkeleton } from "./conversation-list-skeleton";
@@ -310,6 +312,9 @@ function ThreadPane({ selection }: { selection: ThreadSelection }): ReactElement
     if (rendered.length > 0) scrollToEnd(true);
   }, [rendered.length, scrollToEnd]);
 
+  const [blockOpen, setBlockOpen] = useState(false);
+  const { block, isPending: blocking } = useBlockUser();
+
   return (
     <YStack flex={1}>
       {/* Participant header — no back affordance on desktop; the rail is the nav. */}
@@ -333,6 +338,16 @@ function ThreadPane({ selection }: { selection: ThreadSelection }): ReactElement
             </Text>
           ) : null}
         </YStack>
+        {selection.recipientId ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("messages.block.action")}
+            onPress={() => setBlockOpen(true)}
+            hitSlop={8}
+          >
+            <Icon as={Ban} size={20} color={editorialPalette.subtle} />
+          </Pressable>
+        ) : null}
       </XStack>
 
       {thread.isLoading ? (
@@ -370,6 +385,20 @@ function ThreadPane({ selection }: { selection: ThreadSelection }): ReactElement
       )}
 
       <MessageComposer disabled={thread.sending} onSend={thread.send} />
+
+      <ConfirmDialog
+        open={blockOpen}
+        onOpenChange={setBlockOpen}
+        title={t("messages.block.title", { name: selection.name })}
+        description={t("messages.block.body")}
+        danger
+        icon={Ban}
+        confirmLabel={t("messages.block.confirm")}
+        loading={blocking}
+        onConfirm={() =>
+          selection.recipientId && block(selection.recipientId, () => setBlockOpen(false))
+        }
+      />
     </YStack>
   );
 }

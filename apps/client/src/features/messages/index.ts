@@ -17,5 +17,6 @@ export {
   useInbox,
   useUserSearch,
 } from "./hooks/queries";
+export { useBlockUser } from "./hooks/use-block-user";
 export { buildRenderList, participantLabel } from "./lib/helpers";
 export type { ChatUser, Conversation } from "./types";

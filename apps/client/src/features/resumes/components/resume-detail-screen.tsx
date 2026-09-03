@@ -4,11 +4,11 @@
  * delete — the master can never be deleted), and FULL editing via the same
  * ResumeSectionsManager the Perfil sub-tab uses.
  */
-import { useGetV1ExportResumePdf } from "@patch-careers/api-client";
+import { useGetV1ExportResumeDocx, useGetV1ExportResumePdf } from "@patch-careers/api-client";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { ChevronLeft, Copy, Download, Pencil, Share2, Trash2 } from "lucide-react-native";
+import { ChevronLeft, Copy, Download, FileText, Pencil, Share2, Trash2 } from "lucide-react-native";
 import { type ReactElement, useRef, useState } from "react";
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -65,6 +65,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
   const { resumeId: masterResumeId } = useMasterResumeId();
   const { renameResume, deleteResume, isPending } = useResumeMutations();
   const pdf = useGetV1ExportResumePdf({ resumeId: id }, { query: { enabled: false } });
+  const docx = useGetV1ExportResumeDocx({ query: { enabled: false } });
 
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -85,12 +86,23 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
     else router.replace("/(tabs)/profile");
   };
 
-  const downloadPdf = async (): Promise<void> => {
-    const result = await pdf.refetch();
-    const url = result.data?.downloadUrl;
+  // Both exports answer with a signed URL rather than bytes, so "download"
+  // is "open the URL the browser or the OS knows what to do with".
+  const openSigned = async (url: string | undefined): Promise<void> => {
     if (!url) return;
     if (Platform.OS === "web") window.open(url, "_blank");
     else await WebBrowser.openBrowserAsync(url);
+  };
+  const downloadPdf = async (): Promise<void> => {
+    const result = await pdf.refetch();
+    await openSigned(result.data?.downloadUrl);
+  };
+  // DOCX is what most recruiters and applicant systems ask for. It renders
+  // the user's primary résumé, which is the one this screen shows when it is
+  // the master; for a tailored copy the PDF is the faithful one.
+  const downloadDocx = async (): Promise<void> => {
+    const result = await docx.refetch();
+    await openSigned(result.data?.downloadUrl);
   };
 
   const confirmDelete = async (): Promise<void> => {
@@ -187,6 +199,11 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
             label={t("resumes.detail.downloadPdf")}
             icon={Download}
             onPress={() => void downloadPdf()}
+          />
+          <ActionPill
+            label={t("resumes.detail.downloadDocx")}
+            icon={FileText}
+            onPress={() => void downloadDocx()}
           />
           <ActionPill
             label={t("resumes.preview.share")}

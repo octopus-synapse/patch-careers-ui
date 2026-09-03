@@ -14,6 +14,7 @@ export const resumesPtBR: TranslationDict = {
     errorHint: "Confirme que você concluiu o onboarding e tente novamente.",
     retry: "Tentar novamente",
     downloadPdf: "Baixar PDF",
+    downloadDocx: "Baixar DOCX",
     share: "Compartilhar",
   },
   share: {
@@ -138,6 +139,7 @@ export const resumesPtBR: TranslationDict = {
     lastEdited: "Última edição",
     rename: "Renomear",
     downloadPdf: "Baixar PDF",
+    downloadDocx: "Baixar DOCX",
     duplicate: "Duplicar",
     delete: "Excluir",
     sections: "Seções",
@@ -162,6 +164,7 @@ export const resumesEn: TranslationDict = {
     errorHint: "Make sure you've completed onboarding and try again.",
     retry: "Try again",
     downloadPdf: "Download PDF",
+    downloadDocx: "Download DOCX",
     share: "Share",
   },
   share: {
@@ -286,6 +289,7 @@ export const resumesEn: TranslationDict = {
     lastEdited: "Last edited",
     rename: "Rename",
     downloadPdf: "Download PDF",
+    downloadDocx: "Download DOCX",
     duplicate: "Duplicate",
     delete: "Delete",
     sections: "Sections",
