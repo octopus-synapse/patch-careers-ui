@@ -56,11 +56,14 @@ export function useResumeSections(
   locales: SectionLocales,
 ): ResumeSections {
   const enabled = Boolean(resumeId);
-  // `content` will become `?locale=` here once the backend resolves item
-  // content per language; today the endpoint returns the canonical text.
-  const sectionsQuery = useGetV1ResumesResumeIdSections(resumeId ?? "", {
-    query: { enabled },
-  });
+  // The content locale goes to the server as `?locale=`: items come back
+  // resolved in that language (the derived copy merged over the canonical
+  // text), each carrying `contentLocale` / `origin` / `translationState`.
+  const sectionsQuery = useGetV1ResumesResumeIdSections(
+    resumeId ?? "",
+    { locale: locales.content },
+    { query: { enabled } },
+  );
   const typesQuery = useGetV1ResumesResumeIdSectionsTypes(
     resumeId ?? "",
     { locale: locales.chrome },
