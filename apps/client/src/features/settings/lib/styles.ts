@@ -231,6 +231,20 @@ const stylesFor = (p: EditorialPalette) =>
       fontSize: 14.5,
       color: p.ink,
     },
+    // A row whose right side is an action, not a chevron: label and a line
+    // of explanation on the left, the button on the right.
+    stackedRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 16,
+      paddingVertical: 16,
+      paddingHorizontal: 16,
+      borderTopWidth: 1,
+      borderTopColor: p.hairline,
+    },
+    stackedRowFirst: { borderTopWidth: 0 },
+    stackedRowBody: { flex: 1, gap: 4 },
+
     // generic
     bodyText: {
       fontFamily: editorialFonts.sans,

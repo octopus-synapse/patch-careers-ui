@@ -12,7 +12,16 @@ import { logout } from "@patch-careers/auth";
 import { useToast } from "@patch-careers/ui";
 import { SettingsCard, SettingsRow, UnderlineInput } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
-import { AtSign, Download, KeyRound, Link2, Mail, Trash2, UserMinus } from "lucide-react-native";
+import {
+  AtSign,
+  Download,
+  KeyRound,
+  Link2,
+  Mail,
+  ShieldCheck,
+  Trash2,
+  UserMinus,
+} from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
@@ -118,6 +127,12 @@ export default function AccountScreen(): ReactElement {
           label={t("settings.account.passwordRow")}
           value="••••••••"
           onPress={() => router.push("/settings/change-password")}
+        />
+        <SettingsRow
+          dense={dense}
+          icon={isDesktopWeb ? undefined : ShieldCheck}
+          label={t("settings.account.twoFactorRow")}
+          onPress={() => router.push("/settings/two-factor")}
         />
         <SettingsRow
           dense={dense}

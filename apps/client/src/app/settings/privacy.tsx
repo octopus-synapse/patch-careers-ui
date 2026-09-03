@@ -7,7 +7,7 @@ import {
 import { YStack } from "@patch-careers/ui";
 import { SettingsCard, SettingsRow, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
-import { Ban } from "lucide-react-native";
+import { Ban, ScrollText } from "lucide-react-native";
 import { type ReactElement, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
@@ -104,6 +104,11 @@ export default function PrivacyScreen(): ReactElement {
           />
           <SettingsRow
             dense
+            label={t("settings.privacy.consentRow")}
+            onPress={() => router.push("/settings/consent")}
+          />
+          <SettingsRow
+            dense
             label={t("settings.privacy.blockedRow")}
             onPress={() => router.push("/settings/blocked")}
           />
@@ -142,6 +147,11 @@ export default function PrivacyScreen(): ReactElement {
           <SettingsCard>
             <SettingsRow
               first
+              icon={ScrollText}
+              label={t("settings.privacy.consentRow")}
+              onPress={() => router.push("/settings/consent")}
+            />
+            <SettingsRow
               icon={Ban}
               label={t("settings.privacy.blockedRow")}
               onPress={() => router.push("/settings/blocked")}
