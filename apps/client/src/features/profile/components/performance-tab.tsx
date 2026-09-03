@@ -16,9 +16,10 @@ import {
   ScoreExplainSheet,
   ScoreRing,
   scoreGrade,
+  scoreInk,
   scoreTone,
   Text,
-  toneToEditorialKey,
+  useThemeName,
   XStack,
   YStack,
 } from "@patch-careers/ui";
@@ -271,7 +272,7 @@ function ScoreBulletRow({
   score: number;
 }): ReactElement {
   const palette = useEditorialPalette();
-  const color = palette[toneToEditorialKey(scoreTone(score))];
+  const color = scoreInk(score, useThemeName());
   return (
     <XStack alignItems="center" gap={12} paddingVertical={4}>
       <YStack flex={1} gap={1}>

@@ -1,24 +1,35 @@
 /**
- * Profile tab — the user's master-resume home, now a single page (the old
- * Instagram-style sub-tabs are gone: Currículos became its own bottom-bar
- * tab and Desempenho became the score hero's sheet):
+ * Profile tab — the user's master-resume home.
  *
- *   identity header → score hero (fixed scores; tap = Desempenho sheet) →
- *   Fit Profile card (unlocks per-job Match) → master sections (add via the
- *   floating "Adicionar ao perfil" CTA, tap to edit, swipe to delete).
+ * Two layouts, one screen:
  *
- * The old completeness card and public-profile link are gone by design.
+ * MOBILE / NARROW WEB (unchanged): identity header → score hero (tap =
+ * Desempenho sheet) → Fit Profile card → the master sections as an INDEX,
+ * each row pushing its own detail screen, with the floating add CTA.
+ *
+ * DESKTOP WEB: two columns starting at the SAME top edge — the cover and the
+ * rail's first card begin on one line. The main column is a stack of cards
+ * (masthead, identity, one per section) with every item rendered OPEN, so
+ * filling in a phone number no longer costs three navigations. The rail
+ * carries the resume language, the public URL, the score, and the sections
+ * still missing — what used to be invisible until you went looking.
+ *
+ * The drill-down routes stay: they are what mobile and narrow web use, and
+ * they are still linkable.
  */
 
 import { getV1MeScoresQueryKey, getV1ResumesQueryKey } from "@patch-careers/api-client";
+import type { Locale } from "@patch-careers/i18n";
 import { EmptyState } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useQueryClient } from "@tanstack/react-query";
 import * as ImagePicker from "expo-image-picker";
 import { TriangleAlert } from "lucide-react-native";
-import { type ReactElement, useState } from "react";
+import { type ReactElement, useRef, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
+import { ResumeQualityPanel, resumeLanguageToLocale, useMasterResumeId } from "@/features/resumes";
+import { ResumeSectionsManager, type SectionsManagerHandle } from "@/features/sections";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useI18n } from "@/providers/i18n-provider";
@@ -26,12 +37,18 @@ import { useProfile, useProfileCompleteness, useProfileMutations } from "../hook
 import { useProfileCover } from "../hooks/use-profile-cover";
 import { usePf } from "../lib/styles";
 import { FitProfileCard } from "./fit-profile-card";
+import { IdentityPanelCard } from "./identity-panel-card";
 import { ImageActionSheet } from "./image-action-sheet";
 import { MasterAddSection } from "./master-add-section";
 import { MasterSectionsTab } from "./master-sections-tab";
 import { PerformanceSheet } from "./performance-sheet";
+import { ProfileGapsCard } from "./profile-gaps-card";
 import { ProfileHeader } from "./profile-header";
+import { ProfileLanguageCard } from "./profile-language-card";
+import { ProfileScoreCard } from "./profile-score-card";
+import { ProfileScoreDialog } from "./profile-score-dialog";
 import { ProfileSkeleton } from "./profile-skeleton";
+import { PublicProfileCard } from "./public-profile-card";
 import { ResumePreviewCard } from "./resume-preview-card";
 import { ScoreHero } from "./score-hero";
 
@@ -55,6 +72,19 @@ export function ProfileScreen(): ReactElement {
   const [photoSheetOpen, setPhotoSheetOpen] = useState(false);
   const [coverSheetOpen, setCoverSheetOpen] = useState(false);
   const [performanceOpen, setPerformanceOpen] = useState(false);
+  const [scoreOpen, setScoreOpen] = useState(false);
+  const { resumeId, language, updatedAt } = useMasterResumeId();
+  // The quality panel's "fix this" used to `router.push` into a detail route.
+  // On desktop the sections are already open on this page, so it opens the
+  // item in place through the manager instead of navigating away from it.
+  const sectionsRef = useRef<SectionsManagerHandle>(null);
+  // Which language the page reads the resume in. The rail's switcher only
+  // moves this — it does not write to the resume, because `UpdateResumeRequest`
+  // carries no `language`. What it does change is real: the section titles and
+  // add labels come back from the backend in this locale.
+  const { locale: uiLocale } = useI18n();
+  const [localeOverride, setLocaleOverride] = useState<Locale | null>(null);
+  const sectionsLocale: Locale = localeOverride ?? resumeLanguageToLocale(language) ?? uiLocale;
 
   // Pull-to-refresh re-pulls the profile, the resume list (which drives the
   // master sections, completeness gauge, and quality panel), and the scores.
@@ -152,7 +182,7 @@ export function ProfileScreen(): ReactElement {
         contentContainerStyle={[
           pf.scroll,
           {
-            paddingTop: navInset,
+            paddingTop: isDesktopWeb ? navInset + 36 : navInset,
             paddingBottom: isDesktopWeb ? 56 : tabBarHeight + floatingAddHeight,
           },
         ]}
@@ -165,30 +195,69 @@ export function ProfileScreen(): ReactElement {
           />
         }
       >
-        <ProfileHeader
-          profile={profile}
-          onChangePhoto={() => setPhotoSheetOpen(true)}
-          onChangeCover={() => setCoverSheetOpen(true)}
-          coverURL={coverURL}
-          uploading={photoPending}
-          coverUploading={coverPending}
-          completeness={completeness}
-        />
-
         {isDesktopWeb ? (
           <View style={pf.bodyWide}>
             <View style={pf.mainColWide}>
-              <MasterSectionsTab profile={profile} showPreview={false} />
-              <MasterAddSection variant="ink" />
+              {/* Inside a card the completeness ring would sit on the avatar of
+                  the first card of a column — the score already has a panel of
+                  its own in the rail, and two gauges for the same idea read as
+                  two different numbers. */}
+              <ProfileHeader
+                variant="card"
+                profile={profile}
+                onChangePhoto={() => setPhotoSheetOpen(true)}
+                onChangeCover={() => setCoverSheetOpen(true)}
+                coverURL={coverURL}
+                uploading={photoPending}
+                coverUploading={coverPending}
+                completeness={null}
+              />
+              <IdentityPanelCard />
+              <ResumeSectionsManager
+                ref={sectionsRef}
+                resumeId={resumeId}
+                locale={sectionsLocale}
+                variant="expanded"
+                addPlacement="perSection"
+              />
+              {/* Closes the column: what the robot complained about, and a way
+                  straight to the item that caused it. Without this the desktop
+                  loses the "fix this" deep link that the mobile index has. */}
+              {resumeId ? (
+                <ResumeQualityPanel
+                  resumeId={resumeId}
+                  {...(updatedAt ? { updatedAt } : {})}
+                  onOpenIssue={(sectionKey, itemIndex) =>
+                    sectionsRef.current?.openItem(sectionKey, itemIndex)
+                  }
+                />
+              ) : null}
             </View>
+
             <View style={pf.railWide}>
-              <ScoreHero onOpen={() => setPerformanceOpen(true)} />
+              <ProfileLanguageCard value={sectionsLocale} onChange={setLocaleOverride} />
+              <PublicProfileCard username={profile?.username ?? null} />
+              <ProfileScoreCard onOpen={() => setScoreOpen(true)} />
+              <ProfileGapsCard resumeId={resumeId} locale={sectionsLocale} />
+              {/* The generic door, after the specific ones: the rail names the
+                  four sections worth doing next, and this is for everything
+                  else. */}
+              <MasterAddSection variant="ink" />
               <FitProfileCard />
               <ResumePreviewCard />
             </View>
           </View>
         ) : (
           <>
+            <ProfileHeader
+              profile={profile}
+              onChangePhoto={() => setPhotoSheetOpen(true)}
+              onChangeCover={() => setCoverSheetOpen(true)}
+              coverURL={coverURL}
+              uploading={photoPending}
+              coverUploading={coverPending}
+              completeness={completeness}
+            />
             <ScoreHero onOpen={() => setPerformanceOpen(true)} />
             <FitProfileCard />
 
@@ -202,6 +271,12 @@ export function ProfileScreen(): ReactElement {
           <MasterAddSection />
         </View>
       )}
+
+      <ProfileScoreDialog
+        open={scoreOpen}
+        onOpenChange={setScoreOpen}
+        onOpenPerformance={() => setPerformanceOpen(true)}
+      />
 
       <PerformanceSheet open={performanceOpen} onOpenChange={setPerformanceOpen} />
 

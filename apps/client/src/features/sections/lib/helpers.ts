@@ -2,7 +2,8 @@ import { type EnumName, labelFor } from "@patch-careers/api-client";
 import { formatDate, type Locale } from "@patch-careers/i18n";
 import type { SectionField, SectionItem } from "../types";
 
-const DATE_LIKE = /^\d{4}-\d{2}(-\d{2})?$/;
+/** A stored date: "2024-03" or "2024-03-01". Exported for `item-detail`. */
+export const DATE_LIKE = /^\d{4}-\d{2}(-\d{2})?$/;
 
 /** Localize saved content for a card: enum fields render their dictionary
  *  label (the stored value is SCREAMING_CASE), everything else stays as-is.
@@ -46,7 +47,8 @@ export function monthLabel(
   return formatDate(new Date(year, month - 1, 1), locale, opts);
 }
 
-function stringifyValue(value: unknown): string {
+/** Content values are `unknown`; anything that is not a scalar is not text. */
+export function stringifyValue(value: unknown): string {
   if (value === null || value === undefined) return "";
   if (typeof value === "string") return value;
   if (typeof value === "number" || typeof value === "boolean") return String(value);

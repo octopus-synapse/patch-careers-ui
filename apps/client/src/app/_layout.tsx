@@ -233,6 +233,22 @@ export default function RootLayout(): ReactElement {
                               name="fit-questionnaire"
                               options={{ headerShown: false, animation: "slide_from_bottom" }}
                             />
+                            {/* Public: readable signed out, so it renders full
+                              bleed and wears its own landing bar. Inside the
+                              content column it would be a 1240px card floating
+                              on paper for a visitor with no app around it. */}
+                            <Stack.Screen
+                              name="u/[username]"
+                              options={{
+                                headerShown: false,
+                                contentStyle: {
+                                  backgroundColor: palette.bg,
+                                  width: "100%",
+                                  maxWidth: undefined,
+                                  alignSelf: "stretch",
+                                },
+                              }}
+                            />
                             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                             <Stack.Screen name="reset-password" options={{ headerShown: false }} />
                             <Stack.Screen name="oauth-callback" options={{ headerShown: false }} />

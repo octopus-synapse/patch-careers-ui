@@ -20,8 +20,10 @@ export {
 } from "./components/resume-sections-manager";
 export { RolePicker, type RolePickerProps } from "./components/role-picker";
 export { SectionCard } from "./components/section-card";
+export { SectionDetailRow } from "./components/section-detail-row";
 export { SectionForm } from "./components/section-form";
 export { SectionItemEditor } from "./components/section-item-editor";
+export { SectionPanelCard } from "./components/section-panel-card";
 export {
   type ResumeSections,
   type SectionGroupInfo,
@@ -29,6 +31,7 @@ export {
 } from "./hooks/use-resume-sections";
 export { useSectionItemMutations } from "./hooks/use-section-item-mutations";
 export { itemCardParts, itemSummary, monthLabel, parseYearMonth } from "./lib/helpers";
+export { type ItemDetail, itemDetail } from "./lib/item-detail";
 export { fieldsFromDefinition } from "./lib/section-definition";
 export type { MergedSection } from "./lib/section-visibility";
 export { eyebrow, useEd, webNoOutline } from "./lib/styles";

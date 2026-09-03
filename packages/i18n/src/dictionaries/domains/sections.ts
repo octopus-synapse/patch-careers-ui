@@ -10,6 +10,11 @@ export const sectionsPtBR: TranslationDict = {
   back: "Voltar",
   loadError: "Não foi possível carregar as seções do currículo.",
   atCapacity: "Limite de itens atingido",
+  // An empty end date is not missing data — it means the entry is current.
+  present: "Presente",
+  item: {
+    editA11y: "Editar {title}",
+  },
   links: {
     kindPickerTitle: "Tipo de link",
     urlLabel: "Endereço (URL)",
@@ -39,6 +44,10 @@ export const sectionsEn: TranslationDict = {
   back: "Back",
   loadError: "Could not load the resume sections.",
   atCapacity: "Item limit reached",
+  present: "Present",
+  item: {
+    editA11y: "Edit {title}",
+  },
   links: {
     kindPickerTitle: "Link type",
     urlLabel: "URL",

@@ -48,6 +48,13 @@ type ThreadSelection = {
 };
 
 const INBOX_RAIL_WIDTH = 320;
+/**
+ * The thread pane is `flex: 1`, so it absorbed the whole gain when the desktop
+ * content column went 960 → 1240. Chat is a narrow-measure surface — a bubble
+ * capped at 78% of a 920px pane runs ~720px, well past a comfortable line — so
+ * the pane centres its own column instead of filling.
+ */
+const THREAD_MAX_WIDTH = 760;
 
 function selectionFromConversation(conversation: Conversation, name: string): ThreadSelection {
   return {
@@ -191,13 +198,15 @@ export function MessagesSplitView(): ReactElement {
       <YStack width={1} backgroundColor={editorialPalette.hairline} />
 
       {/* Thread pane */}
-      <YStack flex={1} backgroundColor={editorialPalette.bg}>
-        {selection ? (
-          // Remount per person so the thread hook re-arms cleanly.
-          <ThreadPane key={selection.recipientId ?? selection.id} selection={selection} />
-        ) : (
-          <ThreadEmptyState />
-        )}
+      <YStack flex={1} alignItems="center" backgroundColor={editorialPalette.bg}>
+        <YStack width="100%" maxWidth={THREAD_MAX_WIDTH} flex={1}>
+          {selection ? (
+            // Remount per person so the thread hook re-arms cleanly.
+            <ThreadPane key={selection.recipientId ?? selection.id} selection={selection} />
+          ) : (
+            <ThreadEmptyState />
+          )}
+        </YStack>
       </YStack>
     </XStack>
   );

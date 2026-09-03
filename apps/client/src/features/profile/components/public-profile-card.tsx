@@ -1,0 +1,116 @@
+/**
+ * <PublicProfileCard> — the URL other people see, and a button to copy it.
+ *
+ * No pencil. The action here is copy; changing the handle is a different,
+ * rate-limited operation that already has a screen with the rules and the
+ * cooldown on it (`/settings/username`), and putting an edit affordance on the
+ * URL would promise an inline edit that cannot happen.
+ *
+ * The confirmation is the icon becoming a check plus a line under the URL,
+ * held for a beat — and it is only shown when the copy actually succeeded.
+ * `navigator.clipboard` needs a secure context, so on a plain http:// dev
+ * address it can fail, and a card that says "Copiado." over an empty clipboard
+ * is worse than one that admits it.
+ */
+
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import { useRouter } from "expo-router";
+import { ArrowRight, Check, Copy } from "lucide-react-native";
+import { type ReactElement, useEffect, useRef, useState } from "react";
+import { Pressable, Text, View } from "react-native";
+import { useFeedback } from "@/hooks/use-feedback";
+import { copyToClipboard } from "@/lib/clipboard";
+import { publicProfileDisplayUrl, publicProfileUrl } from "@/lib/public-profile-url";
+import { useI18n } from "@/providers/i18n-provider";
+import { usePf } from "../lib/styles";
+
+/** How long the "Copiado." flag stays up. Long enough to read, short enough
+ *  that a second copy still reads as a second copy. */
+const COPIED_MS = 1600;
+
+export function PublicProfileCard({ username }: { username: string | null }): ReactElement {
+  const { t } = useI18n();
+  const pf = usePf();
+  const palette = useEditorialPalette();
+  const router = useRouter();
+  const feedback = useFeedback();
+  const [copied, setCopied] = useState(false);
+  const [active, setActive] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    [],
+  );
+
+  const copy = async (): Promise<void> => {
+    if (!username) return;
+    const ok = await copyToClipboard(publicProfileUrl(username));
+    if (!ok) {
+      feedback.warning(t("profile.publicProfile.copyFailed"));
+      return;
+    }
+    feedback.success(t("profile.publicProfile.copied"));
+    setCopied(true);
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => setCopied(false), COPIED_MS);
+  };
+
+  return (
+    <View style={pf.railCard}>
+      <View style={pf.railCardHead}>
+        <Text style={pf.railCardTitle} accessibilityRole="header">
+          {t("profile.publicProfile.title")}
+        </Text>
+        {username ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("profile.publicProfile.copyA11y")}
+            onPress={() => void copy()}
+            onHoverIn={() => setActive(true)}
+            onHoverOut={() => setActive(false)}
+            onFocus={() => setActive(true)}
+            onBlur={() => setActive(false)}
+            style={[pf.railCardAction, active && pf.railCardActionActive]}
+          >
+            {copied ? (
+              <Check size={16} color={palette.accent} strokeWidth={2.2} />
+            ) : (
+              <Copy size={16} color={palette.muted} strokeWidth={1.9} />
+            )}
+          </Pressable>
+        ) : null}
+      </View>
+
+      {username ? (
+        <>
+          <Text style={pf.publicUrl} selectable>
+            {publicProfileDisplayUrl(username)}
+          </Text>
+          {copied ? <Text style={pf.publicCopied}>{t("profile.publicProfile.copied")}</Text> : null}
+        </>
+      ) : (
+        <>
+          <Text style={pf.publicHint}>{t("profile.publicProfile.noUsername")}</Text>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("profile.publicProfile.chooseUsername")}
+            onPress={() => router.push("/settings/username")}
+            onHoverIn={() => setActive(true)}
+            onHoverOut={() => setActive(false)}
+            onFocus={() => setActive(true)}
+            onBlur={() => setActive(false)}
+            style={[pf.quietLink, pf.publicCta]}
+          >
+            <Text style={[pf.quietLinkLabel, active && { color: palette.ink }]}>
+              {t("profile.publicProfile.chooseUsername")}
+            </Text>
+            <ArrowRight size={13} color={active ? palette.ink : palette.muted} strokeWidth={2.2} />
+          </Pressable>
+        </>
+      )}
+    </View>
+  );
+}

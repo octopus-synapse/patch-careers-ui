@@ -20,7 +20,7 @@ import {
 } from "@patch-careers/tokens";
 import { Sheet as TamaguiSheet } from "@tamagui/sheet";
 import { X } from "lucide-react-native";
-import type { ComponentType, ReactNode } from "react";
+import { type ComponentType, type ReactNode, useEffect } from "react";
 import {
   KeyboardAvoidingView,
   Modal,
@@ -113,6 +113,20 @@ export function Sheet({
   const styles = stylesByTheme[useThemeName()];
   const insets = useSafeAreaInsets();
   const close = () => onOpenChange?.(false);
+
+  // RN Web never fires `onRequestClose` for Escape — it only wires it to the
+  // Android back button — so a centered card modal on the web stayed open on
+  // a key every desktop user expects to work. Listening here fixes it for
+  // every dialog built on Sheet at once, instead of each one hand-rolling the
+  // listener (which is what nav-bar/preferences-modal ended up doing).
+  useEffect(() => {
+    if (!open || typeof document === "undefined") return;
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === "Escape") onOpenChange?.(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, onOpenChange]);
 
   if (Platform.OS === "web" || presentation === "card") {
     return (

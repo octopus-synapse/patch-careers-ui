@@ -3,11 +3,11 @@
  * minimalist profile-completeness gauge. The score is the backend-defined
  * `completenessScore` (required-section presence drives it down — a missing
  * high-value section like experience lowers it). Band color follows the
- * shared score ramp (`scoreTone` → `toneToEditorialKey`: success / accent /
+ * shared score ramp (`scoreInk`: green / amber / orange /
  * warn / danger), consistent with every other score in the app. The avatar is
  * rendered as `children` in the center; the arc overlays without affecting layout.
  */
-import { arcDashOffset, scoreArcGeometry, scoreTone, toneToEditorialKey } from "@patch-careers/ui";
+import { arcDashOffset, scoreArcGeometry, scoreInk, useThemeName } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement, ReactNode } from "react";
 import { View } from "react-native";
@@ -31,7 +31,7 @@ export function CompletenessRing({
   const clamped = Math.max(0, Math.min(100, Math.round(percent)));
   const { center, r, circumference } = scoreArcGeometry(ringSize, strokeWidth);
   const offset = arcDashOffset(circumference, clamped / 100);
-  const color = palette[toneToEditorialKey(scoreTone(clamped))];
+  const color = scoreInk(clamped, useThemeName());
 
   return (
     <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center" }}>

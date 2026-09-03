@@ -98,6 +98,7 @@ export function AddSectionFlowModal({
   visible,
   onClose,
   catalog,
+  initialPick,
   onCreate,
   isPending,
   t,
@@ -105,6 +106,12 @@ export function AddSectionFlowModal({
   visible: boolean;
   onClose: () => void;
   catalog: MergedSection[];
+  /**
+   * Skip the catalog step: the caller already knows which section is being
+   * added to (a card's own "Adicionar experiência"). Mount the modal keyed by
+   * this so the seed applies — it is only read on mount.
+   */
+  initialPick?: MergedSection | undefined;
   /** Persist a new item for the picked type; resolves once committed. */
   onCreate: (section: MergedSection, item: SectionItem) => Promise<void>;
   isPending: boolean;
@@ -113,17 +120,17 @@ export function AddSectionFlowModal({
   const ed = useEd();
   const styles = stylesByTheme[useThemeName()];
   const authTokens = useEditorialPalette();
-  const [picked, setPicked] = useState<MergedSection | null>(null);
+  const [picked, setPicked] = useState<MergedSection | null>(initialPick ?? null);
 
   const close = (): void => {
-    setPicked(null);
+    setPicked(initialPick ?? null);
     onClose();
   };
 
   const save = async (item: SectionItem): Promise<void> => {
     if (!picked) return;
     await onCreate(picked, item);
-    setPicked(null);
+    setPicked(initialPick ?? null);
   };
 
   return (
@@ -142,7 +149,9 @@ export function AddSectionFlowModal({
         <View style={ed.editorModalCard}>
           <View style={ed.editorModalHeader}>
             <View style={styles.headerLead}>
-              {picked ? (
+              {/* No back arrow when the catalog was skipped: "back" would land
+                  on a one-row list that only leads here again. */}
+              {picked && !initialPick ? (
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={t("common.back")}

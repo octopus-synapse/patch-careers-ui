@@ -7,8 +7,15 @@
  *   - tap on an item   → edit modal (the shared SectionItemModal);
  *   - swipe (native) / hover trash (web) → real delete behind the editorial
  *     ConfirmDialog;
- *   - ONE pinned add box at the end → AddSectionFlowModal (catalog → form),
- *     the only way to add an item, even to an existing section.
+ *   - add → AddSectionFlowModal (catalog → form).
+ *
+ * ONE add affordance per surface, but which one depends on the variant. The
+ * flat and grouped variants pin a single box at the end: they are indexes, the
+ * list is short, and the box is always in view. The `expanded` variant (the
+ * desktop profile) renders every item open, so a section card can run hundreds
+ * of pixels tall — a lone box far below reads as the end of the page, not as
+ * the way into the section above it. There the global door moves to the rail
+ * and each card carries its own scoped one.
  */
 
 import type { Locale } from "@patch-careers/i18n";
@@ -35,8 +42,10 @@ import type { SectionItem } from "../types";
 import { AddSectionFlowModal } from "./add-section-flow-modal";
 import { LinksCard } from "./links-card";
 import { SectionCard } from "./section-card";
+import { SectionDetailRow } from "./section-detail-row";
 import { SectionGroup } from "./section-group";
 import { SectionItemModal } from "./section-item-modal";
+import { SectionPanelCard } from "./section-panel-card";
 
 const LINKS_SECTION_KEY = "links_v1";
 
@@ -129,7 +138,13 @@ export type ResumeSectionsManagerProps = {
    * screen. "grouped" = the Profile tab's supersection cards (links rendered as
    * a dedicated card, standalone sections each in their own card).
    */
-  variant?: "flat" | "grouped";
+  variant?: "flat" | "grouped" | "expanded";
+  /**
+   * Where the add affordance lives. "footer" (default) is the single pinned
+   * box; "perSection" gives each card its own and drops the footer — the
+   * caller is then responsible for a global entry point.
+   */
+  addPlacement?: "footer" | "perSection";
   /**
    * Deep-link target: once the sections load, open this section's editor
    * (or its add flow when empty). Used by `?section=` and the quality
@@ -146,7 +161,15 @@ export type ResumeSectionsManagerProps = {
 
 export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSectionsManagerProps>(
   function ResumeSectionsManager(
-    { resumeId, locale, variant = "flat", autoOpenSectionKey, onAutoOpenHandled, onlySection },
+    {
+      resumeId,
+      locale,
+      variant = "flat",
+      addPlacement = "footer",
+      autoOpenSectionKey,
+      onAutoOpenHandled,
+      onlySection,
+    },
     ref,
   ): ReactElement {
     const ed = useEd();
@@ -157,6 +180,8 @@ export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSec
 
     const [editing, setEditing] = useState<EditingState | null>(null);
     const [addOpen, setAddOpen] = useState(false);
+    /** Set when the add came from a card's own button, so the catalog step is skipped. */
+    const [addingSection, setAddingSection] = useState<MergedSection | null>(null);
     const [confirm, setConfirm] = useState<ConfirmState | null>(null);
 
     // Open a section's editor by key. The quality issue's `context.sectionKey`
@@ -247,6 +272,89 @@ export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSec
     // it directly (rather than offering the whole catalog).
     const addCatalog = onlySection ? catalog.filter((c) => inScope(c.key)) : catalog;
 
+    const openAddFor = (section: MergedSection): void => {
+      setAddingSection(section);
+      setAddOpen(true);
+    };
+    const closeAdd = (): void => {
+      setAddOpen(false);
+      setAddingSection(null);
+    };
+
+    if (variant === "expanded") {
+      return (
+        <YStack gap={16}>
+          {visible.map((section) => (
+            <SectionPanelCard
+              key={section.key}
+              title={section.title}
+              addLabel={section.atCapacity ? undefined : section.addLabel}
+              onAdd={section.atCapacity ? undefined : () => openAddFor(section)}
+            >
+              {section.key === LINKS_SECTION_KEY ? (
+                <LinksCard
+                  section={section}
+                  onEditItem={(item, index) => editItem(section, item, index)}
+                  onDeleteItem={(item, index) => deleteItem(section, item, index)}
+                  deleteLabel={removeLabel}
+                />
+              ) : (
+                section.items.map((item, index) => (
+                  <SectionDetailRow
+                    key={item.id ?? `${section.key}-${index}`}
+                    item={item}
+                    fields={section.descriptor.fields ?? undefined}
+                    onEdit={() => editItem(section, item, index)}
+                    isFirst={index === 0}
+                    isLast={index === section.items.length - 1}
+                  />
+                ))
+              )}
+            </SectionPanelCard>
+          ))}
+
+          {editing ? (
+            <EditItemModal
+              key={editing.item.id ?? `${editing.section.key}-${editing.index}`}
+              editing={editing}
+              isPending={isPending}
+              onSave={saveEdit}
+              onRequestDelete={() => {
+                const current = editing;
+                setEditing(null);
+                setConfirm(current);
+              }}
+              onClose={() => setEditing(null)}
+              t={t}
+            />
+          ) : null}
+
+          <AddSectionFlowModal
+            key={addingSection?.key ?? "catalog"}
+            visible={addOpen}
+            onClose={closeAdd}
+            catalog={addCatalog}
+            initialPick={addingSection ?? undefined}
+            onCreate={createItem}
+            isPending={isPending}
+            t={t}
+          />
+
+          <ConfirmDialog
+            open={confirm !== null}
+            onOpenChange={(open) => {
+              if (!open) setConfirm(null);
+            }}
+            title={t("sections.deleteConfirm.title")}
+            description={t("sections.deleteConfirm.description")}
+            danger
+            icon={Trash2}
+            onConfirm={() => void confirmDelete()}
+          />
+        </YStack>
+      );
+    }
+
     return (
       <YStack gap={26}>
         {variant === "grouped" ? (
@@ -289,17 +397,20 @@ export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSec
           ))
         )}
 
-        {/* The single add affordance — even a 2nd item of an existing section
-          comes through here. */}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("sections.addToResume")}
-          onPress={() => setAddOpen(true)}
-          style={ed.addSection}
-        >
-          <Plus size={15} color={authTokens.ink} strokeWidth={2} />
-          <Text style={ed.addSectionLabel}>{t("sections.addToResume")}</Text>
-        </Pressable>
+        {/* The pinned add affordance for the index variants — even a 2nd item
+          of an existing section comes through here. `expanded` returns above
+          with its own per-card doors. */}
+        {addPlacement === "footer" ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("sections.addToResume")}
+            onPress={() => setAddOpen(true)}
+            style={ed.addSection}
+          >
+            <Plus size={15} color={authTokens.ink} strokeWidth={2} />
+            <Text style={ed.addSectionLabel}>{t("sections.addToResume")}</Text>
+          </Pressable>
+        ) : null}
 
         {editing ? (
           <EditItemModal

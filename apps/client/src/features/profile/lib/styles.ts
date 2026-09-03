@@ -19,13 +19,232 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     // content scrolling behind it); `bottom` is set inline from the tab height.
     floatingAdd: { position: "absolute", left: 22, right: 22 },
 
-    // Desktop web (≥1024): the page reads left-to-right — wide identity band
-    // up top (a masthead closed by a hairline), then a two-column body
-    // (sections main + insights rail). The floating CTA becomes an inline ink
-    // slab under the sections list.
-    bodyWide: { flexDirection: "row", alignItems: "flex-start", gap: 36 },
-    mainColWide: { flex: 1, minWidth: 0, gap: 26 },
-    railWide: { width: 320, gap: 20 },
+    // Desktop web (≥1024): two columns starting at the SAME top edge — the
+    // cover and the rail's first card begin on one line. The header used to
+    // sit above the split, which pushed the rail down by the height of the
+    // masthead and left the top-right of the page empty.
+    //
+    // Everything in both columns is a card on the page's paper: the header,
+    // each section, each rail panel. Separation is the frame, not the gap.
+    bodyWide: { flexDirection: "row", alignItems: "flex-start", gap: 24 },
+    mainColWide: { flex: 1, minWidth: 0, gap: 16 },
+    railWide: { width: 300, gap: 16 },
+
+    /** The shared card frame — same border and paper as every rail panel. */
+    cardWide: {
+      borderWidth: 1,
+      borderColor: p.hairline,
+      borderRadius: 20,
+      backgroundColor: p.panel,
+    },
+    /** Card padding for the main column's blocks. */
+    cardBodyWide: { paddingHorizontal: 36, paddingVertical: 32 },
+    railCard: {
+      borderWidth: 1,
+      borderColor: p.hairline,
+      borderRadius: 20,
+      backgroundColor: p.panel,
+      padding: 20,
+    },
+    railCardTitle: {
+      fontFamily: fonts.serif,
+      fontSize: 17,
+      lineHeight: 17,
+      letterSpacing: -0.2,
+      color: p.ink,
+    },
+    railCardHead: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      justifyContent: "space-between",
+      gap: 12,
+    },
+    railCardAction: {
+      width: 32,
+      height: 32,
+      marginTop: -6,
+      marginRight: -6,
+      borderRadius: 16,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    railCardActionActive: { backgroundColor: p.bg },
+
+    // ── Identity, rendered open (desktop main column) ──
+    // The heading is sans, not the page serif: the serif is spoken by the
+    // person's name in the masthead, and repeating it on every card title
+    // flattened "who this is" against "what is in here".
+    panelTitle: {
+      fontFamily: fonts.sans,
+      fontSize: 22,
+      fontWeight: "600",
+      letterSpacing: -0.4,
+      color: p.ink,
+      marginBottom: 40,
+    },
+    idRow: {
+      flexDirection: "row",
+      alignItems: "baseline",
+      gap: 20,
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: p.hairline,
+    },
+    idRowLast: { borderBottomWidth: 0 },
+    // A fixed label column is what makes five unrelated values read as one
+    // table instead of five sentences.
+    idLabel: { width: 104, fontFamily: fonts.sans, fontSize: 12.5, color: p.muted },
+    idValue: { flex: 1, fontFamily: fonts.sans, fontSize: 14.5, lineHeight: 21, color: p.ink },
+    idGaps: { marginTop: 32 },
+    gapList: { marginTop: 16, gap: 7 },
+    gapRow: { flexDirection: "row", gap: 8 },
+    gapDash: { fontFamily: fonts.sans, fontSize: 13, color: p.subtle },
+    gapText: { flex: 1, fontFamily: fonts.sans, fontSize: 13, lineHeight: 19, color: p.muted },
+
+    // ── Score, rail card ──
+    scoreRow: { marginTop: 24, flexDirection: "row", alignItems: "center", gap: 16 },
+    scoreLines: { flex: 1, minWidth: 0 },
+    scoreLineSplit: {
+      marginTop: 16,
+      paddingTop: 16,
+      borderTopWidth: 1,
+      borderTopColor: p.hairline,
+    },
+    scoreLineHead: { flexDirection: "row", alignItems: "baseline", gap: 8 },
+    scoreLineLabel: {
+      flex: 1,
+      minWidth: 0,
+      fontFamily: fonts.sans,
+      fontSize: 12.5,
+      fontWeight: "500",
+      color: p.ink,
+    },
+    scoreLineValue: { fontFamily: fonts.serif, fontSize: 17, lineHeight: 17 },
+    scoreLineBar: { marginTop: 6 },
+    scoreEmpty: {
+      marginTop: 14,
+      fontFamily: fonts.sans,
+      fontSize: 12.5,
+      lineHeight: 18,
+      color: p.muted,
+    },
+
+    // ── Score, dialog ──
+    dialogBody: { flexDirection: "row", alignItems: "flex-start", gap: 36 },
+    dialogLeft: { flex: 1, minWidth: 0, gap: 12 },
+    dialogRight: { width: 320 },
+    /**
+     * Nesting is said by containment: Estilo is a box of one, Qualidade a box
+     * that holds its two children in a compartment. The inner rules bleed to
+     * the border, so they cut the box instead of floating inside it.
+     */
+    scoreBlock: { borderWidth: 1, borderColor: p.hairline, borderRadius: 16 },
+    scoreBlockBody: { padding: 20 },
+    scoreBlockHead: {
+      flexDirection: "row",
+      alignItems: "baseline",
+      justifyContent: "space-between",
+      gap: 16,
+    },
+    scoreBlockName: { fontFamily: fonts.sans, fontSize: 15, fontWeight: "600", color: p.ink },
+    scoreBlockValue: { fontFamily: fonts.serif, fontSize: 27, lineHeight: 27 },
+    scoreBlockWhat: {
+      marginTop: 4,
+      fontFamily: fonts.sans,
+      fontSize: 12.5,
+      lineHeight: 17,
+      color: p.muted,
+    },
+    scoreBlockBar: { marginTop: 12 },
+    scoreSub: {
+      borderTopWidth: 1,
+      borderTopColor: p.hairline,
+      paddingHorizontal: 20,
+      paddingVertical: 16,
+    },
+    scoreSubName: { fontFamily: fonts.sans, fontSize: 13, fontWeight: "500", color: p.ink },
+    scoreSubValue: { fontFamily: fonts.serif, fontSize: 20, lineHeight: 20 },
+    scoreSubBar: { marginTop: 10 },
+    dialogRingWrap: { alignItems: "center" },
+    dialogRingCaption: { marginTop: 12, fontFamily: fonts.sans, fontSize: 12.5, color: p.muted },
+    dialogRadar: { marginTop: 28 },
+    quietLink: { flexDirection: "row", alignItems: "center", gap: 6, alignSelf: "flex-start" },
+    quietLinkLabel: { fontFamily: fonts.sans, fontSize: 12.5, fontWeight: "500", color: p.muted },
+    dialogLink: { marginTop: 28 },
+
+    // ── Resume language ──
+    langPills: { marginTop: 14, flexDirection: "row", gap: 8 },
+    langPill: {
+      borderWidth: 1,
+      borderColor: p.hairline,
+      borderRadius: 999,
+      backgroundColor: p.surface,
+      paddingHorizontal: 16,
+      paddingVertical: 7,
+    },
+    langPillActive: { borderColor: p.ink, backgroundColor: p.ink },
+    langPillHover: { borderColor: p.hairlineStrong },
+    langPillLabel: { fontFamily: fonts.sans, fontSize: 13, fontWeight: "500", color: p.ink },
+    langPillLabelActive: { color: p.bg },
+    railCaption: {
+      marginTop: 12,
+      fontFamily: fonts.sans,
+      fontSize: 11.5,
+      lineHeight: 16,
+      color: p.subtle,
+    },
+
+    // ── Public profile ──
+    publicUrl: {
+      marginTop: 10,
+      fontFamily: fonts.mono,
+      fontSize: 12.5,
+      lineHeight: 18,
+      color: p.body,
+    },
+    publicCopied: { marginTop: 6, fontFamily: fonts.sans, fontSize: 11.5, color: p.accent },
+    publicHint: {
+      marginTop: 10,
+      fontFamily: fonts.sans,
+      fontSize: 12.5,
+      lineHeight: 18,
+      color: p.muted,
+    },
+    publicCta: { marginTop: 12 },
+
+    // ── "Falta no seu perfil" ──
+    gapsList: { marginTop: 12 },
+    gapsItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 12,
+      paddingVertical: 11,
+      borderTopWidth: 1,
+      borderTopColor: p.hairline,
+    },
+    gapsItemFirst: { borderTopWidth: 0 },
+    gapsItemDisabled: { opacity: 0.45 },
+    gapsItemLabel: { flex: 1, fontFamily: fonts.sans, fontSize: 13.5, color: p.ink },
+    gapsPlus: {
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    gapsPlusActive: { backgroundColor: p.ink },
+    gapsSeeAll: { marginTop: 16 },
+
+    /** Mono versalete — the page's quiet label voice ("FALTA"). */
+    smallcaps: {
+      fontFamily: fonts.mono,
+      fontSize: 10.5,
+      fontWeight: "500",
+      letterSpacing: 1.7,
+      textTransform: "uppercase",
+      color: p.subtle,
+    },
 
     // header — cover banner, then the avatar overlapping it from below.
     header: { alignItems: "center", gap: 12 },
@@ -38,6 +257,25 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       borderBottomWidth: 1,
       borderBottomColor: p.hairline,
     },
+    /**
+     * The header as a card. `overflow: "hidden"` is what rounds the cover's
+     * two top corners — the banner is the card's first child and runs edge to
+     * edge. The masthead hairline is gone: the card border already closes it,
+     * and two rules in the same place read as a mistake.
+     *
+     * Gated to desktop web by the caller: `overflow` + `borderRadius` clipping
+     * is reliable on web but flaky on Android.
+     */
+    headerCardWide: {
+      borderWidth: 1,
+      borderColor: p.hairline,
+      borderRadius: 20,
+      backgroundColor: p.panel,
+      overflow: "hidden",
+    },
+    headerCardBodyWide: { paddingHorizontal: 36, paddingBottom: 36, paddingTop: 14 },
+    /** Inside a card the banner spans the card, so it cancels no gutter. */
+    coverWrapCard: { alignSelf: "stretch" },
     // `flex-start` so the avatar's negative top margin actually lifts it over
     // the banner instead of being re-centred against the taller text block.
     headerWideRow: { flexDirection: "row", alignItems: "flex-start", gap: 30 },

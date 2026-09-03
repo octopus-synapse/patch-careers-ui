@@ -18,12 +18,22 @@ import { Platform, useWindowDimensions } from "react-native";
 export const DESKTOP_WEB_BREAKPOINT = 1024;
 
 /**
- * The centered content column. Sized for the app's single-column screens
- * (list rows, the master-resume manager) — wide enough to breathe, narrow
- * enough that rows don't stretch into unreadable lines. The bar itself is
- * full-bleed and deliberately wider: its cluster centres on the VIEWPORT.
+ * The centered content column.
+ *
+ * It was 960 while every desktop screen was a single column of rows. The
+ * profile page broke that: it runs a main column beside a fixed 300px rail
+ * that starts at the very top of the page, and at 960 the two columns fought
+ * for the same space — the cover ended up stubbier than it was designed and
+ * the score blocks squeezed.
+ *
+ * 1240 is the width the profile was designed at, and the whole app moved with
+ * it so no screen is an exception. Screens that read worse wide should cap
+ * their own measure locally rather than shrink this back.
+ *
+ * The bar itself is full-bleed and unaffected: its cluster centres on the
+ * VIEWPORT, not on this column.
  */
-export const DESKTOP_CONTENT_MAX_WIDTH = 960;
+export const DESKTOP_CONTENT_MAX_WIDTH = 1240;
 
 export function useIsDesktopWeb(): boolean {
   const { width } = useWindowDimensions();

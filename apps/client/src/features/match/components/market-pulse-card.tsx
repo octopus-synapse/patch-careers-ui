@@ -9,7 +9,7 @@
  * fit profile (the profile page's Fit card owns that invitation), or before
  * the match worker has precomputed anything.
  */
-import { scoreTone, Text, toneToEditorialKey, XStack, YStack } from "@patch-careers/ui";
+import { scoreInk, Text, useThemeName, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { ChevronRight } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
@@ -27,6 +27,7 @@ export function MarketPulseCard({
 }): ReactElement | null {
   const { t } = useI18n();
   const palette = useEditorialPalette();
+  const themeName = useThemeName();
   const fit = useFitStatus();
   const responded = fit.data?.status === "responded";
   const recs = useRecommendedJobs(responded);
@@ -85,7 +86,7 @@ export function MarketPulseCard({
             <YStack
               height={4}
               borderRadius={2}
-              backgroundColor={palette[toneToEditorialKey(scoreTone(max))]}
+              backgroundColor={scoreInk(max, themeName)}
               marginLeft={`${min}%`}
               width={`${Math.max(max - min, 4)}%`}
             />

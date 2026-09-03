@@ -3,7 +3,10 @@
  * section's item rows. Sections only reach here once they have at least one
  * item (empty sections are hidden from the view — see `section-visibility`),
  * so there is no empty-state placeholder. There is deliberately NO per-group
- * add affordance: adding goes through the manager's single bottom add box.
+ * add affordance HERE: this component serves the index variants, where the
+ * manager pins one add box at the bottom and the whole list fits above it.
+ * The desktop profile's `expanded` variant does give each section its own
+ * door — see `SectionPanelCard` and the rationale in the manager's header.
  */
 import { Text, YStack } from "@patch-careers/ui";
 import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";

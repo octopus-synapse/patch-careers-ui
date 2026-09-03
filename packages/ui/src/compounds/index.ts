@@ -32,6 +32,7 @@ export { OTPInput, type OTPInputProps } from "./otp-input";
 export { PasswordStrengthBar, type PasswordStrengthBarProps } from "./password-strength-bar";
 export { PhoneInput, type PhoneInputProps } from "./phone-input";
 export { PullToRefresh, type PullToRefreshProps } from "./pull-to-refresh";
+export { ScoreBar, type ScoreBarProps } from "./score-bar";
 export { ScoreChip, type ScoreChipProps, type ScoreChipSize } from "./score-chip";
 export {
   type ScoreExplainSection,
@@ -39,6 +40,12 @@ export {
   type ScoreExplainSheetProps,
 } from "./score-explain-sheet";
 export { ScorePanel, type ScorePanelProps } from "./score-panel";
+export {
+  SCORE_RADAR_MIN_AXES,
+  ScoreRadar,
+  type ScoreRadarAxis,
+  type ScoreRadarProps,
+} from "./score-radar";
 export { ScoreRing, type ScoreRingProps } from "./score-ring";
 export {
   SegmentedControl,
