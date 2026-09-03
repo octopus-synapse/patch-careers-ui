@@ -11,6 +11,7 @@ export { ResumeListTab } from "./components/resume-list-tab";
 export { ResumePreviewModal } from "./components/resume-preview-modal";
 export { ResumeQualityPanel } from "./components/resume-quality-panel";
 export { ResumesScreen } from "./components/resumes-screen";
+export { VersionHistorySheet } from "./components/version-history-sheet";
 export {
   type ResumeListItem,
   useMasterResumeId,

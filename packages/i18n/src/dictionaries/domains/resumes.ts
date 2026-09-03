@@ -131,6 +131,22 @@ export const resumesPtBR: TranslationDict = {
     nameLabel: "Nome do currículo",
     save: "Salvar",
   },
+  versions: {
+    action: "Histórico",
+    title: "Histórico de versões",
+    intro:
+      "Cada edição guarda uma foto do currículo. Voltar para uma delas também vira uma foto, então nada se perde.",
+    numbered: "Versão {number}",
+    empty: "Ainda não há versões guardadas.",
+    loadError: "Não foi possível carregar o histórico.",
+    restore: "Restaurar",
+    restoreA11y: "Restaurar {label}",
+    confirmTitle: "Restaurar {label}?",
+    confirmBody:
+      "O currículo volta a como estava nessa versão. O estado atual continua no histórico.",
+    restored: "Currículo restaurado.",
+    restoreFailed: "Não foi possível restaurar.",
+  },
   detail: {
     notFound: "Currículo não encontrado.",
     back: "Voltar",
@@ -280,6 +296,22 @@ export const resumesEn: TranslationDict = {
     title: "Rename resume",
     nameLabel: "Resume name",
     save: "Save",
+  },
+  versions: {
+    action: "History",
+    title: "Version history",
+    intro:
+      "Every edit keeps a snapshot. Going back to one is itself a snapshot, so nothing is lost.",
+    numbered: "Version {number}",
+    empty: "No versions saved yet.",
+    loadError: "We couldn't load the history.",
+    restore: "Restore",
+    restoreA11y: "Restore {label}",
+    confirmTitle: "Restore {label}?",
+    confirmBody:
+      "The résumé goes back to how it was in that version. The current state stays in the history.",
+    restored: "Résumé restored.",
+    restoreFailed: "We couldn't restore it.",
   },
   detail: {
     notFound: "Resume not found.",

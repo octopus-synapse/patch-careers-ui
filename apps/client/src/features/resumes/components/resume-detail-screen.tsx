@@ -8,7 +8,16 @@ import { useGetV1ExportResumeDocx, useGetV1ExportResumePdf } from "@patch-career
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { ChevronLeft, Copy, Download, FileText, Pencil, Share2, Trash2 } from "lucide-react-native";
+import {
+  ChevronLeft,
+  Copy,
+  Download,
+  FileText,
+  History,
+  Pencil,
+  Share2,
+  Trash2,
+} from "lucide-react-native";
 import { type ReactElement, useRef, useState } from "react";
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -27,6 +36,7 @@ import { RenameSheet } from "./rename-sheet";
 import { ResumePreview } from "./resume-preview";
 import { ResumeQualityPanel } from "./resume-quality-panel";
 import { ShareResumeSheet } from "./share-resume-sheet";
+import { VersionHistorySheet } from "./version-history-sheet";
 
 function ActionPill({
   label,
@@ -71,6 +81,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [duplicateOpen, setDuplicateOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [versionsOpen, setVersionsOpen] = useState(false);
   const managerRef = useRef<SectionsManagerHandle>(null);
 
   const resume = detail.data;
@@ -211,6 +222,11 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
             onPress={() => setShareOpen(true)}
           />
           <ActionPill
+            label={t("resumes.versions.action")}
+            icon={History}
+            onPress={() => setVersionsOpen(true)}
+          />
+          <ActionPill
             label={t("resumes.detail.duplicate")}
             icon={Copy}
             onPress={() => setDuplicateOpen(true)}
@@ -249,6 +265,12 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
       />
 
       <ShareResumeSheet open={shareOpen} onClose={() => setShareOpen(false)} resumeId={id} />
+
+      <VersionHistorySheet
+        open={versionsOpen}
+        onClose={() => setVersionsOpen(false)}
+        resumeId={id}
+      />
 
       <CreateResumeWizard
         visible={duplicateOpen}
