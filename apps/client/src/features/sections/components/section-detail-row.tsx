@@ -15,11 +15,12 @@
  * renders items open — so it uses hover, not swipe.
  */
 
+import type { Locale } from "@patch-careers/i18n";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Pencil } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { useI18n } from "@/providers/i18n-provider";
+import { translatorFor } from "@/providers/i18n-provider";
 import { itemDetail } from "../lib/item-detail";
 import { useEd, webNoOutline } from "../lib/styles";
 import type { SectionField, SectionItem } from "../types";
@@ -27,22 +28,25 @@ import type { SectionField, SectionItem } from "../types";
 export function SectionDetailRow({
   item,
   fields,
+  chromeLocale,
   onEdit,
   isFirst = false,
   isLast = false,
 }: {
   item: SectionItem;
   fields?: SectionField[] | undefined;
+  /** Dates, enum values and "Presente" follow the surface's chrome (ADR-0011). */
+  chromeLocale: Locale;
   onEdit: () => void;
   isFirst?: boolean;
   isLast?: boolean;
 }): ReactElement {
   const ed = useEd();
   const palette = useEditorialPalette();
-  const { locale, t } = useI18n();
+  const t = translatorFor(chromeLocale);
   const [active, setActive] = useState(false);
 
-  const detail = itemDetail(item, fields, locale, t("sections.present"));
+  const detail = itemDetail(item, fields, chromeLocale, t("sections.present"));
 
   return (
     <Pressable

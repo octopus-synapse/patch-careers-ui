@@ -200,10 +200,15 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
         <View>
           <Text style={rz.sectionLabel}>{t("resumes.detail.sections")}</Text>
         </View>
+        {/* Document surface (ADR-0011): chrome AND content in the resume's
+            own language — a resume in English says "Education". */}
         <ResumeSectionsManager
           ref={managerRef}
           resumeId={id}
-          locale={resumeLanguageToLocale(resume.language)}
+          locales={{
+            chrome: resumeLanguageToLocale(resume.language) ?? locale,
+            content: resumeLanguageToLocale(resume.language) ?? locale,
+          }}
         />
       </ScrollView>
 

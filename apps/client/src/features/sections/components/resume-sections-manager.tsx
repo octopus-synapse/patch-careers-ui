@@ -18,7 +18,6 @@
  * and each card carries its own scoped one.
  */
 
-import type { Locale } from "@patch-careers/i18n";
 import { YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Link as LinkIcon, Plus, Trash2 } from "lucide-react-native";
@@ -32,8 +31,8 @@ import {
 } from "react";
 import { ActivityIndicator, Pressable, Text } from "react-native";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { useI18n } from "@/providers/i18n-provider";
-import { useResumeSections } from "../hooks/use-resume-sections";
+import { I18nProvider, translatorFor } from "@/providers/i18n-provider";
+import { type SectionLocales, useResumeSections } from "../hooks/use-resume-sections";
 import { useSectionItemForm } from "../hooks/use-section-item-form";
 import { useSectionItemMutations } from "../hooks/use-section-item-mutations";
 import type { MergedSection } from "../lib/section-visibility";
@@ -131,8 +130,8 @@ export type SectionsManagerHandle = {
 
 export type ResumeSectionsManagerProps = {
   resumeId: string | undefined;
-  /** Localize the catalog by the resume's language (falls back to UI locale). */
-  locale?: Locale | undefined;
+  /** ADR-0011 — the surface states both locales; nothing is inferred here. */
+  locales: SectionLocales;
   /**
    * "flat" (default) = the plain small-caps groups used by the resume detail
    * screen. "grouped" = the Profile tab's supersection cards (links rendered as
@@ -159,11 +158,11 @@ export type ResumeSectionsManagerProps = {
   onlySection?: string | undefined;
 };
 
-export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSectionsManagerProps>(
-  function ResumeSectionsManager(
+const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectionsManagerProps>(
+  function ResumeSectionsManagerBody(
     {
       resumeId,
-      locale,
+      locales,
       variant = "flat",
       addPlacement = "footer",
       autoOpenSectionKey,
@@ -174,8 +173,10 @@ export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSec
   ): ReactElement {
     const ed = useEd();
     const authTokens = useEditorialPalette();
-    const { t } = useI18n();
-    const { visible, catalog, groups, isLoading, isError } = useResumeSections(resumeId, locale);
+    // Chrome (buttons, confirmations, "Presente") follows the surface's chrome
+    // locale, which on the document is the document's — not the app's.
+    const t = translatorFor(locales.chrome);
+    const { visible, catalog, groups, isLoading, isError } = useResumeSections(resumeId, locales);
     const { persistFor, isPending } = useSectionItemMutations(resumeId);
 
     const [editing, setEditing] = useState<EditingState | null>(null);
@@ -301,6 +302,7 @@ export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSec
               ) : (
                 section.items.map((item, index) => (
                   <SectionDetailRow
+                    chromeLocale={locales.chrome}
                     key={item.id ?? `${section.key}-${index}`}
                     item={item}
                     fields={section.descriptor.fields ?? undefined}
@@ -451,6 +453,25 @@ export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSec
           onConfirm={() => void confirmDelete()}
         />
       </YStack>
+    );
+  },
+);
+
+/**
+ * ADR-0011: everything the manager renders — the edit modal, the add flow,
+ * pickers, field renderers, confirmations — is chrome of ONE surface, and that
+ * surface's chrome locale is `locales.chrome`. Scoping an `I18nProvider` here
+ * means every `useI18n()` below resolves to it by construction, instead of a
+ * prop threaded through nine components that could each forget it. On the
+ * profile this equals the app's locale; on the resume detail it is the
+ * document's, so an English resume's editor says "Present".
+ */
+export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSectionsManagerProps>(
+  function ResumeSectionsManager(props, ref): ReactElement {
+    return (
+      <I18nProvider locale={props.locales.chrome}>
+        <ResumeSectionsManagerBody ref={ref} {...props} />
+      </I18nProvider>
     );
   },
 );

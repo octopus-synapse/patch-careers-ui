@@ -27,6 +27,7 @@ export { SectionPanelCard } from "./components/section-panel-card";
 export {
   type ResumeSections,
   type SectionGroupInfo,
+  type SectionLocales,
   useResumeSections,
 } from "./hooks/use-resume-sections";
 export { useSectionItemMutations } from "./hooks/use-section-item-mutations";

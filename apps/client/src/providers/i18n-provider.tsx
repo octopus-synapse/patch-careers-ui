@@ -52,6 +52,22 @@ interface I18nContextValue {
 
 const dictForLocale = (locale: Locale) => (locale === "en" ? en : ptBR);
 
+/**
+ * A translator for a locale that is NOT the interface's. ADR-0011: the
+ * document surfaces (resume detail, export) render their chrome in the
+ * document's language, which may differ from the app's. Memoized per locale —
+ * there are two.
+ */
+const translators = new Map<Locale, Translator>();
+export function translatorFor(locale: Locale): Translator {
+  let t = translators.get(locale);
+  if (!t) {
+    t = createTranslator(dictForLocale(locale), locale);
+    translators.set(locale, t);
+  }
+  return t;
+}
+
 const defaultLocale: Locale = "pt-BR";
 
 /**

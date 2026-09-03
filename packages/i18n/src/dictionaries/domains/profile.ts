@@ -193,10 +193,10 @@ export const profilePtBR: TranslationDict = {
   },
   language: {
     title: "Idioma do perfil",
-    caption: "Mostra os títulos das seções no idioma do currículo.",
+    caption: "Qual versão do seu currículo você está vendo e editando.",
     pt: "Português",
     en: "English",
-    optionA11y: "Ver o currículo em {label}",
+    optionA11y: "Ver e editar a versão em {label}",
   },
   publicProfile: {
     title: "Perfil público",
@@ -425,10 +425,10 @@ export const profileEn: TranslationDict = {
   },
   language: {
     title: "Profile language",
-    caption: "Shows the section titles in the resume's language.",
+    caption: "Which version of your resume you are viewing and editing.",
     pt: "Português",
     en: "English",
-    optionA11y: "View the resume in {label}",
+    optionA11y: "View and edit the {label} version",
   },
   publicProfile: {
     title: "Public profile",

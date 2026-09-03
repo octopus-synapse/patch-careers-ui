@@ -85,10 +85,10 @@ export function CreateResumeWizard({
   const styles = stylesByTheme[useThemeName()];
   const palette = useEditorialPalette();
   const { t, locale } = useI18n();
-  const { visible: masterSections } = useResumeSections(
-    visible ? sourceResumeId : undefined,
-    resumeLanguageToLocale(sourceLanguage),
-  );
+  const { visible: masterSections } = useResumeSections(visible ? sourceResumeId : undefined, {
+    chrome: locale,
+    content: resumeLanguageToLocale(sourceLanguage) ?? locale,
+  });
   const stylesQuery = useResumeStyles();
   const { duplicateResume, isPending } = useResumeMutations();
   // Fallback name when the user leaves the title empty ("Currículo #N").

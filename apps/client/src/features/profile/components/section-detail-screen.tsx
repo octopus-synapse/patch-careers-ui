@@ -12,17 +12,17 @@ import { ResumeSectionsManager, useResumeSections } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
 
 export function SectionDetailScreen({ sectionKey }: { sectionKey: string }): ReactElement {
-  const { t } = useI18n();
+  const { t, locale: uiLocale } = useI18n();
   const { resumeId, language } = useMasterResumeId();
-  const locale = resumeLanguageToLocale(language);
-  const { catalog } = useResumeSections(resumeId, locale);
+  const locales = { chrome: uiLocale, content: resumeLanguageToLocale(language) ?? uiLocale };
+  const { catalog } = useResumeSections(resumeId, locales);
   const title = catalog.find((c) => c.key === sectionKey)?.title ?? t("tabs.profile");
 
   return (
     <SettingsScreenShell title={title}>
       <ResumeSectionsManager
         resumeId={resumeId}
-        locale={locale}
+        locales={locales}
         variant="grouped"
         onlySection={sectionKey}
       />

@@ -1,13 +1,11 @@
 /**
- * <ProfileLanguageCard> — which language the page reads the resume in.
+ * <ProfileLanguageCard> — which VERSION of the resume the page shows and edits.
  *
- * It does NOT write anything. The plan called for it to PATCH the master
- * resume's `language`, but `UpdateResumeRequest` has no `language` field —
- * checked against the generated contract, not assumed — so there is nothing to
- * send. What it does instead is real and useful: it drives the `localeOverride`
- * handed to `useResumeSections`, and the section titles and add labels come
- * back from the backend in that language. So the card switches the view of the
- * document, which is most of what the switch was for.
+ * ADR-0011: this moves the content locale only. Section titles, field labels,
+ * dates and enum values keep following the app's language; what changes is
+ * the text the person wrote, in the version they pick. Persisting the choice
+ * to the resume arrives with `UpdateResumeRequest.language`; until then the
+ * card is the view choice, seeded from the master resume's language.
  *
  * No pencil: the two options ARE the control. The pills follow the landing's
  * chip pattern — active is filled ink, inactive is surface with a hairline.

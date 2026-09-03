@@ -23,10 +23,12 @@ export function MasterAddSection({
   /** Passed through to the button: "frosted" when floating, "ink" inline. */
   variant?: "frosted" | "ink";
 }): ReactElement {
-  const { t } = useI18n();
+  const { t, locale: uiLocale } = useI18n();
   const { resumeId, language } = useMasterResumeId();
-  const locale = resumeLanguageToLocale(language);
-  const { catalog } = useResumeSections(resumeId, locale);
+  const { catalog } = useResumeSections(resumeId, {
+    chrome: uiLocale,
+    content: resumeLanguageToLocale(language) ?? uiLocale,
+  });
   const { persistFor, isPending } = useSectionItemMutations(resumeId);
   const [addOpen, setAddOpen] = useState(false);
 

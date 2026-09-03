@@ -19,7 +19,6 @@
  * a "+" that opens a form the save would reject.
  */
 
-import type { Locale } from "@patch-careers/i18n";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { ArrowRight, Plus } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
@@ -28,6 +27,7 @@ import {
   AddSectionFlowModal,
   type MergedSection,
   type SectionItem,
+  type SectionLocales,
   useResumeSections,
   useSectionItemMutations,
 } from "@/features/sections";
@@ -80,16 +80,20 @@ function GapRow({
 
 export function ProfileGapsCard({
   resumeId,
-  locale,
+  locales,
 }: {
   resumeId: string | undefined;
-  /** The language the rail's switcher is showing the resume in. */
-  locale: Locale | undefined;
+  /**
+   * The rows name sections in the app's language (chrome), whatever version
+   * of the content the rail is showing — ADR-0011. Before this the card took
+   * the content locale and came out bilingual next to its own `t()` title.
+   */
+  locales: SectionLocales;
 }): ReactElement | null {
   const { t } = useI18n();
   const pf = usePf();
   const palette = useEditorialPalette();
-  const { catalog } = useResumeSections(resumeId, locale);
+  const { catalog } = useResumeSections(resumeId, locales);
   const { persistFor, isPending } = useSectionItemMutations(resumeId);
   const [addOpen, setAddOpen] = useState(false);
   const [picked, setPicked] = useState<MergedSection | null>(null);

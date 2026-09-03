@@ -78,13 +78,14 @@ export function ProfileScreen(): ReactElement {
   // On desktop the sections are already open on this page, so it opens the
   // item in place through the manager instead of navigating away from it.
   const sectionsRef = useRef<SectionsManagerHandle>(null);
-  // Which language the page reads the resume in. The rail's switcher only
-  // moves this — it does not write to the resume, because `UpdateResumeRequest`
-  // carries no `language`. What it does change is real: the section titles and
-  // add labels come back from the backend in this locale.
+  // ADR-0011, profile surface: chrome (section titles, labels, dates, enums)
+  // follows the app; content follows the version the rail's switcher shows.
+  // The switcher persists once `UpdateResumeRequest` carries `language`; until
+  // then it is the view choice, seeded from the master resume's language.
   const { locale: uiLocale } = useI18n();
   const [localeOverride, setLocaleOverride] = useState<Locale | null>(null);
-  const sectionsLocale: Locale = localeOverride ?? resumeLanguageToLocale(language) ?? uiLocale;
+  const contentLocale: Locale = localeOverride ?? resumeLanguageToLocale(language) ?? uiLocale;
+  const sectionLocales = { chrome: uiLocale, content: contentLocale } as const;
 
   // Pull-to-refresh re-pulls the profile, the resume list (which drives the
   // master sections, completeness gauge, and quality panel), and the scores.
@@ -216,7 +217,7 @@ export function ProfileScreen(): ReactElement {
               <ResumeSectionsManager
                 ref={sectionsRef}
                 resumeId={resumeId}
-                locale={sectionsLocale}
+                locales={sectionLocales}
                 variant="expanded"
                 addPlacement="perSection"
               />
@@ -235,10 +236,10 @@ export function ProfileScreen(): ReactElement {
             </View>
 
             <View style={pf.railWide}>
-              <ProfileLanguageCard value={sectionsLocale} onChange={setLocaleOverride} />
+              <ProfileLanguageCard value={contentLocale} onChange={setLocaleOverride} />
               <PublicProfileCard username={profile?.username ?? null} />
               <ProfileScoreCard onOpen={() => setScoreOpen(true)} />
-              <ProfileGapsCard resumeId={resumeId} locale={sectionsLocale} />
+              <ProfileGapsCard resumeId={resumeId} locales={sectionLocales} />
               {/* The generic door, after the specific ones: the rail names the
                   four sections worth doing next, and this is for everything
                   else. */}
