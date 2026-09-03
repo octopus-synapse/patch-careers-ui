@@ -403,7 +403,9 @@ export function useOnboardingFlow() {
       setCompleteError(t("onboarding.fixBeforeComplete"));
       return;
     }
-    complete.mutate();
+    // The locale the person did onboarding in becomes the resume's canonical
+    // language (backend ADR-003 §10); the backend falls back to Accept-Language.
+    complete.mutate({ params: { locale } });
   }
 
   function markWelcomeSeenAndAdvance() {

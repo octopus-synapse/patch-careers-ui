@@ -4,14 +4,10 @@
 
 import { DICTIONARIES, type Locale } from './dictionaries';
 
-export type ActivityType = 'ACHIEVEMENT_EARNED' | 'CONNECTED_USER' | 'FOLLOWED_USER' | 'PROFILE_UPDATED' | 'RESUME_CREATED' | 'RESUME_PUBLISHED' | 'RESUME_SHARED' | 'RESUME_UPDATED' | 'SKILL_ADDED' | 'THEME_PUBLISHED';
-export type AnalyticsEvent = 'DOWNLOAD' | 'VIEW';
 export type ApplyMode = 'AUTO_APPLY' | 'ONE_CLICK' | 'WEEKLY_CURATED';
 export type AttestationWitnessStatus = 'FAILED' | 'PENDING' | 'RUNNING' | 'SUCCEEDED';
 export type AuditAction = 'ACCESS_MODIFIER_APPLIED' | 'ACCESS_MODIFIER_REVOKED' | 'ACCOUNT_DELETED' | 'CONNECTION_REQUESTED' | 'DATA_EXPORT_DOWNLOADED' | 'DATA_EXPORT_REQUESTED' | 'EMAIL_CHANGED' | 'EXPORT_COMPLETED' | 'EXPORT_FAILED' | 'EXPORT_REQUESTED' | 'FEATURE_FLAG_TOGGLED' | 'LOGIN_FAILED' | 'ONBOARDING_COMPLETED' | 'PASSWORD_CHANGED' | 'PREFERENCES_UPDATED' | 'PRIVACY_POLICY_ACCEPTED' | 'PROFILE_UPDATED' | 'RESUME_CREATED' | 'RESUME_DELETED' | 'RESUME_UPDATED' | 'RESUME_VERSION_CREATED' | 'RESUME_VERSION_RESTORED' | 'RESUME_VISIBILITY_CHANGED' | 'ROLE_CHANGED' | 'SESSION_CREATED' | 'SESSION_TERMINATED' | 'SHARE_DOWNLOADED' | 'TOKEN_REFRESHED' | 'TOS_ACCEPTED' | 'TWO_FACTOR_DISABLED' | 'TWO_FACTOR_ENABLED' | 'UNAUTHORIZED_ACCESS_ATTEMPT' | 'USERNAME_CHANGED' | 'USER_FOLLOWED' | 'USER_LOGGED_IN' | 'USER_LOGGED_OUT' | 'USER_LOGIN' | 'USER_LOGOUT';
-export type BadgeKind = 'CONTRIBUTOR' | 'EVENT_SPEAKER' | 'FIRST_BUILD' | 'INTERVIEWS_5' | 'MENTORED_10';
 export type CollaboratorRole = 'ADMIN' | 'EDITOR' | 'VIEWER';
-export type ConnectionStatus = 'ACCEPTED' | 'PENDING' | 'REJECTED';
 export type ConsentDocumentType = 'MARKETING_CONSENT' | 'PRIVACY_POLICY' | 'TERMS_OF_SERVICE';
 export type DegreeType = 'BACHELOR' | 'BOOTCAMP' | 'DOCTORATE' | 'HIGH_SCHOOL' | 'MASTER' | 'SELF_TAUGHT' | 'TECHNICAL';
 export type DevicePlatform = 'ANDROID' | 'IOS' | 'WEB';
@@ -21,7 +17,7 @@ export type EmailDeliveryMode = 'DAILY' | 'INSTANT' | 'OFF' | 'WEEKLY';
 export type EmailStatus = 'BOUNCED' | 'FAILED' | 'PENDING' | 'SENT';
 export type EnglishLevel = 'ADVANCED' | 'BASIC' | 'FLUENT' | 'INTERMEDIATE';
 export type FitDimension = 'BIG_FIVE_AGREEABLENESS' | 'BIG_FIVE_CONSCIENTIOUSNESS' | 'BIG_FIVE_EXTRAVERSION' | 'BIG_FIVE_NEUROTICISM' | 'BIG_FIVE_OPENNESS' | 'SCHWARTZ_ACHIEVEMENT' | 'SCHWARTZ_BENEVOLENCE' | 'SCHWARTZ_CONFORMITY' | 'SCHWARTZ_HEDONISM' | 'SCHWARTZ_POWER' | 'SCHWARTZ_SECURITY' | 'SCHWARTZ_SELF_DIRECTION' | 'SCHWARTZ_STIMULATION' | 'SCHWARTZ_TRADITION' | 'SCHWARTZ_UNIVERSALISM' | 'SDT_AUTONOMY' | 'SDT_COMPETENCE' | 'SDT_RELATEDNESS';
-export type ImportSource = 'DOCX' | 'GITHUB' | 'JSON' | 'LINKEDIN' | 'PDF';
+export type ImportSource = 'DOCX' | 'LINKEDIN' | 'PDF';
 export type ImportStatus = 'COMPLETED' | 'FAILED' | 'IMPORTING' | 'MAPPING' | 'PARTIAL' | 'PENDING' | 'PROCESSING' | 'VALIDATING';
 export type JobApplicationEventType = 'FOLLOW_UP_SENT' | 'INTERVIEW_COMPLETED' | 'INTERVIEW_SCHEDULED' | 'OFFER_RECEIVED' | 'REJECTED' | 'SUBMITTED' | 'VIEWED' | 'WITHDRAWN';
 export type JobApplicationStatus = 'ACCEPTED' | 'REJECTED' | 'SUBMITTED' | 'VIEWED' | 'WITHDRAWN';
@@ -33,41 +29,21 @@ export type MecSyncStatus = 'FAILED' | 'PARTIAL' | 'RUNNING' | 'SUCCESS';
 export type MessagePrivacy = 'EVERYONE' | 'NOBODY' | 'RECRUITERS_ONLY';
 export type ModifierEffect = 'DENY' | 'GRANT';
 export type ModifierType = 'GRANT_PERMISSION' | 'SUSPEND_EMAIL_VERIFIED' | 'SUSPEND_ONBOARDING' | 'SUSPEND_ROLE_ADMIN' | 'SUSPEND_ROLE_USER';
-export type NotificationType = 'APPLICATION_STALE' | 'COMMENT_REPLIED' | 'CONNECTION_ACCEPTED' | 'CONNECTION_RECOMMENDATION' | 'CONNECTION_REQUEST' | 'FIT_PROFILE_EXPIRED' | 'FIT_PROFILE_EXPIRY_REMINDER' | 'FOLLOW_NEW' | 'MATCH_RECOMMENDATIONS_READY' | 'MESSAGE_RECEIVED' | 'POST_BOOKMARKED' | 'POST_COMMENTED' | 'POST_LIKED' | 'POST_REPOSTED' | 'RESUME_QUALITY_IMPROVED' | 'RESUME_QUALITY_REGRESSED' | 'SKILL_DECAY';
+export type NotificationType = 'APPLICATION_STALE' | 'FIT_PROFILE_EXPIRED' | 'FIT_PROFILE_EXPIRY_REMINDER' | 'MATCH_RECOMMENDATIONS_READY' | 'MESSAGE_RECEIVED' | 'RESUME_QUALITY_IMPROVED' | 'RESUME_QUALITY_REGRESSED';
 export type OpenSourceRole = 'CONTRIBUTOR' | 'CREATOR' | 'MAINTAINER';
 export type PaymentCurrency = 'BRL' | 'EUR' | 'GBP' | 'USD';
 export type ProfileVisibility = 'PRIVATE' | 'PUBLIC' | 'RECRUITERS_ONLY';
 export type RemotePolicy = 'HYBRID' | 'ONSITE' | 'REMOTE';
-export type ReportStatus = 'DISMISSED' | 'PENDING' | 'REVIEWED';
 export type RoleSeniority = 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'TRAINEE';
 export type RoleTitleLang = 'EN' | 'PT';
 export type RoleTitleSource = 'CBO' | 'CURATED' | 'ESCO' | 'ONET';
 export type Severity = 'CRITICAL' | 'HIGH' | 'LOW' | 'MEDIUM';
 export type SkillProficiency = 'ADVANCED' | 'BEGINNER' | 'EXPERT' | 'INTERMEDIATE';
 export type SkillType = 'CERTIFICATION' | 'DATABASE' | 'FRAMEWORK' | 'LANGUAGE' | 'LIBRARY' | 'METHODOLOGY' | 'OTHER' | 'PLATFORM' | 'SOFT_SKILL' | 'TOOL';
-export type SuccessStoryStatus = 'ARCHIVED' | 'DRAFT' | 'PENDING_REVIEW' | 'PUBLISHED';
 export type TechAreaType = 'DATA' | 'DESIGN' | 'DEVELOPMENT' | 'DEVOPS' | 'INFRASTRUCTURE' | 'OTHER' | 'PRODUCT' | 'QA' | 'SECURITY';
 export type VerificationPurpose = 'ACCOUNT_DELETION' | 'EMAIL_CHANGE' | 'EMAIL_VERIFY' | 'PASSWORD_CHANGE';
 export type WeeklyCuratedBatchStatus = 'COMPLETED' | 'FAILED' | 'PENDING' | 'SENT';
 export type WeeklyCuratedItemStatus = 'APPROVED' | 'EXPIRED' | 'PENDING_APPROVAL' | 'REJECTED';
-
-export const ActivityType = {
-  ACHIEVEMENT_EARNED: 'ACHIEVEMENT_EARNED',
-  CONNECTED_USER: 'CONNECTED_USER',
-  FOLLOWED_USER: 'FOLLOWED_USER',
-  PROFILE_UPDATED: 'PROFILE_UPDATED',
-  RESUME_CREATED: 'RESUME_CREATED',
-  RESUME_PUBLISHED: 'RESUME_PUBLISHED',
-  RESUME_SHARED: 'RESUME_SHARED',
-  RESUME_UPDATED: 'RESUME_UPDATED',
-  SKILL_ADDED: 'SKILL_ADDED',
-  THEME_PUBLISHED: 'THEME_PUBLISHED',
-} as const satisfies Record<string, ActivityType>;
-
-export const AnalyticsEvent = {
-  DOWNLOAD: 'DOWNLOAD',
-  VIEW: 'VIEW',
-} as const satisfies Record<string, AnalyticsEvent>;
 
 export const ApplyMode = {
   AUTO_APPLY: 'AUTO_APPLY',
@@ -123,25 +99,11 @@ export const AuditAction = {
   USER_LOGOUT: 'USER_LOGOUT',
 } as const satisfies Record<string, AuditAction>;
 
-export const BadgeKind = {
-  CONTRIBUTOR: 'CONTRIBUTOR',
-  EVENT_SPEAKER: 'EVENT_SPEAKER',
-  FIRST_BUILD: 'FIRST_BUILD',
-  INTERVIEWS_5: 'INTERVIEWS_5',
-  MENTORED_10: 'MENTORED_10',
-} as const satisfies Record<string, BadgeKind>;
-
 export const CollaboratorRole = {
   ADMIN: 'ADMIN',
   EDITOR: 'EDITOR',
   VIEWER: 'VIEWER',
 } as const satisfies Record<string, CollaboratorRole>;
-
-export const ConnectionStatus = {
-  ACCEPTED: 'ACCEPTED',
-  PENDING: 'PENDING',
-  REJECTED: 'REJECTED',
-} as const satisfies Record<string, ConnectionStatus>;
 
 export const ConsentDocumentType = {
   MARKETING_CONSENT: 'MARKETING_CONSENT',
@@ -223,8 +185,6 @@ export const FitDimension = {
 
 export const ImportSource = {
   DOCX: 'DOCX',
-  GITHUB: 'GITHUB',
-  JSON: 'JSON',
   LINKEDIN: 'LINKEDIN',
   PDF: 'PDF',
 } as const satisfies Record<string, ImportSource>;
@@ -319,22 +279,12 @@ export const ModifierType = {
 
 export const NotificationType = {
   APPLICATION_STALE: 'APPLICATION_STALE',
-  COMMENT_REPLIED: 'COMMENT_REPLIED',
-  CONNECTION_ACCEPTED: 'CONNECTION_ACCEPTED',
-  CONNECTION_RECOMMENDATION: 'CONNECTION_RECOMMENDATION',
-  CONNECTION_REQUEST: 'CONNECTION_REQUEST',
   FIT_PROFILE_EXPIRED: 'FIT_PROFILE_EXPIRED',
   FIT_PROFILE_EXPIRY_REMINDER: 'FIT_PROFILE_EXPIRY_REMINDER',
-  FOLLOW_NEW: 'FOLLOW_NEW',
   MATCH_RECOMMENDATIONS_READY: 'MATCH_RECOMMENDATIONS_READY',
   MESSAGE_RECEIVED: 'MESSAGE_RECEIVED',
-  POST_BOOKMARKED: 'POST_BOOKMARKED',
-  POST_COMMENTED: 'POST_COMMENTED',
-  POST_LIKED: 'POST_LIKED',
-  POST_REPOSTED: 'POST_REPOSTED',
   RESUME_QUALITY_IMPROVED: 'RESUME_QUALITY_IMPROVED',
   RESUME_QUALITY_REGRESSED: 'RESUME_QUALITY_REGRESSED',
-  SKILL_DECAY: 'SKILL_DECAY',
 } as const satisfies Record<string, NotificationType>;
 
 export const OpenSourceRole = {
@@ -361,12 +311,6 @@ export const RemotePolicy = {
   ONSITE: 'ONSITE',
   REMOTE: 'REMOTE',
 } as const satisfies Record<string, RemotePolicy>;
-
-export const ReportStatus = {
-  DISMISSED: 'DISMISSED',
-  PENDING: 'PENDING',
-  REVIEWED: 'REVIEWED',
-} as const satisfies Record<string, ReportStatus>;
 
 export const RoleSeniority = {
   INTERN: 'INTERN',
@@ -415,13 +359,6 @@ export const SkillType = {
   TOOL: 'TOOL',
 } as const satisfies Record<string, SkillType>;
 
-export const SuccessStoryStatus = {
-  ARCHIVED: 'ARCHIVED',
-  DRAFT: 'DRAFT',
-  PENDING_REVIEW: 'PENDING_REVIEW',
-  PUBLISHED: 'PUBLISHED',
-} as const satisfies Record<string, SuccessStoryStatus>;
-
 export const TechAreaType = {
   DATA: 'DATA',
   DESIGN: 'DESIGN',
@@ -456,58 +393,6 @@ export const WeeklyCuratedItemStatus = {
 } as const satisfies Record<string, WeeklyCuratedItemStatus>;
 
 const ENUM_LABELS = {
-  "ActivityType": {
-    "ACHIEVEMENT_EARNED": {
-      "en": "Achievement earned",
-      "pt-BR": "Conquista obtida"
-    },
-    "CONNECTED_USER": {
-      "en": "Connected with user",
-      "pt-BR": "Conectou-se com usuário"
-    },
-    "FOLLOWED_USER": {
-      "en": "Followed user",
-      "pt-BR": "Seguiu usuário"
-    },
-    "PROFILE_UPDATED": {
-      "en": "Profile updated",
-      "pt-BR": "Perfil atualizado"
-    },
-    "RESUME_CREATED": {
-      "en": "Resume created",
-      "pt-BR": "Currículo criado"
-    },
-    "RESUME_PUBLISHED": {
-      "en": "Resume published",
-      "pt-BR": "Currículo publicado"
-    },
-    "RESUME_SHARED": {
-      "en": "Resume shared",
-      "pt-BR": "Currículo compartilhado"
-    },
-    "RESUME_UPDATED": {
-      "en": "Resume updated",
-      "pt-BR": "Currículo atualizado"
-    },
-    "SKILL_ADDED": {
-      "en": "Skill added",
-      "pt-BR": "Habilidade adicionada"
-    },
-    "THEME_PUBLISHED": {
-      "en": "Theme published",
-      "pt-BR": "Tema publicado"
-    }
-  },
-  "AnalyticsEvent": {
-    "DOWNLOAD": {
-      "en": "Download",
-      "pt-BR": "Download"
-    },
-    "VIEW": {
-      "en": "View",
-      "pt-BR": "Visualização"
-    }
-  },
   "ApplyMode": {
     "AUTO_APPLY": {
       "en": "Auto-apply",
@@ -694,28 +579,6 @@ const ENUM_LABELS = {
       "pt-BR": "Versão do currículo restaurada"
     }
   },
-  "BadgeKind": {
-    "CONTRIBUTOR": {
-      "en": "Contributor",
-      "pt-BR": "Contribuidor"
-    },
-    "EVENT_SPEAKER": {
-      "en": "Event speaker",
-      "pt-BR": "Palestrante em evento"
-    },
-    "FIRST_BUILD": {
-      "en": "First build",
-      "pt-BR": "Primeiro build"
-    },
-    "INTERVIEWS_5": {
-      "en": "5 interviews",
-      "pt-BR": "5 entrevistas"
-    },
-    "MENTORED_10": {
-      "en": "Mentored 10",
-      "pt-BR": "Mentorou 10"
-    }
-  },
   "CollaboratorRole": {
     "ADMIN": {
       "en": "Admin",
@@ -728,20 +591,6 @@ const ENUM_LABELS = {
     "VIEWER": {
       "en": "Viewer",
       "pt-BR": "Visualizador"
-    }
-  },
-  "ConnectionStatus": {
-    "ACCEPTED": {
-      "en": "Accepted",
-      "pt-BR": "Aceita"
-    },
-    "PENDING": {
-      "en": "Pending",
-      "pt-BR": "Pendente"
-    },
-    "REJECTED": {
-      "en": "Rejected",
-      "pt-BR": "Recusada"
     }
   },
   "ConsentDocumentType": {
@@ -970,14 +819,6 @@ const ENUM_LABELS = {
     "DOCX": {
       "en": "DOCX",
       "pt-BR": "DOCX"
-    },
-    "GITHUB": {
-      "en": "GitHub",
-      "pt-BR": "GitHub"
-    },
-    "JSON": {
-      "en": "JSON",
-      "pt-BR": "JSON"
     },
     "LINKEDIN": {
       "en": "LinkedIn",
@@ -1235,22 +1076,6 @@ const ENUM_LABELS = {
       "en": "Application stale",
       "pt-BR": "Candidatura parada"
     },
-    "COMMENT_REPLIED": {
-      "en": "Reply to your comment",
-      "pt-BR": "Resposta ao seu comentário"
-    },
-    "CONNECTION_ACCEPTED": {
-      "en": "Connection accepted",
-      "pt-BR": "Conexão aceita"
-    },
-    "CONNECTION_RECOMMENDATION": {
-      "en": "Connection recommendation",
-      "pt-BR": "Recomendação de conexão"
-    },
-    "CONNECTION_REQUEST": {
-      "en": "Connection request",
-      "pt-BR": "Pedido de conexão"
-    },
     "FIT_PROFILE_EXPIRED": {
       "en": "Fit profile expired",
       "pt-BR": "Perfil de fit expirou"
@@ -1258,10 +1083,6 @@ const ENUM_LABELS = {
     "FIT_PROFILE_EXPIRY_REMINDER": {
       "en": "Fit profile expires soon",
       "pt-BR": "Perfil de fit expira em breve"
-    },
-    "FOLLOW_NEW": {
-      "en": "New follower",
-      "pt-BR": "Novo seguidor"
     },
     "MATCH_RECOMMENDATIONS_READY": {
       "en": "New job recommendations ready",
@@ -1271,22 +1092,6 @@ const ENUM_LABELS = {
       "en": "New message",
       "pt-BR": "Nova mensagem"
     },
-    "POST_BOOKMARKED": {
-      "en": "Post bookmarked",
-      "pt-BR": "Post salvo"
-    },
-    "POST_COMMENTED": {
-      "en": "New comment",
-      "pt-BR": "Novo comentário"
-    },
-    "POST_LIKED": {
-      "en": "Post liked",
-      "pt-BR": "Post curtido"
-    },
-    "POST_REPOSTED": {
-      "en": "Post reposted",
-      "pt-BR": "Post repostado"
-    },
     "RESUME_QUALITY_IMPROVED": {
       "en": "Resume quality improved",
       "pt-BR": "Qualidade do currículo melhorou"
@@ -1294,10 +1099,6 @@ const ENUM_LABELS = {
     "RESUME_QUALITY_REGRESSED": {
       "en": "Resume quality dropped",
       "pt-BR": "Qualidade do currículo caiu"
-    },
-    "SKILL_DECAY": {
-      "en": "Skill getting rusty",
-      "pt-BR": "Habilidade enferrujando"
     }
   },
   "OpenSourceRole": {
@@ -1358,20 +1159,6 @@ const ENUM_LABELS = {
     "REMOTE": {
       "en": "Remote",
       "pt-BR": "Remoto"
-    }
-  },
-  "ReportStatus": {
-    "DISMISSED": {
-      "en": "Dismissed",
-      "pt-BR": "Descartada"
-    },
-    "PENDING": {
-      "en": "Pending",
-      "pt-BR": "Pendente"
-    },
-    "REVIEWED": {
-      "en": "Reviewed",
-      "pt-BR": "Revisada"
     }
   },
   "RoleSeniority": {
@@ -1500,24 +1287,6 @@ const ENUM_LABELS = {
     "TOOL": {
       "en": "Tool",
       "pt-BR": "Ferramenta"
-    }
-  },
-  "SuccessStoryStatus": {
-    "ARCHIVED": {
-      "en": "Archived",
-      "pt-BR": "Arquivada"
-    },
-    "DRAFT": {
-      "en": "Draft",
-      "pt-BR": "Rascunho"
-    },
-    "PENDING_REVIEW": {
-      "en": "Pending review",
-      "pt-BR": "Aguardando revisão"
-    },
-    "PUBLISHED": {
-      "en": "Published",
-      "pt-BR": "Publicada"
     }
   },
   "TechAreaType": {
