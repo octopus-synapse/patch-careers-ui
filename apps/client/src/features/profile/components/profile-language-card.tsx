@@ -14,19 +14,27 @@
 import type { Locale } from "@patch-careers/i18n";
 import { type ReactElement, useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import type { LocaleTranslationStatus, TranslationProgress } from "@/features/resumes";
 import { useI18n } from "@/providers/i18n-provider";
 import { usePf } from "../lib/styles";
 
 export function ProfileLanguageCard({
   value,
   onChange,
+  status,
+  progress,
 }: {
   value: Locale;
   onChange: (locale: Locale) => void;
+  /** Translation rollup for the version being shown (null while loading or for the canonical one). */
+  status?: LocaleTranslationStatus | null;
+  /** The latest live event of a run for this résumé, while one is going. */
+  progress?: TranslationProgress | null;
 }): ReactElement {
   const { t } = useI18n();
   const pf = usePf();
   const [hovered, setHovered] = useState<Locale | null>(null);
+  const caption = captionFor(t, status ?? null, progress ?? null);
 
   const options: Array<{ locale: Locale; label: string }> = [
     { locale: "en", label: t("profile.language.en") },
@@ -64,7 +72,35 @@ export function ProfileLanguageCard({
           );
         })}
       </View>
-      <Text style={pf.railCaption}>{t("profile.language.caption")}</Text>
+      <Text style={pf.railCaption}>{caption}</Text>
     </View>
   );
+}
+
+/**
+ * One line under the pills that says what the shown version IS: translating
+ * (with the section count), stale in N items, refused for a reason, or the
+ * plain explanation. The switch itself never blocks (ADR-003 §14–15).
+ */
+function captionFor(
+  t: ReturnType<typeof useI18n>["t"],
+  status: LocaleTranslationStatus | null,
+  progress: TranslationProgress | null,
+): string {
+  if (progress?.status === "running") {
+    return t("profile.language.translating", { done: progress.done, total: progress.total });
+  }
+  if (progress?.status === "failed") return t("profile.language.failed");
+  if (progress?.status === "skipped" && progress.reason === "monthly-cap") {
+    return t("profile.language.capReached");
+  }
+  if (progress?.status === "skipped" && progress.reason !== undefined) {
+    return t("profile.language.unavailable");
+  }
+  if (status && status.role === "derived") {
+    if (status.items.missing > 0)
+      return t("profile.language.missing", { count: status.items.missing });
+    if (status.items.stale > 0) return t("profile.language.stale", { count: status.items.stale });
+  }
+  return t("profile.language.caption");
 }

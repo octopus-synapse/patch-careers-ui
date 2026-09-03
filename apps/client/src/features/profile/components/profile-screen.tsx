@@ -28,7 +28,15 @@ import * as ImagePicker from "expo-image-picker";
 import { TriangleAlert } from "lucide-react-native";
 import { type ReactElement, useRef, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
-import { ResumeQualityPanel, resumeLanguageToLocale, useMasterResumeId } from "@/features/resumes";
+import {
+  needsTranslation,
+  ResumeQualityPanel,
+  resumeLanguageToLocale,
+  useMasterResumeId,
+  useTranslateNow,
+  useTranslationProgress,
+  useTranslationStatus,
+} from "@/features/resumes";
 import { ResumeSectionsManager, type SectionsManagerHandle } from "@/features/sections";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
@@ -86,6 +94,19 @@ export function ProfileScreen(): ReactElement {
   const [localeOverride, setLocaleOverride] = useState<Locale | null>(null);
   const contentLocale: Locale = localeOverride ?? resumeLanguageToLocale(language) ?? uiLocale;
   const sectionLocales = { chrome: uiLocale, content: contentLocale } as const;
+  // The other version should already exist (created after onboarding, or by
+  // the worker after every change). When it does not — an account from
+  // before, or a brake that held — the first switch derives it now and the
+  // rail shows the run section by section (ADR-003 §10).
+  const translationStatus = useTranslationStatus(resumeId);
+  const translationProgress = useTranslationProgress(resumeId);
+  const { translateNow } = useTranslateNow();
+  const switchContentLocale = (next: Locale): void => {
+    setLocaleOverride(next);
+    if (resumeId && needsTranslation(translationStatus.forLocale(next))) {
+      translateNow(resumeId, next).catch(() => undefined); // the rail reports the outcome
+    }
+  };
 
   // Pull-to-refresh re-pulls the profile, the resume list (which drives the
   // master sections, completeness gauge, and quality panel), and the scores.
@@ -236,7 +257,12 @@ export function ProfileScreen(): ReactElement {
             </View>
 
             <View style={pf.railWide}>
-              <ProfileLanguageCard value={contentLocale} onChange={setLocaleOverride} />
+              <ProfileLanguageCard
+                value={contentLocale}
+                onChange={switchContentLocale}
+                status={translationStatus.forLocale(contentLocale)}
+                progress={translationProgress}
+              />
               <PublicProfileCard username={profile?.username ?? null} />
               <ProfileScoreCard onOpen={() => setScoreOpen(true)} />
               <ProfileGapsCard resumeId={resumeId} locales={sectionLocales} />

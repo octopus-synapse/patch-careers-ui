@@ -20,4 +20,12 @@ export {
   useResumeStyles,
   useTailoredVersions,
 } from "./hooks/queries";
+export {
+  type LocaleTranslationStatus,
+  needsTranslation,
+  type TranslationProgress,
+  useTranslateNow,
+  useTranslationProgress,
+  useTranslationStatus,
+} from "./hooks/use-resume-translation";
 export { resumeLanguageToLocale } from "./lib/helpers";

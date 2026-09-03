@@ -22,4 +22,50 @@ describe("<ProfileLanguageCard>", () => {
     renderApp(<ProfileLanguageCard value="pt-BR" onChange={() => undefined} />, { locale: "en" });
     expect(screen.getByRole("heading")).toHaveTextContent(/language/i);
   });
+
+  it("narrates a running translation with the section count", () => {
+    renderApp(
+      <ProfileLanguageCard
+        value="en"
+        onChange={() => undefined}
+        progress={{ resumeId: "r", locale: "en", done: 6, total: 11, status: "running" }}
+      />,
+    );
+    expect(screen.getByText(/6\/11/)).toBeInTheDocument();
+  });
+
+  it("says how many items still show the original when the version is incomplete", () => {
+    renderApp(
+      <ProfileLanguageCard
+        value="en"
+        onChange={() => undefined}
+        status={{
+          locale: "en",
+          role: "derived",
+          items: { total: 10, current: 7, stale: 0, missing: 3, manual: 0, diverged: 0 },
+          prose: "current",
+        }}
+      />,
+    );
+    expect(screen.getByText(/3 /)).toBeInTheDocument();
+  });
+
+  it("explains a run the monthly cap refused, without hiding the switch", () => {
+    renderApp(
+      <ProfileLanguageCard
+        value="en"
+        onChange={() => undefined}
+        progress={{
+          resumeId: "r",
+          locale: "en",
+          done: 0,
+          total: 0,
+          status: "skipped",
+          reason: "monthly-cap",
+        }}
+      />,
+    );
+    expect(screen.getByText(/limite|limit/i)).toBeInTheDocument();
+    expect(screen.getAllByRole("button")).toHaveLength(2);
+  });
 });

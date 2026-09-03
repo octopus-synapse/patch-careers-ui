@@ -62,6 +62,11 @@ export function SectionDetailRow({
       <View style={ed.detailHead}>
         <Text style={ed.detailTitle}>{detail.title}</Text>
         {detail.dateRange ? <Text style={ed.detailDate}>{detail.dateRange}</Text> : null}
+        {/* A derived copy says how fresh it is; a hand-written one says so too.
+            Silent for the canonical text and for a current copy. */}
+        {translationMark(t, item) ? (
+          <Text style={ed.detailDate}>{translationMark(t, item)}</Text>
+        ) : null}
         {/* The pencil only appears under the pointer: on a page of open items a
             permanent icon per row is visual noise for an action the whole row
             already performs. */}
@@ -88,4 +93,11 @@ export function SectionDetailRow({
       ) : null}
     </Pressable>
   );
+}
+
+function translationMark(t: ReturnType<typeof translatorFor>, item: SectionItem): string | null {
+  if (item.origin === "manual" || item.origin === "diverged") return t("sections.item.handWritten");
+  if (item.translationState === "stale") return t("sections.item.stale");
+  if (item.translationState === "missing") return t("sections.item.untranslated");
+  return null;
 }

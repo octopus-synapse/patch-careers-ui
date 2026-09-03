@@ -73,7 +73,13 @@ export function useResumeSections(
   const sections = (sectionsQuery.data?.sections ?? []).map((section) => ({
     id: section.id,
     sectionTypeKey: section.sectionType?.key,
-    items: (section.items ?? []).map((item) => ({ id: item.id, content: item.content ?? {} })),
+    items: (section.items ?? []).map((item) => ({
+      id: item.id,
+      content: item.content ?? {},
+      ...(item.contentLocale ? { contentLocale: item.contentLocale } : {}),
+      ...(item.origin ? { origin: item.origin } : {}),
+      ...(item.translationState ? { translationState: item.translationState } : {}),
+    })),
   }));
 
   const { visible, catalog } = mergeSectionsWithCatalog(

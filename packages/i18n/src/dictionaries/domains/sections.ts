@@ -14,6 +14,9 @@ export const sectionsPtBR: TranslationDict = {
   present: "Presente",
   item: {
     editA11y: "Editar {title}",
+    handWritten: "escrito por você",
+    stale: "desatualizado",
+    untranslated: "no idioma original",
   },
   links: {
     kindPickerTitle: "Tipo de link",
@@ -47,6 +50,9 @@ export const sectionsEn: TranslationDict = {
   present: "Present",
   item: {
     editA11y: "Edit {title}",
+    handWritten: "written by you",
+    stale: "out of date",
+    untranslated: "in the original language",
   },
   links: {
     kindPickerTitle: "Link type",
