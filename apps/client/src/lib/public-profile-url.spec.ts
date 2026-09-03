@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   PUBLIC_PROFILE_SEGMENT,
   publicProfileDisplayUrl,
+  publicProfilePath,
   publicProfileUrl,
   publicWebOrigin,
 } from "./public-profile-url";
@@ -82,6 +83,20 @@ describe("publicProfileDisplayUrl", () => {
   it("yields a bare prefix for an empty handle (the onboarding preview)", () => {
     withOrigin("https://patchcareers.org", () => {
       expect(publicProfileDisplayUrl("")).toBe("patchcareers.org/u/");
+    });
+  });
+});
+
+describe("publicProfilePath", () => {
+  it("puts the language in the address: bare for Portuguese, /en for English", () => {
+    expect(publicProfilePath("maria")).toBe("/u/maria");
+    expect(publicProfilePath("maria", "pt-BR")).toBe("/u/maria");
+    expect(publicProfilePath("maria", "en")).toBe("/en/u/maria");
+  });
+
+  it("carries the language into the full URL", () => {
+    withOrigin("https://patchcareers.org", () => {
+      expect(publicProfileUrl("maria", "en")).toBe("https://patchcareers.org/en/u/maria");
     });
   });
 });

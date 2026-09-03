@@ -57,6 +57,18 @@ const ppFor = (p: EditorialPalette) =>
     linkUrl: { flex: 1, fontFamily: fonts.mono, fontSize: 12.5, lineHeight: 18, color: p.ink },
     linkUrlActive: { color: p.accent },
 
+    // The two language versions, as small links above the card: the current
+    // one is ink and not a link; the other is muted and underlined on hover.
+    langRow: { flexDirection: "row", justifyContent: "flex-end", gap: 16 },
+    langLink: {
+      fontFamily: fonts.mono,
+      fontSize: 11.5,
+      letterSpacing: 1.2,
+      textTransform: "uppercase",
+      color: p.muted,
+    },
+    langLinkActive: { color: p.ink },
+
     smallcaps: {
       fontFamily: fonts.mono,
       fontSize: 10.5,

@@ -1,3 +1,8 @@
-/** English twin of `/u/[username]` — same screen, `/en`-prefixed address. */
+/** `/en/u/<username>` — the English version of a public profile (decision 21). */
 
-export { default } from "../../u/[username]";
+import type { ReactElement } from "react";
+import { PublicProfileRoute } from "@/features/public-profile";
+
+export default function PublicProfileEnRoute(): ReactElement {
+  return <PublicProfileRoute locale="en" />;
+}

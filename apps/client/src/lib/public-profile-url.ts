@@ -18,6 +18,8 @@
  * Production web origin. Only reached when there is no live origin to read
  * (native), because the value is otherwise derived.
  */
+import type { Locale } from "@patch-careers/i18n";
+
 const FALLBACK_ORIGIN = "https://patchcareers.org";
 
 /** The route segment. Must match `app/u/[username].tsx`. */
@@ -29,9 +31,19 @@ export function publicWebOrigin(): string {
   return origin && origin.length > 0 ? origin : FALLBACK_ORIGIN;
 }
 
+/**
+ * The path for one language version of the page (ADR-0011 / decision 21):
+ * `/u/<username>` is the Portuguese version, `/en/u/<username>` the English
+ * one — the language lives in the address so a link says what it opens.
+ */
+export function publicProfilePath(username: string, locale: Locale = "pt-BR"): string {
+  const prefix = locale === "en" ? "/en" : "";
+  return `${prefix}/${PUBLIC_PROFILE_SEGMENT}/${username}`;
+}
+
 /** Full URL, protocol included — what goes on the clipboard. */
-export function publicProfileUrl(username: string): string {
-  return `${publicWebOrigin()}/${PUBLIC_PROFILE_SEGMENT}/${username}`;
+export function publicProfileUrl(username: string, locale: Locale = "pt-BR"): string {
+  return `${publicWebOrigin()}${publicProfilePath(username, locale)}`;
 }
 
 /**

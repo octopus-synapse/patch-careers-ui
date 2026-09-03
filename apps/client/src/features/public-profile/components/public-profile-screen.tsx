@@ -16,6 +16,7 @@
  * question.
  */
 
+import type { Locale } from "@patch-careers/i18n";
 import { Divider, EmptyState } from "@patch-careers/ui";
 import { IdentityAvatar, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { MapPin, SearchX, TriangleAlert } from "lucide-react-native";
@@ -29,6 +30,8 @@ import { usePublicProfile } from "../hooks/queries";
 import { displayUrl, publicProfileLinks } from "../lib/links";
 import { usePp } from "../lib/styles";
 import type { PublicProfileLink } from "../types";
+import { PublicProfileHead } from "./public-profile-head";
+import { PublicProfileLanguageLinks } from "./public-profile-language-links";
 
 const AVATAR_PX = 96;
 
@@ -54,13 +57,20 @@ function LinkRow({ link, isLast }: { link: PublicProfileLink; isLast: boolean })
   );
 }
 
-export function PublicProfileScreen({ username }: { username: string | undefined }): ReactElement {
+export function PublicProfileScreen({
+  username,
+  locale,
+}: {
+  username: string | undefined;
+  /** Which language version this address serves (ADR-0011 / decision 21). */
+  locale: Locale;
+}): ReactElement {
   const { t } = useI18n();
   const pp = usePp();
   const palette = useEditorialPalette();
   const { isAuthenticated } = useAuthState();
   const appInset = useNavBarInset();
-  const { profile, isLoading, isNotFound, isError, refetch } = usePublicProfile(username);
+  const { profile, isLoading, isNotFound, isError, refetch } = usePublicProfile(username, locale);
 
   // Signed out, the landing bar is ours to mount and it floats over the page.
   // Signed in, the root layout already mounted the app bar.
@@ -121,12 +131,18 @@ export function PublicProfileScreen({ username }: { username: string | undefined
 
   return (
     <View style={pp.root}>
+      <PublicProfileHead
+        username={user.username}
+        locale={locale}
+        indexable={user.allowSearchEngineIndex}
+      />
       {chrome}
       <ScrollView
         contentContainerStyle={[pp.scroll, { paddingTop: topInset }]}
         showsVerticalScrollIndicator={false}
       >
         <View style={pp.column}>
+          <PublicProfileLanguageLinks username={user.username} current={locale} />
           <View style={pp.card}>
             <View style={pp.head}>
               <IdentityAvatar

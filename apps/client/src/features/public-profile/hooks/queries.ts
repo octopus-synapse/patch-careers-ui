@@ -17,6 +17,7 @@
  */
 
 import { useGetV1ProfilesUsername } from "@patch-careers/api-client";
+import type { Locale } from "@patch-careers/i18n";
 import { useAuthBootstrap } from "@/providers/auth-provider";
 import type { PublicProfileResponse } from "../types";
 
@@ -38,12 +39,22 @@ function statusOf(error: unknown): number | undefined {
   return typeof raw === "number" ? raw : undefined;
 }
 
-export function usePublicProfile(username: string | undefined): UsePublicProfileResult {
+/**
+ * `locale` is the language VERSION of the résumé prose (ADR-0011): the page
+ * at `/u/…` asks for Portuguese, `/en/u/…` for English. The server falls
+ * back to the text as written when that version does not exist yet.
+ */
+export function usePublicProfile(
+  username: string | undefined,
+  locale: Locale,
+): UsePublicProfileResult {
   const { hasBootstrapped } = useAuthBootstrap();
   const ready = Boolean(username) && hasBootstrapped;
-  const query = useGetV1ProfilesUsername(username ?? "", {
-    query: { enabled: ready, retry: false },
-  });
+  const query = useGetV1ProfilesUsername(
+    username ?? "",
+    { locale },
+    { query: { enabled: ready, retry: false } },
+  );
   const status = statusOf(query.error);
   const isNotFound = !username || (query.isError && (status === 404 || status === 400));
 

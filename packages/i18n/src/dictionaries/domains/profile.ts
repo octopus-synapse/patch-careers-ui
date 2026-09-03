@@ -219,6 +219,10 @@ export const profilePtBR: TranslationDict = {
     linkLinkedin: "LinkedIn",
     linkGithub: "GitHub",
     loadFailed: "Não foi possível carregar este perfil.",
+    languageTitle: "Idioma",
+    languagePt: "Português",
+    languageEn: "English",
+    languageA11y: "Ver este perfil em {label}",
   },
   gaps: {
     title: "Falta no seu perfil",
@@ -457,6 +461,10 @@ export const profileEn: TranslationDict = {
     linkLinkedin: "LinkedIn",
     linkGithub: "GitHub",
     loadFailed: "Could not load this profile.",
+    languageTitle: "Language",
+    languagePt: "Português",
+    languageEn: "English",
+    languageA11y: "View this profile in {label}",
   },
   gaps: {
     title: "Missing from your profile",
