@@ -7,8 +7,6 @@ export type { DeleteV1AdminUsersUserIdAccessModifiersModifierIdMutationKey } fro
 export type { GetV1AdminUsersUserIdAccessModifiersQueryKey } from "./hooks/adminAccessModifiersController/useGetV1AdminUsersUserIdAccessModifiers.ts";
 export type { PostV1AdminUsersUserIdAccessModifiersMutationKey } from "./hooks/adminAccessModifiersController/usePostV1AdminUsersUserIdAccessModifiers.ts";
 export type { GetV1AdminAlertsQueryKey } from "./hooks/adminAlertsController/useGetV1AdminAlerts.ts";
-export type { GetV1AdminChatConversationsQueryKey } from "./hooks/adminChatController/useGetV1AdminChatConversations.ts";
-export type { GetV1AdminChatStatsQueryKey } from "./hooks/adminChatController/useGetV1AdminChatStats.ts";
 export type { DeleteV1AdminCollaborationsResumeIdUserIdMutationKey } from "./hooks/adminCollaborationsController/useDeleteV1AdminCollaborationsResumeIdUserId.ts";
 export type { GetV1AdminCollaborationsQueryKey } from "./hooks/adminCollaborationsController/useGetV1AdminCollaborations.ts";
 export type { GetV1AdminCollaborationsStatsQueryKey } from "./hooks/adminCollaborationsController/useGetV1AdminCollaborationsStats.ts";
@@ -65,8 +63,6 @@ export type { GetV1AdminTechSkillsQueryKey } from "./hooks/adminTechSkillsContro
 export type { GetV1AdminTechSkillsIdQueryKey } from "./hooks/adminTechSkillsController/useGetV1AdminTechSkillsId.ts";
 export type { PatchV1AdminTechSkillsIdMutationKey } from "./hooks/adminTechSkillsController/usePatchV1AdminTechSkillsId.ts";
 export type { PostV1AdminTechSkillsMutationKey } from "./hooks/adminTechSkillsController/usePostV1AdminTechSkills.ts";
-export type { GetV1AdminTestSuitesQueryKey } from "./hooks/adminTestRunnerController/useGetV1AdminTestSuites.ts";
-export type { PostV1AdminTestRunMutationKey } from "./hooks/adminTestRunnerController/usePostV1AdminTestRun.ts";
 export type { GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryKey } from "./hooks/applicationTrackerController/useGetV1JobsApplicationsCompaniesCompanyResponseStats.ts";
 export type { GetV1JobsApplicationsTrackerQueryKey } from "./hooks/applicationTrackerController/useGetV1JobsApplicationsTracker.ts";
 export type { PostV1JobsApplicationsApplicationIdEventsMutationKey } from "./hooks/applicationTrackerController/usePostV1JobsApplicationsApplicationIdEvents.ts";
@@ -130,12 +126,9 @@ export type { GetV1EnumsSectionTypesQueryKey } from "./hooks/enumsController/use
 export type { GetV1EnumsUserRolesQueryKey } from "./hooks/enumsController/useGetV1EnumsUserRoles.ts";
 export type { GetV1ExportBannerQueryKey } from "./hooks/exportController/useGetV1ExportBanner.ts";
 export type { GetV1ExportResumeDocxQueryKey } from "./hooks/exportController/useGetV1ExportResumeDocx.ts";
-export type { GetV1ExportResumeIdJsonQueryKey } from "./hooks/exportController/useGetV1ExportResumeIdJson.ts";
-export type { GetV1ExportResumeIdLatexQueryKey } from "./hooks/exportController/useGetV1ExportResumeIdLatex.ts";
 export type { GetV1ExportResumePdfQueryKey } from "./hooks/exportController/useGetV1ExportResumePdf.ts";
 export type { GetV1ExportResumePreviewQueryKey } from "./hooks/exportController/useGetV1ExportResumePreview.ts";
 export type { GetV1ExportUserUserIdResumePdfQueryKey } from "./hooks/exportController/useGetV1ExportUserUserIdResumePdf.ts";
-export type { PostV1ExportResumeIdBundleMutationKey } from "./hooks/exportController/usePostV1ExportResumeIdBundle.ts";
 export type { GetV1FeatureFlagsActiveQueryKey } from "./hooks/featureFlagsController/useGetV1FeatureFlagsActive.ts";
 export type { GetV1FeatureFlagsEvaluateQueryKey } from "./hooks/featureFlagsController/useGetV1FeatureFlagsEvaluate.ts";
 export type { GetV1FeatureFlagsStreamQueryKey } from "./hooks/featureFlagsController/useGetV1FeatureFlagsStream.ts";
@@ -217,8 +210,6 @@ export type { PostV1OnboardingSessionPreviousMutationKey } from "./hooks/onboard
 export type { PostV1OnboardingSessionRestartMutationKey } from "./hooks/onboardingController/usePostV1OnboardingSessionRestart.ts";
 export type { PostV1OnboardingSessionSaveMutationKey } from "./hooks/onboardingController/usePostV1OnboardingSessionSave.ts";
 export type { PutV1OnboardingProgressMutationKey } from "./hooks/onboardingController/usePutV1OnboardingProgress.ts";
-export type { GetV1PagesMeDashboardQueryKey } from "./hooks/pagesController/useGetV1PagesMeDashboard.ts";
-export type { GetV1PagesSettingsSectionQueryKey } from "./hooks/pagesController/useGetV1PagesSettingsSection.ts";
 export type { PostV1AuthForgotPasswordMutationKey } from "./hooks/passwordManagementController/usePostV1AuthForgotPassword.ts";
 export type { PostV1AuthResetPasswordMutationKey } from "./hooks/passwordManagementController/usePostV1AuthResetPassword.ts";
 export type { PostV1MeEmailChangeConfirmMutationKey } from "./hooks/passwordManagementController/usePostV1MeEmailChangeConfirm.ts";
@@ -320,7 +311,6 @@ export type { PostV1Auth2FaSetupMutationKey } from "./hooks/twoFactorAuthControl
 export type { PostV1Auth2FaVerifyMutationKey } from "./hooks/twoFactorAuthController/usePostV1Auth2FaVerify.ts";
 export type { GetV1EnumsQueryKey } from "./hooks/uiMetadataController/useGetV1Enums.ts";
 export type { GetV1EnumsKeyQueryKey } from "./hooks/uiMetadataController/useGetV1EnumsKey.ts";
-export type { GetV1MeMenuQueryKey } from "./hooks/uiMetadataController/useGetV1MeMenu.ts";
 export type { DeleteV1UploadFileKeyMutationKey } from "./hooks/uploadController/useDeleteV1UploadFileKey.ts";
 export type { PostV1UploadCompanyLogoResumeIdMutationKey } from "./hooks/uploadController/usePostV1UploadCompanyLogoResumeId.ts";
 export type { PostV1UploadProfileImageMutationKey } from "./hooks/uploadController/usePostV1UploadProfileImage.ts";
@@ -354,11 +344,6 @@ export type { PostV1UsersManageMutationKey } from "./hooks/usersController/usePo
 export type { PostV1UsersManageIdResetPasswordMutationKey } from "./hooks/usersController/usePostV1UsersManageIdResetPassword.ts";
 export type { PostV1UsersUsernameValidateMutationKey } from "./hooks/usersController/usePostV1UsersUsernameValidate.ts";
 export type { PutV1UsersMeOneClickApplyMutationKey } from "./hooks/usersController/usePutV1UsersMeOneClickApply.ts";
-export type { DeleteV1WebhooksIdMutationKey } from "./hooks/webhooksController/useDeleteV1WebhooksId.ts";
-export type { GetV1WebhooksQueryKey } from "./hooks/webhooksController/useGetV1Webhooks.ts";
-export type { GetV1WebhooksIdDeliveriesQueryKey } from "./hooks/webhooksController/useGetV1WebhooksIdDeliveries.ts";
-export type { PatchV1WebhooksIdMutationKey } from "./hooks/webhooksController/usePatchV1WebhooksId.ts";
-export type { PostV1WebhooksMutationKey } from "./hooks/webhooksController/usePostV1Webhooks.ts";
 export type { GetWellKnownAppleAppSiteAssociationQueryKey } from "./hooks/wellKnownController/useGetWellKnownAppleAppSiteAssociation.ts";
 export type { GetWellKnownAssetlinksJsonQueryKey } from "./hooks/wellKnownController/useGetWellKnownAssetlinksJson.ts";
 export type { AccountDeletionCodeSentResponse } from "./ts/AccountDeletionCodeSentResponse.ts";
@@ -371,8 +356,6 @@ export type { DeleteV1AdminUsersUserIdAccessModifiersModifierIdPathParams, Delet
 export type { GetV1AdminUsersUserIdAccessModifiersPathParams, ModifiersModifierTypeEnum, ModifiersEffectEnum, GetV1AdminUsersUserIdAccessModifiers200, GetV1AdminUsersUserIdAccessModifiers400, GetV1AdminUsersUserIdAccessModifiers401, GetV1AdminUsersUserIdAccessModifiers403, GetV1AdminUsersUserIdAccessModifiers404, GetV1AdminUsersUserIdAccessModifiersQueryResponse, GetV1AdminUsersUserIdAccessModifiersQuery } from "./ts/adminAccessModifiersController/GetV1AdminUsersUserIdAccessModifiers.ts";
 export type { PostV1AdminUsersUserIdAccessModifiersPathParams, PostV1AdminUsersUserIdAccessModifiers201ModifierTypeEnum, PostV1AdminUsersUserIdAccessModifiers201EffectEnum, PostV1AdminUsersUserIdAccessModifiers201, PostV1AdminUsersUserIdAccessModifiers400, PostV1AdminUsersUserIdAccessModifiers401, PostV1AdminUsersUserIdAccessModifiers403, PostV1AdminUsersUserIdAccessModifiers404, PostV1AdminUsersUserIdAccessModifiersMutationRequestModifierTypeEnum, PostV1AdminUsersUserIdAccessModifiersMutationRequestEffectEnum, PostV1AdminUsersUserIdAccessModifiersMutationRequest, PostV1AdminUsersUserIdAccessModifiersMutationResponse, PostV1AdminUsersUserIdAccessModifiersMutation } from "./ts/adminAccessModifiersController/PostV1AdminUsersUserIdAccessModifiers.ts";
 export type { GetV1AdminAlerts200, GetV1AdminAlerts400, GetV1AdminAlerts401, GetV1AdminAlerts403, GetV1AdminAlertsQueryResponse, GetV1AdminAlertsQuery } from "./ts/adminAlertsController/GetV1AdminAlerts.ts";
-export type { GetV1AdminChatConversationsQueryParams, GetV1AdminChatConversations200, GetV1AdminChatConversations400, GetV1AdminChatConversations401, GetV1AdminChatConversations403, GetV1AdminChatConversationsQueryResponse, GetV1AdminChatConversationsQuery } from "./ts/adminChatController/GetV1AdminChatConversations.ts";
-export type { GetV1AdminChatStats200, GetV1AdminChatStats400, GetV1AdminChatStats401, GetV1AdminChatStats403, GetV1AdminChatStatsQueryResponse, GetV1AdminChatStatsQuery } from "./ts/adminChatController/GetV1AdminChatStats.ts";
 export type { DeleteV1AdminCollaborationsResumeIdUserIdPathParams, DeleteV1AdminCollaborationsResumeIdUserId200, DeleteV1AdminCollaborationsResumeIdUserId400, DeleteV1AdminCollaborationsResumeIdUserId401, DeleteV1AdminCollaborationsResumeIdUserId403, DeleteV1AdminCollaborationsResumeIdUserId404, DeleteV1AdminCollaborationsResumeIdUserIdMutationResponse, DeleteV1AdminCollaborationsResumeIdUserIdMutation } from "./ts/adminCollaborationsController/DeleteV1AdminCollaborationsResumeIdUserId.ts";
 export type { GetV1AdminCollaborationsQueryParams, GetV1AdminCollaborations200, GetV1AdminCollaborations400, GetV1AdminCollaborations401, GetV1AdminCollaborations403, GetV1AdminCollaborationsQueryResponse, GetV1AdminCollaborationsQuery } from "./ts/adminCollaborationsController/GetV1AdminCollaborations.ts";
 export type { GetV1AdminCollaborationsStats200, GetV1AdminCollaborationsStats400, GetV1AdminCollaborationsStats401, GetV1AdminCollaborationsStats403, GetV1AdminCollaborationsStatsQueryResponse, GetV1AdminCollaborationsStatsQuery } from "./ts/adminCollaborationsController/GetV1AdminCollaborationsStats.ts";
@@ -429,8 +412,6 @@ export type { GetV1AdminTechSkillsQueryParams, ItemsTypeEnum2, GetV1AdminTechSki
 export type { GetV1AdminTechSkillsIdPathParams, GetV1AdminTechSkillsId200TypeEnum, GetV1AdminTechSkillsId200, GetV1AdminTechSkillsId400, GetV1AdminTechSkillsId401, GetV1AdminTechSkillsId403, GetV1AdminTechSkillsId404, GetV1AdminTechSkillsIdQueryResponse, GetV1AdminTechSkillsIdQuery } from "./ts/adminTechSkillsController/GetV1AdminTechSkillsId.ts";
 export type { PatchV1AdminTechSkillsIdPathParams, PatchV1AdminTechSkillsId200TypeEnum, PatchV1AdminTechSkillsId200, PatchV1AdminTechSkillsId400, PatchV1AdminTechSkillsId401, PatchV1AdminTechSkillsId403, PatchV1AdminTechSkillsId404, PatchV1AdminTechSkillsIdMutationRequest, PatchV1AdminTechSkillsIdMutationResponse, PatchV1AdminTechSkillsIdMutation } from "./ts/adminTechSkillsController/PatchV1AdminTechSkillsId.ts";
 export type { PostV1AdminTechSkills201TypeEnum, PostV1AdminTechSkills201, PostV1AdminTechSkills400, PostV1AdminTechSkills401, PostV1AdminTechSkills403, PostV1AdminTechSkillsMutationRequest, PostV1AdminTechSkillsMutationResponse, PostV1AdminTechSkillsMutation } from "./ts/adminTechSkillsController/PostV1AdminTechSkills.ts";
-export type { GetV1AdminTestSuites200, GetV1AdminTestSuites400, GetV1AdminTestSuites401, GetV1AdminTestSuites403, GetV1AdminTestSuitesQueryResponse, GetV1AdminTestSuitesQuery } from "./ts/adminTestRunnerController/GetV1AdminTestSuites.ts";
-export type { PostV1AdminTestRun201, PostV1AdminTestRun400, PostV1AdminTestRun401, PostV1AdminTestRun403, PostV1AdminTestRunMutationRequest, PostV1AdminTestRunMutationResponse, PostV1AdminTestRunMutation } from "./ts/adminTestRunnerController/PostV1AdminTestRun.ts";
 export type { GetV1JobsApplicationsCompaniesCompanyResponseStatsPathParams, GetV1JobsApplicationsCompaniesCompanyResponseStats200, GetV1JobsApplicationsCompaniesCompanyResponseStats400, GetV1JobsApplicationsCompaniesCompanyResponseStats401, GetV1JobsApplicationsCompaniesCompanyResponseStats403, GetV1JobsApplicationsCompaniesCompanyResponseStats404, GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponse, GetV1JobsApplicationsCompaniesCompanyResponseStatsQuery } from "./ts/applicationTrackerController/GetV1JobsApplicationsCompaniesCompanyResponseStats.ts";
 export type { GetV1JobsApplicationsTrackerQueryParams, EventsTypeEnum, GetV1JobsApplicationsTracker200, GetV1JobsApplicationsTracker400, GetV1JobsApplicationsTracker401, GetV1JobsApplicationsTracker403, GetV1JobsApplicationsTrackerQueryResponse, GetV1JobsApplicationsTrackerQuery } from "./ts/applicationTrackerController/GetV1JobsApplicationsTracker.ts";
 export type { PostV1JobsApplicationsApplicationIdEventsPathParams, PostV1JobsApplicationsApplicationIdEvents201, PostV1JobsApplicationsApplicationIdEvents400, PostV1JobsApplicationsApplicationIdEvents401, PostV1JobsApplicationsApplicationIdEvents403, PostV1JobsApplicationsApplicationIdEvents404, PostV1JobsApplicationsApplicationIdEventsMutationRequestTypeEnum, PostV1JobsApplicationsApplicationIdEventsMutationRequest, PostV1JobsApplicationsApplicationIdEventsMutationResponse, PostV1JobsApplicationsApplicationIdEventsMutation } from "./ts/applicationTrackerController/PostV1JobsApplicationsApplicationIdEvents.ts";
@@ -490,7 +471,6 @@ export type { ConnectedAccountsResponse } from "./ts/ConnectedAccountsResponse.t
 export type { CreateAccountRequest } from "./ts/CreateAccountRequest.ts";
 export type { CreateJobRequestJobTypeEnum, CreateJobRequestPaymentCurrencyEnum, CreateJobRequestRemotePolicyEnum, CreateJobRequestMinEnglishLevelEnum, CreateJobRequest } from "./ts/CreateJobRequest.ts";
 export type { CreateResumeRequestLanguageEnum, CreateResumeRequest } from "./ts/CreateResumeRequest.ts";
-export type { CreateWebhookRequestEventsEnum, CreateWebhookRequest } from "./ts/CreateWebhookRequest.ts";
 export type { GetDocs200, GetDocs400, GetDocsQueryResponse, GetDocsQuery } from "./ts/docsController/GetDocs.ts";
 export type { GetDocsOpenapiJson200, GetDocsOpenapiJson400, GetDocsOpenapiJsonQueryResponse, GetDocsOpenapiJsonQuery } from "./ts/docsController/GetDocsOpenapiJson.ts";
 export type { GetV1DslRenderPublicSlugPathParams, GetV1DslRenderPublicSlugQueryParamsTargetEnum, GetV1DslRenderPublicSlugQueryParams, TitleTextTransformEnum2, TitleTextDecorationEnum2, ContentTextTransformEnum2, ContentTextDecorationEnum2, GetV1DslRenderPublicSlug200, GetV1DslRenderPublicSlug400, GetV1DslRenderPublicSlug404, GetV1DslRenderPublicSlugQueryResponse, GetV1DslRenderPublicSlugQuery } from "./ts/dslController/GetV1DslRenderPublicSlug.ts";
@@ -511,12 +491,9 @@ export type { RolesRoleEnum, GetV1EnumsUserRoles200, GetV1EnumsUserRoles400, Get
 export type { ErrorResponseSeverityEnum, ErrorResponse } from "./ts/ErrorResponse.ts";
 export type { GetV1ExportBannerQueryParams, GetV1ExportBanner200, GetV1ExportBanner400, GetV1ExportBanner401, GetV1ExportBanner403, GetV1ExportBannerQueryResponse, GetV1ExportBannerQuery } from "./ts/exportController/GetV1ExportBanner.ts";
 export type { GetV1ExportResumeDocx200, GetV1ExportResumeDocx400, GetV1ExportResumeDocx401, GetV1ExportResumeDocx403, GetV1ExportResumeDocxQueryResponse, GetV1ExportResumeDocxQuery } from "./ts/exportController/GetV1ExportResumeDocx.ts";
-export type { GetV1ExportResumeIdJsonPathParams, GetV1ExportResumeIdJsonQueryParams, GetV1ExportResumeIdJson200, GetV1ExportResumeIdJson400, GetV1ExportResumeIdJson401, GetV1ExportResumeIdJson403, GetV1ExportResumeIdJson404, GetV1ExportResumeIdJsonQueryResponse, GetV1ExportResumeIdJsonQuery } from "./ts/exportController/GetV1ExportResumeIdJson.ts";
-export type { GetV1ExportResumeIdLatexPathParams, GetV1ExportResumeIdLatexQueryParams, GetV1ExportResumeIdLatex200, GetV1ExportResumeIdLatex400, GetV1ExportResumeIdLatex401, GetV1ExportResumeIdLatex403, GetV1ExportResumeIdLatex404, GetV1ExportResumeIdLatexQueryResponse, GetV1ExportResumeIdLatexQuery } from "./ts/exportController/GetV1ExportResumeIdLatex.ts";
 export type { GetV1ExportResumePdfQueryParams, GetV1ExportResumePdf200, GetV1ExportResumePdf400, GetV1ExportResumePdf401, GetV1ExportResumePdf403, GetV1ExportResumePdfQueryResponse, GetV1ExportResumePdfQuery } from "./ts/exportController/GetV1ExportResumePdf.ts";
 export type { GetV1ExportResumePreviewQueryParams, GetV1ExportResumePreview200, GetV1ExportResumePreview400, GetV1ExportResumePreview401, GetV1ExportResumePreview403, GetV1ExportResumePreviewQueryResponse, GetV1ExportResumePreviewQuery } from "./ts/exportController/GetV1ExportResumePreview.ts";
 export type { GetV1ExportUserUserIdResumePdfPathParams, GetV1ExportUserUserIdResumePdf200, GetV1ExportUserUserIdResumePdf400, GetV1ExportUserUserIdResumePdf401, GetV1ExportUserUserIdResumePdf404, GetV1ExportUserUserIdResumePdfQueryResponse, GetV1ExportUserUserIdResumePdfQuery } from "./ts/exportController/GetV1ExportUserUserIdResumePdf.ts";
-export type { PostV1ExportResumeIdBundlePathParams, PostV1ExportResumeIdBundle201, PostV1ExportResumeIdBundle400, PostV1ExportResumeIdBundle401, PostV1ExportResumeIdBundle403, PostV1ExportResumeIdBundle404, PostV1ExportResumeIdBundleMutationRequestFormatsEnum, PostV1ExportResumeIdBundleMutationRequestLanguageEnum, PostV1ExportResumeIdBundleMutationRequest, PostV1ExportResumeIdBundleMutationResponse, PostV1ExportResumeIdBundleMutation } from "./ts/exportController/PostV1ExportResumeIdBundle.ts";
 export type { GetV1FeatureFlagsActive200, GetV1FeatureFlagsActive400, GetV1FeatureFlagsActive401, GetV1FeatureFlagsActiveQueryResponse, GetV1FeatureFlagsActiveQuery } from "./ts/featureFlagsController/GetV1FeatureFlagsActive.ts";
 export type { GetV1FeatureFlagsEvaluate200, GetV1FeatureFlagsEvaluate400, GetV1FeatureFlagsEvaluate401, GetV1FeatureFlagsEvaluateQueryResponse, GetV1FeatureFlagsEvaluateQuery } from "./ts/featureFlagsController/GetV1FeatureFlagsEvaluate.ts";
 export type { GetV1FeatureFlagsStream200, GetV1FeatureFlagsStream400, GetV1FeatureFlagsStream401, GetV1FeatureFlagsStreamQueryResponse, GetV1FeatureFlagsStreamQuery } from "./ts/featureFlagsController/GetV1FeatureFlagsStream.ts";
@@ -608,8 +585,6 @@ export type { PostV1OnboardingSessionRestartQueryParamsModeEnum, PostV1Onboardin
 export type { PostV1OnboardingSessionSaveQueryParams, StrengthLevelEnum8, PostV1OnboardingSessionSave201, PostV1OnboardingSessionSave400, PostV1OnboardingSessionSave401, PostV1OnboardingSessionSaveMutationRequest, PostV1OnboardingSessionSaveMutationResponse, PostV1OnboardingSessionSaveMutation } from "./ts/onboardingController/PostV1OnboardingSessionSave.ts";
 export type { PutV1OnboardingProgress200, PutV1OnboardingProgress400, PutV1OnboardingProgress401, PutV1OnboardingProgressMutationRequestCurrentStepEnum, PutV1OnboardingProgressMutationRequestCompletedStepsEnum, PutV1OnboardingProgressMutationRequest, PutV1OnboardingProgressMutationResponse, PutV1OnboardingProgressMutation } from "./ts/onboardingController/PutV1OnboardingProgress.ts";
 export type { Page } from "./ts/Page.ts";
-export type { WidgetsIdEnum, WidgetsTypeEnum, WidgetsSizeEnum, WidgetsIdEnum2, WidgetsTypeEnum2, WidgetsSizeEnum2, WidgetsIdEnum3, WidgetsTypeEnum3, WidgetsSizeEnum3, WidgetsIdEnum4, WidgetsTypeEnum4, WidgetsSizeEnum4, GetV1PagesMeDashboard200, GetV1PagesMeDashboard400, GetV1PagesMeDashboard401, GetV1PagesMeDashboardQueryResponse, GetV1PagesMeDashboardQuery } from "./ts/pagesController/GetV1PagesMeDashboard.ts";
-export type { GetV1PagesSettingsSectionPathParamsSectionEnum, GetV1PagesSettingsSectionPathParams, FieldsTypeEnum, ActionsIntentEnum, GetV1PagesSettingsSection200, GetV1PagesSettingsSection400, GetV1PagesSettingsSection401, GetV1PagesSettingsSection404, GetV1PagesSettingsSectionQueryResponse, GetV1PagesSettingsSectionQuery } from "./ts/pagesController/GetV1PagesSettingsSection.ts";
 export type { Password } from "./ts/Password.ts";
 export type { PasswordChangeCodeSentResponse } from "./ts/PasswordChangeCodeSentResponse.ts";
 export type { PasswordInput } from "./ts/PasswordInput.ts";
@@ -730,10 +705,8 @@ export type { PostV1Auth2FaVerify201, PostV1Auth2FaVerify400, PostV1Auth2FaVerif
 export type { TwoFactorCode } from "./ts/TwoFactorCode.ts";
 export type { GetV1Enums200, GetV1Enums400, GetV1EnumsQueryResponse, GetV1EnumsQuery } from "./ts/uiMetadataController/GetV1Enums.ts";
 export type { GetV1EnumsKeyPathParams, ValuesToneEnum, GetV1EnumsKey200, GetV1EnumsKey400, GetV1EnumsKey404, GetV1EnumsKeyQueryResponse, GetV1EnumsKeyQuery } from "./ts/uiMetadataController/GetV1EnumsKey.ts";
-export type { GetV1MeMenu200, GetV1MeMenu400, GetV1MeMenu401, GetV1MeMenuQueryResponse, GetV1MeMenuQuery } from "./ts/uiMetadataController/GetV1MeMenu.ts";
 export type { UpdateJobRequestJobTypeEnum, UpdateJobRequestPaymentCurrencyEnum, UpdateJobRequestRemotePolicyEnum, UpdateJobRequestMinEnglishLevelEnum, UpdateJobRequest } from "./ts/UpdateJobRequest.ts";
 export type { UpdateResumeRequestLanguageEnum, UpdateResumeRequest } from "./ts/UpdateResumeRequest.ts";
-export type { UpdateWebhookRequestEventsEnum, UpdateWebhookRequest } from "./ts/UpdateWebhookRequest.ts";
 export type { DeleteV1UploadFileKeyPathParams, DeleteV1UploadFileKey204, DeleteV1UploadFileKey400, DeleteV1UploadFileKey401, DeleteV1UploadFileKey403, DeleteV1UploadFileKey404, DeleteV1UploadFileKeyMutationResponse, DeleteV1UploadFileKeyMutation } from "./ts/uploadController/DeleteV1UploadFileKey.ts";
 export type { PostV1UploadCompanyLogoResumeIdPathParams, PostV1UploadCompanyLogoResumeId200, PostV1UploadCompanyLogoResumeId400, PostV1UploadCompanyLogoResumeId401, PostV1UploadCompanyLogoResumeId403, PostV1UploadCompanyLogoResumeId404, PostV1UploadCompanyLogoResumeIdMutationResponse, PostV1UploadCompanyLogoResumeIdMutation } from "./ts/uploadController/PostV1UploadCompanyLogoResumeId.ts";
 export type { PostV1UploadProfileImage200, PostV1UploadProfileImage400, PostV1UploadProfileImage401, PostV1UploadProfileImage403, PostV1UploadProfileImageMutationResponse, PostV1UploadProfileImageMutation } from "./ts/uploadController/PostV1UploadProfileImage.ts";
@@ -769,11 +742,6 @@ export type { PostV1UsersManage201, PostV1UsersManage400, PostV1UsersManage401, 
 export type { PostV1UsersManageIdResetPasswordPathParams, PostV1UsersManageIdResetPassword200, PostV1UsersManageIdResetPassword400, PostV1UsersManageIdResetPassword401, PostV1UsersManageIdResetPassword403, PostV1UsersManageIdResetPassword404, PostV1UsersManageIdResetPasswordMutationRequest, PostV1UsersManageIdResetPasswordMutationResponse, PostV1UsersManageIdResetPasswordMutation } from "./ts/usersController/PostV1UsersManageIdResetPassword.ts";
 export type { ErrorsCodeEnum, PostV1UsersUsernameValidate201, PostV1UsersUsernameValidate400, PostV1UsersUsernameValidate401, PostV1UsersUsernameValidateMutationRequest, PostV1UsersUsernameValidateMutationResponse, PostV1UsersUsernameValidateMutation } from "./ts/usersController/PostV1UsersUsernameValidate.ts";
 export type { DataTailoringModeEnum2, PutV1UsersMeOneClickApply200, PutV1UsersMeOneClickApply400, PutV1UsersMeOneClickApply401, PutV1UsersMeOneClickApply403, PutV1UsersMeOneClickApplyMutationRequestTailoringModeEnum, PutV1UsersMeOneClickApplyMutationRequest, PutV1UsersMeOneClickApplyMutationResponse, PutV1UsersMeOneClickApplyMutation } from "./ts/usersController/PutV1UsersMeOneClickApply.ts";
-export type { DeleteV1WebhooksIdPathParams, DeleteV1WebhooksId200, DeleteV1WebhooksId400, DeleteV1WebhooksId401, DeleteV1WebhooksId403, DeleteV1WebhooksId404, DeleteV1WebhooksIdMutationResponse, DeleteV1WebhooksIdMutation } from "./ts/webhooksController/DeleteV1WebhooksId.ts";
-export type { WebhooksEventsEnum, GetV1Webhooks200, GetV1Webhooks400, GetV1Webhooks401, GetV1Webhooks403, GetV1WebhooksQueryResponse, GetV1WebhooksQuery } from "./ts/webhooksController/GetV1Webhooks.ts";
-export type { GetV1WebhooksIdDeliveriesPathParams, GetV1WebhooksIdDeliveries200, GetV1WebhooksIdDeliveries400, GetV1WebhooksIdDeliveries401, GetV1WebhooksIdDeliveries403, GetV1WebhooksIdDeliveries404, GetV1WebhooksIdDeliveriesQueryResponse, GetV1WebhooksIdDeliveriesQuery } from "./ts/webhooksController/GetV1WebhooksIdDeliveries.ts";
-export type { PatchV1WebhooksIdPathParams, WebhookEventsEnum2, PatchV1WebhooksId200, PatchV1WebhooksId400, PatchV1WebhooksId401, PatchV1WebhooksId403, PatchV1WebhooksId404, PatchV1WebhooksIdMutationRequest, PatchV1WebhooksIdMutationResponse, PatchV1WebhooksIdMutation } from "./ts/webhooksController/PatchV1WebhooksId.ts";
-export type { WebhookEventsEnum, PostV1Webhooks201, PostV1Webhooks400, PostV1Webhooks401, PostV1Webhooks403, PostV1WebhooksMutationRequest, PostV1WebhooksMutationResponse, PostV1WebhooksMutation } from "./ts/webhooksController/PostV1Webhooks.ts";
 export type { GetWellKnownAppleAppSiteAssociation200, GetWellKnownAppleAppSiteAssociation400, GetWellKnownAppleAppSiteAssociationQueryResponse, GetWellKnownAppleAppSiteAssociationQuery } from "./ts/wellKnownController/GetWellKnownAppleAppSiteAssociation.ts";
 export type { GetWellKnownAssetlinksJson200, GetWellKnownAssetlinksJson400, GetWellKnownAssetlinksJsonQueryResponse, GetWellKnownAssetlinksJsonQuery } from "./ts/wellKnownController/GetWellKnownAssetlinksJson.ts";
 export type { WriteItemTranslationResponse } from "./ts/WriteItemTranslationResponse.ts";
@@ -786,8 +754,6 @@ export { deleteV1AdminUsersUserIdAccessModifiersModifierIdMutationKey, deleteV1A
 export { getV1AdminUsersUserIdAccessModifiersQueryKey, getV1AdminUsersUserIdAccessModifiers, getV1AdminUsersUserIdAccessModifiersQueryOptions, useGetV1AdminUsersUserIdAccessModifiers } from "./hooks/adminAccessModifiersController/useGetV1AdminUsersUserIdAccessModifiers.ts";
 export { postV1AdminUsersUserIdAccessModifiersMutationKey, postV1AdminUsersUserIdAccessModifiers, usePostV1AdminUsersUserIdAccessModifiers } from "./hooks/adminAccessModifiersController/usePostV1AdminUsersUserIdAccessModifiers.ts";
 export { getV1AdminAlertsQueryKey, getV1AdminAlerts, getV1AdminAlertsQueryOptions, useGetV1AdminAlerts } from "./hooks/adminAlertsController/useGetV1AdminAlerts.ts";
-export { getV1AdminChatConversationsQueryKey, getV1AdminChatConversations, getV1AdminChatConversationsQueryOptions, useGetV1AdminChatConversations } from "./hooks/adminChatController/useGetV1AdminChatConversations.ts";
-export { getV1AdminChatStatsQueryKey, getV1AdminChatStats, getV1AdminChatStatsQueryOptions, useGetV1AdminChatStats } from "./hooks/adminChatController/useGetV1AdminChatStats.ts";
 export { deleteV1AdminCollaborationsResumeIdUserIdMutationKey, deleteV1AdminCollaborationsResumeIdUserId, useDeleteV1AdminCollaborationsResumeIdUserId } from "./hooks/adminCollaborationsController/useDeleteV1AdminCollaborationsResumeIdUserId.ts";
 export { getV1AdminCollaborationsQueryKey, getV1AdminCollaborations, getV1AdminCollaborationsQueryOptions, useGetV1AdminCollaborations } from "./hooks/adminCollaborationsController/useGetV1AdminCollaborations.ts";
 export { getV1AdminCollaborationsStatsQueryKey, getV1AdminCollaborationsStats, getV1AdminCollaborationsStatsQueryOptions, useGetV1AdminCollaborationsStats } from "./hooks/adminCollaborationsController/useGetV1AdminCollaborationsStats.ts";
@@ -844,8 +810,6 @@ export { getV1AdminTechSkillsQueryKey, getV1AdminTechSkills, getV1AdminTechSkill
 export { getV1AdminTechSkillsIdQueryKey, getV1AdminTechSkillsId, getV1AdminTechSkillsIdQueryOptions, useGetV1AdminTechSkillsId } from "./hooks/adminTechSkillsController/useGetV1AdminTechSkillsId.ts";
 export { patchV1AdminTechSkillsIdMutationKey, patchV1AdminTechSkillsId, usePatchV1AdminTechSkillsId } from "./hooks/adminTechSkillsController/usePatchV1AdminTechSkillsId.ts";
 export { postV1AdminTechSkillsMutationKey, postV1AdminTechSkills, usePostV1AdminTechSkills } from "./hooks/adminTechSkillsController/usePostV1AdminTechSkills.ts";
-export { getV1AdminTestSuitesQueryKey, getV1AdminTestSuites, getV1AdminTestSuitesQueryOptions, useGetV1AdminTestSuites } from "./hooks/adminTestRunnerController/useGetV1AdminTestSuites.ts";
-export { postV1AdminTestRunMutationKey, postV1AdminTestRun, usePostV1AdminTestRun } from "./hooks/adminTestRunnerController/usePostV1AdminTestRun.ts";
 export { getV1JobsApplicationsCompaniesCompanyResponseStatsQueryKey, getV1JobsApplicationsCompaniesCompanyResponseStats, getV1JobsApplicationsCompaniesCompanyResponseStatsQueryOptions, useGetV1JobsApplicationsCompaniesCompanyResponseStats } from "./hooks/applicationTrackerController/useGetV1JobsApplicationsCompaniesCompanyResponseStats.ts";
 export { getV1JobsApplicationsTrackerQueryKey, getV1JobsApplicationsTracker, getV1JobsApplicationsTrackerQueryOptions, useGetV1JobsApplicationsTracker } from "./hooks/applicationTrackerController/useGetV1JobsApplicationsTracker.ts";
 export { postV1JobsApplicationsApplicationIdEventsMutationKey, postV1JobsApplicationsApplicationIdEvents, usePostV1JobsApplicationsApplicationIdEvents } from "./hooks/applicationTrackerController/usePostV1JobsApplicationsApplicationIdEvents.ts";
@@ -909,12 +873,9 @@ export { getV1EnumsSectionTypesQueryKey, getV1EnumsSectionTypes, getV1EnumsSecti
 export { getV1EnumsUserRolesQueryKey, getV1EnumsUserRoles, getV1EnumsUserRolesQueryOptions, useGetV1EnumsUserRoles } from "./hooks/enumsController/useGetV1EnumsUserRoles.ts";
 export { getV1ExportBannerQueryKey, getV1ExportBanner, getV1ExportBannerQueryOptions, useGetV1ExportBanner } from "./hooks/exportController/useGetV1ExportBanner.ts";
 export { getV1ExportResumeDocxQueryKey, getV1ExportResumeDocx, getV1ExportResumeDocxQueryOptions, useGetV1ExportResumeDocx } from "./hooks/exportController/useGetV1ExportResumeDocx.ts";
-export { getV1ExportResumeIdJsonQueryKey, getV1ExportResumeIdJson, getV1ExportResumeIdJsonQueryOptions, useGetV1ExportResumeIdJson } from "./hooks/exportController/useGetV1ExportResumeIdJson.ts";
-export { getV1ExportResumeIdLatexQueryKey, getV1ExportResumeIdLatex, getV1ExportResumeIdLatexQueryOptions, useGetV1ExportResumeIdLatex } from "./hooks/exportController/useGetV1ExportResumeIdLatex.ts";
 export { getV1ExportResumePdfQueryKey, getV1ExportResumePdf, getV1ExportResumePdfQueryOptions, useGetV1ExportResumePdf } from "./hooks/exportController/useGetV1ExportResumePdf.ts";
 export { getV1ExportResumePreviewQueryKey, getV1ExportResumePreview, getV1ExportResumePreviewQueryOptions, useGetV1ExportResumePreview } from "./hooks/exportController/useGetV1ExportResumePreview.ts";
 export { getV1ExportUserUserIdResumePdfQueryKey, getV1ExportUserUserIdResumePdf, getV1ExportUserUserIdResumePdfQueryOptions, useGetV1ExportUserUserIdResumePdf } from "./hooks/exportController/useGetV1ExportUserUserIdResumePdf.ts";
-export { postV1ExportResumeIdBundleMutationKey, postV1ExportResumeIdBundle, usePostV1ExportResumeIdBundle } from "./hooks/exportController/usePostV1ExportResumeIdBundle.ts";
 export { getV1FeatureFlagsActiveQueryKey, getV1FeatureFlagsActive, getV1FeatureFlagsActiveQueryOptions, useGetV1FeatureFlagsActive } from "./hooks/featureFlagsController/useGetV1FeatureFlagsActive.ts";
 export { getV1FeatureFlagsEvaluateQueryKey, getV1FeatureFlagsEvaluate, getV1FeatureFlagsEvaluateQueryOptions, useGetV1FeatureFlagsEvaluate } from "./hooks/featureFlagsController/useGetV1FeatureFlagsEvaluate.ts";
 export { getV1FeatureFlagsStreamQueryKey, getV1FeatureFlagsStream, getV1FeatureFlagsStreamQueryOptions, useGetV1FeatureFlagsStream } from "./hooks/featureFlagsController/useGetV1FeatureFlagsStream.ts";
@@ -996,8 +957,6 @@ export { postV1OnboardingSessionPreviousMutationKey, postV1OnboardingSessionPrev
 export { postV1OnboardingSessionRestartMutationKey, postV1OnboardingSessionRestart, usePostV1OnboardingSessionRestart } from "./hooks/onboardingController/usePostV1OnboardingSessionRestart.ts";
 export { postV1OnboardingSessionSaveMutationKey, postV1OnboardingSessionSave, usePostV1OnboardingSessionSave } from "./hooks/onboardingController/usePostV1OnboardingSessionSave.ts";
 export { putV1OnboardingProgressMutationKey, putV1OnboardingProgress, usePutV1OnboardingProgress } from "./hooks/onboardingController/usePutV1OnboardingProgress.ts";
-export { getV1PagesMeDashboardQueryKey, getV1PagesMeDashboard, getV1PagesMeDashboardQueryOptions, useGetV1PagesMeDashboard } from "./hooks/pagesController/useGetV1PagesMeDashboard.ts";
-export { getV1PagesSettingsSectionQueryKey, getV1PagesSettingsSection, getV1PagesSettingsSectionQueryOptions, useGetV1PagesSettingsSection } from "./hooks/pagesController/useGetV1PagesSettingsSection.ts";
 export { postV1AuthForgotPasswordMutationKey, postV1AuthForgotPassword, usePostV1AuthForgotPassword } from "./hooks/passwordManagementController/usePostV1AuthForgotPassword.ts";
 export { postV1AuthResetPasswordMutationKey, postV1AuthResetPassword, usePostV1AuthResetPassword } from "./hooks/passwordManagementController/usePostV1AuthResetPassword.ts";
 export { postV1MeEmailChangeConfirmMutationKey, postV1MeEmailChangeConfirm, usePostV1MeEmailChangeConfirm } from "./hooks/passwordManagementController/usePostV1MeEmailChangeConfirm.ts";
@@ -1099,7 +1058,6 @@ export { postV1Auth2FaSetupMutationKey, postV1Auth2FaSetup, usePostV1Auth2FaSetu
 export { postV1Auth2FaVerifyMutationKey, postV1Auth2FaVerify, usePostV1Auth2FaVerify } from "./hooks/twoFactorAuthController/usePostV1Auth2FaVerify.ts";
 export { getV1EnumsQueryKey, getV1Enums, getV1EnumsQueryOptions, useGetV1Enums } from "./hooks/uiMetadataController/useGetV1Enums.ts";
 export { getV1EnumsKeyQueryKey, getV1EnumsKey, getV1EnumsKeyQueryOptions, useGetV1EnumsKey } from "./hooks/uiMetadataController/useGetV1EnumsKey.ts";
-export { getV1MeMenuQueryKey, getV1MeMenu, getV1MeMenuQueryOptions, useGetV1MeMenu } from "./hooks/uiMetadataController/useGetV1MeMenu.ts";
 export { deleteV1UploadFileKeyMutationKey, deleteV1UploadFileKey, useDeleteV1UploadFileKey } from "./hooks/uploadController/useDeleteV1UploadFileKey.ts";
 export { postV1UploadCompanyLogoResumeIdMutationKey, postV1UploadCompanyLogoResumeId, usePostV1UploadCompanyLogoResumeId } from "./hooks/uploadController/usePostV1UploadCompanyLogoResumeId.ts";
 export { postV1UploadProfileImageMutationKey, postV1UploadProfileImage, usePostV1UploadProfileImage } from "./hooks/uploadController/usePostV1UploadProfileImage.ts";
@@ -1133,11 +1091,6 @@ export { postV1UsersManageMutationKey, postV1UsersManage, usePostV1UsersManage }
 export { postV1UsersManageIdResetPasswordMutationKey, postV1UsersManageIdResetPassword, usePostV1UsersManageIdResetPassword } from "./hooks/usersController/usePostV1UsersManageIdResetPassword.ts";
 export { postV1UsersUsernameValidateMutationKey, postV1UsersUsernameValidate, usePostV1UsersUsernameValidate } from "./hooks/usersController/usePostV1UsersUsernameValidate.ts";
 export { putV1UsersMeOneClickApplyMutationKey, putV1UsersMeOneClickApply, usePutV1UsersMeOneClickApply } from "./hooks/usersController/usePutV1UsersMeOneClickApply.ts";
-export { deleteV1WebhooksIdMutationKey, deleteV1WebhooksId, useDeleteV1WebhooksId } from "./hooks/webhooksController/useDeleteV1WebhooksId.ts";
-export { getV1WebhooksQueryKey, getV1Webhooks, getV1WebhooksQueryOptions, useGetV1Webhooks } from "./hooks/webhooksController/useGetV1Webhooks.ts";
-export { getV1WebhooksIdDeliveriesQueryKey, getV1WebhooksIdDeliveries, getV1WebhooksIdDeliveriesQueryOptions, useGetV1WebhooksIdDeliveries } from "./hooks/webhooksController/useGetV1WebhooksIdDeliveries.ts";
-export { patchV1WebhooksIdMutationKey, patchV1WebhooksId, usePatchV1WebhooksId } from "./hooks/webhooksController/usePatchV1WebhooksId.ts";
-export { postV1WebhooksMutationKey, postV1Webhooks, usePostV1Webhooks } from "./hooks/webhooksController/usePostV1Webhooks.ts";
 export { getWellKnownAppleAppSiteAssociationQueryKey, getWellKnownAppleAppSiteAssociation, getWellKnownAppleAppSiteAssociationQueryOptions, useGetWellKnownAppleAppSiteAssociation } from "./hooks/wellKnownController/useGetWellKnownAppleAppSiteAssociation.ts";
 export { getWellKnownAssetlinksJsonQueryKey, getWellKnownAssetlinksJson, getWellKnownAssetlinksJsonQueryOptions, useGetWellKnownAssetlinksJson } from "./hooks/wellKnownController/useGetWellKnownAssetlinksJson.ts";
 export { modifiersModifierTypeEnum, modifiersEffectEnum } from "./ts/adminAccessModifiersController/GetV1AdminUsersUserIdAccessModifiers.ts";
@@ -1168,14 +1121,12 @@ export { patchV1ResumesResumeIdCollaboratorsUserIdMutationRequestRoleEnum } from
 export { postV1ResumesResumeIdCollaboratorsMutationRequestRoleEnum } from "./ts/collaborationController/PostV1ResumesResumeIdCollaborators.ts";
 export { createJobRequestJobTypeEnum, createJobRequestPaymentCurrencyEnum, createJobRequestRemotePolicyEnum, createJobRequestMinEnglishLevelEnum } from "./ts/CreateJobRequest.ts";
 export { createResumeRequestLanguageEnum } from "./ts/CreateResumeRequest.ts";
-export { createWebhookRequestEventsEnum } from "./ts/CreateWebhookRequest.ts";
 export { getV1DslRenderPublicSlugQueryParamsTargetEnum, titleTextTransformEnum2, titleTextDecorationEnum2, contentTextTransformEnum2, contentTextDecorationEnum2 } from "./ts/dslController/GetV1DslRenderPublicSlug.ts";
 export { getV1DslRenderResumeIdQueryParamsTargetEnum, titleTextTransformEnum3, titleTextDecorationEnum3, contentTextTransformEnum3, contentTextDecorationEnum3 } from "./ts/dslController/GetV1DslRenderResumeId.ts";
 export { postV1DslPreviewQueryParamsTargetEnum, titleTextTransformEnum, titleTextDecorationEnum, contentTextTransformEnum, contentTextDecorationEnum } from "./ts/dslController/PostV1DslPreview.ts";
 export { formatsKeyEnum } from "./ts/enumsController/GetV1EnumsExportFormats.ts";
 export { rolesRoleEnum } from "./ts/enumsController/GetV1EnumsUserRoles.ts";
 export { errorResponseSeverityEnum } from "./ts/ErrorResponse.ts";
-export { postV1ExportResumeIdBundleMutationRequestFormatsEnum, postV1ExportResumeIdBundleMutationRequestLanguageEnum } from "./ts/exportController/PostV1ExportResumeIdBundle.ts";
 export { getV1FitProfileMe200StatusEnum, getV1FitProfileMe200RemainingQuestionsEnum, getV1FitProfileMe200RemainingQuestionsEnum2 } from "./ts/fitProfileController/GetV1FitProfileMe.ts";
 export { questionsDimensionEnum, questionsScaleTypeEnum } from "./ts/fitProfileController/GetV1FitProfileQuestions.ts";
 export { getV1GeoLocationsQueryParamsLevelEnum } from "./ts/geoController/GetV1GeoLocations.ts";
@@ -1221,8 +1172,6 @@ export { strengthLevelEnum6 } from "./ts/onboardingController/PostV1OnboardingSe
 export { postV1OnboardingSessionRestartQueryParamsModeEnum, strengthLevelEnum7 } from "./ts/onboardingController/PostV1OnboardingSessionRestart.ts";
 export { strengthLevelEnum8 } from "./ts/onboardingController/PostV1OnboardingSessionSave.ts";
 export { putV1OnboardingProgressMutationRequestCurrentStepEnum, putV1OnboardingProgressMutationRequestCompletedStepsEnum } from "./ts/onboardingController/PutV1OnboardingProgress.ts";
-export { widgetsIdEnum, widgetsTypeEnum, widgetsSizeEnum, widgetsIdEnum2, widgetsTypeEnum2, widgetsSizeEnum2, widgetsIdEnum3, widgetsTypeEnum3, widgetsSizeEnum3, widgetsIdEnum4, widgetsTypeEnum4, widgetsSizeEnum4 } from "./ts/pagesController/GetV1PagesMeDashboard.ts";
-export { getV1PagesSettingsSectionPathParamsSectionEnum, fieldsTypeEnum, actionsIntentEnum } from "./ts/pagesController/GetV1PagesSettingsSection.ts";
 export { registerPushDeviceRequestPlatformEnum } from "./ts/RegisterPushDeviceRequest.ts";
 export { getV1ResumesImports200SourceEnum, getV1ResumesImports200StatusEnum } from "./ts/resumeImportController/GetV1ResumesImports.ts";
 export { getV1ResumesImportsImportId200SourceEnum, getV1ResumesImportsImportId200StatusEnum } from "./ts/resumeImportController/GetV1ResumesImportsImportId.ts";
@@ -1262,7 +1211,6 @@ export { translationReportStatusEnum, translationReportReasonEnum } from "./ts/T
 export { valuesToneEnum } from "./ts/uiMetadataController/GetV1EnumsKey.ts";
 export { updateJobRequestJobTypeEnum, updateJobRequestPaymentCurrencyEnum, updateJobRequestRemotePolicyEnum, updateJobRequestMinEnglishLevelEnum } from "./ts/UpdateJobRequest.ts";
 export { updateResumeRequestLanguageEnum } from "./ts/UpdateResumeRequest.ts";
-export { updateWebhookRequestEventsEnum } from "./ts/UpdateWebhookRequest.ts";
 export { consentDocumentTypeEnum, acceptConsentMutationRequestDocumentTypeEnum } from "./ts/userConsentController/AcceptConsent.ts";
 export { deleteV1MeUiStateKey200DeletedEnum } from "./ts/usersController/DeleteV1MeUiStateKey.ts";
 export { itemsRoleEnum } from "./ts/usersController/GetV1UsersManage.ts";
@@ -1274,9 +1222,6 @@ export { preferencesProfileVisibilityEnum2, preferencesMessagePrivacyEnum2, pref
 export { postV1UsersManageMutationRequestRoleEnum } from "./ts/usersController/PostV1UsersManage.ts";
 export { errorsCodeEnum } from "./ts/usersController/PostV1UsersUsernameValidate.ts";
 export { dataTailoringModeEnum2, putV1UsersMeOneClickApplyMutationRequestTailoringModeEnum } from "./ts/usersController/PutV1UsersMeOneClickApply.ts";
-export { webhooksEventsEnum } from "./ts/webhooksController/GetV1Webhooks.ts";
-export { webhookEventsEnum2 } from "./ts/webhooksController/PatchV1WebhooksId.ts";
-export { webhookEventsEnum } from "./ts/webhooksController/PostV1Webhooks.ts";
 export { accountDeletionCodeSentResponseSchema } from "./zod/accountDeletionCodeSentResponseSchema.ts";
 export { deleteV1AccountsDeactivate200Schema, deleteV1AccountsDeactivate400Schema, deleteV1AccountsDeactivate401Schema, deleteV1AccountsDeactivateMutationRequestSchema, deleteV1AccountsDeactivateMutationResponseSchema } from "./zod/accountLifecycleController/deleteV1AccountsDeactivateSchema.ts";
 export { postV1AccountsDeleteConfirm200Schema, postV1AccountsDeleteConfirm400Schema, postV1AccountsDeleteConfirm401Schema, postV1AccountsDeleteConfirmMutationRequestSchema, postV1AccountsDeleteConfirmMutationResponseSchema } from "./zod/accountLifecycleController/postV1AccountsDeleteConfirmSchema.ts";
@@ -1287,8 +1232,6 @@ export { deleteV1AdminUsersUserIdAccessModifiersModifierIdPathParamsSchema, dele
 export { getV1AdminUsersUserIdAccessModifiersPathParamsSchema, getV1AdminUsersUserIdAccessModifiers200Schema, getV1AdminUsersUserIdAccessModifiers400Schema, getV1AdminUsersUserIdAccessModifiers401Schema, getV1AdminUsersUserIdAccessModifiers403Schema, getV1AdminUsersUserIdAccessModifiers404Schema, getV1AdminUsersUserIdAccessModifiersQueryResponseSchema } from "./zod/adminAccessModifiersController/getV1AdminUsersUserIdAccessModifiersSchema.ts";
 export { postV1AdminUsersUserIdAccessModifiersPathParamsSchema, postV1AdminUsersUserIdAccessModifiers201Schema, postV1AdminUsersUserIdAccessModifiers400Schema, postV1AdminUsersUserIdAccessModifiers401Schema, postV1AdminUsersUserIdAccessModifiers403Schema, postV1AdminUsersUserIdAccessModifiers404Schema, postV1AdminUsersUserIdAccessModifiersMutationRequestSchema, postV1AdminUsersUserIdAccessModifiersMutationResponseSchema } from "./zod/adminAccessModifiersController/postV1AdminUsersUserIdAccessModifiersSchema.ts";
 export { getV1AdminAlerts200Schema, getV1AdminAlerts400Schema, getV1AdminAlerts401Schema, getV1AdminAlerts403Schema, getV1AdminAlertsQueryResponseSchema } from "./zod/adminAlertsController/getV1AdminAlertsSchema.ts";
-export { getV1AdminChatConversationsQueryParamsSchema, getV1AdminChatConversations200Schema, getV1AdminChatConversations400Schema, getV1AdminChatConversations401Schema, getV1AdminChatConversations403Schema, getV1AdminChatConversationsQueryResponseSchema } from "./zod/adminChatController/getV1AdminChatConversationsSchema.ts";
-export { getV1AdminChatStats200Schema, getV1AdminChatStats400Schema, getV1AdminChatStats401Schema, getV1AdminChatStats403Schema, getV1AdminChatStatsQueryResponseSchema } from "./zod/adminChatController/getV1AdminChatStatsSchema.ts";
 export { deleteV1AdminCollaborationsResumeIdUserIdPathParamsSchema, deleteV1AdminCollaborationsResumeIdUserId200Schema, deleteV1AdminCollaborationsResumeIdUserId400Schema, deleteV1AdminCollaborationsResumeIdUserId401Schema, deleteV1AdminCollaborationsResumeIdUserId403Schema, deleteV1AdminCollaborationsResumeIdUserId404Schema, deleteV1AdminCollaborationsResumeIdUserIdMutationResponseSchema } from "./zod/adminCollaborationsController/deleteV1AdminCollaborationsResumeIdUserIdSchema.ts";
 export { getV1AdminCollaborationsQueryParamsSchema, getV1AdminCollaborations200Schema, getV1AdminCollaborations400Schema, getV1AdminCollaborations401Schema, getV1AdminCollaborations403Schema, getV1AdminCollaborationsQueryResponseSchema } from "./zod/adminCollaborationsController/getV1AdminCollaborationsSchema.ts";
 export { getV1AdminCollaborationsStats200Schema, getV1AdminCollaborationsStats400Schema, getV1AdminCollaborationsStats401Schema, getV1AdminCollaborationsStats403Schema, getV1AdminCollaborationsStatsQueryResponseSchema } from "./zod/adminCollaborationsController/getV1AdminCollaborationsStatsSchema.ts";
@@ -1345,8 +1288,6 @@ export { getV1AdminTechSkillsIdPathParamsSchema, getV1AdminTechSkillsId200Schema
 export { getV1AdminTechSkillsQueryParamsSchema, getV1AdminTechSkills200Schema, getV1AdminTechSkills400Schema, getV1AdminTechSkills401Schema, getV1AdminTechSkills403Schema, getV1AdminTechSkillsQueryResponseSchema } from "./zod/adminTechSkillsController/getV1AdminTechSkillsSchema.ts";
 export { patchV1AdminTechSkillsIdPathParamsSchema, patchV1AdminTechSkillsId200Schema, patchV1AdminTechSkillsId400Schema, patchV1AdminTechSkillsId401Schema, patchV1AdminTechSkillsId403Schema, patchV1AdminTechSkillsId404Schema, patchV1AdminTechSkillsIdMutationRequestSchema, patchV1AdminTechSkillsIdMutationResponseSchema } from "./zod/adminTechSkillsController/patchV1AdminTechSkillsIdSchema.ts";
 export { postV1AdminTechSkills201Schema, postV1AdminTechSkills400Schema, postV1AdminTechSkills401Schema, postV1AdminTechSkills403Schema, postV1AdminTechSkillsMutationRequestSchema, postV1AdminTechSkillsMutationResponseSchema } from "./zod/adminTechSkillsController/postV1AdminTechSkillsSchema.ts";
-export { getV1AdminTestSuites200Schema, getV1AdminTestSuites400Schema, getV1AdminTestSuites401Schema, getV1AdminTestSuites403Schema, getV1AdminTestSuitesQueryResponseSchema } from "./zod/adminTestRunnerController/getV1AdminTestSuitesSchema.ts";
-export { postV1AdminTestRun201Schema, postV1AdminTestRun400Schema, postV1AdminTestRun401Schema, postV1AdminTestRun403Schema, postV1AdminTestRunMutationRequestSchema, postV1AdminTestRunMutationResponseSchema } from "./zod/adminTestRunnerController/postV1AdminTestRunSchema.ts";
 export { getV1JobsApplicationsCompaniesCompanyResponseStatsPathParamsSchema, getV1JobsApplicationsCompaniesCompanyResponseStats200Schema, getV1JobsApplicationsCompaniesCompanyResponseStats400Schema, getV1JobsApplicationsCompaniesCompanyResponseStats401Schema, getV1JobsApplicationsCompaniesCompanyResponseStats403Schema, getV1JobsApplicationsCompaniesCompanyResponseStats404Schema, getV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponseSchema } from "./zod/applicationTrackerController/getV1JobsApplicationsCompaniesCompanyResponseStatsSchema.ts";
 export { getV1JobsApplicationsTrackerQueryParamsSchema, getV1JobsApplicationsTracker200Schema, getV1JobsApplicationsTracker400Schema, getV1JobsApplicationsTracker401Schema, getV1JobsApplicationsTracker403Schema, getV1JobsApplicationsTrackerQueryResponseSchema } from "./zod/applicationTrackerController/getV1JobsApplicationsTrackerSchema.ts";
 export { postV1JobsApplicationsApplicationIdEventsPathParamsSchema, postV1JobsApplicationsApplicationIdEvents201Schema, postV1JobsApplicationsApplicationIdEvents400Schema, postV1JobsApplicationsApplicationIdEvents401Schema, postV1JobsApplicationsApplicationIdEvents403Schema, postV1JobsApplicationsApplicationIdEvents404Schema, postV1JobsApplicationsApplicationIdEventsMutationRequestSchema, postV1JobsApplicationsApplicationIdEventsMutationResponseSchema } from "./zod/applicationTrackerController/postV1JobsApplicationsApplicationIdEventsSchema.ts";
@@ -1406,7 +1347,6 @@ export { connectedAccountsResponseSchema } from "./zod/connectedAccountsResponse
 export { createAccountRequestSchema } from "./zod/createAccountRequestSchema.ts";
 export { createJobRequestSchema } from "./zod/createJobRequestSchema.ts";
 export { createResumeRequestSchema } from "./zod/createResumeRequestSchema.ts";
-export { createWebhookRequestSchema } from "./zod/createWebhookRequestSchema.ts";
 export { getDocsOpenapiJson200Schema, getDocsOpenapiJson400Schema, getDocsOpenapiJsonQueryResponseSchema } from "./zod/docsController/getDocsOpenapiJsonSchema.ts";
 export { getDocs200Schema, getDocs400Schema, getDocsQueryResponseSchema } from "./zod/docsController/getDocsSchema.ts";
 export { getV1DslRenderPublicSlugPathParamsSchema, getV1DslRenderPublicSlugQueryParamsSchema, getV1DslRenderPublicSlug200Schema, getV1DslRenderPublicSlug400Schema, getV1DslRenderPublicSlug404Schema, getV1DslRenderPublicSlugQueryResponseSchema } from "./zod/dslController/getV1DslRenderPublicSlugSchema.ts";
@@ -1427,12 +1367,9 @@ export { getV1EnumsUserRoles200Schema, getV1EnumsUserRoles400Schema, getV1EnumsU
 export { errorResponseSchema } from "./zod/errorResponseSchema.ts";
 export { getV1ExportBannerQueryParamsSchema, getV1ExportBanner200Schema, getV1ExportBanner400Schema, getV1ExportBanner401Schema, getV1ExportBanner403Schema, getV1ExportBannerQueryResponseSchema } from "./zod/exportController/getV1ExportBannerSchema.ts";
 export { getV1ExportResumeDocx200Schema, getV1ExportResumeDocx400Schema, getV1ExportResumeDocx401Schema, getV1ExportResumeDocx403Schema, getV1ExportResumeDocxQueryResponseSchema } from "./zod/exportController/getV1ExportResumeDocxSchema.ts";
-export { getV1ExportResumeIdJsonPathParamsSchema, getV1ExportResumeIdJsonQueryParamsSchema, getV1ExportResumeIdJson200Schema, getV1ExportResumeIdJson400Schema, getV1ExportResumeIdJson401Schema, getV1ExportResumeIdJson403Schema, getV1ExportResumeIdJson404Schema, getV1ExportResumeIdJsonQueryResponseSchema } from "./zod/exportController/getV1ExportResumeIdJsonSchema.ts";
-export { getV1ExportResumeIdLatexPathParamsSchema, getV1ExportResumeIdLatexQueryParamsSchema, getV1ExportResumeIdLatex200Schema, getV1ExportResumeIdLatex400Schema, getV1ExportResumeIdLatex401Schema, getV1ExportResumeIdLatex403Schema, getV1ExportResumeIdLatex404Schema, getV1ExportResumeIdLatexQueryResponseSchema } from "./zod/exportController/getV1ExportResumeIdLatexSchema.ts";
 export { getV1ExportResumePdfQueryParamsSchema, getV1ExportResumePdf200Schema, getV1ExportResumePdf400Schema, getV1ExportResumePdf401Schema, getV1ExportResumePdf403Schema, getV1ExportResumePdfQueryResponseSchema } from "./zod/exportController/getV1ExportResumePdfSchema.ts";
 export { getV1ExportResumePreviewQueryParamsSchema, getV1ExportResumePreview200Schema, getV1ExportResumePreview400Schema, getV1ExportResumePreview401Schema, getV1ExportResumePreview403Schema, getV1ExportResumePreviewQueryResponseSchema } from "./zod/exportController/getV1ExportResumePreviewSchema.ts";
 export { getV1ExportUserUserIdResumePdfPathParamsSchema, getV1ExportUserUserIdResumePdf200Schema, getV1ExportUserUserIdResumePdf400Schema, getV1ExportUserUserIdResumePdf401Schema, getV1ExportUserUserIdResumePdf404Schema, getV1ExportUserUserIdResumePdfQueryResponseSchema } from "./zod/exportController/getV1ExportUserUserIdResumePdfSchema.ts";
-export { postV1ExportResumeIdBundlePathParamsSchema, postV1ExportResumeIdBundle201Schema, postV1ExportResumeIdBundle400Schema, postV1ExportResumeIdBundle401Schema, postV1ExportResumeIdBundle403Schema, postV1ExportResumeIdBundle404Schema, postV1ExportResumeIdBundleMutationRequestSchema, postV1ExportResumeIdBundleMutationResponseSchema } from "./zod/exportController/postV1ExportResumeIdBundleSchema.ts";
 export { getV1FeatureFlagsActive200Schema, getV1FeatureFlagsActive400Schema, getV1FeatureFlagsActive401Schema, getV1FeatureFlagsActiveQueryResponseSchema } from "./zod/featureFlagsController/getV1FeatureFlagsActiveSchema.ts";
 export { getV1FeatureFlagsEvaluate200Schema, getV1FeatureFlagsEvaluate400Schema, getV1FeatureFlagsEvaluate401Schema, getV1FeatureFlagsEvaluateQueryResponseSchema } from "./zod/featureFlagsController/getV1FeatureFlagsEvaluateSchema.ts";
 export { getV1FeatureFlagsStream200Schema, getV1FeatureFlagsStream400Schema, getV1FeatureFlagsStream401Schema, getV1FeatureFlagsStreamQueryResponseSchema } from "./zod/featureFlagsController/getV1FeatureFlagsStreamSchema.ts";
@@ -1524,8 +1461,6 @@ export { postV1OnboardingSessionRestartQueryParamsSchema, postV1OnboardingSessio
 export { postV1OnboardingSessionSaveQueryParamsSchema, postV1OnboardingSessionSave201Schema, postV1OnboardingSessionSave400Schema, postV1OnboardingSessionSave401Schema, postV1OnboardingSessionSaveMutationRequestSchema, postV1OnboardingSessionSaveMutationResponseSchema } from "./zod/onboardingController/postV1OnboardingSessionSaveSchema.ts";
 export { putV1OnboardingProgress200Schema, putV1OnboardingProgress400Schema, putV1OnboardingProgress401Schema, putV1OnboardingProgressMutationRequestSchema, putV1OnboardingProgressMutationResponseSchema } from "./zod/onboardingController/putV1OnboardingProgressSchema.ts";
 export { pageSchema } from "./zod/pageSchema.ts";
-export { getV1PagesMeDashboard200Schema, getV1PagesMeDashboard400Schema, getV1PagesMeDashboard401Schema, getV1PagesMeDashboardQueryResponseSchema } from "./zod/pagesController/getV1PagesMeDashboardSchema.ts";
-export { getV1PagesSettingsSectionPathParamsSchema, getV1PagesSettingsSection200Schema, getV1PagesSettingsSection400Schema, getV1PagesSettingsSection401Schema, getV1PagesSettingsSection404Schema, getV1PagesSettingsSectionQueryResponseSchema } from "./zod/pagesController/getV1PagesSettingsSectionSchema.ts";
 export { passwordChangeCodeSentResponseSchema } from "./zod/passwordChangeCodeSentResponseSchema.ts";
 export { passwordInputSchema } from "./zod/passwordInputSchema.ts";
 export { postV1AuthForgotPassword200Schema, postV1AuthForgotPassword400Schema, postV1AuthForgotPasswordMutationRequestSchema, postV1AuthForgotPasswordMutationResponseSchema } from "./zod/passwordManagementController/postV1AuthForgotPasswordSchema.ts";
@@ -1646,10 +1581,8 @@ export { postV1Auth2FaVerify201Schema, postV1Auth2FaVerify400Schema, postV1Auth2
 export { twoFactorCodeSchema } from "./zod/twoFactorCodeSchema.ts";
 export { getV1EnumsKeyPathParamsSchema, getV1EnumsKey200Schema, getV1EnumsKey400Schema, getV1EnumsKey404Schema, getV1EnumsKeyQueryResponseSchema } from "./zod/uiMetadataController/getV1EnumsKeySchema.ts";
 export { getV1Enums200Schema, getV1Enums400Schema, getV1EnumsQueryResponseSchema } from "./zod/uiMetadataController/getV1EnumsSchema.ts";
-export { getV1MeMenu200Schema, getV1MeMenu400Schema, getV1MeMenu401Schema, getV1MeMenuQueryResponseSchema } from "./zod/uiMetadataController/getV1MeMenuSchema.ts";
 export { updateJobRequestSchema } from "./zod/updateJobRequestSchema.ts";
 export { updateResumeRequestSchema } from "./zod/updateResumeRequestSchema.ts";
-export { updateWebhookRequestSchema } from "./zod/updateWebhookRequestSchema.ts";
 export { deleteV1UploadFileKeyPathParamsSchema, deleteV1UploadFileKey204Schema, deleteV1UploadFileKey400Schema, deleteV1UploadFileKey401Schema, deleteV1UploadFileKey403Schema, deleteV1UploadFileKey404Schema, deleteV1UploadFileKeyMutationResponseSchema } from "./zod/uploadController/deleteV1UploadFileKeySchema.ts";
 export { postV1UploadCompanyLogoResumeIdPathParamsSchema, postV1UploadCompanyLogoResumeId200Schema, postV1UploadCompanyLogoResumeId400Schema, postV1UploadCompanyLogoResumeId401Schema, postV1UploadCompanyLogoResumeId403Schema, postV1UploadCompanyLogoResumeId404Schema, postV1UploadCompanyLogoResumeIdMutationResponseSchema } from "./zod/uploadController/postV1UploadCompanyLogoResumeIdSchema.ts";
 export { postV1UploadProfileImage200Schema, postV1UploadProfileImage400Schema, postV1UploadProfileImage401Schema, postV1UploadProfileImage403Schema, postV1UploadProfileImageMutationResponseSchema } from "./zod/uploadController/postV1UploadProfileImageSchema.ts";
@@ -1685,11 +1618,6 @@ export { postV1UsersManageIdResetPasswordPathParamsSchema, postV1UsersManageIdRe
 export { postV1UsersManage201Schema, postV1UsersManage400Schema, postV1UsersManage401Schema, postV1UsersManage403Schema, postV1UsersManageMutationRequestSchema, postV1UsersManageMutationResponseSchema } from "./zod/usersController/postV1UsersManageSchema.ts";
 export { postV1UsersUsernameValidate201Schema, postV1UsersUsernameValidate400Schema, postV1UsersUsernameValidate401Schema, postV1UsersUsernameValidateMutationRequestSchema, postV1UsersUsernameValidateMutationResponseSchema } from "./zod/usersController/postV1UsersUsernameValidateSchema.ts";
 export { putV1UsersMeOneClickApply200Schema, putV1UsersMeOneClickApply400Schema, putV1UsersMeOneClickApply401Schema, putV1UsersMeOneClickApply403Schema, putV1UsersMeOneClickApplyMutationRequestSchema, putV1UsersMeOneClickApplyMutationResponseSchema } from "./zod/usersController/putV1UsersMeOneClickApplySchema.ts";
-export { deleteV1WebhooksIdPathParamsSchema, deleteV1WebhooksId200Schema, deleteV1WebhooksId400Schema, deleteV1WebhooksId401Schema, deleteV1WebhooksId403Schema, deleteV1WebhooksId404Schema, deleteV1WebhooksIdMutationResponseSchema } from "./zod/webhooksController/deleteV1WebhooksIdSchema.ts";
-export { getV1WebhooksIdDeliveriesPathParamsSchema, getV1WebhooksIdDeliveries200Schema, getV1WebhooksIdDeliveries400Schema, getV1WebhooksIdDeliveries401Schema, getV1WebhooksIdDeliveries403Schema, getV1WebhooksIdDeliveries404Schema, getV1WebhooksIdDeliveriesQueryResponseSchema } from "./zod/webhooksController/getV1WebhooksIdDeliveriesSchema.ts";
-export { getV1Webhooks200Schema, getV1Webhooks400Schema, getV1Webhooks401Schema, getV1Webhooks403Schema, getV1WebhooksQueryResponseSchema } from "./zod/webhooksController/getV1WebhooksSchema.ts";
-export { patchV1WebhooksIdPathParamsSchema, patchV1WebhooksId200Schema, patchV1WebhooksId400Schema, patchV1WebhooksId401Schema, patchV1WebhooksId403Schema, patchV1WebhooksId404Schema, patchV1WebhooksIdMutationRequestSchema, patchV1WebhooksIdMutationResponseSchema } from "./zod/webhooksController/patchV1WebhooksIdSchema.ts";
-export { postV1Webhooks201Schema, postV1Webhooks400Schema, postV1Webhooks401Schema, postV1Webhooks403Schema, postV1WebhooksMutationRequestSchema, postV1WebhooksMutationResponseSchema } from "./zod/webhooksController/postV1WebhooksSchema.ts";
 export { getWellKnownAppleAppSiteAssociation200Schema, getWellKnownAppleAppSiteAssociation400Schema, getWellKnownAppleAppSiteAssociationQueryResponseSchema } from "./zod/wellKnownController/getWellKnownAppleAppSiteAssociationSchema.ts";
 export { getWellKnownAssetlinksJson200Schema, getWellKnownAssetlinksJson400Schema, getWellKnownAssetlinksJsonQueryResponseSchema } from "./zod/wellKnownController/getWellKnownAssetlinksJsonSchema.ts";
 export { writeItemTranslationResponseSchema } from "./zod/writeItemTranslationResponseSchema.ts";
