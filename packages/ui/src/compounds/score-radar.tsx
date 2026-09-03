@@ -113,7 +113,9 @@ export function ScoreRadar({
       <Polygon
         points={polygon((i) => (radius * clampScore(axes[i]?.value ?? 0)) / 100)}
         fill={palette.accent}
-        fillOpacity={0.12}
+        // 12% of a light blue over the dark panel is nearly invisible; the
+        // dark wash needs more ink to read as an area at all.
+        fillOpacity={themeName === "dark" ? 0.28 : 0.12}
         stroke={palette.accent}
         strokeWidth={2}
       />

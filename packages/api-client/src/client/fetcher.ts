@@ -111,6 +111,15 @@ interface RuntimeConfig {
   getAuthHeader: GetAuthHeader | null;
   refreshAuth: RefreshAuth | null;
   defaultHeaders: Record<string, string>;
+  /**
+   * The UI locale, sent as `Accept-Language` on every request. The backend
+   * localizes error messages and the enum/error dictionaries from this header
+   * and nothing else — before it was wired, every server-side string came
+   * back in the server's default language regardless of what the user chose.
+   * Kept out of `defaultHeaders` because it changes at runtime (language
+   * switch), while `defaultHeaders` is set once at bootstrap.
+   */
+  acceptLanguage: string | null;
   isNative: boolean;
   /**
    * Cookie mode (web): send `credentials: 'include'` so the httpOnly
@@ -125,6 +134,7 @@ const runtime: RuntimeConfig = {
   getAuthHeader: null,
   refreshAuth: null,
   defaultHeaders: {},
+  acceptLanguage: null,
   isNative: isReactNativeRuntime(),
   useCookies: false,
 };
@@ -162,12 +172,21 @@ export function configureApiClient(options: ConfigureApiClientOptions): void {
   if (options.useCookies !== undefined) runtime.useCookies = options.useCookies;
 }
 
+/**
+ * Which language the server should answer in. Called by the host app's i18n
+ * provider whenever the active locale changes; `null` stops sending the header.
+ */
+export function setApiClientLocale(locale: string | null): void {
+  runtime.acceptLanguage = locale;
+}
+
 /** Test-only escape hatch — wipes all wiring back to defaults. */
 export function resetApiClient(): void {
   runtime.baseURL = "";
   runtime.getAuthHeader = null;
   runtime.refreshAuth = null;
   runtime.defaultHeaders = {};
+  runtime.acceptLanguage = null;
   runtime.isNative = isReactNativeRuntime();
   runtime.useCookies = false;
   __resetRefreshState();
@@ -234,6 +253,10 @@ async function buildInit(config: RequestConfig, authHeader: string | null): Prom
   const hasBody = config.data !== undefined && config.method !== "GET" && config.method !== "HEAD";
   if (hasBody && !("content-type" in headers) && !("Content-Type" in headers)) {
     headers["Content-Type"] = "application/json";
+  }
+
+  if (runtime.acceptLanguage && !headers["Accept-Language"] && !headers["accept-language"]) {
+    headers["Accept-Language"] = runtime.acceptLanguage;
   }
 
   if (runtime.isNative && !headers["Accept-Mode"] && !headers["accept-mode"]) {

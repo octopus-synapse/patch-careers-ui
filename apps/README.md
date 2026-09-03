@@ -26,4 +26,4 @@ Nx projects defined here are discovered automatically by the
 - **EAS**: `apps/client/eas.json` — `development`, `preview`, `production`
   profiles aligned with EAS Update channels
 - **Deep links**: scheme `patchcareers://` + Universal Links from
-  `https://patchcareers.com/*`
+  `https://patchcareers.org/*`

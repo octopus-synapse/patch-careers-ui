@@ -5,6 +5,7 @@ import {
   type FetcherError,
   fetcher,
   resetApiClient,
+  setApiClientLocale,
 } from "./fetcher";
 
 type FetchMock = ReturnType<typeof vi.fn>;
@@ -100,6 +101,36 @@ describe("fetcher — success path", () => {
 
     const [, calledInit] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect((calledInit.headers as Record<string, string>)["Accept-Mode"]).toBeUndefined();
+  });
+
+  it("sends Accept-Language once a locale is set, and stops when cleared", async () => {
+    const fetchMock: FetchMock = vi.fn().mockResolvedValue(emptyResponse(204));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    configureApiClient({ baseURL: "https://api.example.com" });
+
+    await fetcher({ method: "GET", url: "/v1/me" });
+    setApiClientLocale("pt-BR");
+    await fetcher({ method: "GET", url: "/v1/me" });
+    setApiClientLocale(null);
+    await fetcher({ method: "GET", url: "/v1/me" });
+
+    const headersOf = (i: number) =>
+      (fetchMock.mock.calls[i] as [string, RequestInit])[1].headers as Record<string, string>;
+    expect(headersOf(0)["Accept-Language"]).toBeUndefined();
+    expect(headersOf(1)["Accept-Language"]).toBe("pt-BR");
+    expect(headersOf(2)["Accept-Language"]).toBeUndefined();
+  });
+
+  it("lets a per-request Accept-Language override the configured locale", async () => {
+    const fetchMock: FetchMock = vi.fn().mockResolvedValue(emptyResponse(204));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    configureApiClient({ baseURL: "https://api.example.com" });
+    setApiClientLocale("pt-BR");
+
+    await fetcher({ method: "GET", url: "/v1/me", headers: { "Accept-Language": "en" } });
+
+    const [, calledInit] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect((calledInit.headers as Record<string, string>)["Accept-Language"]).toBe("en");
   });
 });
 

@@ -24,6 +24,14 @@ describe("isChromePath", () => {
   it("does not mistake a path that merely contains a chromeless word", () => {
     expect(isChromePath("/jobs/sign-in-tips")).toBe(true);
   });
+
+  // The public profile is deliberately NOT chromeless: a signed-in visitor
+  // gets the app bar from the root layout, a signed-out one gets the landing
+  // bar the screen mounts itself. This pins the absence the screen relies on.
+  it("keeps the public profile a chrome path in both languages", () => {
+    expect(isChromePath("/u/maria")).toBe(true);
+    expect(isChromePath("/en/u/maria")).toBe(true);
+  });
 });
 
 describe("activeNavKey", () => {
@@ -46,5 +54,6 @@ describe("activeNavKey", () => {
   it("lights nothing on a screen outside the destinations", () => {
     expect(activeNavKey("/settings")).toBeNull();
     expect(activeNavKey("/")).toBeNull();
+    expect(activeNavKey("/u/maria")).toBeNull();
   });
 });

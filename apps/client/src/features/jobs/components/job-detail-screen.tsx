@@ -41,7 +41,7 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
   const insets = useSafeAreaInsets();
   const navInset = useNavBarInset();
   // Desktop web narrows every band (top bar, article, CTA) to the shared jobs
-  // reading column so the detail doesn't stretch across the 960 scene.
+  // reading column so the detail doesn't stretch across the desktop scene.
   const isDesktopWeb = useIsDesktopWeb();
   const columnProps = isDesktopWeb
     ? ({ width: "100%", maxWidth: DESKTOP_JOBS_COLUMN, alignSelf: "center" } as const)

@@ -6,7 +6,7 @@
  * Accepts `kind` (terms|privacy) as the canonical param and looks up
  * the public URL from `Constants.expoConfig.extra.legalUrls` so QA can
  * point at the staging copy via app.json. Falls back to production
- * patchcareers.com URLs.
+ * patchcareers.org URLs.
  */
 
 import { YStack } from "@patch-careers/ui";
@@ -26,7 +26,7 @@ function resolveLegalUrl(kind: Kind): string {
   };
   const fromConfig = extra.legalUrls?.[kind];
   if (fromConfig) return fromConfig;
-  return kind === "terms" ? "https://patchcareers.com/terms" : "https://patchcareers.com/privacy";
+  return kind === "terms" ? "https://patchcareers.org/terms" : "https://patchcareers.org/privacy";
 }
 
 export default function LegalWebViewScreen(): ReactElement {
@@ -76,9 +76,9 @@ export default function LegalWebViewScreen(): ReactElement {
             </YStack>
           )}
           onNavigationStateChange={(state) => {
-            // Defensive: keep users inside patchcareers.com — outbound
+            // Defensive: keep users inside patchcareers.org — outbound
             // links should open in the system browser, not in our WebView.
-            if (!state.url.includes("patchcareers.com")) {
+            if (!state.url.includes("patchcareers.org")) {
               router.back();
             }
           }}

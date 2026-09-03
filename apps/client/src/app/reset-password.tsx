@@ -1,6 +1,6 @@
 /**
  * Reset-password screen — root `/reset-password` path (universal links of
- * the form `https://patchcareers.com/reset-password?token=X` land here).
+ * the form `https://patchcareers.org/reset-password?token=X` land here).
  *
  * D100: token from the deep link → 2 password inputs + strength meter →
  * POST /v1/auth/reset-password → toast + bounce to /sign-in. "Editorial

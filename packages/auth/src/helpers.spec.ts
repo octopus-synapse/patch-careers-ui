@@ -42,10 +42,10 @@ describe("isValidEmail", () => {
 
 describe("extractToken", () => {
   it("extracts from a query string", () => {
-    expect(extractToken("https://patchcareers.com/reset-password?token=abc123")).toBe("abc123");
+    expect(extractToken("https://patchcareers.org/reset-password?token=abc123")).toBe("abc123");
   });
   it("extracts from a fragment", () => {
-    expect(extractToken("https://patchcareers.com/reset-password#token=frag-token")).toBe(
+    expect(extractToken("https://patchcareers.org/reset-password#token=frag-token")).toBe(
       "frag-token",
     );
   });

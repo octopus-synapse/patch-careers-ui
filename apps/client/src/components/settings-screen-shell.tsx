@@ -31,7 +31,7 @@ import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 
 // Rail geometry from the approved settings-web-demo: 232px column, 40px-tall
-// items, the pane separated by one wide gutter inside the shared 960 column.
+// items, the pane separated by one wide gutter inside the shared desktop column (see DESKTOP_CONTENT_MAX_WIDTH).
 const RAIL_WIDTH = 232;
 const RAIL_GAP = 40;
 

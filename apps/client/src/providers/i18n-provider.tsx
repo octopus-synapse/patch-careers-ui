@@ -18,6 +18,7 @@
  * session query is keyed by `locale`) refetches a translated session.
  */
 
+import { setApiClientLocale } from "@patch-careers/api-client";
 import {
   createTranslator,
   en,
@@ -114,6 +115,12 @@ export function I18nProvider({ children, locale }: I18nProviderProps): ReactElem
       cancelled = true;
     };
   }, [locale]);
+
+  // The server localizes its own strings (errors, dictionaries) from
+  // `Accept-Language`; keep it in step with whatever this provider renders.
+  useEffect(() => {
+    setApiClientLocale(active);
+  }, [active]);
 
   const pinned = locale !== undefined;
   const parentSetLocale = parent.setLocale;
