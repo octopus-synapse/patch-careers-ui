@@ -131,6 +131,18 @@ export const resumesPtBR: TranslationDict = {
     nameLabel: "Nome do currículo",
     save: "Salvar",
   },
+  import: {
+    action: "Importar de um PDF",
+    title: "Importar currículo",
+    intro:
+      "Escolha um PDF do currículo que você já tem. Lemos o texto e montamos um currículo aqui para você revisar.",
+    caveat:
+      "Precisa ser um PDF com texto de verdade. Um PDF que é só a foto de uma folha escaneada não dá para ler.",
+    pick: "Escolher o PDF",
+    done: "Currículo importado.",
+    failed: "Não foi possível ler esse PDF.",
+  },
+
   versions: {
     action: "Histórico",
     title: "Histórico de versões",
@@ -297,6 +309,18 @@ export const resumesEn: TranslationDict = {
     nameLabel: "Resume name",
     save: "Save",
   },
+  import: {
+    action: "Import from a PDF",
+    title: "Import a résumé",
+    intro:
+      "Pick the PDF of the résumé you already have. We read the text and build a résumé here for you to review.",
+    caveat:
+      "It has to be a PDF with real text. A PDF that is just a photo of a scanned page cannot be read.",
+    pick: "Choose the PDF",
+    done: "Résumé imported.",
+    failed: "We couldn't read that PDF.",
+  },
+
   versions: {
     action: "History",
     title: "Version history",

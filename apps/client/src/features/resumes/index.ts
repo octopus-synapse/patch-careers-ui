@@ -6,6 +6,7 @@
  */
 export { ContentLanguageSwitch } from "./components/content-language-switch";
 export { CreateResumeWizard } from "./components/create-resume-wizard";
+export { ImportResumeSheet } from "./components/import-resume-sheet";
 export { ResumeDetailScreen } from "./components/resume-detail-screen";
 export { ResumeListTab } from "./components/resume-list-tab";
 export { ResumePreviewModal } from "./components/resume-preview-modal";

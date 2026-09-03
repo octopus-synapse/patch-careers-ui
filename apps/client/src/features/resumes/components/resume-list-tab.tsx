@@ -7,7 +7,7 @@
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
-import { Plus, Trash2 } from "lucide-react-native";
+import { Plus, Trash2, Upload } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -21,6 +21,7 @@ import {
 } from "../hooks/queries";
 import { useRz } from "../lib/styles";
 import { CreateResumeWizard } from "./create-resume-wizard";
+import { ImportResumeSheet } from "./import-resume-sheet";
 import { ResumePreviewModal } from "./resume-preview-modal";
 import { SwipeableResumeCard } from "./swipeable-resume-card";
 
@@ -35,6 +36,7 @@ export function ResumeListTab(): ReactElement {
   const { duplicateResume, deleteResume, isPending } = useResumeMutations();
   const [preview, setPreview] = useState<{ id: string; title: string } | null>(null);
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<ResumeListItem | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -117,6 +119,19 @@ export function ResumeListTab(): ReactElement {
         <Plus size={15} color={palette.ink} strokeWidth={2} />
         <Text style={rz.createBoxLabel}>{t("resumes.list.create")}</Text>
       </Pressable>
+
+      {/* The other way in: a CV the person already has. Same slot rules. */}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t("resumes.import.action")}
+        accessibilityState={{ disabled: full }}
+        disabled={full}
+        onPress={() => setImportOpen(true)}
+        style={[rz.createBox, full && rz.createBoxDisabled]}
+      >
+        <Upload size={15} color={palette.ink} strokeWidth={2} />
+        <Text style={rz.createBoxLabel}>{t("resumes.import.action")}</Text>
+      </Pressable>
       {full ? (
         <Text style={rz.slotsNote}>{t("resumes.list.limitReached", { limit: slots.limit })}</Text>
       ) : null}
@@ -126,6 +141,12 @@ export function ResumeListTab(): ReactElement {
         onClose={() => setPreview(null)}
         resumeId={preview?.id}
         title={preview?.title}
+      />
+
+      <ImportResumeSheet
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onImported={(id) => router.push(`/resume/${id}`)}
       />
 
       <CreateResumeWizard
