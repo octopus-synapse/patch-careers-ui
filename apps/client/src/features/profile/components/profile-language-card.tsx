@@ -47,7 +47,10 @@ export function ProfileLanguageCard({
             <Pressable
               key={option.locale}
               accessibilityRole="button"
-              accessibilityState={{ selected: on }}
+              // `aria-selected` reaches the DOM on web and maps to
+              // accessibilityState on native; `accessibilityState` alone
+              // never made it into the web tree.
+              aria-selected={on}
               accessibilityLabel={t("profile.language.optionA11y", { label: option.label })}
               onPress={() => onChange(option.locale)}
               onHoverIn={() => setHovered(option.locale)}

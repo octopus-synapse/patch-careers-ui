@@ -47,7 +47,7 @@ import { resumeLanguageToLocale } from "../lib/helpers";
 import { useRz } from "../lib/styles";
 
 const LANGUAGES = [
-  { value: "pt-br", labelKey: "resumes.wizard.languagePt" },
+  { value: "pt-BR", labelKey: "resumes.wizard.languagePt" },
   { value: "en", labelKey: "resumes.wizard.languageEn" },
 ] as const;
 
@@ -105,7 +105,11 @@ export function CreateResumeWizard({
   const [step, setStep] = useState<1 | 2>(1);
   const [selection, setSelection] = useState<Selection | null>(null);
   const [title, setTitle] = useState("");
-  const [language, setLanguage] = useState<string>("pt-br");
+  // Starts from the source resume's language, then the UI's — never a
+  // hardcoded default, which used to label an English master's copy as pt-br.
+  const [language, setLanguage] = useState<string>(
+    () => resumeLanguageToLocale(sourceLanguage) ?? locale,
+  );
   const [styleId, setStyleId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -141,7 +145,7 @@ export function CreateResumeWizard({
     setStep(1);
     setSelection(null);
     setTitle("");
-    setLanguage("pt-br");
+    setLanguage(resumeLanguageToLocale(sourceLanguage) ?? locale);
     setStyleId(null);
     setError(null);
   };
