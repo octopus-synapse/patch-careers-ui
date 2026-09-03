@@ -16,14 +16,15 @@ export function diffWords(before: string, after: string): DiffSegment[] {
   const b = tokens(after);
   const n = a.length;
   const m = b.length;
-  // lcs[i][j] = length of the LCS of a[i..] and b[j..]
-  const lcs: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
+  // lcs(i, j) = length of the LCS of a[i..] and b[j..], on a flat table so
+  // every read is a plain number (no nested-array "maybe undefined").
+  const width = m + 1;
+  const table = new Array<number>((n + 1) * width).fill(0);
+  const lcs = (i: number, j: number): number => table[i * width + j] ?? 0;
   for (let i = n - 1; i >= 0; i--) {
     for (let j = m - 1; j >= 0; j--) {
-      lcs[i]![j] =
-        a[i] === b[j]
-          ? (lcs[i + 1]![j + 1] ?? 0) + 1
-          : Math.max(lcs[i + 1]![j] ?? 0, lcs[i]![j + 1] ?? 0);
+      table[i * width + j] =
+        a[i] === b[j] ? lcs(i + 1, j + 1) + 1 : Math.max(lcs(i + 1, j), lcs(i, j + 1));
     }
   }
   const out: DiffSegment[] = [];
@@ -39,7 +40,7 @@ export function diffWords(before: string, after: string): DiffSegment[] {
       push("same", a[i] as string);
       i++;
       j++;
-    } else if ((lcs[i + 1]![j] ?? 0) >= (lcs[i]![j + 1] ?? 0)) {
+    } else if (lcs(i + 1, j) >= lcs(i, j + 1)) {
       push("removed", a[i] as string);
       i++;
     } else {
