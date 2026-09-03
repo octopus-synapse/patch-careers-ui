@@ -28,6 +28,7 @@ export function MasterAddSection({
   const { catalog } = useResumeSections(resumeId, {
     chrome: uiLocale,
     content: resumeLanguageToLocale(language) ?? uiLocale,
+    canonical: resumeLanguageToLocale(language) ?? uiLocale,
   });
   const { persistFor, isPending } = useSectionItemMutations(resumeId);
   const [addOpen, setAddOpen] = useState(false);

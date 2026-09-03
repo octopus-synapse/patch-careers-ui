@@ -18,6 +18,7 @@
  * and each card carries its own scoped one.
  */
 
+import type { Locale } from "@patch-careers/i18n";
 import { YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Link as LinkIcon, Plus, Trash2 } from "lucide-react-native";
@@ -34,12 +35,18 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { I18nProvider, translatorFor } from "@/providers/i18n-provider";
 import { type SectionLocales, useResumeSections } from "../hooks/use-resume-sections";
 import { useSectionItemForm } from "../hooks/use-section-item-form";
-import { useSectionItemMutations } from "../hooks/use-section-item-mutations";
+import { type RewriteProposal, useSectionItemMutations } from "../hooks/use-section-item-mutations";
 import type { MergedSection } from "../lib/section-visibility";
 import { useEd } from "../lib/styles";
+import { fieldValueFromText } from "../lib/text-diff";
 import type { SectionItem } from "../types";
 import { AddSectionFlowModal } from "./add-section-flow-modal";
 import { LinksCard } from "./links-card";
+import {
+  decisionsFromProposal,
+  type FieldDecision,
+  RewriteReviewModal,
+} from "./rewrite-review-modal";
 import { SectionCard } from "./section-card";
 import { SectionDetailRow } from "./section-detail-row";
 import { SectionGroup } from "./section-group";
@@ -60,21 +67,51 @@ function normalizeSectionKey(key: string): string {
     .replace(/[^a-z0-9]/g, "");
 }
 
-/** Edit modal wrapper — mounted per item (key) so the form resets cleanly. */
+/**
+ * Edit modal wrapper — mounted per item (key) so the form resets cleanly.
+ *
+ * Bilingual save (backend ADR-003, decisions 11–12). On save, if the résumé
+ * has another language, ask what that language's copy would become and let
+ * the person review it field by field before anything is written:
+ *
+ *  - editing the CANONICAL side: the item is patched; accepted proposals (or
+ *    the person's rewrite of them) are stored as the other copy with origin
+ *    `manual`; if every change is refused the other copy is stored as
+ *    `diverged` so the worker leaves it alone; accepting all as proposed
+ *    stores nothing — the worker derives it, from the same cache.
+ *  - editing the DERIVED side: the edited prose is stored as that copy with
+ *    origin `manual`; non-prose fields (dates, names) and any accepted
+ *    proposal for the canonical text are patched onto the item.
+ */
 function EditItemModal({
   editing,
   isPending,
+  locales,
   onSave,
+  onWriteTranslation,
+  onProposeRewrite,
   onRequestDelete,
   onClose,
   t,
 }: {
   editing: EditingState;
   isPending: boolean;
+  locales: SectionLocales;
   onSave: (item: SectionItem) => Promise<void>;
+  onWriteTranslation: (input: {
+    itemId: string;
+    locale: Locale;
+    data: Record<string, unknown>;
+    origin: "manual" | "diverged";
+  }) => Promise<void>;
+  onProposeRewrite: (input: {
+    itemId: string;
+    editedLocale: Locale;
+    edited: Record<string, unknown>;
+  }) => Promise<RewriteProposal>;
   onRequestDelete: () => void;
   onClose: () => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }): ReactElement {
   const fields = editing.section.descriptor.fields ?? [];
   const {
@@ -95,32 +132,158 @@ function EditItemModal({
   });
   void seeded;
 
+  const [review, setReview] = useState<{
+    values: Record<string, string>;
+    proposal: RewriteProposal;
+    decisions: FieldDecision[];
+  } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const editingDerived = locales.content !== locales.canonical;
+  const otherLocale: Locale = editingDerived ? locales.canonical : otherOf(locales.canonical);
+
+  const persistPlain = async (values: Record<string, string>): Promise<void> => {
+    await onSave({ ...(editing.item.id ? { id: editing.item.id } : {}), content: { ...values } });
+  };
+
   const save = form.handleSubmit(async (values) => {
-    await onSave({
-      ...(editing.item.id ? { id: editing.item.id } : {}),
-      content: { ...values },
-    });
+    const itemId = editing.item.id;
+    // A new item, or nothing to translate on the other side: plain save.
+    if (!itemId) {
+      await persistPlain(values);
+      return;
+    }
+    setBusy(true);
+    try {
+      const proposal = await onProposeRewrite({
+        itemId,
+        editedLocale: locales.content,
+        edited: values,
+      });
+      const decisions = decisionsFromProposal(proposal.keys, proposal.current, proposal.proposal);
+      if (decisions.length === 0) {
+        await finish(values, proposal, []);
+        return;
+      }
+      setReview({ values, proposal, decisions });
+    } catch {
+      // The rewrite is a courtesy; the edit itself must never be blocked by it.
+      await persistPlain(values);
+    } finally {
+      setBusy(false);
+    }
   });
 
+  const finish = async (
+    values: Record<string, string>,
+    proposal: RewriteProposal,
+    decisions: FieldDecision[],
+  ): Promise<void> => {
+    const itemId = editing.item.id as string;
+    const translatable = new Set(proposal.keys);
+    const accepted = decisions.filter((d) => d.accepted);
+    const refused = decisions.filter((d) => !d.accepted);
+    const edited = accepted.some((d) => d.text !== d.proposal);
+    const asArray = (key: string): boolean => Array.isArray(editing.item.content?.[key]);
+    const otherData: Record<string, unknown> = { ...proposal.current };
+    for (const d of accepted) otherData[d.key] = fieldValueFromText(d.text, asArray(d.key));
+
+    if (!editingDerived) {
+      await persistPlain(values);
+      if (decisions.length === 0) return;
+      if (accepted.length === 0) {
+        await onWriteTranslation({
+          itemId,
+          locale: otherLocale,
+          data: otherData,
+          origin: "diverged",
+        });
+      } else if (edited || refused.length > 0) {
+        await onWriteTranslation({
+          itemId,
+          locale: otherLocale,
+          data: otherData,
+          origin: "manual",
+        });
+      }
+      // all accepted as proposed → the worker derives it (same cache, same text)
+      return;
+    }
+
+    // Editing the derived copy: prose goes to the envelope, everything else
+    // (and accepted proposals) goes to the canonical item.
+    const prose: Record<string, unknown> = {};
+    const canonicalPatch: Record<string, unknown> = { ...(editing.item.content ?? {}) };
+    for (const [key, value] of Object.entries(values)) {
+      if (translatable.has(key)) prose[key] = value;
+      else canonicalPatch[key] = value;
+    }
+    for (const d of accepted) canonicalPatch[d.key] = fieldValueFromText(d.text, asArray(d.key));
+    await onWriteTranslation({ itemId, locale: locales.content, data: prose, origin: "manual" });
+    await onSave({ id: itemId, content: canonicalPatch });
+  };
+
   return (
-    <SectionItemModal
-      visible
-      title={t("onboarding.editItem")}
-      fields={fields}
-      control={form.control}
-      readOnlyKeys={derivedKeys}
-      onCompanyPick={hasCompany ? handleCompanyPick : undefined}
-      onCoursePick={isEducation ? handleCoursePick : undefined}
-      onRolePick={hasCompany ? handleRolePick : undefined}
-      onSave={() => void save()}
-      onCancel={onClose}
-      onDelete={onRequestDelete}
-      saveDisabled={hasErrors || isPending}
-      disabled={isPending}
-      t={t}
-    />
+    <>
+      <SectionItemModal
+        visible={!review}
+        title={t("onboarding.editItem")}
+        fields={fields}
+        control={form.control}
+        readOnlyKeys={derivedKeys}
+        onCompanyPick={hasCompany ? handleCompanyPick : undefined}
+        onCoursePick={isEducation ? handleCoursePick : undefined}
+        onRolePick={hasCompany ? handleRolePick : undefined}
+        onSave={() => void save()}
+        onCancel={onClose}
+        onDelete={onRequestDelete}
+        saveDisabled={hasErrors || isPending || busy}
+        disabled={isPending || busy}
+        t={t}
+      />
+      {review ? (
+        <RewriteReviewModal
+          visible
+          localeLabel={t(
+            otherLocale === "en" ? "sections.rewrite.localeEn" : "sections.rewrite.localePt",
+          )}
+          fields={fields}
+          decisions={review.decisions}
+          onChangeDecision={(key, patch) =>
+            setReview((current) =>
+              current
+                ? {
+                    ...current,
+                    decisions: current.decisions.map((d) =>
+                      d.key === key ? { ...d, ...patch } : d,
+                    ),
+                  }
+                : current,
+            )
+          }
+          onApply={() => {
+            setBusy(true);
+            void finish(review.values, review.proposal, review.decisions).finally(() =>
+              setBusy(false),
+            );
+          }}
+          onKeep={() => {
+            setBusy(true);
+            void finish(
+              review.values,
+              review.proposal,
+              review.decisions.map((d) => ({ ...d, accepted: false })),
+            ).finally(() => setBusy(false));
+          }}
+          busy={busy || isPending}
+          t={t}
+        />
+      ) : null}
+    </>
   );
 }
+
+const otherOf = (locale: Locale): Locale => (locale === "en" ? "pt-BR" : "en");
 
 /** Imperative handle so the quality panel can deep-link an issue to the
  * exact section/item editor. */
@@ -177,7 +340,8 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
     // locale, which on the document is the document's — not the app's.
     const t = translatorFor(locales.chrome);
     const { visible, catalog, groups, isLoading, isError } = useResumeSections(resumeId, locales);
-    const { persistFor, isPending } = useSectionItemMutations(resumeId);
+    const { persistFor, proposeRewrite, writeTranslation, isPending } =
+      useSectionItemMutations(resumeId);
 
     const [editing, setEditing] = useState<EditingState | null>(null);
     const [addOpen, setAddOpen] = useState(false);
@@ -319,6 +483,13 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
             <EditItemModal
               key={editing.item.id ?? `${editing.section.key}-${editing.index}`}
               editing={editing}
+              locales={locales}
+              onProposeRewrite={(input) =>
+                proposeRewrite({ ...input, sectionTypeKey: editing.section.key })
+              }
+              onWriteTranslation={(input) =>
+                writeTranslation({ ...input, sectionTypeKey: editing.section.key })
+              }
               isPending={isPending}
               onSave={saveEdit}
               onRequestDelete={() => {
@@ -418,6 +589,13 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
           <EditItemModal
             key={editing.item.id ?? `${editing.section.key}-${editing.index}`}
             editing={editing}
+            locales={locales}
+            onProposeRewrite={(input) =>
+              proposeRewrite({ ...input, sectionTypeKey: editing.section.key })
+            }
+            onWriteTranslation={(input) =>
+              writeTranslation({ ...input, sectionTypeKey: editing.section.key })
+            }
             isPending={isPending}
             onSave={saveEdit}
             onRequestDelete={() => {

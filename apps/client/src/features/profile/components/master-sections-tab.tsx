@@ -67,6 +67,7 @@ export function MasterSectionsTab({
   const { visible } = useResumeSections(resumeId, {
     chrome: uiLocale,
     content: resumeLanguageToLocale(language) ?? uiLocale,
+    canonical: resumeLanguageToLocale(language) ?? uiLocale,
   });
   const [cvOpen, setCvOpen] = useState(false);
 

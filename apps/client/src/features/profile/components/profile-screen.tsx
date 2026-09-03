@@ -93,7 +93,12 @@ export function ProfileScreen(): ReactElement {
   const { locale: uiLocale } = useI18n();
   const [localeOverride, setLocaleOverride] = useState<Locale | null>(null);
   const contentLocale: Locale = localeOverride ?? resumeLanguageToLocale(language) ?? uiLocale;
-  const sectionLocales = { chrome: uiLocale, content: contentLocale } as const;
+  const canonicalLocale: Locale = resumeLanguageToLocale(language) ?? uiLocale;
+  const sectionLocales = {
+    chrome: uiLocale,
+    content: contentLocale,
+    canonical: canonicalLocale,
+  } as const;
   // The other version should already exist (created after onboarding, or by
   // the worker after every change). When it does not — an account from
   // before, or a brake that held — the first switch derives it now and the

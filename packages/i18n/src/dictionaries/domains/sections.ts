@@ -18,6 +18,18 @@ export const sectionsPtBR: TranslationDict = {
     stale: "desatualizado",
     untranslated: "no idioma original",
   },
+  rewrite: {
+    title: "E a versão em {locale}?",
+    intro:
+      "Você mudou este item. Assim ficaria a versão no outro idioma — aceite, recuse ou reescreva cada mudança.",
+    accept: "Aceitar",
+    refuse: "Recusar",
+    keep: "Manter como está",
+    apply: "Aplicar",
+    editA11y: "Editar a reescrita de {field}",
+    localePt: "português",
+    localeEn: "inglês",
+  },
   links: {
     kindPickerTitle: "Tipo de link",
     urlLabel: "Endereço (URL)",
@@ -53,6 +65,18 @@ export const sectionsEn: TranslationDict = {
     handWritten: "written by you",
     stale: "out of date",
     untranslated: "in the original language",
+  },
+  rewrite: {
+    title: "And the {locale} version?",
+    intro:
+      "You changed this item. This is what the other language's version would become — accept, refuse or rewrite each change.",
+    accept: "Accept",
+    refuse: "Refuse",
+    keep: "Keep as is",
+    apply: "Apply",
+    editA11y: "Edit the rewrite of {field}",
+    localePt: "Portuguese",
+    localeEn: "English",
   },
   links: {
     kindPickerTitle: "Link type",

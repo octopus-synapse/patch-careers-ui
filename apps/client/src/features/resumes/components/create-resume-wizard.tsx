@@ -88,6 +88,7 @@ export function CreateResumeWizard({
   const { visible: masterSections } = useResumeSections(visible ? sourceResumeId : undefined, {
     chrome: locale,
     content: resumeLanguageToLocale(sourceLanguage) ?? locale,
+    canonical: resumeLanguageToLocale(sourceLanguage) ?? locale,
   });
   const stylesQuery = useResumeStyles();
   const { duplicateResume, isPending } = useResumeMutations();

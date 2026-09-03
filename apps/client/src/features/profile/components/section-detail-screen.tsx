@@ -14,7 +14,8 @@ import { useI18n } from "@/providers/i18n-provider";
 export function SectionDetailScreen({ sectionKey }: { sectionKey: string }): ReactElement {
   const { t, locale: uiLocale } = useI18n();
   const { resumeId, language } = useMasterResumeId();
-  const locales = { chrome: uiLocale, content: resumeLanguageToLocale(language) ?? uiLocale };
+  const resumeLocale = resumeLanguageToLocale(language) ?? uiLocale;
+  const locales = { chrome: uiLocale, content: resumeLocale, canonical: resumeLocale };
   const { catalog } = useResumeSections(resumeId, locales);
   const title = catalog.find((c) => c.key === sectionKey)?.title ?? t("tabs.profile");
 

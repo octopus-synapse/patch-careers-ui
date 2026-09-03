@@ -24,6 +24,8 @@ import { type MergedSection, mergeSectionsWithCatalog } from "../lib/section-vis
 export type SectionLocales = {
   readonly chrome: Locale;
   readonly content: Locale;
+  /** The résumé's own (authored) language — which side of a bilingual edit is being written. */
+  readonly canonical: Locale;
 };
 
 /** Supersection group (localized) as served by GET …/sections/types. */

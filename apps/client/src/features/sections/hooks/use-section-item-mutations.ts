@@ -13,13 +13,37 @@ import {
   useDeleteV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId,
   usePatchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId,
   usePostV1ResumesResumeIdSectionsSectionTypeKeyItems,
+  usePostV1ResumesResumeIdSectionsSectionTypeKeyItemsItemIdRewrite,
+  usePutV1ResumesResumeIdSectionsSectionTypeKeyItemsItemIdTranslationsLocale,
 } from "@patch-careers/api-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useI18n } from "@/providers/i18n-provider";
 import type { SectionPersistAction } from "../types";
 
+export type RewriteProposal = {
+  locale: string;
+  keys: string[];
+  current: Record<string, unknown>;
+  proposal: Record<string, unknown>;
+};
+
 export function useSectionItemMutations(resumeId: string | undefined): {
   persistFor: (sectionTypeKey: string) => (action: SectionPersistAction) => Promise<void>;
+  /** What the other language's copy would say after this edit — nothing is written. */
+  proposeRewrite: (input: {
+    sectionTypeKey: string;
+    itemId: string;
+    editedLocale: string;
+    edited: Record<string, unknown>;
+  }) => Promise<RewriteProposal>;
+  /** The person's own copy in a derived language: `manual` (written/accepted) or `diverged` (kept on purpose). */
+  writeTranslation: (input: {
+    sectionTypeKey: string;
+    itemId: string;
+    locale: string;
+    data: Record<string, unknown>;
+    origin: "manual" | "diverged";
+  }) => Promise<void>;
   isPending: boolean;
 } {
   const { t } = useI18n();
@@ -27,6 +51,9 @@ export function useSectionItemMutations(resumeId: string | undefined): {
   const create = usePostV1ResumesResumeIdSectionsSectionTypeKeyItems();
   const update = usePatchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId();
   const remove = useDeleteV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId();
+  const rewrite = usePostV1ResumesResumeIdSectionsSectionTypeKeyItemsItemIdRewrite();
+  const putTranslation =
+    usePutV1ResumesResumeIdSectionsSectionTypeKeyItemsItemIdTranslationsLocale();
 
   const invalidate = async (): Promise<void> => {
     if (!resumeId) return;
@@ -63,8 +90,42 @@ export function useSectionItemMutations(resumeId: string | undefined): {
     await invalidate();
   };
 
+  const proposeRewrite: ReturnType<typeof useSectionItemMutations>["proposeRewrite"] = async (
+    input,
+  ) => {
+    if (!resumeId) throw new Error(t("sections.errors.noResume"));
+    const result = await rewrite.mutateAsync({
+      resumeId,
+      sectionTypeKey: input.sectionTypeKey,
+      itemId: input.itemId,
+      data: { locale: input.editedLocale, edited: input.edited },
+    });
+    return result as RewriteProposal;
+  };
+
+  const writeTranslation: ReturnType<typeof useSectionItemMutations>["writeTranslation"] = async (
+    input,
+  ) => {
+    if (!resumeId) throw new Error(t("sections.errors.noResume"));
+    await putTranslation.mutateAsync({
+      resumeId,
+      sectionTypeKey: input.sectionTypeKey,
+      itemId: input.itemId,
+      locale: input.locale,
+      data: { data: input.data, origin: input.origin },
+    });
+    await invalidate();
+  };
+
   return {
     persistFor,
-    isPending: create.isPending || update.isPending || remove.isPending,
+    proposeRewrite,
+    writeTranslation,
+    isPending:
+      create.isPending ||
+      update.isPending ||
+      remove.isPending ||
+      rewrite.isPending ||
+      putTranslation.isPending,
   };
 }

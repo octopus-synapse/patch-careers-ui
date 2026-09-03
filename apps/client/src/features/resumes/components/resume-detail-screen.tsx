@@ -208,6 +208,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
           locales={{
             chrome: resumeLanguageToLocale(resume.language) ?? locale,
             content: resumeLanguageToLocale(resume.language) ?? locale,
+            canonical: resumeLanguageToLocale(resume.language) ?? locale,
           }}
         />
       </ScrollView>
