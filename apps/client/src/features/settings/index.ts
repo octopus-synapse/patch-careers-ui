@@ -3,6 +3,7 @@
  * only from this barrel (ADR-0002).
  */
 
+export { AccountLanguageSync } from "./components/account-language-sync";
 export {
   type PillOption,
   PillSelect,

@@ -35,6 +35,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavBar } from "@/components/nav-bar/nav-bar";
 import { NetInfoBanner } from "@/components/net-info-banner";
+import { AccountLanguageSync } from "@/features/settings";
 import { DESKTOP_CONTENT_MAX_WIDTH, useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { ensureAppSansFont } from "@/lib/app-sans-font";
 import { ensureWebButtonTextReset } from "@/lib/web-button-text-reset";
@@ -143,6 +144,8 @@ export default function RootLayout(): ReactElement {
                   <I18nProvider>
                     <AuthProvider>
                       <NotificationsProvider>
+                        {/* Interface language ⇄ account preference (decision 5). */}
+                        <AccountLanguageSync />
                         {/* Follow the in-app choice, not the OS ("auto" tracks the OS). */}
                         <StatusBar style={scheme === "dark" ? "light" : "dark"} />
                         <NetInfoBanner />
