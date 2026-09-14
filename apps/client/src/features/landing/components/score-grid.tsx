@@ -154,11 +154,9 @@ function SubScoreRow({ sub }: { readonly sub: DemoSubScore }): ReactElement {
       </Text>
       <Text fontFamily={landingSans} fontSize={11.5} lineHeight={16} color={palette.muted} flex={1}>
         {t(`landing.scores.sub.${sub.key}.fix`)}
-        {sub.locked ? null : (
-          <Text fontFamily={editorialFonts.mono} fontSize={11.5} color={band.ink}>
-            {` +${sub.gain ?? 0}`}
-          </Text>
-        )}
+        <Text fontFamily={editorialFonts.mono} fontSize={11.5} color={band.ink}>
+          {` +${sub.gain ?? 0}`}
+        </Text>
       </Text>
     </XStack>
   );

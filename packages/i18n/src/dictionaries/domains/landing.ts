@@ -313,10 +313,6 @@ export const landingPtBR: TranslationDict = {
       keywords: { name: "Palavras-chave", fix: 'Usar "metas" na experiência da Renner.' },
       requirements: { name: "Requisitos", fix: "Somar os meses de estágio que faltam." },
       context: { name: "Contexto", fix: "Encurtar a parte de estoque." },
-      culture: {
-        name: "Fit cultural",
-        fix: "só a nota — o porquê é protegido pra ninguém treinar o teste",
-      },
     },
     whyLabel: "Por quê:",
     fixLabel: "Pra subir:",
@@ -620,10 +616,6 @@ export const landingEn: TranslationDict = {
       keywords: { name: "Keywords", fix: 'Use "targets" in the Renner experience.' },
       requirements: { name: "Requirements", fix: "Add the missing internship months." },
       context: { name: "Context", fix: "Shorten the stockroom part." },
-      culture: {
-        name: "Culture fit",
-        fix: "score only — the why is protected so nobody can train for the test",
-      },
     },
     whyLabel: "Why:",
     fixLabel: "To raise it:",
