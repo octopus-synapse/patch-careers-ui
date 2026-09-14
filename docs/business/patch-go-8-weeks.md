@@ -1,5 +1,7 @@
 # Patch Go — plano de receita e validação (14 set. 2026)
 
+Roteiro de entrevistas, convite e painel semanal prontos para uso: [kit do piloto](./pilot-kit.md).
+
 ## Decisão e hipótese
 
 **Vale testar como negócio, mas ainda não há evidência de que sustente a renda principal.** O produto já reúne currículo, vagas e Match. A hipótese vendável é: *uma pessoa em busca ativa de trabalho paga para preparar, revisar e acompanhar candidaturas a vagas relevantes em menos tempo, sem inventar experiência nem depender de exposição social no LinkedIn*. O benefício a medir é **tempo poupado e decisões melhores**, não entrevistas ou contratações prometidas.
