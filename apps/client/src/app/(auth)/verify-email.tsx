@@ -1,6 +1,6 @@
 /**
  * Verify-email screen (D101) — "Editorial Calm" DS, ported from the approved
- * `verify-code-demo.html`: a standalone panel holding a centred serif
+ * `docs/design/verify-code-demo.html`: a standalone panel holding a centred serif
  * heading, the masked e-mail as a tappable pill (use another e-mail), six
  * drawn OTP cells over one real input, an inline status line (verifying /
  * invalid / resent — no toasts), and a resend row with a countdown ring.

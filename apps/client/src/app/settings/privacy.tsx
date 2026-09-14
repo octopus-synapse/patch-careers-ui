@@ -1,154 +1,27 @@
-/** Privacy — profile visibility + who-can-message pills, and a Blocked row. */
+/**
+ * Privacy — profile visibility + who-can-message, and the Consent/Blocked rows.
+ * Frame only; the body is `PrivacySection` (see `account.tsx` for why).
+ */
 
-import {
-  useGetV1UsersPreferencesFull,
-  usePatchV1UsersPreferencesFull,
-} from "@patch-careers/api-client";
-import { YStack } from "@patch-careers/ui";
-import { SettingsCard, SettingsRow, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
-import { Ban } from "lucide-react-native";
-import { type ReactElement, useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { Redirect } from "expo-router";
+import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
-import {
-  type MessagePrivacy,
-  PillSelect,
-  type ProfileVisibility,
-  SectionHeader,
-  SettingSelectRow,
-  useSet,
-} from "@/features/settings";
+import { PrivacySection, settingsSectionHref } from "@/features/settings";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 
 export default function PrivacyScreen(): ReactElement {
   const { t } = useI18n();
-  const styles = useSet();
-  const palette = useEditorialPalette();
-  const router = useRouter();
   const isDesktopWeb = useIsDesktopWeb();
-  const prefsQuery = useGetV1UsersPreferencesFull();
-  const patch = usePatchV1UsersPreferencesFull();
 
-  // Local copies give the pills instant feedback on tap; they're seeded from
-  // the server response and fall back to the backend defaults so a missing
-  // field never strands the screen on a spinner.
-  const prefs = prefsQuery.data?.preferences;
-  const [visibility, setVisibility] = useState<ProfileVisibility | null>(null);
-  const [messaging, setMessaging] = useState<MessagePrivacy | null>(null);
-
-  useEffect(() => {
-    if (prefs) {
-      setVisibility(prefs.profileVisibility as ProfileVisibility);
-      setMessaging(prefs.messagePrivacy as MessagePrivacy);
-    }
-  }, [prefs]);
-
-  const visValue = visibility ?? (prefs?.profileVisibility as ProfileVisibility) ?? "PRIVATE";
-  const msgValue = messaging ?? (prefs?.messagePrivacy as MessagePrivacy) ?? "EVERYONE";
-
-  const visOptions = [
-    { value: "PUBLIC" as const, label: t("settings.privacy.visibility.public") },
-    { value: "RECRUITERS_ONLY" as const, label: t("settings.privacy.visibility.recruiters") },
-    { value: "PRIVATE" as const, label: t("settings.privacy.visibility.private") },
-  ];
-  const msgOptions = [
-    { value: "EVERYONE" as const, label: t("settings.privacy.messaging.everyone") },
-    { value: "RECRUITERS_ONLY" as const, label: t("settings.privacy.messaging.recruiters") },
-    { value: "NOBODY" as const, label: t("settings.privacy.messaging.nobody") },
-  ];
+  if (isDesktopWeb) return <Redirect href={settingsSectionHref("privacy")} />;
 
   return (
     <SettingsScreenShell
       title={t("settings.privacy.title")}
       description={t("settings.privacy.description")}
     >
-      {prefsQuery.isPending ? (
-        <YStack marginTop={32}>
-          <ActivityIndicator color={palette.ink} />
-        </YStack>
-      ) : prefsQuery.isError ? (
-        <YStack marginTop={24} gap={12}>
-          <Text style={styles.bodyText}>{t("settings.privacy.loadError")}</Text>
-          <Pressable onPress={() => prefsQuery.refetch()} disabled={prefsQuery.isFetching}>
-            <Text style={[styles.bodyText, { color: palette.accent, fontWeight: "600" }]}>
-              {t("settings.privacy.retry")}
-            </Text>
-          </Pressable>
-        </YStack>
-      ) : isDesktopWeb ? (
-        // Desktop web mirrors the approved demo: one card, each preference a
-        // row with its description and a segmented control, Blocked at the end.
-        <SettingsCard>
-          <SettingSelectRow<ProfileVisibility>
-            first
-            label={t("settings.privacy.visibility.label")}
-            description={t("settings.privacy.visibility.description")}
-            options={visOptions}
-            value={visValue}
-            onChange={(v) => {
-              setVisibility(v);
-              patch.mutate({ data: { profileVisibility: v } });
-            }}
-          />
-          <SettingSelectRow<MessagePrivacy>
-            label={t("settings.privacy.messaging.label")}
-            description={t("settings.privacy.messaging.description")}
-            options={msgOptions}
-            value={msgValue}
-            onChange={(v) => {
-              setMessaging(v);
-              patch.mutate({ data: { messagePrivacy: v } });
-            }}
-          />
-          <SettingsRow
-            dense
-            label={t("settings.privacy.blockedRow")}
-            onPress={() => router.push("/settings/blocked")}
-          />
-        </SettingsCard>
-      ) : (
-        <>
-          <SectionHeader label={t("settings.privacy.visibility.label")} />
-          <SettingsCard>
-            <View style={styles.cardInner}>
-              <PillSelect<ProfileVisibility>
-                options={visOptions}
-                value={visValue}
-                onChange={(v) => {
-                  setVisibility(v);
-                  patch.mutate({ data: { profileVisibility: v } });
-                }}
-              />
-            </View>
-          </SettingsCard>
-
-          <SectionHeader label={t("settings.privacy.messaging.label")} />
-          <SettingsCard>
-            <View style={styles.cardInner}>
-              <PillSelect<MessagePrivacy>
-                options={msgOptions}
-                value={msgValue}
-                onChange={(v) => {
-                  setMessaging(v);
-                  patch.mutate({ data: { messagePrivacy: v } });
-                }}
-              />
-            </View>
-          </SettingsCard>
-
-          <YStack height={10} />
-          <SettingsCard>
-            <SettingsRow
-              first
-              icon={Ban}
-              label={t("settings.privacy.blockedRow")}
-              onPress={() => router.push("/settings/blocked")}
-            />
-          </SettingsCard>
-        </>
-      )}
+      <PrivacySection />
     </SettingsScreenShell>
   );
 }

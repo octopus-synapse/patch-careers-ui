@@ -64,6 +64,9 @@ function MobileMessagesScreen(): ReactElement {
   function openConversation(conversation: Conversation): void {
     goToThread({
       id: conversation.id,
+      // Carried so the thread can act on the person, not just render them:
+      // blocking needs their id and the thread payload does not carry it.
+      recipientId: conversation.participant.id,
       name: participantLabel(conversation.participant, t),
       photo: conversation.participant.photoURL ?? "",
       username: conversation.participant.username ?? "",

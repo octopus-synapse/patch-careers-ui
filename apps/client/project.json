@@ -16,6 +16,17 @@
       "cache": true,
       "inputs": ["default", "^default"],
       "outputs": []
+    },
+    "test:dom": {
+      "//": "Component tests (jsdom + react-native-web). Same workspace-root cwd rule as `test`.",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}",
+        "command": "vitest run --config apps/client/vitest.dom.config.ts"
+      },
+      "cache": true,
+      "inputs": ["default", "^default"],
+      "outputs": []
     }
   }
 }

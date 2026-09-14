@@ -9,7 +9,7 @@
  * chapter's content rides that same offset through `ChapterLayer`'s parallax.
  *
  * `<Stack.Screen>` opts this one route out of the desktop content column —
- * every other screen is a centred 960px document; the landing is full bleed.
+ * every other screen is a centred, width-capped document; the landing is full bleed.
  */
 
 import { landingAccentPalettes } from "@patch-careers/tokens";

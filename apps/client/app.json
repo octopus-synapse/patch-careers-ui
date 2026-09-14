@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.patchcareers.app",
-      "associatedDomains": ["applinks:patchcareers.com"],
+      "associatedDomains": ["applinks:patchcareers.org"],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -39,7 +39,7 @@
           "data": [
             {
               "scheme": "https",
-              "host": "patchcareers.com"
+              "host": "patchcareers.org"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]

@@ -188,6 +188,7 @@ não expressa (grafo de features, estilo, adoção do DS).
 | Naming kebab-case | Biome `useFilenamingConvention` (ignora `app/**`) | `biome.json` |
 | Camadas (tokens/ui/infra) | Biome `noRestrictedImports` por diretório + tags Nx | `biome.json` · `project.json` |
 | Cross-feature + deep-import | spec `no-cross-feature-imports` (foundation = `sections`,`resumes`) | ADR-0010 |
+| Locale de interface × locale de conteúdo | spec `chrome-content-locale` (perfil: chrome=app, conteúdo=documento; documento: tudo=documento) | ADR-0011 |
 | Adoção do `@patch-careers/ui` | spec `ui-adoption` (Touchable, hairline-divider) | ADR-0009 |
 | Estilo Tamagui-first | spec `no-stylesheet-inline-styles` (StyleSheet/inline/cor) | ADR-0007/0008 |
 | i18n (sem hardcoded) | spec `no-hardcoded-strings` + `locale-parity` | — |
@@ -215,3 +216,4 @@ Exceções de estilo/adoção: diretiva inline `// @style-allow <kind>: <reason>
 | [0008](./docs/adr/0008-design-tokens-no-hardcoded-color.md) | Tokens obrigatórios (sem cor hardcoded) |
 | [0009](./docs/adr/0009-ui-adoption-rule-of-three.md) | Adoção do `@patch-careers/ui` verificada + rule of three |
 | [0010](./docs/adr/0010-foundation-features-cross-import.md) | Foundation features + enforcement cross-feature |
+| [0011](./docs/adr/0011-two-locales-chrome-and-content.md) | Dois locales: interface (chrome) × documento (conteúdo), por superfície |

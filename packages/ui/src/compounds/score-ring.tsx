@@ -2,7 +2,7 @@
  * `<ScoreRing>` — the editorial gauge for a 0–100 score, shared across the
  * quality / match / completeness surfaces. A hairline track with a single
  * tone-colored progress arc and the number in mono at the center. The tone
- * follows the unified ramp (`scoreTone` → `toneToEditorialKey`); no gradients
+ * follows the unified ramp (`scoreInk`); no gradients
  * or shadows — the band color carries the only accent.
  *
  * Scores are the most expressive moment in the app, so by default the arc
@@ -25,8 +25,9 @@ import Animated, {
 import Svg, { Circle, G } from "react-native-svg";
 import { editorialFonts as fonts } from "../editorial/fonts";
 import { scoreArcGeometry } from "../internal/score-arc";
-import { clampScore, scoreGrade, scoreTone, toneToEditorialKey } from "../internal/score-scale";
+import { clampScore, scoreGrade, scoreInk } from "../internal/score-scale";
 import { useEditorialPalette } from "../internal/use-editorial-palette";
+import { useThemeName } from "../internal/use-theme-name";
 import { Text } from "../primitives/text";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -56,8 +57,9 @@ export function ScoreRing({
   onRevealComplete,
 }: ScoreRingProps) {
   const palette = useEditorialPalette();
+  const themeName = useThemeName();
   const target = clampScore(score);
-  const color = palette[toneToEditorialKey(scoreTone(score))];
+  const color = scoreInk(score, themeName);
 
   const { center, r, circumference } = scoreArcGeometry(size, strokeWidth);
 

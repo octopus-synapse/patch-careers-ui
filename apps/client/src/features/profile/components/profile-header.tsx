@@ -12,7 +12,7 @@
  */
 import { IdentityAvatar, PuzzleBanner, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Camera, MapPin } from "lucide-react-native";
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
@@ -44,6 +44,8 @@ export function ProfileHeader({
   uploading = false,
   coverUploading = false,
   completeness = null,
+  variant = "page",
+  trailing,
 }: {
   profile: HeaderProfile | undefined;
   onChangePhoto: () => void;
@@ -52,6 +54,15 @@ export function ProfileHeader({
   uploading?: boolean;
   coverUploading?: boolean;
   completeness?: number | null;
+  /**
+   * "page" (default) is the masthead: full-bleed banner cancelling the page
+   * gutter, closed by a hairline. "card" wraps the same thing in a panel card
+   * — used by desktop web, where the header is the first card of a column
+   * that runs beside the rail.
+   */
+  variant?: "page" | "card";
+  /** Mobile masthead only: a control under the identity (the language switch, decision 9). */
+  trailing?: ReactNode;
 }): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
@@ -62,6 +73,10 @@ export function ProfileHeader({
   const avatarPx = isDesktopWeb ? AVATAR_PX_WIDE : AVATAR_PX;
   const name = profile?.name ?? t("profile.header.defaultName");
   const pct = completeness === null ? null : Math.max(0, Math.min(100, Math.round(completeness)));
+  // The bezel and the camera chips are painted in whatever sits behind them so
+  // they cut a clean hole in the banner. Inside a card that is `panel`, not the
+  // page's `bg` — otherwise the avatar wears a beige ring on a white card.
+  const behind = variant === "card" ? palette.panel : palette.bg;
 
   const avatarInner = (
     <>
@@ -70,7 +85,7 @@ export function ProfileHeader({
         name={name}
         size={avatarPx}
         bezel={AVATAR_BEZEL}
-        bezelColor={palette.bg}
+        bezelColor={behind}
       />
       {uploading ? (
         <View style={pf.avatarUploading}>
@@ -89,7 +104,7 @@ export function ProfileHeader({
       accessibilityState={{ busy: coverUploading }}
       disabled={coverUploading}
       onPress={onChangeCover}
-      style={pf.coverWrap}
+      style={variant === "card" ? pf.coverWrapCard : pf.coverWrap}
     >
       <PuzzleBanner
         height={isDesktopWeb ? COVER_PX_WIDE : COVER_PX}
@@ -97,7 +112,7 @@ export function ProfileHeader({
         {...(coverURL === undefined ? {} : { coverURL })}
         {...(coverURL === undefined ? {} : { accessibilityLabel: t("profile.cover.imageA11y") })}
       >
-        <View style={pf.coverBadge}>
+        <View style={[pf.coverBadge, { borderColor: behind }]}>
           {coverUploading ? (
             <ActivityIndicator color={palette.onPrimary} size="small" />
           ) : (
@@ -132,7 +147,7 @@ export function ProfileHeader({
           <Text style={pf.completenessText}>{pct}%</Text>
         </View>
       ) : null}
-      <View style={pf.avatarBadge}>
+      <View style={[pf.avatarBadge, { borderColor: behind }]}>
         <Camera size={15} color={palette.onPrimary} strokeWidth={2} />
       </View>
     </Pressable>
@@ -159,6 +174,20 @@ export function ProfileHeader({
     </>
   );
 
+  if (variant === "card") {
+    return (
+      <View style={pf.headerCardWide}>
+        {cover}
+        <View style={pf.headerCardBodyWide}>
+          <View style={pf.headerWideRow}>
+            {avatarPressable}
+            <View style={pf.headerWideBody}>{identityText}</View>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   if (isDesktopWeb) {
     return (
       <View style={pf.headerWide}>
@@ -176,6 +205,7 @@ export function ProfileHeader({
       {cover}
       {avatarPressable}
       {identityText}
+      {trailing}
     </View>
   );
 }

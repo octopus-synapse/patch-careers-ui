@@ -19,15 +19,18 @@
 import { Button, Text, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { type ReactElement, useCallback, useEffect, useRef } from "react";
+import { Ban } from "lucide-react-native";
+import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Keyboard, ScrollView, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import {
   buildRenderList,
   ChatHeader,
   MessageBubble,
   MessageComposer,
+  useBlockUser,
   useConversationThread,
 } from "@/features/messages";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
@@ -73,6 +76,8 @@ export default function ConversationScreen(): ReactElement {
   });
 
   const rendered = buildRenderList(thread.messages, currentUserId);
+  const [blockOpen, setBlockOpen] = useState(false);
+  const { block, isPending: blocking } = useBlockUser();
 
   const scrollRef = useRef<ScrollView>(null);
   const scrollToEnd = useCallback((animated: boolean): void => {
@@ -100,7 +105,13 @@ export default function ConversationScreen(): ReactElement {
       }}
     >
       <KeyboardAvoidingView behavior="padding" style={FILL}>
-        <ChatHeader name={name} username={username} photoURL={photo} onBack={() => router.back()} />
+        <ChatHeader
+          name={name}
+          username={username}
+          photoURL={photo}
+          onBack={() => router.back()}
+          onBlock={recipientId ? () => setBlockOpen(true) : undefined}
+        />
 
         <YStack flex={1}>
           {thread.isLoading ? (
@@ -144,6 +155,24 @@ export default function ConversationScreen(): ReactElement {
 
         <MessageComposer disabled={thread.sending} onSend={thread.send} />
       </KeyboardAvoidingView>
+
+      <ConfirmDialog
+        open={blockOpen}
+        onOpenChange={setBlockOpen}
+        title={t("messages.block.title", { name })}
+        description={t("messages.block.body")}
+        danger
+        icon={Ban}
+        confirmLabel={t("messages.block.confirm")}
+        loading={blocking}
+        onConfirm={() =>
+          recipientId &&
+          block(recipientId, () => {
+            setBlockOpen(false);
+            router.back();
+          })
+        }
+      />
     </View>
   );
 }

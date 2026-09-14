@@ -53,7 +53,22 @@ export type MergedSection = {
   descriptor: SectionDescriptor;
   /** True when maxItems (or non-repeatable = 1) is reached — picker disables it. */
   atCapacity: boolean;
+  /**
+   * How much the ATS weighs this section, from `definition.ats`. Lower is more
+   * important (2 = work experience, 16 = achievements).
+   *
+   * The catalog does NOT arrive in this order — the API returns section types
+   * alphabetically by key — so anything that wants to lead with what matters
+   * has to sort by this itself. Null when the definition doesn't declare one.
+   */
+  recommendedPosition: number | null;
 };
+
+/** `definition` is `unknown` from the SDK; dig out the ATS ordering hint. */
+function readRecommendedPosition(definition: unknown): number | null {
+  const ats = (definition as { ats?: { recommendedPosition?: unknown } } | null | undefined)?.ats;
+  return typeof ats?.recommendedPosition === "number" ? ats.recommendedPosition : null;
+}
 
 function toMerged(type: CatalogSectionType, section: ResumeSectionLike | undefined): MergedSection {
   const items = section?.items ?? [];
@@ -77,6 +92,7 @@ function toMerged(type: CatalogSectionType, section: ResumeSectionLike | undefin
       noDataLabel: type.noDataLabel,
     },
     atCapacity: cap !== null && items.length >= cap,
+    recommendedPosition: readRecommendedPosition(type.definition),
   };
 }
 

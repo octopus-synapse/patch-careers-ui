@@ -123,6 +123,11 @@ jobs:
       - name: Architecture specs
         run: pnpm verify:arch
 
+      # Component tests render through react-native-web in jsdom — a second
+      # Vitest project (`vitest.dom.config.ts`), not part of the `test` target.
+      - name: Component tests (jsdom)
+        run: pnpm exec nx run client:test:dom
+
       # `export` (expo export), not `build`. The @nx/expo-inferred `build`
       # target shells out to `eas build` — a cloud build needing eas-cli and an
       # Expo account, so it can only ever fail here ("eas: not found"). No

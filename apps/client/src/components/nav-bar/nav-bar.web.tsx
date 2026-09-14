@@ -13,8 +13,9 @@
  *     button pointing at the page you are on is furniture.
  *   · `onboarding` — signed in, no profile yet. The wizard's progress fills the
  *     middle and the mark stops being a link out of the flow.
- *   · `app`        — the shell: search, four destinations, a bell carrying the
- *     unread count, and the account menu.
+ *   · `app`        — the shell: search, three destinations, the messages and
+ *     notifications controls carrying their unread counts, and the account
+ *     menu.
  *
  * The `app` variant is mounted once in the root layout, ABOVE the router Stack,
  * so it persists across tab switches and stacked pushes like a real web app
@@ -22,6 +23,7 @@
  * rendered by the screens that own them.
  */
 
+import { Ionicons } from "@expo/vector-icons";
 import {
   useGetV1ChatUnread,
   useGetV1NotificationsUnreadCount,
@@ -31,21 +33,13 @@ import { landingAccentPalettes } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import {
   BrandFace,
-  CountBadge,
   FrostedFill,
   IdentityAvatar,
   useEditorialPalette,
   useThemeName,
 } from "@patch-careers/ui/editorial";
 import { usePathname, useRouter } from "expo-router";
-import {
-  Bell,
-  Briefcase,
-  FileText,
-  type LucideIcon,
-  Menu,
-  MessageCircle,
-} from "lucide-react-native";
+import { Bell, Menu, MessageCircle } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import { AuthDialog } from "@/components/auth/auth-dialog/auth-dialog";
@@ -63,6 +57,7 @@ import {
   NAV_BAR_HEIGHT_PUBLIC,
   NAV_CLUSTER_GAP,
   NAV_SEARCH_WIDTH,
+  NAV_SEARCH_WIDTH_TIGHT,
   NAV_TAB_GAP,
   type NavAccount,
   type NavBarVariant,
@@ -93,20 +88,30 @@ const PUBLIC_Z_INDEX_OPEN = 60;
 const BRAND_HEIGHT = 50;
 const BRAND_HEIGHT_COMPACT = 40;
 
+type IoniconName = keyof typeof Ionicons.glyphMap;
+
 /**
- * A destination glyph: the same line icon in both states, filled when the tab
- * is active. The 1.7 stroke is the bar's own weight — heavier icon sets read as
- * a different family sitting next to the menu's lucide rows.
+ * A destination glyph: a real outline/solid PAIR, swapped on focus.
+ *
+ * This used to be one lucide icon with `fill={color}` painted over it, and it
+ * could not work: lucide is a stroke-only set, so filling `FileText` gave a
+ * solid black page (its text lines are strokes in the same colour, drawn on top
+ * of the fill) and `Briefcase` a solid block. Ionicons draws its solid variants
+ * as their own shapes, with the inner detail cut OUT of the fill — which is the
+ * whole point of a filled active state.
+ *
+ * So the bar's destinations are Ionicons while its controls (bell, hamburger,
+ * magnifier) and the menu's rows stay lucide. That split is deliberate: the
+ * controls are outline-only and never fill, so the two families never sit in
+ * the same state next to each other — and the mobile tab bar already pairs
+ * these exact Ionicons (`app/(tabs)/_layout.tsx`), so the two bars now light up
+ * with the same glyphs.
  */
-function glyph(icon: LucideIcon) {
-  const Icon = icon;
+function glyph(outline: IoniconName, filled: IoniconName) {
   return ({ color, focused, size }: { color: string; focused: boolean; size: number }) => (
-    <Icon
-      size={size}
-      color={color}
-      strokeWidth={focused ? 1.5 : 1.7}
-      {...(focused ? { fill: color } : {})}
-    />
+    // Solid reads heavier than outline at the same size; a point back keeps the
+    // two states the same optical weight in the 24px glyph band.
+    <Ionicons name={focused ? filled : outline} color={color} size={focused ? size - 1 : size} />
   );
 }
 
@@ -187,13 +192,32 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
   const brand = <BrandFace height={compact ? BRAND_HEIGHT_COMPACT : BRAND_HEIGHT} />;
 
   // The cluster is centred on the viewport, so the space it leaves for the mark
-  // and the controls is (width - cluster) / 2. At the 1024 breakpoint the full
-  // 290 pill leaves only ~32px of slack on the busier right side; giving the
-  // pill back 50px there buys real room, and above 1200 nothing changes.
-  const searchWidth = width < 1200 ? NAV_SEARCH_WIDTH - 50 : NAV_SEARCH_WIDTH;
+  // and the controls is (width - cluster) / 2. Three columns cost 304, so the
+  // cluster is `search + 334`; the busier right side needs ~186 (padding plus
+  // the three circles). At 1024 the wide pill would leave it 160 — hence the
+  // tight size below 1200, which still lands ~200 a side.
+  const searchWidth = width < 1200 ? NAV_SEARCH_WIDTH_TIGHT : NAV_SEARCH_WIDTH;
 
   const controls = (
     <XStack alignItems="center" gap={compact ? 6 : 12}>
+      {/* Messages sits with the controls, not in the cluster: it is somewhere
+          you check, not one of the app's destinations. Same circle as the bell
+          beside it — an inbox and a notification tray are the same kind of
+          thing, and they should look it. */}
+      {isApp ? (
+        <GlassCircleButton
+          accessibilityLabel={
+            unreadMessages > 0
+              ? t("app.header.messagesUnread", { count: unreadMessages })
+              : t("tabs.messages")
+          }
+          active={active === "messages"}
+          onPress={() => goTo("messages", "/messages")}
+          badgeCount={unreadMessages}
+          renderIcon={({ color }) => <MessageCircle size={18} color={color} strokeWidth={1.8} />}
+        />
+      ) : null}
+
       {isApp ? (
         <GlassCircleButton
           accessibilityLabel={
@@ -203,10 +227,9 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
           }
           active={active === "notifications"}
           onPress={() => router.push("/notifications")}
-          badge={<CountBadge count={unreadNotifications} />}
-        >
-          <Bell size={18} color={palette.ink} strokeWidth={1.8} />
-        </GlassCircleButton>
+          badgeCount={unreadNotifications}
+          renderIcon={({ color }) => <Bell size={18} color={color} strokeWidth={1.8} />}
+        />
       ) : null}
 
       {/* RN Views default to position:relative — the panel anchors here, and
@@ -216,9 +239,8 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
           accessibilityLabel={t("landing.nav.openMenu")}
           expanded={menuOpen}
           onPress={() => setMenuOpen((open) => !open)}
-        >
-          <Menu size={18} color={palette.ink} strokeWidth={1.8} />
-        </GlassCircleButton>
+          renderIcon={({ color }) => <Menu size={18} color={color} strokeWidth={1.8} />}
+        />
 
         {menuOpen ? (
           <AccountMenu
@@ -302,25 +324,13 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
               label={t("tabs.jobs")}
               focused={active === "jobs"}
               onPress={() => goTo("jobs", "/jobs")}
-              renderIcon={glyph(Briefcase)}
-            />
-            <NavTabItem
-              label={t("tabs.messages")}
-              focused={active === "messages"}
-              onPress={() => goTo("messages", "/messages")}
-              renderIcon={glyph(MessageCircle)}
-              badge={<CountBadge count={unreadMessages} />}
-              accessibilityLabel={
-                unreadMessages > 0
-                  ? t("app.header.messagesUnread", { count: unreadMessages })
-                  : t("tabs.messages")
-              }
+              renderIcon={glyph("briefcase-outline", "briefcase")}
             />
             <NavTabItem
               label={t("tabs.resumes")}
               focused={active === "curriculos"}
               onPress={() => goTo("curriculos", "/curriculos")}
-              renderIcon={glyph(FileText)}
+              renderIcon={glyph("document-text-outline", "document-text")}
             />
             {/* "Eu" is a destination now, not a menu: the account moved into
                 the hamburger, so this goes straight to the profile. */}

@@ -12,7 +12,7 @@ import type { ExternalJob, JobsFilters, PostedWithin, SavedExternalJobItem } fro
 
 /**
  * Desktop web caps the Jobs surface (list + detail) to this centered reading
- * column. The app-wide 960 scene stretches single-column rows into
+ * column. The app-wide desktop scene stretches single-column rows into
  * unreadable lines; ~660 keeps the serif titles and meta at a book-like
  * measure while the paper bleeds full-width behind it.
  */

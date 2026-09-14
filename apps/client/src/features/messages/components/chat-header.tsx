@@ -6,7 +6,7 @@
 
 import { Avatar, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
-import { ChevronLeft } from "lucide-react-native";
+import { Ban, ChevronLeft } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
@@ -19,11 +19,14 @@ export function ChatHeader({
   username,
   photoURL,
   onBack,
+  onBlock,
 }: {
   name: string;
   username?: string | undefined;
   photoURL?: string | undefined;
   onBack: () => void;
+  /** Omitted when the peer's id is unknown — the action needs it. */
+  onBlock?: (() => void) | undefined;
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
   const { t } = useI18n();
@@ -59,6 +62,17 @@ export function ChatHeader({
           </Text>
         ) : null}
       </YStack>
+      {onBlock ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("messages.block.action")}
+          onPress={onBlock}
+          hitSlop={8}
+          style={{ padding: BACK_BUTTON_PADDING }}
+        >
+          <Icon as={Ban} size={20} color={editorialPalette.subtle} />
+        </Pressable>
+      ) : null}
     </XStack>
   );
 }

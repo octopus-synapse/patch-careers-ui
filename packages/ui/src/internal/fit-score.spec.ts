@@ -4,12 +4,12 @@ import { clampScore, fitScoreBucket, fitScoreColors, fitScoreIntent } from "./fi
 describe("fitScoreBucket", () => {
   it("buckets boundary values correctly", () => {
     expect(fitScoreBucket(100)).toBe("excellent");
-    expect(fitScoreBucket(80)).toBe("excellent");
-    expect(fitScoreBucket(79.9)).toBe("good");
-    expect(fitScoreBucket(60)).toBe("good");
-    expect(fitScoreBucket(59.9)).toBe("fair");
-    expect(fitScoreBucket(40)).toBe("fair");
-    expect(fitScoreBucket(39.9)).toBe("poor");
+    expect(fitScoreBucket(85)).toBe("excellent");
+    expect(fitScoreBucket(84.9)).toBe("good");
+    expect(fitScoreBucket(70)).toBe("good");
+    expect(fitScoreBucket(69.9)).toBe("fair");
+    expect(fitScoreBucket(50)).toBe("fair");
+    expect(fitScoreBucket(49.9)).toBe("poor");
     expect(fitScoreBucket(0)).toBe("poor");
   });
 });
@@ -17,8 +17,8 @@ describe("fitScoreBucket", () => {
 describe("fitScoreIntent", () => {
   it("maps buckets to intents", () => {
     expect(fitScoreIntent(95)).toBe("success");
-    expect(fitScoreIntent(70)).toBe("accent");
-    expect(fitScoreIntent(50)).toBe("warn");
+    expect(fitScoreIntent(78)).toBe("warn");
+    expect(fitScoreIntent(60)).toBe("warn");
     expect(fitScoreIntent(20)).toBe("danger");
   });
 });

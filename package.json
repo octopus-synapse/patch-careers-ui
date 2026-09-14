@@ -28,7 +28,7 @@
     "build": "nx run-many -t build",
     "typecheck": "nx run-many -t typecheck",
     "precommit": "./.husky/pre-commit",
-    "verify:arch": "vitest run --config apps/client/vitest.config.ts apps/client/src/static-analysis/no-cross-feature-imports.spec.ts apps/client/src/static-analysis/ui-adoption.spec.ts apps/client/src/static-analysis/no-stylesheet-inline-styles.spec.ts apps/client/src/static-analysis/locale-parity.spec.ts",
+    "verify:arch": "vitest run --config apps/client/vitest.config.ts apps/client/src/static-analysis/no-cross-feature-imports.spec.ts apps/client/src/static-analysis/ui-adoption.spec.ts apps/client/src/static-analysis/no-stylesheet-inline-styles.spec.ts apps/client/src/static-analysis/locale-parity.spec.ts apps/client/src/static-analysis/chrome-content-locale.spec.ts apps/client/src/static-analysis/orphan-hooks-report.spec.ts",
     "graph": "nx graph",
     "affected": "nx affected",
     "android": "pnpm --filter client android",
@@ -36,7 +36,8 @@
     "dev:android": "pnpm --filter client dev:android",
     "dev:ios": "pnpm --filter client dev:ios",
     "metro": "pnpm --filter client start",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:dom": "nx run client:test:dom"
   },
   "devDependencies": {
     "@babel/runtime": "~7.27.6",
@@ -53,6 +54,8 @@
     "@swc-node/register": "~1.11.1",
     "@swc/core": "~1.15.5",
     "@swc/helpers": "~0.5.18",
+    "@testing-library/jest-dom": "^6",
+    "@testing-library/react": "^16",
     "@types/node": "^20.0.0",
     "@types/react": "^19.1.0",
     "@vitest/coverage-v8": "^2.1.9",

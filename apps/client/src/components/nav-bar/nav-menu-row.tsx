@@ -1,36 +1,38 @@
 /**
- * `NavMenuRow` — one row of the nav menu panel, with the prototype's hover
- * choreography (`menu-final.html`).
+ * `NavMenuRow` — one row of the nav menu panel.
  *
- * Four things move together, and the timing is deliberately ASYMMETRIC: the
- * hover state arrives on a long eased curve and leaves fast and flat, so the
- * panel feels like it is answering you rather than lagging behind the pointer.
+ * Hovered, the row FILLS: the whole thing takes the brand indigo (red on
+ * sign-out, because leaving is not the same kind of act as switching the
+ * theme), the label and the value invert onto it, and the icon's hairline ring
+ * becomes a white disc carrying the fill colour as its glyph. It is the same
+ * move the circular controls above it make — one gesture for the whole bar and
+ * the menu hanging off it — and it replaces an earlier, softer version where a
+ * pale curtain swept in behind a row that otherwise stayed put.
  *
- *   · a curtain of `indigoSoft` sweeps in from the left edge of the row;
+ * Four things move together on one symmetric 300ms curve (the reference's
+ * `ease-silk`), matching `GlassCircleButton`:
+ *
+ *   · the fill fades in over the whole row;
  *   · the icon disc lifts — an opaque panel-coloured layer cross-fades over
  *     the resting hairline ring, carrying a small shadow and a 1.5% scale;
- *   · the glyph swaps for a heavier, indigo-tinted twin of itself (plus an
+ *   · the glyph swaps for a heavier twin tinted with the fill colour (plus an
  *     optional per-glyph flourish — the gear turns, the sign-out arrow steps
  *     right);
- *   · the label thickens and takes the deeper indigo.
+ *   · the label thickens and inverts.
  *
- * Reanimated rather than Tamagui's `animation` prop because that asymmetry
- * needs a different duration AND easing per direction, which a named preset
- * cannot carry. `ToggleField` in the DS sets the same precedent.
+ * Reanimated rather than Tamagui's `animation` prop: a named preset cannot
+ * drive four layers off one shared clock, and colour is carried by cross-fades
+ * rather than interpolation because an SVG glyph cannot be tinted mid-flight.
+ * `ToggleField` in the DS sets the same precedent.
  *
  * The label's weight switches instantly — no driver interpolates `fontWeight`,
  * and animating it would reflow the row. The label sits in a flex spacer so
  * the extra width is absorbed there and the mono value never shifts.
  */
 
-import { editorialOverlays } from "@patch-careers/tokens";
+import { navFilled } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
-import {
-  editorialFonts,
-  useEditorialMenu,
-  useEditorialPalette,
-  useThemeName,
-} from "@patch-careers/ui/editorial";
+import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import type { LucideIcon } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Pressable } from "react-native";
@@ -43,15 +45,15 @@ import Animated, {
 
 const DISC = 32;
 const GLYPH = 18;
-const ROW_RADIUS = 11;
+/** A full pill — the shape the filled row takes in the reference. */
+const ROW_RADIUS = 999;
 
-/** Fills its relative parent — the curtain, the disc's ring and lift layer. */
+/** Fills its relative parent — the row's fill, the disc's ring and lift layer. */
 const FILL = { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 } as const;
 const CENTERED = { position: "absolute" } as const;
 
-/** Arriving: long and eased. Leaving: short and flat. That gap is the design. */
-const ENTER = { duration: 500, easing: Easing.bezier(0.22, 0.61, 0.36, 1) };
-const EXIT = { duration: 200, easing: Easing.out(Easing.ease) };
+/** The reference's `duration-300 ease-silk`, in both directions. */
+const TIMING = { duration: 300, easing: Easing.bezier(0.16, 1, 0.3, 1) };
 const INSTANT = { duration: 0, easing: Easing.linear };
 
 /** Where the hovered glyph settles — the prototype's per-glyph micro-moves. */
@@ -81,25 +83,22 @@ export function NavMenuRow({
   onPress,
 }: NavMenuRowProps): ReactElement {
   const palette = useEditorialPalette();
-  const menu = useEditorialMenu();
-  const overlays = editorialOverlays[useThemeName()];
+  const filled = navFilled[useThemeName()];
   const [hovered, setHovered] = useState(false);
   const reduceMotion = useReducedMotion();
 
+  const fill = danger ? filled.danger : filled.accent;
   const on = hovered ? 1 : 0;
   // Resolved out here, not inside the worklets: a worklet may only close over
   // plain values, never over a helper defined on the JS side.
-  const timing = reduceMotion ? INSTANT : hovered ? ENTER : EXIT;
+  const timing = reduceMotion ? INSTANT : TIMING;
   const still = reduceMotion;
 
   const spin = (deg: number): string => `${deg}deg`;
   const restRotate = spin(hovered && !still ? 3 : 0);
   const hoverRotate = spin(hovered ? (flourish?.rotate ?? 0) : -4);
 
-  const curtainStyle = useAnimatedStyle(
-    () => ({ transform: [{ scaleX: withTiming(on, timing) }] }),
-    [on, timing],
-  );
+  const fillStyle = useAnimatedStyle(() => ({ opacity: withTiming(on, timing) }), [on, timing]);
 
   const liftStyle = useAnimatedStyle(
     () => ({
@@ -134,8 +133,9 @@ export function NavMenuRow({
     [on, hovered, still, hoverRotate, flourish, timing],
   );
 
-  const glyphTint = danger ? palette.danger : menu.indigo;
-  const labelTint = hovered ? (danger ? palette.danger : menu.indigoDeep) : palette.ink;
+  // On the disc the fill colour becomes the glyph; on the row it becomes the
+  // ground, so everything written on it flips to `onFill`.
+  const labelTint = hovered ? filled.onFill : danger ? palette.danger : palette.ink;
 
   return (
     <Pressable
@@ -153,12 +153,11 @@ export function NavMenuRow({
         paddingVertical={8}
         borderRadius={ROW_RADIUS}
         overflow="hidden"
-        // Opens a stacking context so the curtain's negative z-index stays
+        // Opens a stacking context so the fill's negative z-index stays
         // trapped inside this row instead of sliding behind the whole panel.
         zIndex={0}
       >
-        {/* The curtain: anchored left so it wipes in rather than growing from
-            the middle.
+        {/* The fill.
 
             `zIndex: -1` is load-bearing, not decoration. CSS paints POSITIONED
             descendants above in-flow content, so without it this absolutely
@@ -166,16 +165,7 @@ export function NavMenuRow({
             simply vanishes the moment you hover it. */}
         <Animated.View
           pointerEvents="none"
-          style={[
-            FILL,
-            {
-              zIndex: -1,
-              borderRadius: ROW_RADIUS,
-              transformOrigin: "left center",
-              backgroundColor: danger ? overlays.dangerWash : menu.indigoSoft,
-            },
-            curtainStyle,
-          ]}
+          style={[FILL, { zIndex: -1, borderRadius: ROW_RADIUS, backgroundColor: fill }, fillStyle]}
         />
 
         <YStack width={DISC} height={DISC} alignItems="center" justifyContent="center">
@@ -201,7 +191,7 @@ export function NavMenuRow({
             <Icon size={GLYPH} color={palette.muted} strokeWidth={1.5} />
           </Animated.View>
           <Animated.View pointerEvents="none" style={[CENTERED, hoverGlyphStyle]}>
-            <Icon size={GLYPH} color={glyphTint} strokeWidth={2.1} />
+            <Icon size={GLYPH} color={fill} strokeWidth={2.1} />
           </Animated.View>
         </YStack>
 
@@ -221,7 +211,7 @@ export function NavMenuRow({
           <Text
             fontFamily={editorialFonts.mono}
             fontSize={11.5}
-            color={hovered ? palette.body : palette.subtle}
+            color={hovered ? `${filled.onFill}B3` : palette.subtle}
           >
             {value}
           </Text>

@@ -191,6 +191,35 @@ export const editorialOverlays = {
 } as const satisfies Record<EditorialTheme, EditorialOverlays>;
 
 /**
+ * The engaged state of the navbar's chrome: its circular controls (messages,
+ * notifications, hamburger) and the rows of the menu that hangs off them.
+ *
+ * Engaged, the glass or the paper gives way to a solid fill with the content
+ * inverted on top of it — the pointer doesn't tint the thing, it takes it over.
+ * `accent` is the BRAND indigo; `danger` is the fill the sign-out row wears,
+ * because leaving is not the same kind of act as switching the theme.
+ *
+ * Its own token rather than slots on the palette or an overlay, because it is
+ * neither: the palette's `accent` is the product's UI blue (focus rings, links)
+ * and every overlay carries alpha. This is the brand mark's own blue, opaque,
+ * used as a fill. It is the same indigo as `landingAccents.indigo` and the
+ * onboarding progress bar; the dark values step one notch lighter so a filled
+ * shape separates from warm dark paper without losing a white glyph.
+ *
+ * `onFill` is what rides on top — glyph, label, and the inverted unread badge.
+ */
+export type NavFilled = {
+  accent: string;
+  danger: string;
+  onFill: string;
+};
+
+export const navFilled = {
+  light: { accent: "#5766E8", danger: "#C3392F", onFill: "#FFFFFF" },
+  dark: { accent: "#6E7BF2", danger: "#C94438", onFill: "#FFFFFF" },
+} as const satisfies Record<EditorialTheme, NavFilled>;
+
+/**
  * The nav menu panel's own palette — a self-contained set, not slots on
  * `EditorialPalette`.
  *

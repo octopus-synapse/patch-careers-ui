@@ -14,6 +14,12 @@ export type FormData = Record<string, string>;
 export type SectionItem = {
   id?: string;
   content?: Record<string, unknown>;
+  /** Set on a locale-resolved read (backend ADR-003): which language the text is in. */
+  contentLocale?: string;
+  /** Who wrote this version: the machine, the person, or the person after refusing a rewrite. */
+  origin?: "canonical" | "derived" | "manual" | "diverged";
+  /** Freshness of a derived copy against the canonical text. */
+  translationState?: "canonical" | "current" | "stale" | "missing";
 };
 
 /**

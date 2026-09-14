@@ -26,6 +26,14 @@ export const messagesPtBR: TranslationDict = {
     emptyTitle: "Suas conversas",
     emptyDescription: "Escolha uma conversa ao lado ou busque alguém para começar.",
   },
+  block: {
+    action: "Bloquear",
+    title: "Bloquear {name}?",
+    body: "Vocês param de se enviar mensagens. Você pode desfazer em Configurações, Privacidade, Bloqueados.",
+    confirm: "Bloquear",
+    done: "Pessoa bloqueada.",
+    failed: "Não foi possível bloquear.",
+  },
   thread: {
     fallbackTitle: "Conversa",
     loadError: "Não foi possível carregar as mensagens.",
@@ -68,6 +76,14 @@ export const messagesEn: TranslationDict = {
   desktop: {
     emptyTitle: "Your conversations",
     emptyDescription: "Pick a conversation on the left or search for someone to get started.",
+  },
+  block: {
+    action: "Block",
+    title: "Block {name}?",
+    body: "You stop being able to message each other. You can undo it in Settings, Privacy, Blocked.",
+    confirm: "Block",
+    done: "Person blocked.",
+    failed: "We couldn't block this person.",
   },
   thread: {
     fallbackTitle: "Conversation",

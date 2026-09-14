@@ -35,6 +35,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavBar } from "@/components/nav-bar/nav-bar";
 import { NetInfoBanner } from "@/components/net-info-banner";
+import { AccountLanguageSync } from "@/features/settings";
 import { DESKTOP_CONTENT_MAX_WIDTH, useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { ensureAppSansFont } from "@/lib/app-sans-font";
 import { ensureWebButtonTextReset } from "@/lib/web-button-text-reset";
@@ -143,6 +144,8 @@ export default function RootLayout(): ReactElement {
                   <I18nProvider>
                     <AuthProvider>
                       <NotificationsProvider>
+                        {/* Interface language ⇄ account preference (decision 5). */}
+                        <AccountLanguageSync />
                         {/* Follow the in-app choice, not the OS ("auto" tracks the OS). */}
                         <StatusBar style={scheme === "dark" ? "light" : "dark"} />
                         <NetInfoBanner />
@@ -163,7 +166,7 @@ export default function RootLayout(): ReactElement {
                             {/* The `/en` tree renders its own Stack with the same
                               column default — the scene wrapper here must stay
                               full-bleed or the whole English subtree (landing
-                              included) gets squeezed into the 960px column. */}
+                              included) gets squeezed into the desktop column. */}
                             <Stack.Screen
                               name="en"
                               options={{
@@ -213,7 +216,7 @@ export default function RootLayout(): ReactElement {
                             />
                             {/* Full-bleed like the `en` subtree: onboarding wears the
                               landing's overlay navbar, which is `position: absolute;
-                              left: 0; right: 0`. Inside the 960px column those edges
+                              left: 0; right: 0`. Inside the desktop column those edges
                               are the COLUMN's, so the mark and the hamburger drifted
                               inward instead of sitting against the viewport. The
                               wizard centres its own 460px column regardless. */}
@@ -233,6 +236,10 @@ export default function RootLayout(): ReactElement {
                               name="fit-questionnaire"
                               options={{ headerShown: false, animation: "slide_from_bottom" }}
                             />
+                            {/* Public profile: the route opts itself out of the
+                              column (so its `/en` twin gets the same), see
+                              `app/u/[username].tsx`. */}
+                            <Stack.Screen name="u/[username]" options={{ headerShown: false }} />
                             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                             <Stack.Screen name="reset-password" options={{ headerShown: false }} />
                             <Stack.Screen name="oauth-callback" options={{ headerShown: false }} />

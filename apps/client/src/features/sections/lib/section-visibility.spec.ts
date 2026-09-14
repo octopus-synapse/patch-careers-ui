@@ -92,3 +92,31 @@ describe("mergeSectionsWithCatalog", () => {
     expect(catalog.find((s) => s.key === "work_experience_v1")?.sectionId).toBe("row-1");
   });
 });
+
+describe("recommendedPosition", () => {
+  // The catalog arrives alphabetically by key; the gaps card once led with
+  // Conquistas/Prêmios/Bug Bounties because nothing carried the ATS position
+  // through. This is the field that sort depends on.
+  it("reads definition.ats.recommendedPosition when it is a number", () => {
+    const catalog = [
+      type({
+        key: "certification_v1",
+        definition: { fields: [], ats: { recommendedPosition: 5 } } as never,
+      }),
+    ];
+    const { catalog: merged } = mergeSectionsWithCatalog(catalog, []);
+    expect(merged[0]?.recommendedPosition).toBe(5);
+  });
+
+  it("is null when the definition carries no ats block or a non-numeric one", () => {
+    const catalog = [
+      type({ key: "award_v1" }),
+      type({
+        key: "bug_bounty_v1",
+        definition: { fields: [], ats: { recommendedPosition: "12" } } as never,
+      }),
+    ];
+    const { catalog: merged } = mergeSectionsWithCatalog(catalog, []);
+    expect(merged.map((s) => s.recommendedPosition)).toEqual([null, null]);
+  });
+});

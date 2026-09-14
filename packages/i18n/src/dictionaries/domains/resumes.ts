@@ -14,6 +14,7 @@ export const resumesPtBR: TranslationDict = {
     errorHint: "Confirme que você concluiu o onboarding e tente novamente.",
     retry: "Tentar novamente",
     downloadPdf: "Baixar PDF",
+    downloadDocx: "Baixar DOCX",
     share: "Compartilhar",
   },
   share: {
@@ -130,6 +131,34 @@ export const resumesPtBR: TranslationDict = {
     nameLabel: "Nome do currículo",
     save: "Salvar",
   },
+  import: {
+    action: "Importar de um PDF",
+    title: "Importar currículo",
+    intro:
+      "Escolha um PDF do currículo que você já tem. Lemos o texto e montamos um currículo aqui para você revisar.",
+    caveat:
+      "Precisa ser um PDF com texto de verdade. Um PDF que é só a foto de uma folha escaneada não dá para ler.",
+    pick: "Escolher o PDF",
+    done: "Currículo importado.",
+    failed: "Não foi possível ler esse PDF.",
+  },
+
+  versions: {
+    action: "Histórico",
+    title: "Histórico de versões",
+    intro:
+      "Cada edição guarda uma foto do currículo. Voltar para uma delas também vira uma foto, então nada se perde.",
+    numbered: "Versão {number}",
+    empty: "Ainda não há versões guardadas.",
+    loadError: "Não foi possível carregar o histórico.",
+    restore: "Restaurar",
+    restoreA11y: "Restaurar {label}",
+    confirmTitle: "Restaurar {label}?",
+    confirmBody:
+      "O currículo volta a como estava nessa versão. O estado atual continua no histórico.",
+    restored: "Currículo restaurado.",
+    restoreFailed: "Não foi possível restaurar.",
+  },
   detail: {
     notFound: "Currículo não encontrado.",
     back: "Voltar",
@@ -138,6 +167,7 @@ export const resumesPtBR: TranslationDict = {
     lastEdited: "Última edição",
     rename: "Renomear",
     downloadPdf: "Baixar PDF",
+    downloadDocx: "Baixar DOCX",
     duplicate: "Duplicar",
     delete: "Excluir",
     sections: "Seções",
@@ -162,6 +192,7 @@ export const resumesEn: TranslationDict = {
     errorHint: "Make sure you've completed onboarding and try again.",
     retry: "Try again",
     downloadPdf: "Download PDF",
+    downloadDocx: "Download DOCX",
     share: "Share",
   },
   share: {
@@ -278,6 +309,34 @@ export const resumesEn: TranslationDict = {
     nameLabel: "Resume name",
     save: "Save",
   },
+  import: {
+    action: "Import from a PDF",
+    title: "Import a résumé",
+    intro:
+      "Pick the PDF of the résumé you already have. We read the text and build a résumé here for you to review.",
+    caveat:
+      "It has to be a PDF with real text. A PDF that is just a photo of a scanned page cannot be read.",
+    pick: "Choose the PDF",
+    done: "Résumé imported.",
+    failed: "We couldn't read that PDF.",
+  },
+
+  versions: {
+    action: "History",
+    title: "Version history",
+    intro:
+      "Every edit keeps a snapshot. Going back to one is itself a snapshot, so nothing is lost.",
+    numbered: "Version {number}",
+    empty: "No versions saved yet.",
+    loadError: "We couldn't load the history.",
+    restore: "Restore",
+    restoreA11y: "Restore {label}",
+    confirmTitle: "Restore {label}?",
+    confirmBody:
+      "The résumé goes back to how it was in that version. The current state stays in the history.",
+    restored: "Résumé restored.",
+    restoreFailed: "We couldn't restore it.",
+  },
   detail: {
     notFound: "Resume not found.",
     back: "Back",
@@ -286,6 +345,7 @@ export const resumesEn: TranslationDict = {
     lastEdited: "Last edited",
     rename: "Rename",
     downloadPdf: "Download PDF",
+    downloadDocx: "Download DOCX",
     duplicate: "Duplicate",
     delete: "Delete",
     sections: "Sections",

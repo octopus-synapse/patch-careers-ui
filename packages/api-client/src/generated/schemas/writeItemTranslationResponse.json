@@ -1,0 +1,1 @@
+{"type":"object","properties":{"sourceHash":{"type":"string","example":"3f1c…"},"translatedAt":{"type":"string","example":"2026-09-03T12:00:00.000Z"}},"required":["sourceHash","translatedAt"],"x-readme-ref-name":"WriteItemTranslationResponse"}

@@ -4,11 +4,20 @@
  * delete — the master can never be deleted), and FULL editing via the same
  * ResumeSectionsManager the Perfil sub-tab uses.
  */
-import { useGetV1ExportResumePdf } from "@patch-careers/api-client";
+import { useGetV1ExportResumeDocx, useGetV1ExportResumePdf } from "@patch-careers/api-client";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { ChevronLeft, Copy, Download, Pencil, Share2, Trash2 } from "lucide-react-native";
+import {
+  ChevronLeft,
+  Copy,
+  Download,
+  FileText,
+  History,
+  Pencil,
+  Share2,
+  Trash2,
+} from "lucide-react-native";
 import { type ReactElement, useRef, useState } from "react";
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,13 +27,16 @@ import { ResumeSectionsManager, type SectionsManagerHandle } from "@/features/se
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useI18n } from "@/providers/i18n-provider";
 import { useMasterResumeId, useResumeDetail, useResumeMutations } from "../hooks/queries";
-import { editedAgo, resumeLanguageToLocale } from "../lib/helpers";
+import { useContentLocale } from "../hooks/use-content-locale";
+import { editedAgo } from "../lib/helpers";
 import { useRz } from "../lib/styles";
+import { ContentLanguageSwitch } from "./content-language-switch";
 import { CreateResumeWizard } from "./create-resume-wizard";
 import { RenameSheet } from "./rename-sheet";
 import { ResumePreview } from "./resume-preview";
 import { ResumeQualityPanel } from "./resume-quality-panel";
 import { ShareResumeSheet } from "./share-resume-sheet";
+import { VersionHistorySheet } from "./version-history-sheet";
 
 function ActionPill({
   label,
@@ -63,14 +75,20 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
   const { resumeId: masterResumeId } = useMasterResumeId();
   const { renameResume, deleteResume, isPending } = useResumeMutations();
   const pdf = useGetV1ExportResumePdf({ resumeId: id }, { query: { enabled: false } });
+  const docx = useGetV1ExportResumeDocx({ query: { enabled: false } });
 
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [duplicateOpen, setDuplicateOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [versionsOpen, setVersionsOpen] = useState(false);
   const managerRef = useRef<SectionsManagerHandle>(null);
 
   const resume = detail.data;
+  // Document surface (ADR-0011): chrome AND content follow the version being
+  // shown — a résumé viewed in English says "Education". The switch in the
+  // metadata row picks it; the résumé's own language stays the canonical.
+  const contentLocale = useContentLocale(id, resume?.language);
   // The detail payload carries no isPrimary — the list query (already cached)
   // identifies the master, which can never be deleted.
   const isMaster = masterResumeId === id;
@@ -79,12 +97,23 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
     else router.replace("/(tabs)/profile");
   };
 
-  const downloadPdf = async (): Promise<void> => {
-    const result = await pdf.refetch();
-    const url = result.data?.downloadUrl;
+  // Both exports answer with a signed URL rather than bytes, so "download"
+  // is "open the URL the browser or the OS knows what to do with".
+  const openSigned = async (url: string | undefined): Promise<void> => {
     if (!url) return;
     if (Platform.OS === "web") window.open(url, "_blank");
     else await WebBrowser.openBrowserAsync(url);
+  };
+  const downloadPdf = async (): Promise<void> => {
+    const result = await pdf.refetch();
+    await openSigned(result.data?.downloadUrl);
+  };
+  // DOCX is what most recruiters and applicant systems ask for. It renders
+  // the user's primary résumé, which is the one this screen shows when it is
+  // the master; for a tailored copy the PDF is the faithful one.
+  const downloadDocx = async (): Promise<void> => {
+    const result = await docx.refetch();
+    await openSigned(result.data?.downloadUrl);
   };
 
   const confirmDelete = async (): Promise<void> => {
@@ -136,7 +165,13 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
         <View style={rz.metaBlock}>
           <View style={rz.metaRow}>
             <Text style={rz.metaLabel}>{t("resumes.detail.language")}</Text>
-            <Text style={rz.metaValue}>{resume.language?.toUpperCase() ?? "—"}</Text>
+            <ContentLanguageSwitch
+              align="end"
+              value={contentLocale.content}
+              onChange={contentLocale.switchTo}
+              status={contentLocale.status}
+              progress={contentLocale.progress}
+            />
           </View>
           <View style={rz.metaRow}>
             <Text style={rz.metaLabel}>{t("resumes.detail.style")}</Text>
@@ -177,9 +212,19 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
             onPress={() => void downloadPdf()}
           />
           <ActionPill
+            label={t("resumes.detail.downloadDocx")}
+            icon={FileText}
+            onPress={() => void downloadDocx()}
+          />
+          <ActionPill
             label={t("resumes.preview.share")}
             icon={Share2}
             onPress={() => setShareOpen(true)}
+          />
+          <ActionPill
+            label={t("resumes.versions.action")}
+            icon={History}
+            onPress={() => setVersionsOpen(true)}
           />
           <ActionPill
             label={t("resumes.detail.duplicate")}
@@ -203,7 +248,11 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
         <ResumeSectionsManager
           ref={managerRef}
           resumeId={id}
-          locale={resumeLanguageToLocale(resume.language)}
+          locales={{
+            chrome: contentLocale.content,
+            content: contentLocale.content,
+            canonical: contentLocale.canonical,
+          }}
         />
       </ScrollView>
 
@@ -216,6 +265,12 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
       />
 
       <ShareResumeSheet open={shareOpen} onClose={() => setShareOpen(false)} resumeId={id} />
+
+      <VersionHistorySheet
+        open={versionsOpen}
+        onClose={() => setVersionsOpen(false)}
+        resumeId={id}
+      />
 
       <CreateResumeWizard
         visible={duplicateOpen}

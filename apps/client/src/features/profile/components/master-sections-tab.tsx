@@ -28,7 +28,7 @@ import { ResumeThumbnail } from "@/components/resume-thumbnail";
 import {
   ResumePreviewModal,
   ResumeQualityPanel,
-  resumeLanguageToLocale,
+  useContentLocale,
   useMasterResumeId,
 } from "@/features/resumes";
 import { type MergedSection, useResumeSections } from "@/features/sections";
@@ -56,19 +56,20 @@ function iconForSection(section: MergedSection): Glyph {
 
 export function MasterSectionsTab({
   profile,
-  showPreview = true,
 }: {
   profile: EditableProfile | undefined;
-  /** Desktop moves the CV preview into the insights rail; hide the banner there. */
-  showPreview?: boolean;
 }): ReactElement {
-  const { t } = useI18n();
+  const { t, locale: uiLocale } = useI18n();
   const palette = useEditorialPalette();
   const pf = usePf();
   const router = useRouter();
   const { resumeId, language, updatedAt, isLoading } = useMasterResumeId();
-  const locale = resumeLanguageToLocale(language);
-  const { visible } = useResumeSections(resumeId, locale);
+  const contentLocale = useContentLocale(resumeId, language);
+  const { visible } = useResumeSections(resumeId, {
+    chrome: uiLocale,
+    content: contentLocale.content,
+    canonical: contentLocale.canonical,
+  });
   const [cvOpen, setCvOpen] = useState(false);
 
   if (!resumeId && !isLoading) {
@@ -104,7 +105,7 @@ export function MasterSectionsTab({
         />
       ) : null}
 
-      {resumeId && showPreview ? (
+      {resumeId ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("profile.master.viewResumeA11y")}

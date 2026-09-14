@@ -1,0 +1,1162 @@
+<!doctype html>
+<html lang="pt-BR" class="dark">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verify code — Editorial Calm</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <script>tailwind.config = { darkMode: 'class' }</script>
+  <style>
+    /* ── Editorial Calm tokens — packages/tokens/src/editorial.ts ─────────── */
+    :root {
+      --bg: #F2F1EC;
+      --surface: #FAFAF7;
+      --panel: #FDFDFC;
+      --ink: #0A0A0A;
+      --body: #3F3F46;
+      --muted: #71717A;
+      --subtle: #A1A1AA;
+      --hairline: #E4E4E7;
+      --hairline-strong: #D4D4D8;
+      --accent: #2563EB;
+      --accent-deep: #1D4ED8;
+      --primary: #0F172A;
+      --primary-press: #1E293B;
+      --on-primary: #FFFFFF;
+      --danger: #DC2626;
+      --success: #16A34A;
+      --shadow: 0 18px 46px rgba(10, 10, 10, .10);
+      --focus-ring: rgba(37, 99, 235, .15);
+      --cell-idle: #F4F4F1;
+      --cell-live: #FFFFFF;
+      --cell-lip: rgba(255, 255, 255, .7);
+      /* inner top light on a box  */
+      --accent-wash: rgba(37, 99, 235, .12);
+      --danger-wash: rgba(220, 38, 38, .06);
+      --success-wash: rgba(22, 163, 74, .06);
+    }
+
+    .dark {
+      --bg: #1A1916;
+      --surface: #2B2A26;
+      --panel: #232220;
+      --ink: #F5F5F0;
+      --body: #C8C8C2;
+      --muted: #8A8A84;
+      --subtle: #5F5F5A;
+      --hairline: #2E2D28;
+      --hairline-strong: #3A3933;
+      --accent: #60A5FA;
+      --accent-deep: #93C5FD;
+      --primary: #F5F5F0;
+      --primary-press: #E4E4DE;
+      --on-primary: #1A1916;
+      --danger: #F87171;
+      --success: #4ADE80;
+      --shadow: 0 22px 60px rgba(0, 0, 0, .45);
+      --focus-ring: rgba(96, 165, 250, .16);
+      --cell-idle: #1E1D1A;
+      --cell-live: #2B2A26;
+      --cell-lip: rgba(255, 255, 255, .045);
+      --accent-wash: rgba(96, 165, 250, .12);
+      --danger-wash: rgba(248, 113, 113, .09);
+      --success-wash: rgba(74, 222, 128, .09);
+    }
+
+    html {
+      color-scheme: light
+    }
+
+    html.dark {
+      color-scheme: dark
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--body);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      transition: background .3s ease, color .3s ease;
+    }
+
+    .mono {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-variant-numeric: tabular-nums
+    }
+
+    .serif {
+      font-family: "Playfair Display", Georgia, serif
+    }
+
+    .card {
+      position: relative;
+      background: var(--panel);
+      border-radius: 30px;
+      border: 1px solid var(--hairline);
+      box-shadow: var(--shadow);
+      transition: background .3s ease, border-color .3s ease;
+    }
+
+    /* ── The email you are verifying — editable in place, no footer link ──── */
+    .mail-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      border: 1px solid var(--hairline);
+      background: var(--surface);
+      color: var(--body);
+      transition: border-color .18s ease, color .18s ease, background .18s ease;
+    }
+
+    .mail-chip:hover {
+      border-color: var(--hairline-strong);
+      color: var(--ink)
+    }
+
+    .mail-chip svg {
+      opacity: .5;
+      transition: opacity .18s ease
+    }
+
+    .mail-chip:hover svg {
+      opacity: .9
+    }
+
+    /* ── OTP — six equal boxes, one rhythm, no split ──────────────────────── */
+    .otp-row {
+      display: flex;
+      align-items: stretch;
+      gap: var(--cell-gap)
+    }
+
+    .otp-cell {
+      position: relative;
+      flex: 1 1 0;
+      min-width: 0;
+      aspect-ratio: 1 / 1.14;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      background: var(--cell-idle);
+      border: 1px solid var(--hairline);
+      box-shadow: inset 0 1px 0 var(--cell-lip);
+      color: var(--ink);
+      font-size: var(--cell-fs);
+      line-height: 1;
+      transition: background .2s ease, border-color .2s ease,
+        box-shadow .2s ease, transform .22s cubic-bezier(.2, .8, .3, 1);
+    }
+
+    @media (hover: hover) {
+      .otp-row[data-locked="false"] .otp-cell:hover {
+        border-color: var(--hairline-strong)
+      }
+    }
+
+    .otp-cell[data-filled="true"] {
+      background: var(--cell-live);
+      border-color: var(--hairline-strong)
+    }
+
+    .otp-cell[data-active="true"] {
+      border-color: var(--accent);
+      background: var(--cell-live);
+      box-shadow: 0 0 0 3px var(--focus-ring), inset 0 1px 0 var(--cell-lip);
+      transform: translateY(-3px);
+    }
+
+    .otp-cell[data-state="error"] {
+      border-color: var(--danger);
+      background: var(--danger-wash);
+      color: var(--danger);
+      box-shadow: none;
+      transform: none
+    }
+
+    .otp-cell[data-state="done"] {
+      border-color: var(--accent);
+      background: var(--accent-wash);
+      box-shadow: none;
+      transform: none
+    }
+
+    .otp-row[data-locked="true"] {
+      pointer-events: none
+    }
+
+    .otp-row[data-state="loading"] .otp-cell {
+      opacity: .5
+    }
+
+    /* the row settles once the sixth digit lands */
+    .otp-row[data-full="true"] {
+      animation: settle .26s cubic-bezier(.2, .8, .3, 1)
+    }
+
+    @keyframes settle {
+      0% {
+        transform: scale(.988)
+      }
+
+      100% {
+        transform: none
+      }
+    }
+
+    .digit {
+      display: block;
+      font-weight: 500;
+      animation: digitIn .2s cubic-bezier(.2, .8, .3, 1) both
+    }
+
+    @keyframes digitIn {
+      from {
+        opacity: 0;
+        transform: translateY(7px) scale(.92)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 9999px;
+      background: var(--hairline-strong)
+    }
+
+    .caret {
+      width: 1.5px;
+      height: calc(var(--cell-fs) * .9);
+      border-radius: 1px;
+      background: var(--accent);
+      animation: blink 1.05s step-end infinite
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0
+      }
+    }
+
+    /* One real field behind the boxes: OS one-time-code autofill, paste,
+     selection and caret arithmetic — the boxes only draw it. */
+    .otp-proxy {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      border: 0;
+      background: transparent;
+      cursor: text;
+      font-size: 16px
+    }
+
+    /* ── CTA — compact pill. Ghost until the code is complete, then ink. ──── */
+    /* ── Payoff screen — mirrors the onboarding CompletionScreen ──────────
+     No card: centered column on the page background, framed artifact on top,
+     serif heading, one full-width ink PrimaryAction. */
+    /* Line-work envelope that draws itself, sealed by an accent badge on the
+       right — same composition as the onboarding payoff, kept to pure strokes. */
+    .mail-art {
+      position: relative;
+      display: inline-flex;
+      margin-bottom: 6px;
+    }
+
+    .mail-art .env {
+      fill: none;
+      stroke: var(--hairline-strong);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .mail-art .env-outline {
+      stroke-dasharray: 340;
+      stroke-dashoffset: 340;
+      animation: envDraw .5s cubic-bezier(.4, 0, .2, 1) .05s forwards;
+    }
+
+    .mail-art .env-flap {
+      stroke-dasharray: 120;
+      stroke-dashoffset: 120;
+      animation: envDraw .35s cubic-bezier(.4, 0, .2, 1) .32s forwards;
+    }
+
+    @keyframes envDraw {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    .seal {
+      position: absolute;
+      right: -13px;
+      bottom: -13px;
+      width: 44px;
+      height: 44px;
+      border-radius: 9999px;
+      background: var(--accent);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* a ring of page background, so the seal reads as laid ON the envelope
+         instead of tangling with its strokes */
+      box-shadow: 0 0 0 5px var(--bg);
+      animation: sealPop .45s cubic-bezier(.2, 1.4, .4, 1) .45s both;
+    }
+
+    @keyframes sealPop {
+      from {
+        opacity: 0;
+        transform: scale(.4);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* A ring breathes out of the seal as the check lands — the stamp moment. */
+    .seal::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 9999px;
+      border: 1.5px solid var(--accent);
+      opacity: 0;
+      animation: sealRing .8s cubic-bezier(.2, .7, .3, 1) 1s;
+    }
+
+    @keyframes sealRing {
+      0% {
+        opacity: .55;
+        transform: scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(1.9);
+      }
+    }
+
+    .seal .tick {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 32;
+      stroke-dashoffset: 32;
+      animation: draw .35s cubic-bezier(.3, .7, .3, 1) .7s forwards;
+    }
+
+    /* ── The success transition ─────────────────────────────────────────────
+       The card STAYS — same surface, new fact. The auxiliary rows quiet down,
+       the heading crossfades, and the six code cells converge into the sealed
+       envelope. */
+    .card .test-chip,
+    .card [data-status],
+    .card [data-resend-line],
+    .card .chip-row,
+    .card .sub {
+      transition: opacity .25s ease;
+    }
+
+    .card.settled .test-chip,
+    .card.settled [data-status],
+    .card.settled [data-resend-line],
+    .card.settled .chip-row,
+    .card.settled .sub {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Two headings stacked in one slot — verify fades up and out, done rises. */
+    .title-swap {
+      position: relative;
+    }
+
+    .title-swap h1 {
+      transition: opacity .32s ease, transform .38s cubic-bezier(.2, .8, .3, 1);
+    }
+
+    .title-swap .t-done {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    .card.swapped .t-verify {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    .card.swapped .t-done {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* The envelope lands exactly where the code row was. */
+    .env-slot {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Exit: the card lifts off as one piece while onboarding is already
+       rising beneath it — the leaving view overlays so the two overlap. */
+    [data-screen] {
+      position: relative;
+    }
+
+    [data-view-verify].exiting {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      pointer-events: none;
+    }
+
+    .card.exit {
+      animation: leaveUp .4s cubic-bezier(.4, 0, .2, 1) both;
+    }
+
+    @keyframes leaveUp {
+      to {
+        opacity: 0;
+        transform: translateY(-18px) scale(.985);
+      }
+    }
+
+    /* Demo stand-in for the first onboarding screen. */
+    .welcome-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-align: center;
+      padding: 48px 0;
+    }
+
+    .primary-action {
+      width: 100%;
+      border-radius: 9999px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--primary);
+      color: var(--on-primary);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: .2px;
+      transition: background .16s ease, transform .12s ease;
+    }
+
+    .primary-action:active {
+      transform: scale(.985);
+      background: var(--primary-press);
+    }
+
+    .primary-action .arrow {
+      transition: transform .16s ease;
+    }
+
+    .primary-action:hover .arrow {
+      transform: translateX(3px);
+    }
+
+    .replay {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--subtle);
+      margin-top: 2px;
+    }
+
+    .replay:hover {
+      color: var(--body);
+    }
+
+    .stagger {
+      animation: rise .5s cubic-bezier(.2, .8, .3, 1) both;
+      animation-delay: var(--d, 0ms)
+    }
+
+    .leave {
+      animation: leave .3s ease both;
+      pointer-events: none
+    }
+
+    @keyframes leave {
+      to {
+        opacity: 0;
+        transform: translateY(-8px)
+      }
+    }
+
+    /* Same pill as the "Ver meu perfil" item in me-menu.tsx: 36px accent
+     outline, accent label, accent-at-12% wash on hover/press. */
+    .cta {
+      min-width: 170px;
+      height: 36px;
+      border-radius: 18px;
+      padding: 0 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      transition: background .18s ease, opacity .2s ease, transform .12s ease;
+    }
+
+    .cta:disabled {
+      opacity: .42
+    }
+
+    .cta:not(:disabled):hover {
+      background: var(--accent-wash)
+    }
+
+    .cta:not(:disabled):active {
+      transform: scale(.98);
+      background: var(--accent-wash)
+    }
+
+    .cta[data-state="done"] {
+      background: var(--accent-wash)
+    }
+
+    .cta .arrow {
+      transition: transform .16s ease
+    }
+
+    .cta:not(:disabled):hover .arrow {
+      transform: translateX(3px)
+    }
+
+    .link {
+      color: var(--accent)
+    }
+
+    .link:hover {
+      color: var(--accent-deep)
+    }
+
+    :where(a, button):focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--focus-ring);
+      border-radius: 12px
+    }
+
+    .cdring {
+      width: 14px;
+      height: 14px;
+      transform: rotate(-90deg)
+    }
+
+    .cdring circle {
+      fill: none;
+      stroke-width: 2
+    }
+
+    .cdring .track {
+      stroke: var(--hairline)
+    }
+
+    .cdring .head {
+      stroke: var(--subtle);
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear
+    }
+
+    .test-chip {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--subtle);
+      transition: color .16s ease
+    }
+
+    .test-chip:hover {
+      color: var(--body)
+    }
+
+    .shake {
+      animation: shake .4s ease
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0)
+      }
+
+      20% {
+        transform: translateX(-5px)
+      }
+
+      40% {
+        transform: translateX(5px)
+      }
+
+      60% {
+        transform: translateX(-3px)
+      }
+
+      80% {
+        transform: translateX(3px)
+      }
+    }
+
+    .rise {
+      animation: rise .5s cubic-bezier(.2, .8, .3, 1) both
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .fade {
+      animation: fade .28s ease both
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 9999px;
+      animation: spin .7s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .check {
+      stroke-dasharray: 26;
+      stroke-dashoffset: 26;
+      animation: draw .4s ease .06s forwards
+    }
+
+    @keyframes draw {
+      to {
+        stroke-dashoffset: 0
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important
+      }
+
+      .caret {
+        animation: none !important
+      }
+    }
+
+    /* Top-left of the SCREEN, not the card — same placement as the onboarding
+     `welcomeBack` (absolute, 40x40, ink arrow). */
+    .screen-back {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      height: 40px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 6px;
+      color: var(--ink);
+      transition: background .16s ease, color .16s ease;
+    }
+
+    .screen-back:hover {
+      background: var(--surface)
+    }
+
+    /* Icon-only on phones (the label would crowd a 390pt screen); on web the
+     arrow carries a mono label, like the rest of the editorial chrome. */
+    .screen-back .label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      padding-right: 8px
+    }
+
+    .screen-back:hover .label {
+      color: var(--ink)
+    }
+
+    /* On the phone it sits below the notch — `insets.top + 8`, the same
+     offset the onboarding back arrow uses. */
+    .screen-back.icon-only {
+      width: 30px;
+      justify-content: center;
+      padding: 0;
+      top: 44px
+    }
+
+    .phone {
+      width: 390px;
+      height: 800px;
+      border-radius: 48px;
+      background: var(--bg);
+      box-shadow: var(--shadow), 0 0 0 10px rgba(120, 118, 110, .16);
+      overflow: hidden;
+      position: relative;
+      transition: background .3s ease
+    }
+
+    .notch {
+      width: 118px;
+      height: 30px;
+      border-radius: 0 0 18px 18px;
+      background: rgba(0, 0, 0, .6)
+    }
+  </style>
+</head>
+
+<body class="antialiased min-h-screen">
+
+  <header class="flex items-center justify-between px-6 py-4" style="border-bottom:1px solid var(--hairline)">
+    <div class="flex items-baseline gap-3">
+      <span class="serif text-[19px]" style="color:var(--ink)">Verify code</span>
+      <span class="mono text-[10px] tracking-[1.8px]" style="color:var(--subtle)">EDITORIAL CALM · DEMO</span>
+    </div>
+    <button id="themeToggle" class="mono text-[10px] tracking-[1.6px] px-3 py-2 rounded-full"
+      style="color:var(--muted); border:1px solid var(--hairline)">DARK / LIGHT</button>
+  </header>
+
+  <main class="px-6 py-10 flex flex-col items-center">
+    <div id="frames" class="w-full max-w-[1100px] flex flex-col gap-14"></div>
+  </main>
+
+  <script>
+    const EMAIL = "efpatti.dev@example.com";
+    const TEST_CODE = "950504";
+    const COOLDOWN = 47;
+    const DONE_HOLD_MS = 2000;   // fallback beat on the verified card before routing on
+
+    /** Mirrors maskEmail() in @patch-careers/auth. */
+    function maskEmail(email) {
+      const at = email.indexOf("@");
+      if (at <= 0) return email;
+      const local = email.slice(0, at);
+      if (local.length <= 1) return email;
+      return local[0] + "*".repeat(Math.max(1, local.length - 1)) + email.slice(at);
+    }
+    const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
+    const PENCIL = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`;
+
+
+    /* The envelope that the six code cells fold into — injected at the moment
+       of success so its stroke animations play from zero. */
+    const ENV_MARKUP = `
+  <div class="mail-art">
+    <svg width="88" height="66" viewBox="0 0 96 72" aria-hidden="true">
+      <rect class="env env-outline" x="1" y="1" width="94" height="70" rx="10"/>
+      <path class="env env-flap" d="M3 10 48 43 93 10"/>
+    </svg>
+    <span class="seal">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+        <path class="tick" d="M20 6 9 17l-5-5"/>
+      </svg>
+    </span>
+  </div>`;
+
+    /* Demo stand-in for the first onboarding screen (welcome step). */
+    const nextTemplate = (compact) => `
+  <div class="welcome-wrap">
+    <p class="mono stagger" style="--d:60ms; font-size:10px; letter-spacing:2.2px; color:var(--subtle)">ONBOARDING · BOAS-VINDAS</p>
+    <h1 class="serif stagger" style="--d:150ms; color:var(--ink);
+        font-size:${compact ? '30px' : '34px'}; line-height:1.18; letter-spacing:-0.6px; font-weight:500">
+      Conte sua história<br/>uma vez.
+    </h1>
+    <p class="stagger text-[14px] leading-[22px]" style="--d:250ms; color:var(--body); max-width:300px">
+      O Patch reescreve seu currículo para cada vaga — e faz ele chegar a quem decide.
+    </p>
+    <p class="mono stagger" style="--d:330ms; font-size:10px; letter-spacing:2px; color:var(--subtle)">PRONTO EM ~3 MINUTOS</p>
+    <div class="stagger" style="--d:420ms; width:100%; max-width:300px; margin-top:6px">
+      <button class="primary-action">
+        <span>Começar</span>
+        <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+    <button class="mono replay" data-replay>rodar de novo</button>
+  </div>
+`;
+
+    const template = (compact) => `
+  <div class="card rise ${compact ? 'px-[12px] pt-[38px] pb-[34px]' : 'px-[26px] pt-[48px] pb-[42px]'}">
+    <button class="test-chip mono" data-test title="Preencher com o código de teste">test</button>
+
+    <div class="title-swap">
+      <h1 class="serif text-center whitespace-nowrap t-verify" style="color:var(--ink);
+          font-size:${compact ? '26px' : '29px'}; line-height:1.1; letter-spacing:-0.4px; font-weight:500">
+        Verifique seu e-mail
+      </h1>
+      <h1 class="serif text-center whitespace-nowrap t-done" aria-hidden="true" style="color:var(--ink);
+          font-size:${compact ? '26px' : '29px'}; line-height:1.1; letter-spacing:-0.4px; font-weight:500">
+        E-mail verificado.
+      </h1>
+    </div>
+
+    <p class="text-center mt-3 sub" style="color:var(--muted); font-size:${compact ? '11.5px' : '12.5px'}">Enviamos um código de 6 dígitos para</p>
+
+    <div class="chip-row flex justify-center mt-2">
+      <button class="mail-chip" data-back title="Usar outro e-mail">
+        <span class="mono" style="font-size:${compact ? '10.5px' : '11.5px'}" data-email></span>${PENCIL}
+      </button>
+    </div>
+
+    <div class="otp-wrap relative ${compact ? 'mt-8' : 'mt-10'}">
+      <div class="otp-row" data-cells role="group" aria-label="Código de verificação de 6 dígitos"></div>
+      <input class="otp-proxy mono" inputmode="numeric" autocomplete="one-time-code"
+             maxlength="6" aria-label="Código de verificação" data-proxy />
+      <div class="env-slot" data-env hidden></div>
+    </div>
+
+    <div class="flex items-center justify-center gap-2 h-[18px] mt-5" role="status" aria-live="polite" data-status></div>
+
+    <div class="mt-5 flex items-center justify-center gap-2 text-[13px]" style="color:var(--muted)" data-resend-line>
+      <span data-ring-slot class="flex items-center"></span>
+      <span data-resend-prefix>Não recebeu?</span>
+      <button data-resend class="font-semibold"></button>
+    </div>
+  </div>
+`;
+
+    function mount(root) {
+      const compact = root.hasAttribute("data-compact");
+      const holdMs = Number(root.dataset.hold) || DONE_HOLD_MS;
+      root.innerHTML = `<div data-view-verify>${template(compact)}</div>
+                    <div data-view-next hidden></div>`;
+
+      const verifyView = root.querySelector("[data-view-verify]");
+      const nextView = root.querySelector("[data-view-next]");
+
+      const cellsEl = root.querySelector("[data-cells]");
+      const proxy = root.querySelector("[data-proxy]");
+      const statusEl = root.querySelector("[data-status]");
+      const resendEl = root.querySelector("[data-resend]");
+      const prefixEl = root.querySelector("[data-resend-prefix]");
+      const ringSlot = root.querySelector("[data-ring-slot]");
+      const resendRow = root.querySelector("[data-resend-line]");
+      const wrapEl = root.querySelector(".otp-wrap");
+      const cardEl = root.querySelector(".card");
+      const envSlot = root.querySelector("[data-env]");
+      const titleSwap = root.querySelector(".title-swap");
+
+      root.querySelector("[data-email]").textContent = maskEmail(EMAIL);
+      cellsEl.style.setProperty("--cell-gap", compact ? "6px" : "8px");
+      cellsEl.style.setProperty("--cell-fs", compact ? "28px" : "31px");
+
+      let code = "", focused = false, state = "idle", remaining = COOLDOWN, wasFull = false;
+      const caretIndex = () => Math.min(proxy.selectionStart ?? code.length, 5);
+
+      function renderCells() {
+        const locked = state === "loading" || state === "done";
+        cellsEl.dataset.locked = String(locked);
+        cellsEl.dataset.state = state;
+        cellsEl.innerHTML = "";
+        for (let i = 0; i < 6; i++) {
+          const cell = document.createElement("div");
+          cell.className = "otp-cell mono";
+          const filled = i < code.length;
+          const active = focused && state === "idle" && i === caretIndex();
+          cell.dataset.filled = String(filled);
+          cell.dataset.active = String(active);
+          cell.dataset.state = state;
+          cell.innerHTML = filled ? `<span class="digit">${code[i]}</span>`
+            : active ? '<span class="caret"></span>'
+              : '<span class="dot"></span>';
+          cell.addEventListener("mousedown", (e) => {        // click a box → caret lands there
+            e.preventDefault(); proxy.focus();
+            const pos = Math.min(i, code.length);
+            proxy.setSelectionRange(pos, pos); render();
+          });
+          cellsEl.appendChild(cell);
+        }
+        const full = code.length === 6;
+        if (full && !wasFull) { cellsEl.dataset.full = "true"; setTimeout(() => delete cellsEl.dataset.full, 300); }
+        wasFull = full;
+      }
+
+      function render() {
+        renderCells();
+
+        // No button: the sixth digit IS the submit, so the status line carries the
+        // whole feedback loop (verifying → error → resent).
+        const msg =
+          state === "loading" ? "Verificando…" :
+            state === "error" ? "Código inválido ou expirado. Tente de novo." :
+              state === "sent" ? "Novo código enviado." : "";
+        const markup = msg
+          ? `${state === "loading" ? '<span class="spinner"></span>' : ""}<span class="text-[12.5px]">${msg}</span>`
+          : "";
+        if (statusEl.dataset.msg !== msg) {
+          statusEl.dataset.msg = msg;
+          statusEl.innerHTML = markup;
+          if (msg) { statusEl.classList.remove("fade"); void statusEl.offsetWidth; statusEl.classList.add("fade"); }
+        }
+        statusEl.style.color = state === "error" ? "var(--danger)" : "var(--muted)";
+
+        renderResend();
+      }
+
+      /* The tick must not rebuild the card — a full render() every second would
+         restart the digit / check animations and flicker the CTA. */
+      function renderResend() {
+        const locked = state === "loading" || state === "done";
+        const waiting = remaining > 0;
+        resendEl.disabled = waiting || locked;
+        resendEl.textContent = waiting ? mmss(remaining) : "Reenviar código";
+        resendEl.className = waiting ? "mono text-[12.5px]" : "link font-semibold";
+        resendEl.style.color = waiting ? "var(--subtle)" : "";
+        prefixEl.textContent = waiting ? "Reenviar em" : "Não recebeu?";
+        // once verified there is nothing left to resend — the row goes, it does not linger dimmed
+        resendRow.style.display = state === "done" ? "none" : "flex";
+        proxy.disabled = locked;
+
+        const C = 2 * Math.PI * 6;
+        ringSlot.innerHTML = waiting
+          ? `<svg class="cdring" viewBox="0 0 16 16"><circle class="track" cx="8" cy="8" r="6"/>
+         <circle class="head" cx="8" cy="8" r="6" stroke-dasharray="${C.toFixed(2)}"
+                 stroke-dashoffset="${(C * (1 - remaining / COOLDOWN)).toFixed(2)}"/></svg>` : "";
+      }
+
+      function setCode(next, caret) {
+        code = String(next).replace(/\D/g, "").slice(0, 6);
+        proxy.value = code;
+        const pos = caret ?? code.length;
+        proxy.setSelectionRange(pos, pos);
+        if (state === "error" || state === "sent") state = "idle";
+        render();
+        if (code.length === 6) setTimeout(verify, 200);   // auto-submit, like the real screen
+      }
+
+      function verify() {
+        if (code.length < 6 || state !== "idle") return;
+        state = "loading"; render();
+        setTimeout(() => {
+          if (code === TEST_CODE) { state = "done"; render(); playSuccess(); return; }
+          state = "error";
+          wrapEl.classList.add("shake");
+          setTimeout(() => wrapEl.classList.remove("shake"), 420);
+          render();
+          setTimeout(() => { code = ""; proxy.value = ""; state = "idle"; render(); proxy.focus(); }, 1100);
+        }, 900);
+      }
+
+      /* ── The handoff choreography ────────────────────────────────────────
+         verify → verificado: the card dissolves in place, the heading
+         crossfades, the chip goes bare, and the six cells funnel into the
+         sealed envelope. Hold. Then everything lifts off in stagger and the
+         first onboarding screen rises underneath. */
+      const backBtn = root.closest(".phone, section")?.querySelector(".screen-back");
+
+      function playSuccess() {
+        if (backBtn) backBtn.style.display = "none";
+        cardEl.classList.add("settled");
+        setTimeout(() => cardEl.classList.add("swapped"), 350);
+
+        // the code you typed folds into the letter: cells funnel to the middle
+        setTimeout(() => {
+          const cells = [...cellsEl.children];
+          const row = cellsEl.getBoundingClientRect();
+          const cx = row.left + row.width / 2;
+          cells.forEach((cell, i) => {
+            const r = cell.getBoundingClientRect();
+            const dx = cx - (r.left + r.width / 2);
+            const delay = (2.5 - Math.abs(i - 2.5)) * 70;   // edges first, centre last
+            cell.style.transition =
+              `transform .5s cubic-bezier(.4,0,.2,1) ${delay}ms, opacity .38s ease ${delay + 90}ms`;
+            cell.style.transform = `translateX(${dx}px) scale(.2)`;
+            cell.style.opacity = "0";
+          });
+        }, 250);
+
+        // the envelope lands where the code was, freshly injected so the
+        // stroke animations play from zero
+        setTimeout(() => { envSlot.innerHTML = ENV_MARKUP; envSlot.hidden = false; }, 620);
+
+        // then the card recomposes: the envelope rises and the heading drops
+        // until they meet as a centred stack — icon above the words
+        setTimeout(() => {
+          const cardR = cardEl.getBoundingClientRect();
+          const artR = envSlot.querySelector(".mail-art").getBoundingClientRect();
+          const titleR = titleSwap.getBoundingClientRect();
+          const GAP = 26;
+          const centerY = cardR.top + cardR.height / 2;
+          const stackH = artR.height + GAP + titleR.height;
+          const artTargetC = centerY - stackH / 2 + artR.height / 2;
+          const titleTargetC = centerY + stackH / 2 - titleR.height / 2;
+          const ease = "transform .65s cubic-bezier(.3,.9,.3,1)";
+          envSlot.style.transition = ease;
+          titleSwap.style.transition = ease;
+          envSlot.style.transform = `translateY(${artTargetC - (artR.top + artR.height / 2)}px)`;
+          titleSwap.style.transform = `translateY(${titleTargetC - (titleR.top + titleR.height / 2)}px)`;
+        }, 1050);
+
+        // hold on the composed state, then route on by itself
+        setTimeout(exitToNext, 1900 + holdMs);
+      }
+
+      function exitToNext() {
+        verifyView.classList.add("exiting");
+        cardEl.classList.add("exit");
+        // onboarding starts rising while the card is still on its way out
+        setTimeout(() => {
+          nextView.innerHTML = nextTemplate(compact);
+          nextView.querySelector("[data-replay]").addEventListener("click", replay);
+          nextView.hidden = false;
+        }, 240);
+        setTimeout(() => { verifyView.hidden = true; verifyView.classList.remove("exiting"); }, 640);
+      }
+
+      function replay() {
+        if (backBtn) backBtn.style.display = "";
+        nextView.hidden = true; nextView.innerHTML = "";
+        verifyView.hidden = false;
+        verifyView.classList.remove("exiting");
+        cardEl.classList.remove("settled", "swapped", "exit");
+        envSlot.hidden = true; envSlot.innerHTML = ""; envSlot.style.cssText = "";
+        titleSwap.style.cssText = "";
+        code = ""; proxy.value = ""; state = "idle"; remaining = COOLDOWN; render();
+      }
+
+      proxy.addEventListener("input", (e) => setCode(e.target.value, e.target.selectionStart));
+      proxy.addEventListener("focus", () => { focused = true; render(); });
+      proxy.addEventListener("blur", () => { focused = false; render(); });
+      proxy.addEventListener("click", render);
+      proxy.addEventListener("keyup", render);                   // arrows / home / end move the lit box
+      proxy.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") { verify(); return; }
+        // overtype: a digit typed on a full code replaces the one under the caret
+        if (/^\d$/.test(e.key) && code.length === 6 && proxy.selectionStart === proxy.selectionEnd) {
+          e.preventDefault();
+          const i = caretIndex();
+          setCode(code.slice(0, i) + e.key + code.slice(i + 1), Math.min(i + 1, 6));
+        }
+      });
+      wrapEl.addEventListener("mousedown", (e) => { e.preventDefault(); proxy.focus(); render(); });
+
+      // paste anywhere on the card, not just inside the (invisible) field
+      cardEl.addEventListener("paste", (e) => {
+        const text = (e.clipboardData || window.clipboardData).getData("text");
+        if (!/\d/.test(text)) return;
+        e.preventDefault(); proxy.focus(); setCode(text);
+      });
+
+      resendEl.addEventListener("click", () => {
+        if (resendEl.disabled) return;
+        remaining = COOLDOWN; code = ""; proxy.value = ""; state = "sent"; render(); proxy.focus();
+      });
+
+      root.querySelector("[data-test]").addEventListener("click", () => { proxy.focus(); setCode(TEST_CODE); });
+      root.querySelector("[data-back]").addEventListener("click", (e) => e.preventDefault());
+
+      setInterval(() => { if (remaining > 0) { remaining--; renderResend(); } }, 1000);
+      render();
+    }
+
+    /* Chosen hold: 2.5s on the verified card, one frame per device. */
+    const HOLDS = [2500];
+    const secsLabel = (ms) => `${(ms / 1000).toString().replace(".", ",")}S NA TELA`;
+    const BACK_ARROW = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>`;
+
+    const framesEl = document.getElementById("frames");
+    for (const hold of HOLDS) {
+      const sec = document.createElement("section");
+      sec.className = "w-full";
+      sec.innerHTML = `
+        <p class="mono text-[10px] tracking-[1.8px] mb-4" style="color:var(--subtle)">WEB · ≥1024 · ${secsLabel(hold)}</p>
+        <div class="relative rounded-[24px] px-6 py-16 flex justify-center min-h-[640px]"
+          style="background:var(--bg); border:1px solid var(--hairline)">
+          <button class="screen-back" aria-label="Voltar">${BACK_ARROW}<span class="label mono">VOLTAR</span></button>
+          <div class="w-full max-w-[460px]" data-screen data-hold="${hold}"></div>
+        </div>`;
+      framesEl.appendChild(sec);
+    }
+    for (const hold of HOLDS) {
+      const sec = document.createElement("section");
+      sec.className = "flex flex-col items-center w-full";
+      sec.innerHTML = `
+        <p class="mono text-[10px] tracking-[1.8px] mb-4 self-start" style="color:var(--subtle)">MOBILE · iOS / Android · ${secsLabel(hold)}</p>
+        <div class="phone flex flex-col">
+          <div class="flex justify-center"><div class="notch"></div></div>
+          <button class="mr-3 screen-back icon-only" aria-label="Voltar">${BACK_ARROW}</button>
+          <div class="flex-1 flex items-center justify-center">
+            <div class="w-[94%]" data-screen data-compact data-hold="${hold}"></div>
+          </div>
+        </div>`;
+      framesEl.appendChild(sec);
+    }
+
+    document.querySelectorAll("[data-screen]").forEach(mount);
+    document.getElementById("themeToggle").addEventListener("click", () =>
+      document.documentElement.classList.toggle("dark"));
+  </script>
+</body>
+
+</html>

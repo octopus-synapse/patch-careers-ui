@@ -8,7 +8,6 @@
  * (candidaturas) on the right. Jobs carry the bookmark toggle top-right.
  */
 
-import { labelFor } from "@patch-careers/api-client";
 import { Divider, MatchScoreChip, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Bookmark } from "lucide-react-native";
@@ -16,6 +15,7 @@ import { memo, type ReactElement, type ReactNode, useState } from "react";
 import { Pressable } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import type { ApplicationRow } from "../hooks/use-applications";
+import { useEnumLabel } from "../hooks/use-enum-label";
 import { jobMetaLine, postedAgo, toTitleCase } from "../lib/helpers";
 import type { ExternalJob } from "../types";
 
@@ -171,9 +171,11 @@ function ApplicationPreviewCardInner({
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
   const { t, locale } = useI18n();
+  const workModeLabel = useEnumLabel("RemotePolicy");
+  const employmentTypeLabel = useEnumLabel("JobType");
   const meta = [
-    application.workMode ? labelFor("RemotePolicy", application.workMode, locale) : null,
-    application.employmentType ? labelFor("JobType", application.employmentType, locale) : null,
+    application.workMode ? workModeLabel(application.workMode) : null,
+    application.employmentType ? employmentTypeLabel(application.employmentType) : null,
     application.location,
   ]
     .filter(Boolean)

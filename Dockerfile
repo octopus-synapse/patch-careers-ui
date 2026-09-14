@@ -14,6 +14,7 @@ LABEL org.opencontainers.image.licenses="UNLICENSED"
 
 COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
 COPY apps/client/dist /usr/share/nginx/html
+COPY deploy/well-known /usr/share/nginx/html/.well-known
 
 EXPOSE 7142
 

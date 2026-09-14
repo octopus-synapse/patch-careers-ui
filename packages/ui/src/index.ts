@@ -17,16 +17,16 @@ export { type HapticHandler, type HapticImpact, setHapticHandler } from "./inter
 export { arcDashOffset, type ScoreArcGeometry, scoreArcGeometry } from "./internal/score-arc";
 export {
   clampScore,
-  type EditorialToneKey,
   SCORE_SEVERITY_TO_INTENT,
   type ScoreGrade,
   type ScoreSeverity,
   type ScoreTone,
   scoreColors,
   scoreGrade,
+  scoreInk,
   scoreIntent,
   scoreTone,
-  toneToEditorialKey,
+  scoreWash,
   toneToIntent,
 } from "./internal/score-scale";
 export type { ButtonVariant, Intent, Size, ThemeName } from "./internal/types";

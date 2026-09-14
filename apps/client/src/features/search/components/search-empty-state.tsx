@@ -3,12 +3,19 @@
  * the persisted "Buscas recentes" (selected results, removable) and the
  * static "Explorar" navigation shortcuts, so the modal is useful even
  * before typing.
+ *
+ * Desktop web drops the shortcuts. There the navbar already carries every one
+ * of them a few pixels above the open palette, so repeating them inside it is
+ * furniture — the palette stays the search field and its history, nothing else.
+ * Mobile keeps them: the bottom bar is hidden behind the modal and the
+ * shortcuts are the only navigation on screen.
  */
 
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { BriefcaseBusiness, MessageCircle, UserRound } from "lucide-react-native";
 import type { ReactElement } from "react";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 import { useRecentSearchesStore } from "../model/recent-searches.store";
 import type { ExploreShortcut, RecentSearchItem } from "../types";
@@ -23,6 +30,7 @@ export function SearchEmptyState({
   onSelectShortcut: (shortcut: ExploreShortcut) => void;
 }): ReactElement {
   const { t } = useI18n();
+  const isDesktopWeb = useIsDesktopWeb();
   const editorialPalette = useEditorialPalette();
   const recents = useRecentSearchesStore((s) => s.items);
   const removeRecent = useRecentSearchesStore((s) => s.remove);
@@ -55,15 +63,19 @@ export function SearchEmptyState({
         ))
       )}
 
-      <SearchSectionLabel>{t("search.explore")}</SearchSectionLabel>
-      {shortcuts.map((shortcut) => (
-        <SearchResultRow
-          key={shortcut.href}
-          title={shortcut.label}
-          icon={shortcut.icon}
-          onPress={() => onSelectShortcut(shortcut)}
-        />
-      ))}
+      {isDesktopWeb ? null : (
+        <>
+          <SearchSectionLabel>{t("search.explore")}</SearchSectionLabel>
+          {shortcuts.map((shortcut) => (
+            <SearchResultRow
+              key={shortcut.href}
+              title={shortcut.label}
+              icon={shortcut.icon}
+              onPress={() => onSelectShortcut(shortcut)}
+            />
+          ))}
+        </>
+      )}
     </YStack>
   );
 }

@@ -45,6 +45,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 import { StyleScoreBadge } from "@/components/style-score-badge";
 import { AddRow, FieldRenderer, OptionPill, OverlayModal, useEd } from "@/features/sections";
+import { publicProfileDisplayUrl } from "@/lib/public-profile-url";
 import { useI18n } from "@/providers/i18n-provider";
 import type { FlowStepId } from "../lib/flow-plan";
 import {
@@ -299,24 +300,21 @@ export function ThemeStep({
   );
 }
 
-// Public profile link, shown as a live preview on the username step.
-const PROFILE_URL_HOST = "patchcareers.com";
-
-function LinkPreview({
-  handle,
-  host,
-  label,
-}: {
-  handle: string;
-  host: string;
-  label: string;
-}): ReactElement {
+/**
+ * Public profile link, previewed live on the username step. The URL is built
+ * by `lib/public-profile-url` so this preview and the profile page's own
+ * "copy my link" card can never drift — they used to, on both the domain and
+ * the path shape.
+ */
+function LinkPreview({ handle, label }: { handle: string; label: string }): ReactElement {
   const ed = useEd();
+  const prefix = publicProfileDisplayUrl("");
   return (
     <View style={ed.linkCard}>
       <RNText style={ed.linkCardLabel}>{label}</RNText>
       <RNText style={ed.linkUrl} numberOfLines={1}>
-        {host}/<RNText style={ed.linkHandle}>@{handle}</RNText>
+        {prefix}
+        <RNText style={ed.linkHandle}>{handle}</RNText>
       </RNText>
     </View>
   );
@@ -339,11 +337,7 @@ export function StepContext({
   if (!handle) return null;
   return (
     <View style={ed.context}>
-      <LinkPreview
-        host={PROFILE_URL_HOST}
-        handle={handle}
-        label={t("onboarding.flow.username.linkLabel")}
-      />
+      <LinkPreview handle={handle} label={t("onboarding.flow.username.linkLabel")} />
     </View>
   );
 }

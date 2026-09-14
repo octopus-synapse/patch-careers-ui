@@ -18,6 +18,7 @@
  * session query is keyed by `locale`) refetches a translated session.
  */
 
+import { setApiClientLocale } from "@patch-careers/api-client";
 import {
   createTranslator,
   en,
@@ -50,6 +51,22 @@ interface I18nContextValue {
 }
 
 const dictForLocale = (locale: Locale) => (locale === "en" ? en : ptBR);
+
+/**
+ * A translator for a locale that is NOT the interface's. ADR-0011: the
+ * document surfaces (resume detail, export) render their chrome in the
+ * document's language, which may differ from the app's. Memoized per locale —
+ * there are two.
+ */
+const translators = new Map<Locale, Translator>();
+export function translatorFor(locale: Locale): Translator {
+  let t = translators.get(locale);
+  if (!t) {
+    t = createTranslator(dictForLocale(locale), locale);
+    translators.set(locale, t);
+  }
+  return t;
+}
 
 const defaultLocale: Locale = "pt-BR";
 
@@ -114,6 +131,12 @@ export function I18nProvider({ children, locale }: I18nProviderProps): ReactElem
       cancelled = true;
     };
   }, [locale]);
+
+  // The server localizes its own strings (errors, dictionaries) from
+  // `Accept-Language`; keep it in step with whatever this provider renders.
+  useEffect(() => {
+    setApiClientLocale(active);
+  }, [active]);
 
   const pinned = locale !== undefined;
   const parentSetLocale = parent.setLocale;

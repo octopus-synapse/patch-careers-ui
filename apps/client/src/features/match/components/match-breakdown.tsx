@@ -1,7 +1,6 @@
 /**
- * <MatchBreakdown> — the compatibility panel on a job detail. Fit-gated:
- * shows the blur/lock gate until the user has a fit profile, then the
- * overall score ring + the four sub-scores and the skill gaps (deep-linking
+ * <MatchBreakdown> — the compatibility panel on a job detail. Shows the
+ * overall score ring + available sub-scores and skill gaps (deep-linking
  * to improve the resume). Tailoring moved into the job detail's apply flow.
  * Culture is never surfaced — only the role-derived fit signal feeds the
  * "Perfil" sub-score.
@@ -12,12 +11,10 @@ import { useRouter } from "expo-router";
 import { Info } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
-import { useFitStatus } from "@/features/fit";
 import { useI18n } from "@/providers/i18n-provider";
 import { useDefaultMatchResume } from "../hooks/use-default-match-resume";
 import { useMatch } from "../hooks/use-match";
 import { useMt } from "../lib/styles";
-import { MatchGate } from "./match-gate";
 
 export type MatchBreakdownJob = {
   id: string;
@@ -32,13 +29,9 @@ export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElemen
   const { t } = useI18n();
   const palette = useEditorialPalette();
   const router = useRouter();
-  const fit = useFitStatus();
-  const responded = fit.data?.status === "responded";
   const { resumeId } = useDefaultMatchResume();
-  const match = useMatch(responded ? resumeId : undefined, job.id);
+  const match = useMatch(resumeId, job.id);
   const [explainOpen, setExplainOpen] = useState(false);
-
-  if (fit.isPending) return null;
 
   const heading = (
     <Text
@@ -52,22 +45,6 @@ export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElemen
       {t("match.breakdown.heading")}
     </Text>
   );
-
-  if (!responded) {
-    return (
-      <YStack gap={14}>
-        {heading}
-        <MatchGate
-          title={t("match.gate.title")}
-          body={t("match.gate.body")}
-          ctaLabel={
-            fit.data?.status === "expired" ? t("match.gate.ctaExpired") : t("match.gate.ctaNever")
-          }
-          onPress={() => router.push("/fit-questionnaire")}
-        />
-      </YStack>
-    );
-  }
 
   if (!resumeId) {
     return (

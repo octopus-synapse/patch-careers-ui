@@ -122,11 +122,6 @@ export const landingRobotPalettes = {
 } as const satisfies Record<EditorialTheme, LandingRobotPalette>;
 
 /**
- * The demo score ramp — the four grade bands the prototype paints resumes
- * with (85+/70+/50+/below). Distinct from the product's own `scoreTone` scale
- * on purpose: the landing quotes the prototype's exact visuals.
- */
-/**
  * The navbar brandmark's face — the prototype's "a logo é o mascote": sclera,
  * pupil and highlight drawn over the two puzzle pieces.
  */
@@ -226,40 +221,17 @@ export const landingMascotLegsPalettes = {
   dark: landingMascotLegsDark,
 } as const satisfies Record<EditorialTheme, Record<"left" | "right", LandingMascotLegPalette>>;
 
-export type LandingScoreBand = "excellent" | "good" | "fair" | "poor";
-
-export type LandingScoreColor = {
-  ink: string;
-  wash: string;
-};
-
-export const landingScoreRamp = {
-  excellent: { ink: "#1FB27A", wash: "#E3F6EE" },
-  good: { ink: "#D9A400", wash: "#FBF3D4" },
-  fair: { ink: "#F0743A", wash: "#FDEEE5" },
-  poor: { ink: "#E5484D", wash: "#FDECEC" },
-} as const satisfies Record<LandingScoreBand, LandingScoreColor>;
-
 /**
- * Dark ramp: inks brighten to hold ~4.5:1 on the dark washes (same family
- * the robot's dark LEDs use); washes become deep tints of each hue instead
- * of pastels, so the grade chips read as lit panels on the dark paper.
+ * A rampa de nota mudou de casa: virou `score.ts`, porque o produto inteiro
+ * (currículo, perfil, match) passou a resolver cor por ela — não só a landing.
+ * Os nomes antigos ficam aqui como alias para nenhum call site da landing ter
+ * que mudar.
  */
-export const landingScoreRampDark = {
-  excellent: { ink: "#4ADE80", wash: "#1D2E28" },
-  good: { ink: "#E3B23C", wash: "#332B18" },
-  fair: { ink: "#FB923C", wash: "#33241A" },
-  poor: { ink: "#F87171", wash: "#3A2222" },
-} as const satisfies Record<LandingScoreBand, LandingScoreColor>;
-
-export const landingScoreRampPalettes = {
-  light: landingScoreRamp,
-  dark: landingScoreRampDark,
-} as const satisfies Record<EditorialTheme, Record<LandingScoreBand, LandingScoreColor>>;
-
-export function landingScoreBand(value: number): LandingScoreBand {
-  if (value >= 85) return "excellent";
-  if (value >= 70) return "good";
-  if (value >= 50) return "fair";
-  return "poor";
-}
+export {
+  type ScoreBand as LandingScoreBand,
+  type ScoreBandColor as LandingScoreColor,
+  scoreBand as landingScoreBand,
+  scoreRamp as landingScoreRamp,
+  scoreRampDark as landingScoreRampDark,
+  scoreRampPalettes as landingScoreRampPalettes,
+} from "./score";

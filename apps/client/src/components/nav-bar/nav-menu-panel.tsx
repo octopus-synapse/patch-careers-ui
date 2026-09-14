@@ -1,6 +1,6 @@
 /**
  * `NavMenuPanel` — the dropdown the hamburger opens, on every surface
- * (`menu-final.html`).
+ * (`docs/design/menu-final.html`).
  *
  * Two puzzle pieces interlock across the banner, and the avatar overlaps the
  * seam from below wearing a panel-coloured bezel — the mark's own idea, applied

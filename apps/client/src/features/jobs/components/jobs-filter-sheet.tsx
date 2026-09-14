@@ -11,13 +11,8 @@ import type { ReactElement } from "react";
 import { useState } from "react";
 import { Pressable, ScrollView } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
-import {
-  EMPLOYMENT_TYPE_OPTIONS,
-  employmentTypeLabel,
-  POSTED_WITHIN_OPTIONS,
-  WORK_MODE_OPTIONS,
-  workModeLabel,
-} from "../lib/helpers";
+import { useEnumLabel } from "../hooks/use-enum-label";
+import { EMPLOYMENT_TYPE_OPTIONS, POSTED_WITHIN_OPTIONS, WORK_MODE_OPTIONS } from "../lib/helpers";
 import { EMPTY_JOBS_FILTERS, type JobsFilters } from "../types";
 import { FilterChip } from "./filter-chip";
 
@@ -54,6 +49,8 @@ export function JobsFilterSheet({
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
   const { t, locale } = useI18n();
+  const workModeLabel = useEnumLabel("RemotePolicy");
+  const employmentTypeLabel = useEnumLabel("JobType");
   const [pending, setPending] = useState<JobsFilters>(filters);
 
   // Re-seed the pending selection from the applied filters every time the
@@ -86,7 +83,7 @@ export function JobsFilterSheet({
                 {WORK_MODE_OPTIONS.map((mode) => (
                   <FilterChip
                     key={mode}
-                    label={workModeLabel(mode, locale)}
+                    label={workModeLabel(mode)}
                     selected={pending.workModes.includes(mode)}
                     onPress={() =>
                       setPending((prev) => ({
@@ -105,7 +102,7 @@ export function JobsFilterSheet({
                 {EMPLOYMENT_TYPE_OPTIONS.map((type) => (
                   <FilterChip
                     key={type}
-                    label={employmentTypeLabel(type, locale)}
+                    label={employmentTypeLabel(type)}
                     selected={pending.employmentTypes.includes(type)}
                     onPress={() =>
                       setPending((prev) => ({

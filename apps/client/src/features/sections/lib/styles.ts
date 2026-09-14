@@ -352,6 +352,91 @@ const createEd = (
       color: authTokens.ink,
     },
 
+    // ── expanded desktop rendering (profile web) ──
+    // An item is shown open here: title, org, dates, prose and achievements
+    // each get their own line, instead of the two-line `card` summary above.
+    panelCard: {
+      borderWidth: 1,
+      borderColor: authTokens.hairline,
+      borderRadius: 20,
+      backgroundColor: authTokens.panel,
+      paddingHorizontal: 36,
+      paddingVertical: 32,
+    },
+    panelCardTitle: {
+      fontFamily: fonts.sans,
+      fontSize: 22,
+      fontWeight: "600",
+      letterSpacing: -0.4,
+      color: authTokens.ink,
+      marginBottom: 40,
+    },
+    detailRow: {
+      paddingVertical: 28,
+      borderBottomWidth: 1,
+      borderBottomColor: authTokens.hairline,
+    },
+    detailRowFirst: { paddingTop: 0 },
+    detailRowLast: { paddingBottom: 0, borderBottomWidth: 0 },
+    detailHead: { flexDirection: "row", alignItems: "baseline", gap: 16 },
+    detailTitle: {
+      flex: 1,
+      fontFamily: fonts.sans,
+      fontSize: 15,
+      fontWeight: "600",
+      color: authTokens.ink,
+    },
+    detailDate: {
+      fontFamily: fonts.mono,
+      fontSize: 11,
+      letterSpacing: 0.3,
+      color: authTokens.muted,
+    },
+    detailOrg: {
+      marginTop: 6,
+      fontFamily: fonts.sans,
+      fontSize: 13.5,
+      color: authTokens.body,
+    },
+    detailDescription: {
+      marginTop: 16,
+      fontFamily: fonts.sans,
+      fontSize: 13.5,
+      lineHeight: 20,
+      color: authTokens.body,
+    },
+    detailAchievements: { marginTop: 16, gap: 7 },
+    detailAchievementRow: { flexDirection: "row", gap: 8 },
+    detailDash: { fontFamily: fonts.sans, fontSize: 13, color: authTokens.subtle },
+    detailAchievement: {
+      flex: 1,
+      fontFamily: fonts.sans,
+      fontSize: 13,
+      lineHeight: 19,
+      color: authTokens.muted,
+    },
+    // The per-section door. Secondary on purpose: the global "add section"
+    // lives in the rail and is the only filled button on the page.
+    addWide: {
+      marginTop: 36,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      borderWidth: 1,
+      borderColor: authTokens.hairline,
+      borderRadius: 12,
+      backgroundColor: authTokens.surface,
+      paddingVertical: 14,
+    },
+    addWideActive: { borderColor: authTokens.hairlineStrong, backgroundColor: authTokens.bg },
+    addWideLabel: {
+      fontFamily: fonts.sans,
+      fontSize: 13.5,
+      fontWeight: "500",
+      color: authTokens.body,
+    },
+
     // multi-item — saved entry cards
     list: { gap: 10 },
     card: {
@@ -458,6 +543,44 @@ const createEd = (
       paddingHorizontal: 24,
       paddingTop: 24,
       paddingBottom: 32,
+    },
+    // Rewrite review (the other language's copy after a hand edit)
+    rewriteField: {
+      marginTop: 18,
+      paddingTop: 14,
+      borderTopWidth: 1,
+      borderTopColor: authTokens.hairline,
+      gap: 8,
+    },
+    rewriteFieldHead: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    rewriteToggle: {
+      borderWidth: 1,
+      borderColor: authTokens.hairlineStrong,
+      borderRadius: 999,
+      paddingHorizontal: 12,
+      paddingVertical: 5,
+    },
+    rewriteToggleOn: { backgroundColor: authTokens.ink, borderColor: authTokens.ink },
+    rewriteToggleLabel: { fontFamily: fonts.sans, fontSize: 12, color: authTokens.muted },
+    rewriteToggleLabelOn: { color: authTokens.bg },
+    rewriteDiff: { fontFamily: fonts.sans, fontSize: 13.5, lineHeight: 21, color: authTokens.body },
+    rewriteAdded: { color: authTokens.success, fontWeight: "600" },
+    rewriteRemoved: { color: authTokens.danger, textDecorationLine: "line-through" },
+    rewriteInput: {
+      fontFamily: fonts.sans,
+      fontSize: 13.5,
+      lineHeight: 20,
+      color: authTokens.ink,
+      borderWidth: 1,
+      borderColor: authTokens.hairlineStrong,
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      minHeight: 44,
     },
     editorModalFooter: {
       flexDirection: "row",

@@ -16,9 +16,10 @@
 import { Avatar, Divider, EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
-import { MessageCircle, Search as SearchIcon } from "lucide-react-native";
+import { Ban, MessageCircle, Search as SearchIcon } from "lucide-react-native";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, FlatList, ScrollView } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, ScrollView } from "react-native";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
@@ -28,6 +29,7 @@ import {
   useInbox,
   useUserSearch,
 } from "../hooks/queries";
+import { useBlockUser } from "../hooks/use-block-user";
 import { buildRenderList, participantLabel } from "../lib/helpers";
 import type { ChatUser, Conversation } from "../types";
 import { ConversationListSkeleton } from "./conversation-list-skeleton";
@@ -48,6 +50,13 @@ type ThreadSelection = {
 };
 
 const INBOX_RAIL_WIDTH = 320;
+/**
+ * The thread pane is `flex: 1`, so it absorbed the whole gain when the desktop
+ * content column went 960 → 1240. Chat is a narrow-measure surface — a bubble
+ * capped at 78% of a 920px pane runs ~720px, well past a comfortable line — so
+ * the pane centres its own column instead of filling.
+ */
+const THREAD_MAX_WIDTH = 760;
 
 function selectionFromConversation(conversation: Conversation, name: string): ThreadSelection {
   return {
@@ -191,13 +200,15 @@ export function MessagesSplitView(): ReactElement {
       <YStack width={1} backgroundColor={editorialPalette.hairline} />
 
       {/* Thread pane */}
-      <YStack flex={1} backgroundColor={editorialPalette.bg}>
-        {selection ? (
-          // Remount per person so the thread hook re-arms cleanly.
-          <ThreadPane key={selection.recipientId ?? selection.id} selection={selection} />
-        ) : (
-          <ThreadEmptyState />
-        )}
+      <YStack flex={1} alignItems="center" backgroundColor={editorialPalette.bg}>
+        <YStack width="100%" maxWidth={THREAD_MAX_WIDTH} flex={1}>
+          {selection ? (
+            // Remount per person so the thread hook re-arms cleanly.
+            <ThreadPane key={selection.recipientId ?? selection.id} selection={selection} />
+          ) : (
+            <ThreadEmptyState />
+          )}
+        </YStack>
       </YStack>
     </XStack>
   );
@@ -301,6 +312,9 @@ function ThreadPane({ selection }: { selection: ThreadSelection }): ReactElement
     if (rendered.length > 0) scrollToEnd(true);
   }, [rendered.length, scrollToEnd]);
 
+  const [blockOpen, setBlockOpen] = useState(false);
+  const { block, isPending: blocking } = useBlockUser();
+
   return (
     <YStack flex={1}>
       {/* Participant header — no back affordance on desktop; the rail is the nav. */}
@@ -324,6 +338,16 @@ function ThreadPane({ selection }: { selection: ThreadSelection }): ReactElement
             </Text>
           ) : null}
         </YStack>
+        {selection.recipientId ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("messages.block.action")}
+            onPress={() => setBlockOpen(true)}
+            hitSlop={8}
+          >
+            <Icon as={Ban} size={20} color={editorialPalette.subtle} />
+          </Pressable>
+        ) : null}
       </XStack>
 
       {thread.isLoading ? (
@@ -361,6 +385,20 @@ function ThreadPane({ selection }: { selection: ThreadSelection }): ReactElement
       )}
 
       <MessageComposer disabled={thread.sending} onSend={thread.send} />
+
+      <ConfirmDialog
+        open={blockOpen}
+        onOpenChange={setBlockOpen}
+        title={t("messages.block.title", { name: selection.name })}
+        description={t("messages.block.body")}
+        danger
+        icon={Ban}
+        confirmLabel={t("messages.block.confirm")}
+        loading={blocking}
+        onConfirm={() =>
+          selection.recipientId && block(selection.recipientId, () => setBlockOpen(false))
+        }
+      />
     </YStack>
   );
 }

@@ -31,10 +31,6 @@ export const DICTIONARIES = {
       "en": "Account is temporarily locked. Try again in a few minutes.",
       "pt-BR": "A conta está temporariamente bloqueada. Tente novamente em alguns minutos."
     },
-    "AGGREGATION_BACKEND_UNAVAILABLE": {
-      "en": "Analytics backend is temporarily unavailable",
-      "pt-BR": "O backend de analytics está temporariamente indisponível"
-    },
     "AI_EMPTY_INPUT": {
       "en": "AI input is empty",
       "pt-BR": "A entrada enviada para a IA está vazia"
@@ -54,14 +50,6 @@ export const DICTIONARIES = {
     "ALREADY_BLOCKED": {
       "en": "This user is already blocked",
       "pt-BR": "Este usuário já está bloqueado"
-    },
-    "ALREADY_CONNECTED": {
-      "en": "Already connected with this user",
-      "pt-BR": "Você já está conectado com este usuário"
-    },
-    "ALREADY_FOLLOWING": {
-      "en": "Already following this user",
-      "pt-BR": "Você já segue este usuário"
     },
     "ANALYTICS_CONSENT_REQUIRED": {
       "en": "User has not granted analytics consent",
@@ -99,14 +87,6 @@ export const DICTIONARIES = {
       "en": "Automation workers are temporarily unavailable",
       "pt-BR": "Os workers de automação estão temporariamente indisponíveis"
     },
-    "BADGE_ALREADY_AWARDED": {
-      "en": "Badge has already been awarded",
-      "pt-BR": "Esta conquista já foi concedida"
-    },
-    "BADGE_CRITERIA_NOT_MET": {
-      "en": "Badge criteria not met",
-      "pt-BR": "Os critérios da conquista não foram atingidos"
-    },
     "BANNER_ELEMENT_NOT_FOUND": {
       "en": "Banner element not found",
       "pt-BR": "Elemento do banner não encontrado"
@@ -123,14 +103,6 @@ export const DICTIONARIES = {
       "en": "Business rule violation",
       "pt-BR": "Regra de negócio violada"
     },
-    "CANDIDATE_DIRECTORY_UNAVAILABLE": {
-      "en": "Candidate directory is temporarily unavailable",
-      "pt-BR": "O diretório de candidatos está temporariamente indisponível"
-    },
-    "CANDIDATE_POOL_EMPTY": {
-      "en": "No opt-in candidates match the requested criteria",
-      "pt-BR": "Nenhum candidato corresponde aos critérios informados"
-    },
     "CANNOT_APPLY_TO_OWN_JOB": {
       "en": "You cannot apply to your own job",
       "pt-BR": "Você não pode se candidatar à sua própria vaga"
@@ -139,29 +111,13 @@ export const DICTIONARIES = {
       "en": "You cannot block yourself",
       "pt-BR": "Você não pode bloquear a si mesmo"
     },
-    "CANNOT_CONNECT_WITH_SELF": {
-      "en": "Cannot connect with yourself",
-      "pt-BR": "Você não pode se conectar consigo mesmo"
-    },
     "CANNOT_DELETE_ANOTHER_USERS_COMMENT": {
       "en": "Cannot delete another user comment",
       "pt-BR": "Você não pode apagar o comentário de outro usuário"
     },
-    "CANNOT_DELETE_OTHERS_COMMENT": {
-      "en": "You can only delete your own comments",
-      "pt-BR": "Você só pode apagar os seus próprios comentários"
-    },
-    "CANNOT_DELETE_OTHERS_POST": {
-      "en": "You can only delete your own posts",
-      "pt-BR": "Você só pode apagar os seus próprios posts"
-    },
     "CANNOT_DELETE_OWN_ACCOUNT_AS_ADMIN": {
       "en": "Cannot delete your own account through the admin interface",
       "pt-BR": "Você não pode apagar a sua própria conta pela interface de admin"
-    },
-    "CANNOT_FOLLOW_SELF": {
-      "en": "Cannot follow yourself",
-      "pt-BR": "Você não pode seguir a si mesmo"
     },
     "CANNOT_INVITE_SELF_AS_COLLABORATOR": {
       "en": "Cannot add yourself as a collaborator",
@@ -182,22 +138,6 @@ export const DICTIONARIES = {
     "CANNOT_SEND_MESSAGE_TO_USER": {
       "en": "Cannot send message to this user",
       "pt-BR": "Não é possível enviar mensagem para este usuário"
-    },
-    "CAREER_COHORT_EMPTY": {
-      "en": "No peers found matching this stack — try broadening the skills",
-      "pt-BR": "Nenhum profissional similar encontrado — tente ampliar as habilidades"
-    },
-    "CAREER_GRAPH_INVALID_MAX_BUCKETS": {
-      "en": "maxBuckets must be between 1 and 50",
-      "pt-BR": "maxBuckets deve estar entre 1 e 50"
-    },
-    "CAREER_GRAPH_REPOSITORY_UNAVAILABLE": {
-      "en": "Career graph data is temporarily unavailable",
-      "pt-BR": "Os dados do gráfico de carreira estão temporariamente indisponíveis"
-    },
-    "CAREER_GRAPH_STACK_REQUIRED": {
-      "en": "Career graph requires at least one stack skill to compare cohorts",
-      "pt-BR": "O gráfico de carreira exige pelo menos uma habilidade da stack para comparar cohorts"
     },
     "CHAT_CONVERSATION_NOT_FOUND": {
       "en": "Conversation not found",
@@ -235,22 +175,6 @@ export const DICTIONARIES = {
       "en": "No connected account found for this provider",
       "pt-BR": "Nenhuma conta conectada encontrada para este provedor"
     },
-    "CONNECTION_NOT_ACCEPTED": {
-      "en": "Connection is not accepted",
-      "pt-BR": "A conexão não foi aceita"
-    },
-    "CONNECTION_NOT_PENDING": {
-      "en": "Connection request is not pending",
-      "pt-BR": "O pedido de conexão não está pendente"
-    },
-    "CONNECTION_REQUEST_EXISTS": {
-      "en": "Connection request already exists",
-      "pt-BR": "Já existe um pedido de conexão"
-    },
-    "CONNECTION_REQUEST_PENDING": {
-      "en": "Connection request already pending",
-      "pt-BR": "Já existe um pedido de conexão pendente"
-    },
     "CONSENT_REQUIRED": {
       "en": "Consent is required for this action",
       "pt-BR": "É necessário consentimento para esta ação"
@@ -262,10 +186,6 @@ export const DICTIONARIES = {
     "CURATED_SELECTOR_ALL_SCORING_FAILED": {
       "en": "All scoring strategies failed for the curated selector",
       "pt-BR": "Todas as estratégias de scoring falharam para o seletor curado"
-    },
-    "DATE_RANGE_TOO_LARGE": {
-      "en": "Date range is too large",
-      "pt-BR": "Intervalo de datas muito grande"
     },
     "DELETION_REQUIRES_CONFIRMATION": {
       "en": "Account deletion requires explicit confirmation",
@@ -334,10 +254,6 @@ export const DICTIONARIES = {
     "DSL_VALIDATION_FAILED": {
       "en": "Invalid DSL",
       "pt-BR": "DSL inválida"
-    },
-    "DUPLICATE_SKILL_NAME": {
-      "en": "A skill with this name already exists on the resume",
-      "pt-BR": "Já existe uma habilidade com esse nome no currículo"
     },
     "DUPLICATED_SECTION_FIELD_KEY": {
       "en": "Duplicated section field key",
@@ -438,18 +354,6 @@ export const DICTIONARIES = {
     "FEATURE_FLAG_PARENT_DISABLED": {
       "en": "Cannot enable this flag while a parent flag is disabled",
       "pt-BR": "Não é possível habilitar essa flag enquanto a flag pai estiver desabilitada"
-    },
-    "FILE_REQUIRED": {
-      "en": "File is required for this operation",
-      "pt-BR": "Arquivo obrigatório para esta operação"
-    },
-    "FILE_TOO_LARGE": {
-      "en": "File is too large",
-      "pt-BR": "Arquivo muito grande"
-    },
-    "FILE_UPLOAD_UNAVAILABLE": {
-      "en": "File upload service is currently unavailable",
-      "pt-BR": "O serviço de upload de arquivos está indisponível no momento"
     },
     "FIT_ANSWER_COUNT_MISMATCH": {
       "en": "Number of submitted answers does not match the question set",
@@ -595,10 +499,6 @@ export const DICTIONARIES = {
       "en": "Current password is incorrect",
       "pt-BR": "Senha atual incorreta"
     },
-    "INVALID_DATE_RANGE": {
-      "en": "End date must be after start date",
-      "pt-BR": "A data final precisa ser posterior à data inicial"
-    },
     "INVALID_EMAIL_CHANGE_CODE": {
       "en": "The confirmation code is invalid or has expired",
       "pt-BR": "O código de confirmação é inválido ou expirou"
@@ -606,10 +506,6 @@ export const DICTIONARIES = {
     "INVALID_EMPLOYMENT_TYPE_FOR_INTERN_ROLE": {
       "en": "Internship roles must use the Internship employment type, not \"{employmentType}\"",
       "pt-BR": "Cargos de estágio precisam usar o tipo Estágio, não \"{employmentType}\""
-    },
-    "INVALID_FILE_TYPE": {
-      "en": "Invalid file type",
-      "pt-BR": "Tipo de arquivo inválido"
     },
     "INVALID_ID_FORMAT": {
       "en": "ID must be a valid CUID string",
@@ -755,14 +651,6 @@ export const DICTIONARIES = {
       "en": "LinkedIn import is not implemented yet",
       "pt-BR": "Importação do LinkedIn ainda não está implementada"
     },
-    "MATCH_CANDIDATES_INVALID_LIMIT": {
-      "en": "limit must be between 1 and 100",
-      "pt-BR": "limit deve estar entre 1 e 100"
-    },
-    "MATCH_CANDIDATES_NO_CRITERIA": {
-      "en": "At least one matching criterion is required (jobSkills, jobMinEnglish, or jobRemotePolicy)",
-      "pt-BR": "Pelo menos um critério de match é obrigatório (jobSkills, jobMinEnglish ou jobRemotePolicy)"
-    },
     "MEC_CSV_BLOCKED": {
       "en": "Received HTML instead of CSV — Cloudflare may still be blocking",
       "pt-BR": "Recebemos HTML no lugar de CSV — o Cloudflare pode estar bloqueando"
@@ -807,14 +695,6 @@ export const DICTIONARIES = {
       "en": "Not a collaborator on this resume",
       "pt-BR": "Você não é colaborador deste currículo"
     },
-    "NOT_CONNECTION_REQUESTER": {
-      "en": "Only the requester can withdraw a sent request",
-      "pt-BR": "Apenas quem enviou o pedido pode cancelá-lo"
-    },
-    "NOT_CONNECTION_TARGET": {
-      "en": "You are not the target of this connection",
-      "pt-BR": "Você não é o destinatário desta conexão"
-    },
     "NOT_CONVERSATION_PARTICIPANT": {
       "en": "Not a participant of this conversation",
       "pt-BR": "Você não participa desta conversa"
@@ -822,10 +702,6 @@ export const DICTIONARIES = {
     "NOT_JOB_OWNER": {
       "en": "Only the job owner can perform this action",
       "pt-BR": "Apenas o dono da vaga pode realizar esta ação"
-    },
-    "NOT_PART_OF_CONNECTION": {
-      "en": "You are not part of this connection",
-      "pt-BR": "Você não faz parte desta conexão"
     },
     "NOTIFICATION_DELIVERY_FAILED": {
       "en": "Notification delivery failed",
@@ -942,38 +818,6 @@ export const DICTIONARIES = {
     "PDF_TOO_LARGE": {
       "en": "PDF file exceeds the maximum allowed size",
       "pt-BR": "O PDF ultrapassa o tamanho máximo permitido"
-    },
-    "POLL_ALREADY_VOTED": {
-      "en": "You have already voted on this poll",
-      "pt-BR": "Você já votou nesta enquete"
-    },
-    "POLL_CLOSED": {
-      "en": "This poll is closed to new votes",
-      "pt-BR": "Esta enquete está fechada para novos votos"
-    },
-    "POLL_OPTION_OUT_OF_RANGE": {
-      "en": "Selected option is out of range for this poll",
-      "pt-BR": "A opção selecionada está fora do intervalo desta enquete"
-    },
-    "POST_ALREADY_REPORTED": {
-      "en": "You have already reported this post",
-      "pt-BR": "Você já denunciou este post"
-    },
-    "POST_ALREADY_REPOSTED": {
-      "en": "You have already reposted this post",
-      "pt-BR": "Você já repostou esta publicação"
-    },
-    "POST_BOOKMARK_NOT_FOUND": {
-      "en": "Bookmark not found",
-      "pt-BR": "Marcador não encontrado"
-    },
-    "POST_LIKE_NOT_FOUND": {
-      "en": "Like not found",
-      "pt-BR": "Curtida não encontrada"
-    },
-    "POST_NOT_FOUND": {
-      "en": "Post not found",
-      "pt-BR": "Post não encontrado"
     },
     "PRIMARY_RESUME_REQUIRED": {
       "en": "A primary resume is required for this operation",
@@ -1179,21 +1023,9 @@ export const DICTIONARIES = {
       "en": "User not found after session creation",
       "pt-BR": "Usuário não encontrado após a criação da sessão"
     },
-    "SHADOW_PROFILE_ALREADY_CLAIMED": {
-      "en": "Shadow profile already claimed by another user",
-      "pt-BR": "Este shadow profile já foi reivindicado por outro usuário"
-    },
-    "SHADOW_PROFILE_NOT_FOUND": {
-      "en": "Shadow profile not found",
-      "pt-BR": "Shadow profile não encontrado"
-    },
     "SHARE_ALIAS_NOT_FOUND": {
       "en": "Alias not found",
       "pt-BR": "Alias não encontrado"
-    },
-    "SHARE_ANALYTICS_NOT_AUTHORIZED": {
-      "en": "Not authorized to view share analytics",
-      "pt-BR": "Sem autorização para ver analytics de compartilhamento"
     },
     "SHARE_LINK_EXPIRED": {
       "en": "Share link expired",
@@ -1258,10 +1090,6 @@ export const DICTIONARIES = {
     "STYLE_NOT_FOUND": {
       "en": "Resume style not found",
       "pt-BR": "Estilo do currículo não encontrado"
-    },
-    "SUCCESS_STORY_ALREADY_PUBLISHED": {
-      "en": "Success story already published",
-      "pt-BR": "Caso de sucesso já publicado"
     },
     "SYNC_COOLDOWN_ACTIVE": {
       "en": "Sync is in cooldown. Try again shortly.",
@@ -1467,72 +1295,12 @@ export const DICTIONARIES = {
       "en": "Verification token was already sent. Wait a moment before retrying.",
       "pt-BR": "Token de verificação já foi enviado. Aguarde um pouco antes de tentar de novo."
     },
-    "WEBHOOK_DELIVERY_FAILED": {
-      "en": "Webhook delivery failed",
-      "pt-BR": "Falha na entrega do webhook"
-    },
-    "WEBHOOK_NOT_FOUND": {
-      "en": "Webhook not found",
-      "pt-BR": "Webhook não encontrado"
-    },
     "WS_VALIDATION_ERROR": {
       "en": "Invalid WebSocket payload",
       "pt-BR": "Payload de WebSocket inválido"
     }
   },
   "enums": {
-    "ActivityType": {
-      "ACHIEVEMENT_EARNED": {
-        "en": "Achievement earned",
-        "pt-BR": "Conquista obtida"
-      },
-      "CONNECTED_USER": {
-        "en": "Connected with user",
-        "pt-BR": "Conectou-se com usuário"
-      },
-      "FOLLOWED_USER": {
-        "en": "Followed user",
-        "pt-BR": "Seguiu usuário"
-      },
-      "PROFILE_UPDATED": {
-        "en": "Profile updated",
-        "pt-BR": "Perfil atualizado"
-      },
-      "RESUME_CREATED": {
-        "en": "Resume created",
-        "pt-BR": "Currículo criado"
-      },
-      "RESUME_PUBLISHED": {
-        "en": "Resume published",
-        "pt-BR": "Currículo publicado"
-      },
-      "RESUME_SHARED": {
-        "en": "Resume shared",
-        "pt-BR": "Currículo compartilhado"
-      },
-      "RESUME_UPDATED": {
-        "en": "Resume updated",
-        "pt-BR": "Currículo atualizado"
-      },
-      "SKILL_ADDED": {
-        "en": "Skill added",
-        "pt-BR": "Habilidade adicionada"
-      },
-      "THEME_PUBLISHED": {
-        "en": "Theme published",
-        "pt-BR": "Tema publicado"
-      }
-    },
-    "AnalyticsEvent": {
-      "DOWNLOAD": {
-        "en": "Download",
-        "pt-BR": "Download"
-      },
-      "VIEW": {
-        "en": "View",
-        "pt-BR": "Visualização"
-      }
-    },
     "ApplyMode": {
       "AUTO_APPLY": {
         "en": "Auto-apply",
@@ -1719,28 +1487,6 @@ export const DICTIONARIES = {
         "pt-BR": "Versão do currículo restaurada"
       }
     },
-    "BadgeKind": {
-      "CONTRIBUTOR": {
-        "en": "Contributor",
-        "pt-BR": "Contribuidor"
-      },
-      "EVENT_SPEAKER": {
-        "en": "Event speaker",
-        "pt-BR": "Palestrante em evento"
-      },
-      "FIRST_BUILD": {
-        "en": "First build",
-        "pt-BR": "Primeiro build"
-      },
-      "INTERVIEWS_5": {
-        "en": "5 interviews",
-        "pt-BR": "5 entrevistas"
-      },
-      "MENTORED_10": {
-        "en": "Mentored 10",
-        "pt-BR": "Mentorou 10"
-      }
-    },
     "CollaboratorRole": {
       "ADMIN": {
         "en": "Admin",
@@ -1753,20 +1499,6 @@ export const DICTIONARIES = {
       "VIEWER": {
         "en": "Viewer",
         "pt-BR": "Visualizador"
-      }
-    },
-    "ConnectionStatus": {
-      "ACCEPTED": {
-        "en": "Accepted",
-        "pt-BR": "Aceita"
-      },
-      "PENDING": {
-        "en": "Pending",
-        "pt-BR": "Pendente"
-      },
-      "REJECTED": {
-        "en": "Rejected",
-        "pt-BR": "Recusada"
       }
     },
     "ConsentDocumentType": {
@@ -1995,14 +1727,6 @@ export const DICTIONARIES = {
       "DOCX": {
         "en": "DOCX",
         "pt-BR": "DOCX"
-      },
-      "GITHUB": {
-        "en": "GitHub",
-        "pt-BR": "GitHub"
-      },
-      "JSON": {
-        "en": "JSON",
-        "pt-BR": "JSON"
       },
       "LINKEDIN": {
         "en": "LinkedIn",
@@ -2260,22 +1984,6 @@ export const DICTIONARIES = {
         "en": "Application stale",
         "pt-BR": "Candidatura parada"
       },
-      "COMMENT_REPLIED": {
-        "en": "Reply to your comment",
-        "pt-BR": "Resposta ao seu comentário"
-      },
-      "CONNECTION_ACCEPTED": {
-        "en": "Connection accepted",
-        "pt-BR": "Conexão aceita"
-      },
-      "CONNECTION_RECOMMENDATION": {
-        "en": "Connection recommendation",
-        "pt-BR": "Recomendação de conexão"
-      },
-      "CONNECTION_REQUEST": {
-        "en": "Connection request",
-        "pt-BR": "Pedido de conexão"
-      },
       "FIT_PROFILE_EXPIRED": {
         "en": "Fit profile expired",
         "pt-BR": "Perfil de fit expirou"
@@ -2283,10 +1991,6 @@ export const DICTIONARIES = {
       "FIT_PROFILE_EXPIRY_REMINDER": {
         "en": "Fit profile expires soon",
         "pt-BR": "Perfil de fit expira em breve"
-      },
-      "FOLLOW_NEW": {
-        "en": "New follower",
-        "pt-BR": "Novo seguidor"
       },
       "MATCH_RECOMMENDATIONS_READY": {
         "en": "New job recommendations ready",
@@ -2296,22 +2000,6 @@ export const DICTIONARIES = {
         "en": "New message",
         "pt-BR": "Nova mensagem"
       },
-      "POST_BOOKMARKED": {
-        "en": "Post bookmarked",
-        "pt-BR": "Post salvo"
-      },
-      "POST_COMMENTED": {
-        "en": "New comment",
-        "pt-BR": "Novo comentário"
-      },
-      "POST_LIKED": {
-        "en": "Post liked",
-        "pt-BR": "Post curtido"
-      },
-      "POST_REPOSTED": {
-        "en": "Post reposted",
-        "pt-BR": "Post repostado"
-      },
       "RESUME_QUALITY_IMPROVED": {
         "en": "Resume quality improved",
         "pt-BR": "Qualidade do currículo melhorou"
@@ -2319,10 +2007,6 @@ export const DICTIONARIES = {
       "RESUME_QUALITY_REGRESSED": {
         "en": "Resume quality dropped",
         "pt-BR": "Qualidade do currículo caiu"
-      },
-      "SKILL_DECAY": {
-        "en": "Skill getting rusty",
-        "pt-BR": "Habilidade enferrujando"
       }
     },
     "OpenSourceRole": {
@@ -2383,20 +2067,6 @@ export const DICTIONARIES = {
       "REMOTE": {
         "en": "Remote",
         "pt-BR": "Remoto"
-      }
-    },
-    "ReportStatus": {
-      "DISMISSED": {
-        "en": "Dismissed",
-        "pt-BR": "Descartada"
-      },
-      "PENDING": {
-        "en": "Pending",
-        "pt-BR": "Pendente"
-      },
-      "REVIEWED": {
-        "en": "Reviewed",
-        "pt-BR": "Revisada"
       }
     },
     "RoleSeniority": {
@@ -2527,24 +2197,6 @@ export const DICTIONARIES = {
         "pt-BR": "Ferramenta"
       }
     },
-    "SuccessStoryStatus": {
-      "ARCHIVED": {
-        "en": "Archived",
-        "pt-BR": "Arquivada"
-      },
-      "DRAFT": {
-        "en": "Draft",
-        "pt-BR": "Rascunho"
-      },
-      "PENDING_REVIEW": {
-        "en": "Pending review",
-        "pt-BR": "Aguardando revisão"
-      },
-      "PUBLISHED": {
-        "en": "Published",
-        "pt-BR": "Publicada"
-      }
-    },
     "TechAreaType": {
       "DATA": {
         "en": "Data",
@@ -2654,60 +2306,6 @@ export const DICTIONARIES = {
         "jobTitle"
       ]
     },
-    "COMMENT_REPLIED": {
-      "title": {
-        "en": "{actorName} replied to your comment",
-        "pt-BR": "{actorName} respondeu ao seu comentário"
-      },
-      "body": {
-        "en": "{actorName} replied: \"{replyExcerpt}\"",
-        "pt-BR": "{actorName} respondeu: \"{replyExcerpt}\""
-      },
-      "params": [
-        "actorName",
-        "replyExcerpt"
-      ]
-    },
-    "CONNECTION_ACCEPTED": {
-      "title": {
-        "en": "{actorName} accepted your connection",
-        "pt-BR": "{actorName} aceitou sua conexão"
-      },
-      "body": {
-        "en": "You are now connected with {actorName}",
-        "pt-BR": "Você agora está conectado com {actorName}"
-      },
-      "params": [
-        "actorName"
-      ]
-    },
-    "CONNECTION_RECOMMENDATION": {
-      "title": {
-        "en": "You might know {candidateName}",
-        "pt-BR": "Talvez você conheça {candidateName}"
-      },
-      "body": {
-        "en": "{candidateName} shares {sharedSkillsCount} skills with you",
-        "pt-BR": "{candidateName} compartilha {sharedSkillsCount} habilidades com você"
-      },
-      "params": [
-        "candidateName",
-        "sharedSkillsCount"
-      ]
-    },
-    "CONNECTION_REQUEST": {
-      "title": {
-        "en": "{actorName} wants to connect",
-        "pt-BR": "{actorName} quer se conectar"
-      },
-      "body": {
-        "en": "{actorName} sent you a connection request",
-        "pt-BR": "{actorName} enviou um pedido de conexão"
-      },
-      "params": [
-        "actorName"
-      ]
-    },
     "FIT_PROFILE_EXPIRED": {
       "title": {
         "en": "Your fit profile expired",
@@ -2733,19 +2331,6 @@ export const DICTIONARIES = {
       "params": [
         "daysLeft",
         "expiresAt"
-      ]
-    },
-    "FOLLOW_NEW": {
-      "title": {
-        "en": "{actorName} started following you",
-        "pt-BR": "{actorName} começou a te seguir"
-      },
-      "body": {
-        "en": "{actorName} is now following you",
-        "pt-BR": "{actorName} agora te segue"
-      },
-      "params": [
-        "actorName"
       ]
     },
     "MATCH_RECOMMENDATIONS_READY": {
@@ -2776,62 +2361,6 @@ export const DICTIONARIES = {
         "messageExcerpt"
       ]
     },
-    "POST_BOOKMARKED": {
-      "title": {
-        "en": "{actorName} saved your post",
-        "pt-BR": "{actorName} salvou seu post"
-      },
-      "body": {
-        "en": "{actorName} bookmarked \"{postExcerpt}\"",
-        "pt-BR": "{actorName} salvou \"{postExcerpt}\""
-      },
-      "params": [
-        "actorName",
-        "postExcerpt"
-      ]
-    },
-    "POST_COMMENTED": {
-      "title": {
-        "en": "{actorName} commented on your post",
-        "pt-BR": "{actorName} comentou no seu post"
-      },
-      "body": {
-        "en": "{actorName} commented: \"{commentExcerpt}\"",
-        "pt-BR": "{actorName} comentou: \"{commentExcerpt}\""
-      },
-      "params": [
-        "actorName",
-        "commentExcerpt"
-      ]
-    },
-    "POST_LIKED": {
-      "title": {
-        "en": "{actorName} liked your post",
-        "pt-BR": "{actorName} curtiu seu post"
-      },
-      "body": {
-        "en": "{actorName} liked your post \"{postExcerpt}\"",
-        "pt-BR": "{actorName} curtiu seu post \"{postExcerpt}\""
-      },
-      "params": [
-        "actorName",
-        "postExcerpt"
-      ]
-    },
-    "POST_REPOSTED": {
-      "title": {
-        "en": "{actorName} reposted your post",
-        "pt-BR": "{actorName} repostou seu post"
-      },
-      "body": {
-        "en": "{actorName} reposted \"{postExcerpt}\"",
-        "pt-BR": "{actorName} repostou \"{postExcerpt}\""
-      },
-      "params": [
-        "actorName",
-        "postExcerpt"
-      ]
-    },
     "RESUME_QUALITY_IMPROVED": {
       "title": {
         "en": "Your resume score moved up to {newRank}",
@@ -2860,20 +2389,6 @@ export const DICTIONARIES = {
         "newScore",
         "previousRank",
         "newRank"
-      ]
-    },
-    "SKILL_DECAY": {
-      "title": {
-        "en": "\"{skillName}\" is getting rusty",
-        "pt-BR": "\"{skillName}\" está enferrujando"
-      },
-      "body": {
-        "en": "You have not touched \"{skillName}\" in {daysIdle} days. Time to dust it off?",
-        "pt-BR": "Você não mexe em \"{skillName}\" há {daysIdle} dias. Hora de revisitar?"
-      },
-      "params": [
-        "skillName",
-        "daysIdle"
       ]
     }
   },

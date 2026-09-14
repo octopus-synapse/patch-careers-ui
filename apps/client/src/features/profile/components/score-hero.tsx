@@ -9,9 +9,9 @@
 import {
   ScoreRing,
   scoreGrade,
-  scoreTone,
+  scoreInk,
   Text,
-  toneToEditorialKey,
+  useThemeName,
   XStack,
   YStack,
 } from "@patch-careers/ui";
@@ -92,6 +92,7 @@ export function ScoreHero({ onOpen }: { onOpen: () => void }): ReactElement | nu
  * score (AI unavailable / no style yet) renders "—" over an empty track. */
 function HeroBar({ label, value }: { label: string; value: number | null }): ReactElement {
   const palette = useEditorialPalette();
+  const themeName = useThemeName();
   const v = value === null ? null : Math.round(value);
   return (
     <YStack gap={5}>
@@ -112,7 +113,7 @@ function HeroBar({ label, value }: { label: string; value: number | null }): Rea
           <YStack
             height={3}
             borderRadius={2}
-            backgroundColor={palette[toneToEditorialKey(scoreTone(v))]}
+            backgroundColor={scoreInk(v, themeName)}
             width={`${Math.max(4, Math.min(100, v))}%`}
           />
         ) : null}

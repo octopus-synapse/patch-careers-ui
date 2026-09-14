@@ -10,6 +10,26 @@ export const sectionsPtBR: TranslationDict = {
   back: "Voltar",
   loadError: "Não foi possível carregar as seções do currículo.",
   atCapacity: "Limite de itens atingido",
+  // An empty end date is not missing data — it means the entry is current.
+  present: "Presente",
+  item: {
+    editA11y: "Editar {title}",
+    handWritten: "escrito por você",
+    stale: "desatualizado",
+    untranslated: "no idioma original",
+  },
+  rewrite: {
+    title: "E a versão em {locale}?",
+    intro:
+      "Você mudou este item. Assim ficaria a versão no outro idioma — aceite, recuse ou reescreva cada mudança.",
+    accept: "Aceitar",
+    refuse: "Recusar",
+    keep: "Manter como está",
+    apply: "Aplicar",
+    editA11y: "Editar a reescrita de {field}",
+    localePt: "português",
+    localeEn: "inglês",
+  },
   links: {
     kindPickerTitle: "Tipo de link",
     urlLabel: "Endereço (URL)",
@@ -39,6 +59,25 @@ export const sectionsEn: TranslationDict = {
   back: "Back",
   loadError: "Could not load the resume sections.",
   atCapacity: "Item limit reached",
+  present: "Present",
+  item: {
+    editA11y: "Edit {title}",
+    handWritten: "written by you",
+    stale: "out of date",
+    untranslated: "in the original language",
+  },
+  rewrite: {
+    title: "And the {locale} version?",
+    intro:
+      "You changed this item. This is what the other language's version would become — accept, refuse or rewrite each change.",
+    accept: "Accept",
+    refuse: "Refuse",
+    keep: "Keep as is",
+    apply: "Apply",
+    editA11y: "Edit the rewrite of {field}",
+    localePt: "Portuguese",
+    localeEn: "English",
+  },
   links: {
     kindPickerTitle: "Link type",
     urlLabel: "URL",
