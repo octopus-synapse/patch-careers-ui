@@ -5,16 +5,13 @@
  * across the precomputed recommendations ("78–92% em 14 vagas") over a 0–100
  * track, with a per-job sheet behind a tap.
  *
- * Collapses silently while the fit lifecycle resolves, without a responded
- * fit profile (the profile page's Fit card owns that invitation), or before
- * the match worker has precomputed anything.
+ * Collapses silently before the match worker has precomputed anything.
  */
 import { scoreInk, Text, useThemeName, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { ChevronRight } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Pressable } from "react-native";
-import { useFitStatus } from "@/features/fit";
 import { useI18n } from "@/providers/i18n-provider";
 import { useRecommendedJobs } from "../hooks/use-recommended-jobs";
 import type { RecommendedJob } from "../types";
@@ -28,12 +25,10 @@ export function MarketPulseCard({
   const { t } = useI18n();
   const palette = useEditorialPalette();
   const themeName = useThemeName();
-  const fit = useFitStatus();
-  const responded = fit.data?.status === "responded";
-  const recs = useRecommendedJobs(responded);
+  const recs = useRecommendedJobs(true);
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  if (fit.isPending || !responded || recs.jobs.length === 0) return null;
+  if (recs.jobs.length === 0) return null;
 
   const scores = recs.jobs.map((job) => Math.round(job.matchScore));
   const min = Math.min(...scores);

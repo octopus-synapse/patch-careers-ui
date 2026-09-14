@@ -1,6 +1,6 @@
 /**
- * Match feature — public API. The "Recomendadas pra você" section (carousel +
- * blur/lock gate) for the Jobs tab. Import only from "@/features/match".
+ * Match feature — public API for recommendations and job compatibility.
+ * Import only from "@/features/match".
  */
 export { MarketPulseCard } from "./components/market-pulse-card";
 export { MatchBreakdown, type MatchBreakdownJob } from "./components/match-breakdown";

@@ -1,4 +1,4 @@
-/** Editorial Calm styles for the Match surface (Recomendadas carousel + gate). */
+/** Editorial Calm styles for the Match surface (recommendations and breakdown). */
 import {
   type EditorialPalette,
   editorialPalette,
@@ -48,58 +48,6 @@ const mtFor = (p: EditorialPalette) =>
     },
     title: { fontFamily: fonts.serif, fontSize: 17, lineHeight: 22, color: p.ink },
     meta: { fontFamily: fonts.sans, fontSize: 12, color: p.subtle },
-
-    // gate
-    gateWrap: {
-      marginHorizontal: 20,
-      borderRadius: 16,
-      overflow: "hidden",
-      borderWidth: 1,
-      borderColor: p.hairline,
-      minHeight: 168,
-    },
-    gateWrapRoomy: {
-      minHeight: 196,
-    },
-    gateTeaser: { flexDirection: "row", gap: 12, padding: 14 },
-    gateTeaserRoomy: { padding: 18 },
-    gateTeaserCard: { width: 200, height: 120, borderRadius: 12, backgroundColor: p.bg },
-    gateOverlay: {
-      ...StyleSheet.absoluteFillObject,
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 8,
-      paddingHorizontal: 24,
-    },
-    gateOverlayRoomy: {
-      paddingHorizontal: 28,
-      paddingVertical: 24,
-    },
-    gateTitle: {
-      fontFamily: fonts.serif,
-      fontSize: 19,
-      lineHeight: 24,
-      color: p.ink,
-      textAlign: "center",
-    },
-    gateBody: {
-      fontFamily: fonts.sans,
-      fontSize: 13,
-      lineHeight: 19,
-      color: p.body,
-      textAlign: "center",
-    },
-    gateBtn: {
-      marginTop: 6,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 8,
-      backgroundColor: p.primary,
-      paddingVertical: 12,
-      paddingHorizontal: 22,
-      borderRadius: 999,
-    },
-    gateBtnLabel: { fontFamily: fonts.sans, fontSize: 14, fontWeight: "600", color: p.onPrimary },
 
     // breakdown (job detail)
     chip: {

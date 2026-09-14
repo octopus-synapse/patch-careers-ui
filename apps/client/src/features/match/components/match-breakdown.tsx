@@ -2,8 +2,7 @@
  * <MatchBreakdown> — the compatibility panel on a job detail. Shows the
  * overall score ring + available sub-scores and skill gaps (deep-linking
  * to improve the resume). Tailoring moved into the job detail's apply flow.
- * Culture is never surfaced — only the role-derived fit signal feeds the
- * "Perfil" sub-score.
+ * Only job-related evidence contributes to candidate Match.
  */
 import { ScoreExplainSheet, ScorePanel, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
@@ -23,7 +22,7 @@ export type MatchBreakdownJob = {
   description: string | null;
 };
 
-const SUB_KEYS = ["keyword", "requirements", "semantic", "fit"] as const;
+const SUB_KEYS = ["keyword", "requirements", "semantic"] as const;
 
 export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElement | null {
   const { t } = useI18n();
