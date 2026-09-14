@@ -1,7 +1,7 @@
 /**
  * AuthMascot — the two-piece jigsaw character that sits on top of the auth
  * card and reacts to the form (ported from the approved
- * `signup-mascot-demo.html` prototype).
+ * sign-up mascot prototype).
  *
  * Two layers share one coordinate system: the *body* is rendered behind the
  * card, the *arms* in front of it, so the forearms rest on the card's top

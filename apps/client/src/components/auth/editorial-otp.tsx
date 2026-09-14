@@ -4,7 +4,7 @@
  * TextInput. The single real field is what gives OS one-time-code autofill
  * and paste for free; the cells only draw its value.
  *
- * Visual states mirror `verify-code-demo.html`: the active cell lifts with an
+ * Visual states mirror `docs/design/verify-code-demo.html`: the active cell lifts with an
  * accent border, `error` washes the row red and shakes it, `done` washes it
  * with the accent, `loading` dims it.
  */

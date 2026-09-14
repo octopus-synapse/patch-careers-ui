@@ -1,15 +1,20 @@
 /**
- * Settings home — IG-style grouped list. Each group is a row that pushes its
- * sub-screen; sign-out is pinned at the bottom.
+ * Settings home — two screens behind one route.
+ *
+ * Mobile: an IG-style grouped list, each group a row that pushes its
+ * sub-screen, sign-out pinned at the bottom. Desktop web: the whole of settings
+ * on one page (`SettingsDesktopPage`), because there the four sections fit
+ * together and a hub that only forwards you elsewhere earns nothing.
  */
 
 import { logout } from "@patch-careers/auth";
 import { YStack } from "@patch-careers/ui";
 import { SettingsCard, SettingsRow } from "@patch-careers/ui/editorial";
-import { type Href, Redirect, useRouter } from "expo-router";
+import { type Href, useRouter } from "expo-router";
 import { Bell, LockKeyhole, LogOut, Palette, UserRound } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
+import { SettingsDesktopPage } from "@/features/settings";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
@@ -20,9 +25,9 @@ export default function SettingsHome(): ReactElement {
   const isDesktopWeb = useIsDesktopWeb();
   const go = (path: Href): void => router.push(path);
 
-  // Desktop web has no hub screen — the shell's rail plays that role, so land
-  // on the first section with it highlighted (mirrors the approved demo).
-  if (isDesktopWeb) return <Redirect href="/settings/account" />;
+  // Desktop web has no hub screen: every section fits on one page there, with
+  // the rail marking which one you are reading. `?section=` opens it partway.
+  if (isDesktopWeb) return <SettingsDesktopPage />;
 
   async function signOut(): Promise<void> {
     await logout();

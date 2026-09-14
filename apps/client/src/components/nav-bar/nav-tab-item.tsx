@@ -53,14 +53,14 @@ export function NavTabItem({
             a tight relative wrapper anchors the corner badge. */}
         <YStack height={24} alignItems="center" justifyContent="center">
           <YStack position="relative">
-            {renderIcon({ focused, color, size: 22 })}
+            {renderIcon({ focused, color, size: 23 })}
             {badge}
           </YStack>
         </YStack>
         <XStack alignItems="center">
           <Text
-            fontSize={12.5}
-            lineHeight={15}
+            fontSize={13}
+            lineHeight={16}
             fontWeight={focused ? "600" : "400"}
             color={color}
             numberOfLines={1}

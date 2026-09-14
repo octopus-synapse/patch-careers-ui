@@ -20,44 +20,60 @@ export type CountBadgeProps = {
   count: number;
   /** Counts above this render as `"{max}+"`. Defaults to 99. */
   max?: number;
+  /**
+   * Flip to paper-on-ink. For when the thing under the badge has itself filled
+   * with a strong colour (the navbar's engaged circular controls) — an accent
+   * pill on an accent fill is a smudge, so the badge inverts to stay a badge.
+   */
+  inverted?: boolean;
 };
 
-export function CountBadge({ count, max = 99 }: CountBadgeProps): ReactElement | null {
+export function CountBadge({
+  count,
+  max = 99,
+  inverted = false,
+}: CountBadgeProps): ReactElement | null {
   const styles = stylesByTheme[useThemeName()];
   if (count <= 0) return null;
   const label = count > max ? `${max}+` : String(count);
 
   return (
-    <View style={styles.badge} pointerEvents="none">
-      <Text style={styles.label} numberOfLines={1}>
+    <View style={inverted ? styles.badgeInverted : styles.badge} pointerEvents="none">
+      <Text style={inverted ? styles.labelInverted : styles.label} numberOfLines={1}>
         {label}
       </Text>
     </View>
   );
 }
 
-const stylesFor = (p: EditorialPalette) =>
-  StyleSheet.create({
-    badge: {
-      position: "absolute",
-      top: -5,
-      right: -6,
-      minWidth: 16,
-      height: 16,
-      paddingHorizontal: 3,
-      borderRadius: 8,
-      backgroundColor: p.accent,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    label: {
-      fontFamily: fonts.sans,
-      color: "#FFFFFF",
-      fontSize: 10,
-      lineHeight: 12,
-      fontWeight: "700",
-    },
+const stylesFor = (p: EditorialPalette) => {
+  const badge = {
+    position: "absolute",
+    top: -5,
+    right: -6,
+    minWidth: 16,
+    height: 16,
+    paddingHorizontal: 3,
+    borderRadius: 8,
+    backgroundColor: p.accent,
+    alignItems: "center",
+    justifyContent: "center",
+  } as const;
+  const label = {
+    fontFamily: fonts.sans,
+    color: "#FFFFFF",
+    fontSize: 10,
+    lineHeight: 12,
+    fontWeight: "700",
+  } as const;
+
+  return StyleSheet.create({
+    badge,
+    label,
+    badgeInverted: { ...badge, backgroundColor: p.surface },
+    labelInverted: { ...label, color: p.ink },
   });
+};
 
 // Precomputed per theme so style-object identity is stable across renders.
 const stylesByTheme = {

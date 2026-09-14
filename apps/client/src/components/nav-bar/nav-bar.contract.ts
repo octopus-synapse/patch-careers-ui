@@ -19,9 +19,18 @@ export const NAV_BAR_HEIGHT_PUBLIC = 76;
 /** Kept under its old name: the onboarding wizard pads its column by it. */
 export const PUBLIC_NAV_BAR_HEIGHT = NAV_BAR_HEIGHT_PUBLIC;
 
-/** One destination column — sized for the widest label at 12.5px. */
-export const NAV_ITEM_WIDTH = 88;
-export const NAV_SEARCH_WIDTH = 290;
+/** One destination column — sized for the widest label at 13px. */
+export const NAV_ITEM_WIDTH = 96;
+/**
+ * The search pill, in two sizes. Messages left the cluster for a circular
+ * control, so three columns now cost `3*96 + 2*8 = 304` instead of four's 376 —
+ * and the pill takes the slack back. Below 1200 it gives some of it up again:
+ * the cluster is centred on the viewport, so each margin is
+ * `(width - cluster) / 2`, and the busier right side needs
+ * `36 (padding) + 3*42 (messages, bell, hamburger) + 2*12 ≈ 186`.
+ */
+export const NAV_SEARCH_WIDTH = 380;
+export const NAV_SEARCH_WIDTH_TIGHT = 290;
 /** Between the search pill and the tab cluster. */
 export const NAV_CLUSTER_GAP = 30;
 export const NAV_TAB_GAP = 8;

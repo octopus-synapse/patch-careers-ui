@@ -31,7 +31,7 @@ const stylesFor = (p: EditorialPalette) =>
     },
     scrollBody: { paddingHorizontal: 20, paddingTop: 12, gap: 8 },
     // Sentence-case group label, styled like the pane description (the approved
-    // settings-web-demo killed the small-caps kicker).
+    // desktop settings design killed the small-caps kicker).
     sectionHeader: {
       fontFamily: editorialFonts.sans,
       fontSize: 13,
@@ -89,7 +89,7 @@ const stylesFor = (p: EditorialPalette) =>
       color: p.muted,
     },
     pillLabelSelected: { color: p.ink, fontWeight: "600" },
-    // Contained segmented control (settings-web-demo): hairline track on the
+    // Contained segmented control (desktop settings design): hairline track on the
     // panel tone, active segment filled with ink over the page bg text.
     segTrack: {
       flexDirection: "row",

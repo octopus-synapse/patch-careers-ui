@@ -72,7 +72,7 @@ export function PillSelect<T extends string>({
   );
 }
 
-/** Contained segmented control from the approved settings-web-demo: a hairline
+/** Contained segmented control from the approved desktop settings design: a hairline
  *  track on the panel tone; the active segment fills with ink. */
 export function SegmentedSelect<T extends string>({
   options,
@@ -133,7 +133,7 @@ function SegmentedOption<T extends string>({
   );
 }
 
-/** Desktop-web setting row (settings-web-demo): sentence-case label plus a
+/** Desktop-web setting row (desktop settings design): sentence-case label plus a
  *  muted description on the left, a segmented control on the right. */
 export function SettingSelectRow<T extends string>({
   label,

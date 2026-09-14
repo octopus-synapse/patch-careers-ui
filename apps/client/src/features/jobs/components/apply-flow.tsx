@@ -33,7 +33,6 @@ import * as WebBrowser from "expo-web-browser";
 import { Check, Download, FileText, Sparkles } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView } from "react-native";
-import { useFitStatus } from "@/features/fit";
 import { useDefaultMatchResume } from "@/features/match";
 import { useI18n } from "@/providers/i18n-provider";
 import type { AppliedCv } from "../hooks/use-report-applied";
@@ -69,14 +68,12 @@ export function ApplyFlow({
   const [cv, setCv] = useState<ApplyCv | null>(null);
 
   const { resumeId, quality } = useDefaultMatchResume();
-  // Mirrors the backend tailor gates (fit profile answered + min quality);
+  // Mirrors the backend's minimum resume quality gate;
   // null quality = unknown → allow, server decides.
-  const fit = useFitStatus();
-  const fitGated = fit.data?.status !== "responded";
   const tailorLocked = quality !== null && quality < 50;
 
   // Current compatibility — shares the cache with the MatchBreakdown below
-  // this sheet; unavailable (fit gate, no resume) degrades the copy only.
+  // this sheet; unavailable without a resume degrades the copy only.
   const match = useGetV1MatchResumeIdJobId(resumeId ?? "", job.id, {
     query: { enabled: open && Boolean(resumeId) },
   });
@@ -94,7 +91,7 @@ export function ApplyFlow({
   }, [open]);
 
   const startTailor = (): void => {
-    if (!resumeId || tailorLocked || fitGated || tailor.isPending) return;
+    if (!resumeId || tailorLocked || tailor.isPending) return;
     setStep("tailoring");
     tailor.mutate(
       { resumeId, data: { jobId: job.id } },
@@ -146,7 +143,6 @@ export function ApplyFlow({
           job={job}
           matchBefore={matchBefore}
           tailorLocked={tailorLocked}
-          fitGated={fitGated}
           canTailor={Boolean(resumeId)}
           onTailor={startTailor}
           onMaster={chooseMaster}
@@ -182,7 +178,6 @@ function ChoiceStep({
   job,
   matchBefore,
   tailorLocked,
-  fitGated,
   canTailor,
   onTailor,
   onMaster,
@@ -190,7 +185,6 @@ function ChoiceStep({
   job: ExternalJob;
   matchBefore: number | null;
   tailorLocked: boolean;
-  fitGated: boolean;
   canTailor: boolean;
   onTailor: () => void;
   onMaster: () => void;
@@ -213,14 +207,10 @@ function ChoiceStep({
         title={t("jobs.applyFlow.chooseTailor")}
         body={t("jobs.applyFlow.chooseTailorBody")}
         meta={t("jobs.applyFlow.chooseTailorMeta")}
-        disabled={!canTailor || tailorLocked || fitGated}
+        disabled={!canTailor || tailorLocked}
         onPress={onTailor}
       />
-      {fitGated ? (
-        <Text fontFamily={fonts.sans} fontSize={12} lineHeight={17} color={palette.muted}>
-          {t("jobs.applyFlow.chooseTailorFitGate")}
-        </Text>
-      ) : tailorLocked ? (
+      {tailorLocked ? (
         <Text fontFamily={fonts.sans} fontSize={12} lineHeight={17} color={palette.muted}>
           {t("jobs.applyFlow.chooseTailorLocked")}
         </Text>

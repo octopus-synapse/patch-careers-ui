@@ -13,7 +13,10 @@
  * toast/router/query-client through refs, so re-renders never leak or
  * duplicate subscriptions. `ensureRegistered` is exposed via context so the
  * Notifications tab's soft pre-prompt can register the token immediately after
- * the user opts in.
+ * the user opts in, and `enablePush` alongside it so a screen that flips a push
+ * toggle gets the whole prompt-then-register handshake without reaching into
+ * the notifications feature itself (this provider is where the service legally
+ * lives; `features/settings` may not import `features/notifications`).
  */
 
 import { useToast } from "@patch-careers/ui";
@@ -42,10 +45,24 @@ import {
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 
-type NotificationsContextValue = { ensureRegistered: () => Promise<boolean> };
+/**
+ * What `enablePush` resolves to. `declined` is the user saying no at the OS
+ * prompt — not a failure, so the caller stays quiet; `error` is registration
+ * failing after permission was granted, and carries the reason to show.
+ */
+export type EnablePushResult =
+  | { outcome: "enabled" }
+  | { outcome: "declined" }
+  | { outcome: "error"; reason: string | undefined };
+
+type NotificationsContextValue = {
+  ensureRegistered: () => Promise<boolean>;
+  enablePush: () => Promise<EnablePushResult>;
+};
 
 const NotificationsContext = createContext<NotificationsContextValue>({
   ensureRegistered: async () => false,
+  enablePush: async () => ({ outcome: "declined" }),
 });
 
 type ToastApi = ReturnType<typeof useToast>;
@@ -115,7 +132,18 @@ export function NotificationsProvider({ children }: { children: ReactNode }): Re
   }, [isAuthenticated, hasBootstrapped]);
 
   const value = useMemo<NotificationsContextValue>(
-    () => ({ ensureRegistered }),
+    () => ({
+      ensureRegistered,
+      enablePush: async (): Promise<EnablePushResult> => {
+        const service = getNotificationService();
+        const status = await service.requestPermission();
+        if (status !== "granted") return { outcome: "declined" };
+        if (!(await ensureRegistered())) {
+          return { outcome: "error", reason: service.getLastRegistrationError?.() ?? undefined };
+        }
+        return { outcome: "enabled" };
+      },
+    }),
     [ensureRegistered],
   );
 

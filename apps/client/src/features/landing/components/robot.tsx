@@ -1,6 +1,6 @@
 /**
  * `LandingRobot` — the ATS robot from the prototype's scene, geometry ported
- * verbatim from `landing-demo-v15.html` (viewBox 0 0 200 250): rounded shell,
+ * verbatim from `docs/design/landing-demo-v16.html` (viewBox 0 0 200 250): rounded shell,
  * dark screen face, antenna ears, chest display and little feet.
  *
  * Faces mirror the demo's states — `idle` (round eyes + smile), `scan` (flat

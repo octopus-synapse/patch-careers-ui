@@ -1,9 +1,7 @@
 /**
  * Reads the Match Score for a (resume, job) pair. Cached server-side, computed
  * on demand — external listings are matchable via the job-match engine's
- * external loader. Gated by `resumeId` presence; the breakdown gates on the
- * fit profile separately (via `useFitStatus`) so we never fire this without a
- * fit profile and trip the 403.
+ * external loader. Requires a resume; Fit is optional.
  */
 import {
   type GetV1MatchResumeIdJobId200,

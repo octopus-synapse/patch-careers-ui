@@ -5,7 +5,7 @@
  * the bottom-right corner, the check traces inside it and a ring breathes
  * out — the "stamp" moment.
  *
- * Timings mirror the approved `verify-code-demo.html` choreography and are
+ * Timings mirror the approved `docs/design/verify-code-demo.html` choreography and are
  * relative to mount, so mount it exactly when the sequence calls for it.
  */
 

@@ -42,7 +42,9 @@ export function isChromePath(pathname: string): boolean {
 /**
  * Stacked details keep their section lit — a job detail lights Vagas, a
  * conversation lights Mensagens — mirroring how the web reads "where am I".
- * `notifications` no longer names a tab; it lights the bell instead.
+ * Neither `messages` nor `notifications` names a tab on the web bar any more:
+ * each lights its own circular control instead. The keys stay as they are —
+ * what changed is which chrome reads them.
  */
 export function activeNavKey(pathname: string): NavKey | null {
   const path = withoutLocale(pathname);

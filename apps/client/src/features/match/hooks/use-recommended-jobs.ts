@@ -1,8 +1,7 @@
 /**
  * Reads the precomputed match-ranked recommendations (`/v1/jobs/recommended`,
- * backed by the job-match worker's top-N cache). Gated by `enabled` so we only
- * fetch once the caller has a fit profile — the section shows the gate
- * otherwise. Empty until the worker has run for the user.
+ * backed by the job-match worker's top-N cache). Empty until the worker
+ * has run for the user. Fit is optional for viewing Match.
  */
 import { useGetV1JobsRecommended } from "@patch-careers/api-client";
 import type { RecommendedJob } from "../types";

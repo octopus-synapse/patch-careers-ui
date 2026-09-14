@@ -1,15 +1,17 @@
 /**
  * SearchModal — the command-palette global search (DocSearch style): a
- * floating card anchored near the top of the screen over a soft scrim,
+ * floating card over a soft scrim,
  * opened from the header's SearchTrigger. Owns the real input (autofocused),
  * the grouped `GET /v1/search/global` results, and — while the term is
- * short — the persisted recents + Explorar shortcuts.
+ * short — the persisted recents (plus, on mobile, the Explorar shortcuts).
  *
- * Top-anchored on purpose: the card visually "grows" out of the header
- * trigger, and the keyboard never collides with it. The card's max height
- * tracks the keyboard via Keyboard events — `KeyboardAvoidingView` can't be
- * trusted here because Android Modals with `statusBarTranslucent` ignore
- * `adjustResize`. Chrome follows <ConfirmDialog>: transparent RN Modal +
+ * Top-anchored on mobile, on purpose: the card visually "grows" out of the
+ * header trigger, and the keyboard never collides with it. The card's max
+ * height tracks the keyboard via Keyboard events — `KeyboardAvoidingView`
+ * can't be trusted here because Android Modals with `statusBarTranslucent`
+ * ignore `adjustResize`. Desktop web has neither problem and a much taller
+ * window, so there the card centres in both axes and the recents are all it
+ * carries. Chrome follows <ConfirmDialog>: transparent RN Modal +
  * Animated card (fade/scale, entering from above). Dismiss: outside tap,
  * ✕, Android back, and Escape on web (mirrored by the "esc" hint chip).
  */
@@ -35,6 +37,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 import { SEARCH_MIN_CHARS, useGlobalSearch } from "../hooks/use-global-search";
 import { useRecentSearchesStore } from "../model/recent-searches.store";
@@ -76,6 +79,7 @@ export function SearchModal({
   onClose: () => void;
 }): ReactElement {
   const { t } = useI18n();
+  const isDesktopWeb = useIsDesktopWeb();
   const editorialPalette = useEditorialPalette();
   const themeName = useThemeName();
   const insets = useSafeAreaInsets();
@@ -90,7 +94,10 @@ export function SearchModal({
   const topOffset = insets.top + TOP_GAP;
   const cardWidth = Math.min(560, screenW - 32);
   // Never extend under the keyboard; otherwise cap like a palette, not a sheet.
-  const cardMaxHeight = Math.min(520, screenH - topOffset - keyboardHeight - BOTTOM_GAP);
+  // Centred, the card is bounded by the window on both sides instead.
+  const cardMaxHeight = isDesktopWeb
+    ? Math.min(520, screenH - 2 * BOTTOM_GAP)
+    : Math.min(520, screenH - topOffset - keyboardHeight - BOTTOM_GAP);
 
   // `anim`: 0 = hidden, 1 = shown. `visible` keeps the Modal mounted through
   // the exit animation before unmounting (mirrors <ConfirmDialog>). Exit is
@@ -168,7 +175,11 @@ export function SearchModal({
 
   const showEmptyState = term.trim().length < SEARCH_MIN_CHARS;
   // Enter from above — the card spatially "drops out of" the header trigger.
-  const translateY = anim.interpolate({ inputRange: [0, 1], outputRange: [-12, 0] });
+  // Centred it has no trigger to drop out of, so it only settles a little.
+  const translateY = anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [isDesktopWeb ? -6 : -12, 0],
+  });
   const scale = anim.interpolate({ inputRange: [0, 1], outputRange: [0.97, 1] });
 
   return (
@@ -201,9 +212,8 @@ export function SearchModal({
         accessibilityViewIsModal
         style={[
           styles.card,
+          isDesktopWeb ? styles.centered : { alignSelf: "center", marginTop: topOffset },
           {
-            alignSelf: "center",
-            marginTop: topOffset,
             width: cardWidth,
             maxHeight: cardMaxHeight,
             backgroundColor: editorialPalette.surface,
@@ -337,6 +347,17 @@ export function SearchModal({
 
 // @style-allow stylesheet: animated command-palette card (Animated.Value fade/scale enter/exit)
 const styles = StyleSheet.create({
+  // Centres the card in the window without a percentage transform: the modal
+  // root fills the screen, so `margin: auto` on an absolutely positioned box
+  // splits the leftover space evenly on all four sides.
+  centered: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    margin: "auto",
+  },
   card: {
     borderRadius: 22,
     borderWidth: 1,

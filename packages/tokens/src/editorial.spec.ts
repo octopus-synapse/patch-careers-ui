@@ -6,7 +6,9 @@ import {
   editorialPalette,
   editorialPaletteDark,
   editorialPalettes,
+  navFilled,
 } from "./editorial";
+import { landingAccents } from "./landing";
 
 describe("editorialPalette", () => {
   const slots = [
@@ -134,6 +136,60 @@ describe("editorialOverlays", () => {
 
     expect(rgbOf(editorialOverlays.light.dangerWash)).toBe(asRgb(editorialPalette.danger));
     expect(rgbOf(editorialOverlays.dark.dangerWash)).toBe(asRgb(editorialPaletteDark.danger));
+  });
+});
+
+describe("navFilled", () => {
+  it("covers the same themes as the palettes", () => {
+    expect(Object.keys(navFilled).sort()).toEqual(Object.keys(editorialPalettes).sort());
+  });
+
+  it("dark mirrors light's slots exactly", () => {
+    expect(Object.keys(navFilled.dark).sort()).toEqual(Object.keys(navFilled.light).sort());
+  });
+
+  it("is opaque hex in both schemes", () => {
+    for (const scheme of Object.values(navFilled)) {
+      for (const value of Object.values(scheme)) {
+        expect(value).toMatch(/^#[0-9A-F]{6}$/);
+      }
+    }
+  });
+
+  it("fills with the brand indigo, not the product's UI accent", () => {
+    // The light fill IS the brandmark's blue — the same one the landing and the
+    // onboarding progress bar speak in. If that ever drifts, the navbar stops
+    // agreeing with the logo sitting 900px to its left.
+    expect(navFilled.light.accent).toBe(landingAccents.indigo.accent);
+    expect(navFilled.light.accent).not.toBe(editorialPalette.accent);
+  });
+
+  it("lifts the dark fill off dark paper while keeping a white glyph", () => {
+    const luminance = (hex: string): number =>
+      [1, 3, 5].reduce((sum, i) => sum + Number.parseInt(hex.slice(i, i + 2), 16), 0);
+
+    // Lighter than the light-scheme fill, so it separates from warm dark paper…
+    expect(luminance(navFilled.dark.accent)).toBeGreaterThan(luminance(navFilled.light.accent));
+    // …but still dark enough that the inverted glyph on top stays white.
+    expect(luminance(navFilled.dark.accent)).toBeLessThan(luminance(editorialPaletteDark.ink));
+  });
+
+  it("keeps the danger fill dark enough for white content in both schemes", () => {
+    // WCAG relative luminance; white on the fill must clear 4.5:1, because the
+    // sign-out row puts a real label on it, not just a glyph.
+    const contrastWithWhite = (hex: string): number => {
+      const channel = (i: number): number => {
+        const c = Number.parseInt(hex.slice(i, i + 2), 16) / 255;
+        return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+      };
+      const l = 0.2126 * channel(1) + 0.7152 * channel(3) + 0.0722 * channel(5);
+      return 1.05 / (l + 0.05);
+    };
+
+    expect(contrastWithWhite(navFilled.light.danger)).toBeGreaterThan(4.5);
+    expect(contrastWithWhite(navFilled.dark.danger)).toBeGreaterThan(4.5);
+    // And it must not be mistaken for the accent — leaving reads differently.
+    expect(navFilled.light.danger).not.toBe(navFilled.light.accent);
   });
 });
 

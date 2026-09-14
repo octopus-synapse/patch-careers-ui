@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Menu do hambúrguer — versão final</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500&family=Inter:wght@100..900&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+
+  <style>
+    :root {
+      --bg: #F7F4EE;
+      --panel: #FFFFFF;
+      --ink: #111111;
+      --body: #3F3F46;
+      --muted: #6B6B6B;
+      --subtle: #A1A1AA;
+      --hair: #E4DFD5;
+      --hair-strong: #D6D0C4;
+      --indigo: #0056B3;
+      --indigo-soft: #E9EBFC;
+      --indigo-deep: #3B47B8;
+      --danger: #C0392E;
+      --danger-soft: #FAECEA;
+      --shadow: 0 30px 60px -30px rgba(0, 0, 0, .28);
+      --lift: 0 1px 2px rgba(0, 0, 0, .06);
+      --avatar-bg: #33322E;
+      --avatar-ink: #F7F4EE;
+    }
+
+    html.dark {
+      --bg: #1A1916;
+      --panel: #232220;
+      --ink: #F5F5F0;
+      --body: #C8C8C2;
+      --muted: #8A8A84;
+      --subtle: #5F5F5A;
+      --hair: #2E2D28;
+      --hair-strong: #3A3933;
+      --indigo: #0073B1;
+      --indigo-soft: #272B44;
+      --indigo-deep: #B9C1FA;
+      --danger: #F08A80;
+      --danger-soft: #2E1F1D;
+      --shadow: 0 30px 60px -30px rgba(0, 0, 0, .65);
+      --lift: 0 1px 2px rgba(0, 0, 0, .35);
+      --avatar-bg: #DAD8D1;
+      --avatar-ink: #2B2A27;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, system-ui, sans-serif;
+      transition: background .25s ease, color .25s ease;
+    }
+
+    .kicker {
+      font: 500 12px/1 "JetBrains Mono", monospace;
+      color: var(--muted);
+    }
+
+    .note {
+      font: 400 13px/1.6 Inter, sans-serif;
+      color: var(--muted);
+    }
+
+    /* ═════════════ painel ═════════════ */
+
+    .drop {
+      width: 290px;
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 7px;
+      overflow: hidden;
+    }
+
+    /* ═════════════ banner: duas peças de quebra-cabeça ═════════════ */
+
+    .banner {
+      height: 72px;
+      border-radius: 10px 10px 0 0;
+      margin: -7px -7px 0 -7px;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+
+      /* peça esquerda, peça direita e o vinco entre elas */
+      --pz-left: #E2E8F0;
+      --pz-right: #C3CDDA;
+      --pz-seam: rgba(15, 23, 42, .10);
+    }
+
+    html.dark .banner {
+      --pz-left: #4C565B;
+      --pz-right: #394145;
+      --pz-seam: rgba(0, 0, 0, .35);
+    }
+
+    .banner svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .pz-left {
+      fill: var(--pz-left);
+    }
+
+    .pz-right {
+      fill: var(--pz-right);
+    }
+
+    .pz-seam {
+      fill: none;
+      stroke: var(--pz-seam);
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .who {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px 14px;
+      margin-top: -34px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .who .avatar {
+      width: 62px;
+      height: 62px;
+      border-radius: 999px;
+      background: var(--avatar-bg);
+      color: var(--avatar-ink);
+      display: grid;
+      place-items: center;
+      font: 400 28px/1 Inter, sans-serif;
+      flex: none;
+      margin-bottom: 10px;
+      border: 4px solid var(--panel);
+      box-sizing: content-box;
+      overflow: hidden;
+    }
+
+    .who .avatar svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .who .nm {
+      font: 600 15px/1.2 Inter, sans-serif;
+      color: var(--ink);
+    }
+
+    .sep {
+      height: 1px;
+      background: var(--hair);
+      margin: 4px 5px 7px;
+    }
+
+    .sep.low {
+      margin: 7px 5px;
+    }
+
+    /* ═════════════ linha ═════════════ */
+
+    .row {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 8px 12px 8px 8px;
+      border-radius: 11px;
+      background: none;
+      border: 0;
+      cursor: pointer;
+      text-align: left;
+      isolation: isolate;
+      outline: none;
+    }
+
+    .row:focus-visible {
+      outline: 2px solid var(--indigo);
+      outline-offset: 2px;
+    }
+
+    /* Cortina - Animação Assimétrica */
+    .row::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: 11px;
+      background: var(--indigo-soft);
+
+      transform: scaleX(0);
+      transform-origin: left center;
+
+      /* SAÍDA: Rápida e direta */
+      transition: transform 200ms ease-out;
+    }
+
+    .row:is(:hover, :focus-visible, .demo)::before {
+      transform: scaleX(1);
+      /* ENTRADA: Fluida e elástica */
+      transition: transform 500ms cubic-bezier(.22, .61, .36, 1);
+    }
+
+    .row.danger::before {
+      background: var(--danger-soft);
+    }
+
+    /* ═════════════ disco ═════════════ */
+
+    .disc {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid var(--hair);
+      background: transparent;
+
+      display: grid;
+      place-items: center;
+      flex: none;
+
+      /* SAÍDA: Imediata e limpa */
+      transition:
+        background 200ms ease,
+        border-color 200ms ease,
+        box-shadow 200ms ease,
+        transform 200ms ease;
+    }
+
+    .row:is(:hover, :focus-visible, .demo) .disc {
+      background: var(--panel);
+      border-color: transparent;
+      box-shadow: var(--lift);
+      transform: scale(1.015);
+
+      /* ENTRADA: Detalhada */
+      transition:
+        background 420ms cubic-bezier(.22, .61, .36, 1),
+        border-color 420ms ease,
+        box-shadow 420ms cubic-bezier(.22, .61, .36, 1),
+        transform 460ms cubic-bezier(.22, .61, .36, 1);
+    }
+
+    /* ═════════════ ícone ═════════════ */
+
+    .disc svg {
+      grid-area: 1 / 1;
+      width: 18px;
+      height: 18px;
+      color: var(--muted);
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 1;
+      transform: translateY(0) scale(1) rotate(0deg);
+      filter: blur(0);
+
+      /* SAÍDA */
+      transition:
+        opacity 150ms ease,
+        color 200ms ease,
+        transform 250ms ease,
+        filter 150ms ease;
+    }
+
+    /* ENTRADA */
+    .row:is(:hover, :focus-visible, .demo) .disc svg {
+      transition:
+        opacity 360ms ease,
+        color 380ms ease,
+        transform 520ms cubic-bezier(.22, .61, .36, 1),
+        filter 360ms ease;
+    }
+
+    html:not(.dark) .disc .moon,
+    html.dark .disc .sun {
+      display: none;
+    }
+
+    .disc svg .solid {
+      fill: currentColor;
+      stroke: none;
+    }
+
+    .disc svg.hov {
+      stroke-width: 2.1;
+      opacity: 0;
+      transform: translateY(3px) scale(.84) rotate(-4deg);
+      filter: blur(.5px);
+    }
+
+    .row:is(:hover, :focus-visible, .demo) .disc svg.rest {
+      opacity: 0;
+      transform: translateY(-2px) scale(.88) rotate(3deg);
+      filter: blur(.35px);
+    }
+
+    .row:is(:hover, :focus-visible, .demo) .disc svg.hov {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotate(0deg);
+      filter: blur(0);
+      color: var(--indigo);
+    }
+
+    /* Micro-animações específicas */
+    .row:is(:hover, :focus-visible, .demo) .g-gear svg.hov {
+      transform: translateY(0) scale(1) rotate(60deg);
+    }
+
+    .row:is(:hover, :focus-visible, .demo) .g-theme svg.hov {
+      transform: translateY(0) scale(1) rotate(-8deg);
+    }
+
+    .row:is(:hover, :focus-visible, .demo) .g-lang svg.hov {
+      transform: translateY(-1.5px) scale(1);
+    }
+
+    .row:is(:hover, :focus-visible, .demo) .g-out svg.hov {
+      transform: translateX(2.5px) translateY(0) scale(1);
+    }
+
+    /* ═════════════ rótulo ═════════════ */
+
+    .lb {
+      font-family: Inter, sans-serif;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 400;
+      font-variation-settings: 'wght' 400;
+      color: var(--ink);
+
+      /* SAÍDA */
+      transition:
+        color 200ms ease,
+        font-weight 200ms ease,
+        font-variation-settings 200ms ease,
+        transform 200ms ease;
+    }
+
+    .row:is(:hover, :focus-visible, .demo) .lb {
+      font-weight: 500;
+      font-variation-settings: 'wght' 500;
+      transform: translateX(.15px);
+
+      /* ENTRADA */
+      transition:
+        color 300ms ease,
+        font-weight 300ms ease,
+        font-variation-settings 300ms ease,
+        transform 350ms cubic-bezier(.22, .61, .36, 1);
+    }
+
+    .val {
+      margin-left: auto;
+      font: 500 11.5px/1 "JetBrains Mono", monospace;
+      color: var(--subtle);
+
+      /* SAÍDA */
+      transition:
+        color 200ms ease,
+        transform 200ms ease;
+    }
+
+    .row:is(:hover, :focus-visible, .demo) .val {
+      color: var(--body);
+      transform: translateX(-1px);
+
+      /* ENTRADA */
+      transition:
+        color 300ms ease,
+        transform 350ms cubic-bezier(.22, .61, .36, 1);
+    }
+
+    /* ═════════════ sair ═════════════ */
+
+    .row.danger:is(:hover, :focus-visible, .demo) .disc svg.hov,
+    .row.danger:is(:hover, :focus-visible, .demo) .lb {
+      color: var(--danger);
+    }
+
+    .tinted .row:not(.danger):is(:hover, :focus-visible, .demo) .lb {
+      color: var(--indigo-deep);
+    }
+
+    .tinted .row:is(:hover, :focus-visible, .demo) .lb {
+      font-weight: 600;
+      font-variation-settings: 'wght' 600;
+    }
+
+    /* ═════════════ reduced motion ═════════════ */
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .row::before,
+      .disc,
+      .disc svg,
+      .lb,
+      .val {
+        transition-duration: .01ms !important;
+      }
+
+      .row:is(:hover, :focus-visible, .demo) .disc,
+      .row:is(:hover, :focus-visible, .demo) .disc svg,
+      .row:is(:hover, :focus-visible, .demo) .lb,
+      .row:is(:hover, :focus-visible, .demo) .val {
+        transform: none;
+      }
+    }
+
+    /* ═════════════ controles ═════════════ */
+
+    .bar {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 80;
+      display: flex;
+      gap: 4px;
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: 999px;
+      padding: 4px;
+      box-shadow: var(--shadow);
+    }
+
+    .bar button {
+      font: 500 13px/1 Inter, sans-serif;
+      color: var(--muted);
+      border: 0;
+      background: none;
+      border-radius: 999px;
+      padding: 9px 14px;
+      cursor: pointer;
+      transition:
+        color .18s ease,
+        background .18s ease,
+        transform .18s ease;
+    }
+
+    .bar button:active {
+      transform: scale(.96);
+    }
+
+    .bar button.on {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .bar button:focus-visible {
+      outline: 2px solid var(--indigo);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body class="antialiased">
+
+  <main class="max-w-[1000px] mx-auto px-8 py-14">
+
+    <p class="kicker">Menu do hambúrguer</p>
+
+    <h1 class="mt-2 font-serif text-[34px] font-medium leading-[1.05] tracking-[-0.02em]"
+      style="font-family: 'Playfair Display', serif;">
+      Versão <em class="not-italic text-[var(--indigo)]">final</em>
+    </h1>
+
+    <p class="note mt-3 max-w-[620px]">
+      Banner formado por duas peças de quebra-cabeça, com o encaixe à esquerda do avatar.
+    </p>
+
+    <div class="mt-12 flex justify-center sm:justify-start">
+
+      <div class="drop tinted" role="menu" aria-label="Menu do usuário">
+
+        <div class="banner" aria-hidden="true">
+          <svg viewBox="0 0 290 72" preserveAspectRatio="none">
+            <!-- peça da esquerda: sai com o pino no meio -->
+            <path class="pz-left" d="M0,0 H88 V25 c15,-6.5 15,28 0,21.5 V72 H0 Z" />
+            <!-- peça da direita: recebe o encaixe -->
+            <path class="pz-right" d="M290,0 H88 V25 c15,-6.5 15,28 0,21.5 V72 H290 Z" />
+            <!-- vinco do encaixe -->
+            <path class="pz-seam" d="M88,0 V25 c15,-6.5 15,28 0,21.5 V72" />
+          </svg>
+        </div>
+
+        <div class="who">
+          <span class="avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="8.6" r="4.9" />
+              <path
+                d="M12 15.2c-5.4 0-9.8 3.6-10.4 8.2-.1.9.6 1.6 1.5 1.6h17.8c.9 0 1.6-.7 1.5-1.6-.6-4.6-5-8.2-10.4-8.2Z" />
+            </svg>
+          </span>
+          <div class="nm">Enzo Ferracini Patti</div>
+        </div>
+
+        <div class="sep" role="separator"></div>
+
+        <button class="row" role="menuitem">
+          <span class="disc g-lang">
+            <svg class="rest" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.6" />
+              <ellipse cx="12" cy="12" rx="3.9" ry="8.6" />
+              <path d="M3.6 9h16.8M3.6 15h16.8" />
+            </svg>
+            <svg class="hov" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.6" />
+              <ellipse cx="12" cy="12" rx="3.9" ry="8.6" />
+              <path d="M3.6 9h16.8M3.6 15h16.8" />
+            </svg>
+          </span>
+
+          <span class="lb">Idioma e região</span>
+          <span class="val">pt-BR</span>
+        </button>
+
+        <button class="row demo-target" role="menuitem">
+          <span class="disc g-theme">
+            <svg class="rest sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4.3" />
+              <line x1="18.7" y1="12.0" x2="21.2" y2="12.0" />
+              <line x1="16.7" y1="16.7" x2="18.5" y2="18.5" />
+              <line x1="12.0" y1="18.7" x2="12.0" y2="21.2" />
+              <line x1="7.3" y1="16.7" x2="5.5" y2="18.5" />
+              <line x1="5.3" y1="12.0" x2="2.8" y2="12.0" />
+              <line x1="7.3" y1="7.3" x2="5.5" y2="5.5" />
+              <line x1="12.0" y1="5.3" x2="12.0" y2="2.8" />
+              <line x1="16.7" y1="7.3" x2="18.5" y2="5.5" />
+            </svg>
+            <svg class="hov sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle class="solid" cx="12" cy="12" r="4.5" />
+              <line x1="18.9" y1="12.0" x2="21.3" y2="12.0" />
+              <line x1="16.9" y1="16.9" x2="18.6" y2="18.6" />
+              <line x1="12.0" y1="18.9" x2="12.0" y2="21.3" />
+              <line x1="7.1" y1="16.9" x2="5.4" y2="18.6" />
+              <line x1="5.1" y1="12.0" x2="2.7" y2="12.0" />
+              <line x1="7.1" y1="7.1" x2="5.4" y2="5.4" />
+              <line x1="12.0" y1="5.1" x2="12.0" y2="2.7" />
+              <line x1="16.9" y1="7.1" x2="18.6" y2="5.4" />
+            </svg>
+            <svg class="rest moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.6 14.6A8.9 8.9 0 0 1 9.4 3.4 9.2 9.2 0 1 0 20.6 14.6Z" />
+            </svg>
+            <svg class="hov moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path class="solid" d="M20.6 14.6A8.9 8.9 0 0 1 9.4 3.4 9.2 9.2 0 1 0 20.6 14.6Z" />
+            </svg>
+          </span>
+
+          <span class="lb">Tema</span>
+          <span class="val" id="themeVal">Claro</span>
+        </button>
+
+        <button class="row" role="menuitem">
+          <span class="disc g-gear">
+            <svg class="rest" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z" />
+              <circle cx="12" cy="12" r="3.1" />
+            </svg>
+            <svg class="hov" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z" />
+              <circle cx="12" cy="12" r="3.1" />
+            </svg>
+          </span>
+
+          <span class="lb">Configurações</span>
+        </button>
+
+        <div class="sep low" role="separator"></div>
+
+        <button class="row danger demo-target" role="menuitem">
+          <span class="disc g-out">
+            <svg class="rest" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9.5 21H5.6A1.9 1.9 0 0 1 3.7 19.1V4.9A1.9 1.9 0 0 1 5.6 3h3.9" />
+              <path d="M15.8 16.6 20.4 12l-4.6-4.6" />
+              <path d="M20.4 12H9.2" />
+            </svg>
+            <svg class="hov" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9.5 21H5.6A1.9 1.9 0 0 1 3.7 19.1V4.9A1.9 1.9 0 0 1 5.6 3h3.9" />
+              <path d="M15.8 16.6 20.4 12l-4.6-4.6" />
+              <path d="M20.4 12H9.2" />
+            </svg>
+          </span>
+
+          <span class="lb">Sair</span>
+        </button>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="bar" role="group" aria-label="Controles de demonstração">
+    <button id="tFreeze" aria-pressed="false">Travar hover</button>
+    <button id="tLight" class="on" aria-pressed="true">Light</button>
+    <button id="tDark" aria-pressed="false">Dark</button>
+  </div>
+
+  <script>
+    const tFreeze = document.getElementById('tFreeze');
+    const root = document.documentElement;
+    const tLight = document.getElementById('tLight');
+    const tDark = document.getElementById('tDark');
+
+    // Freeze Toggle
+    tFreeze.addEventListener('click', () => {
+      const isOn = tFreeze.classList.toggle('on');
+      tFreeze.setAttribute('aria-pressed', isOn);
+
+      document.querySelectorAll('.demo-target').forEach(row => {
+        row.classList.toggle('demo', isOn);
+      });
+    });
+
+    // Theme logic
+    function setTheme(dark) {
+      root.classList.toggle('dark', dark);
+
+      tLight.classList.toggle('on', !dark);
+      tDark.classList.toggle('on', dark);
+
+      tLight.setAttribute('aria-pressed', !dark);
+      tDark.setAttribute('aria-pressed', dark);
+
+      document.getElementById('themeVal').textContent = dark ? 'Escuro' : 'Claro';
+    }
+
+    tLight.addEventListener('click', () => setTheme(false));
+    tDark.addEventListener('click', () => setTheme(true));
+  </script>
+
+</body>
+
+</html>
