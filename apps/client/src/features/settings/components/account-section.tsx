@@ -16,9 +16,10 @@ import {
 import { logout } from "@patch-careers/auth";
 import { useToast } from "@patch-careers/ui";
 import { SettingsCard, SettingsRow, UnderlineInput } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+import { type Href, useRouter } from "expo-router";
 import {
   AtSign,
+  CreditCard,
   Download,
   KeyRound,
   Link2,
@@ -147,6 +148,12 @@ export function AccountSection(): ReactElement {
           icon={isDesktopWeb ? undefined : Link2}
           label={t("settings.account.connectedRow")}
           onPress={() => router.push("/settings/connected-accounts")}
+        />
+        <SettingsRow
+          dense={dense}
+          icon={isDesktopWeb ? undefined : CreditCard}
+          label={t("go.title")}
+          onPress={() => router.push("/go" as Href)}
         />
       </SettingsCard>
 

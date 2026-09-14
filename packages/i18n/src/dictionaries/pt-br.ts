@@ -1,6 +1,7 @@
 import type { TranslationDict } from "../types";
 import { appPtBR } from "./domains/app";
 import { fitPtBR } from "./domains/fit";
+import { goPtBR } from "./domains/go";
 import { jobsPtBR } from "./domains/jobs";
 import { landingPtBR } from "./domains/landing";
 import { legalPtBR } from "./domains/legal";
@@ -21,6 +22,7 @@ import { settingsPtBR } from "./domains/settings";
 export const ptBR: TranslationDict = {
   app: appPtBR,
   fit: fitPtBR,
+  go: goPtBR,
   jobs: jobsPtBR,
   landing: landingPtBR,
   legal: legalPtBR,

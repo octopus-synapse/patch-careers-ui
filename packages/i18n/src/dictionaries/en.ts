@@ -1,6 +1,7 @@
 import type { TranslationDict } from "../types";
 import { appEn } from "./domains/app";
 import { fitEn } from "./domains/fit";
+import { goEn } from "./domains/go";
 import { jobsEn } from "./domains/jobs";
 import { landingEn } from "./domains/landing";
 import { legalEn } from "./domains/legal";
@@ -21,6 +22,7 @@ import { settingsEn } from "./domains/settings";
 export const en: TranslationDict = {
   app: appEn,
   fit: fitEn,
+  go: goEn,
   jobs: jobsEn,
   landing: landingEn,
   legal: legalEn,

@@ -15,6 +15,7 @@
  * which CV backed the application.
  */
 import {
+  FetcherError,
   getV1ResumesQueryKey,
   getV1ResumesResumeIdTailoredVersionsQueryKey,
   type PostV1ResumesResumeIdTailor200,
@@ -29,11 +30,13 @@ import {
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
+import { type Href, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { Check, Download, FileText, Sparkles } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView } from "react-native";
 import { useDefaultMatchResume } from "@/features/match";
+import { copyToClipboard } from "@/lib/clipboard";
 import { useI18n } from "@/providers/i18n-provider";
 import type { AppliedCv } from "../hooks/use-report-applied";
 import type { ExternalJob } from "../types";
@@ -61,6 +64,7 @@ export function ApplyFlow({
 }): ReactElement {
   const { t } = useI18n();
   const toast = useToast();
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const [step, setStep] = useState<Step>("choice");
@@ -109,7 +113,12 @@ export function ApplyFlow({
           });
           void queryClient.invalidateQueries({ queryKey: getV1ResumesQueryKey() });
         },
-        onError: () => {
+        onError: (error) => {
+          if (error instanceof FetcherError && [402, 429].includes(error.status ?? 0)) {
+            onOpenChange(false);
+            router.push("/go" as Href);
+            return;
+          }
           toast.show({ title: t("jobs.applyFlow.tailorError"), intent: "danger" });
           setStep("choice");
         },
@@ -165,6 +174,7 @@ export function ApplyFlow({
           job={job}
           cv={cv}
           tailoredLabel={result?.label ?? null}
+          coverLetter={cv.tailoredVersionId ? (result?.coverLetter ?? null) : null}
           onOpenJobSite={() => onOpenJobSite(cv)}
         />
       ) : null}
@@ -449,6 +459,9 @@ function ReviewStep({
               ))}
             </>
           )}
+          {result.coverLetter ? (
+            <ChangeCard tag={t("jobs.applyFlow.coverLetterTitle")} after={result.coverLetter} />
+          ) : null}
         </YStack>
       </ScrollView>
 
@@ -531,11 +544,13 @@ function ReadyStep({
   job,
   cv,
   tailoredLabel,
+  coverLetter,
   onOpenJobSite,
 }: {
   job: ExternalJob;
   cv: ApplyCv;
   tailoredLabel: string | null;
+  coverLetter: string | null;
   onOpenJobSite: () => void;
 }): ReactElement {
   const { t } = useI18n();
@@ -558,6 +573,15 @@ function ReadyStep({
     } else {
       toast.show({ title: t("jobs.applyFlow.downloadError"), intent: "danger" });
     }
+  };
+
+  const onCopyLetter = async (): Promise<void> => {
+    if (!coverLetter) return;
+    const copied = await copyToClipboard(coverLetter);
+    toast.show({
+      title: t(copied ? "jobs.applyFlow.coverLetterCopied" : "jobs.applyFlow.coverLetterCopyError"),
+      intent: copied ? "success" : "danger",
+    });
   };
 
   return (
@@ -616,6 +640,22 @@ function ReadyStep({
           )}
         </Pressable>
       </YStack>
+
+      {coverLetter ? (
+        <YStack gap={8}>
+          <Text fontFamily={fonts.sans} fontSize={13} fontWeight="600" color={palette.ink}>
+            {t("jobs.applyFlow.coverLetterTitle")}
+          </Text>
+          <Text fontFamily={fonts.sans} fontSize={12} lineHeight={18} color={palette.body}>
+            {t("jobs.applyFlow.coverLetterNote")}
+          </Text>
+          <Pressable accessibilityRole="button" onPress={() => void onCopyLetter()}>
+            <Text fontFamily={fonts.sans} fontSize={13} fontWeight="600" color={palette.accent}>
+              {t("jobs.applyFlow.coverLetterCopy")}
+            </Text>
+          </Pressable>
+        </YStack>
+      ) : null}
 
       {/* Why download-first: the external form asks for the file. */}
       <YStack gap={10}>

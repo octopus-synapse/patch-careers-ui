@@ -32,7 +32,6 @@ import {
 import { ChapterLayer } from "./chapter-frame";
 import { HeroInput } from "./hero-input";
 import { LivingResumeCard } from "./living-resume-card";
-import { NightFeed } from "./night-feed";
 import { RobotScene } from "./robot-scene";
 import { ScoreGrid } from "./score-grid";
 
@@ -366,7 +365,7 @@ function AutoApply({ accent, width }: BodyProps): ReactElement {
   );
 }
 
-function AutoApplyNight({ accent, width, active }: BodyProps): ReactElement {
+function AutoApplyNight({ accent, width }: BodyProps): ReactElement {
   const { t } = useI18n();
   return (
     <ChapterStack>
@@ -381,7 +380,11 @@ function AutoApplyNight({ accent, width, active }: BodyProps): ReactElement {
         />
       </ChapterLayer>
       <ChapterLayer depth={2}>
-        <NightFeed active={active} />
+        <YStack gap={8}>
+          <ChapterParagraph size={16}>{t("landing.chapters.auto2.step1")}</ChapterParagraph>
+          <ChapterParagraph size={16}>{t("landing.chapters.auto2.step2")}</ChapterParagraph>
+          <ChapterParagraph size={16}>{t("landing.chapters.auto2.step3")}</ChapterParagraph>
+        </YStack>
       </ChapterLayer>
       <ChapterLayer depth={1}>
         <YStack gap={20}>
@@ -394,7 +397,6 @@ function AutoApplyNight({ accent, width, active }: BodyProps): ReactElement {
             <Emphasis>{t("landing.chapters.auto2.statTailored")}</Emphasis>
             {t("landing.chapters.auto2.statTail")}
           </ChapterParagraph>
-          <Sources>{t("landing.chapters.auto2.sources")}</Sources>
         </YStack>
       </ChapterLayer>
     </ChapterStack>

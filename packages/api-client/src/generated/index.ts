@@ -31,6 +31,9 @@ export type { GetV1AuthOauthLinkedinCallbackQueryKey } from "./hooks/authOauthCo
 export type { GetV1AuthOauthLinkedinStartQueryKey } from "./hooks/authOauthController/useGetV1AuthOauthLinkedinStart.ts";
 export type { GetV1AuthOauthProvidersQueryKey } from "./hooks/authOauthController/useGetV1AuthOauthProviders.ts";
 export type { PostV1AutomationRageApplyMutationKey } from "./hooks/automationController/usePostV1AutomationRageApply.ts";
+export type { GetV1BillingPatchGoQueryKey } from "./hooks/billingController/useGetV1BillingPatchGo.ts";
+export type { PostV1BillingPatchGoCheckoutMutationKey } from "./hooks/billingController/usePostV1BillingPatchGoCheckout.ts";
+export type { PostV1BillingPatchGoPortalMutationKey } from "./hooks/billingController/usePostV1BillingPatchGoPortal.ts";
 export type { DeleteV1ChatBlockedUserIdMutationKey } from "./hooks/chatBlockUsersController/useDeleteV1ChatBlockedUserId.ts";
 export type { GetV1ChatBlockedQueryKey } from "./hooks/chatBlockUsersController/useGetV1ChatBlocked.ts";
 export type { GetV1ChatBlockedUserIdStatusQueryKey } from "./hooks/chatBlockUsersController/useGetV1ChatBlockedUserIdStatus.ts";
@@ -288,6 +291,9 @@ export type { GetV1AuthOauthLinkedinCallbackQueryParams, GetV1AuthOauthLinkedinC
 export type { GetV1AuthOauthLinkedinStartQueryParams, GetV1AuthOauthLinkedinStart200, GetV1AuthOauthLinkedinStart400, GetV1AuthOauthLinkedinStartQueryResponse, GetV1AuthOauthLinkedinStartQuery } from "./ts/authOauthController/GetV1AuthOauthLinkedinStart.ts";
 export type { GetV1AuthOauthProviders200, GetV1AuthOauthProviders400, GetV1AuthOauthProvidersQueryResponse, GetV1AuthOauthProvidersQuery } from "./ts/authOauthController/GetV1AuthOauthProviders.ts";
 export type { PostV1AutomationRageApply200, PostV1AutomationRageApply400, PostV1AutomationRageApply401, PostV1AutomationRageApply403, PostV1AutomationRageApplyMutationRequest, PostV1AutomationRageApplyMutationResponse, PostV1AutomationRageApplyMutation } from "./ts/automationController/PostV1AutomationRageApply.ts";
+export type { GetV1BillingPatchGo200, GetV1BillingPatchGo400, GetV1BillingPatchGo401, GetV1BillingPatchGoQueryResponse, GetV1BillingPatchGoQuery } from "./ts/billingController/GetV1BillingPatchGo.ts";
+export type { PostV1BillingPatchGoCheckout201, PostV1BillingPatchGoCheckout400, PostV1BillingPatchGoCheckout401, PostV1BillingPatchGoCheckoutMutationRequestMarketEnum, PostV1BillingPatchGoCheckoutMutationRequest, PostV1BillingPatchGoCheckoutMutationResponse, PostV1BillingPatchGoCheckoutMutation } from "./ts/billingController/PostV1BillingPatchGoCheckout.ts";
+export type { PostV1BillingPatchGoPortal201, PostV1BillingPatchGoPortal400, PostV1BillingPatchGoPortal401, PostV1BillingPatchGoPortalMutationResponse, PostV1BillingPatchGoPortalMutation } from "./ts/billingController/PostV1BillingPatchGoPortal.ts";
 export type { Bio } from "./ts/Bio.ts";
 export type { ChangePasswordRequest } from "./ts/ChangePasswordRequest.ts";
 export type { DeleteV1ChatBlockedUserIdPathParams, DeleteV1ChatBlockedUserId204, DeleteV1ChatBlockedUserId400, DeleteV1ChatBlockedUserId401, DeleteV1ChatBlockedUserId403, DeleteV1ChatBlockedUserId404, DeleteV1ChatBlockedUserIdMutationResponse, DeleteV1ChatBlockedUserIdMutation } from "./ts/chatBlockUsersController/DeleteV1ChatBlockedUserId.ts";
@@ -593,6 +599,9 @@ export { getV1AuthOauthLinkedinCallbackQueryKey, getV1AuthOauthLinkedinCallback,
 export { getV1AuthOauthLinkedinStartQueryKey, getV1AuthOauthLinkedinStart, getV1AuthOauthLinkedinStartQueryOptions, useGetV1AuthOauthLinkedinStart } from "./hooks/authOauthController/useGetV1AuthOauthLinkedinStart.ts";
 export { getV1AuthOauthProvidersQueryKey, getV1AuthOauthProviders, getV1AuthOauthProvidersQueryOptions, useGetV1AuthOauthProviders } from "./hooks/authOauthController/useGetV1AuthOauthProviders.ts";
 export { postV1AutomationRageApplyMutationKey, postV1AutomationRageApply, usePostV1AutomationRageApply } from "./hooks/automationController/usePostV1AutomationRageApply.ts";
+export { getV1BillingPatchGoQueryKey, getV1BillingPatchGo, getV1BillingPatchGoQueryOptions, useGetV1BillingPatchGo } from "./hooks/billingController/useGetV1BillingPatchGo.ts";
+export { postV1BillingPatchGoCheckoutMutationKey, postV1BillingPatchGoCheckout, usePostV1BillingPatchGoCheckout } from "./hooks/billingController/usePostV1BillingPatchGoCheckout.ts";
+export { postV1BillingPatchGoPortalMutationKey, postV1BillingPatchGoPortal, usePostV1BillingPatchGoPortal } from "./hooks/billingController/usePostV1BillingPatchGoPortal.ts";
 export { deleteV1ChatBlockedUserIdMutationKey, deleteV1ChatBlockedUserId, useDeleteV1ChatBlockedUserId } from "./hooks/chatBlockUsersController/useDeleteV1ChatBlockedUserId.ts";
 export { getV1ChatBlockedQueryKey, getV1ChatBlocked, getV1ChatBlockedQueryOptions, useGetV1ChatBlocked } from "./hooks/chatBlockUsersController/useGetV1ChatBlocked.ts";
 export { getV1ChatBlockedUserIdStatusQueryKey, getV1ChatBlockedUserIdStatus, getV1ChatBlockedUserIdStatusQueryOptions, useGetV1ChatBlockedUserIdStatus } from "./hooks/chatBlockUsersController/useGetV1ChatBlockedUserIdStatus.ts";
@@ -823,6 +832,7 @@ export { login200TwoFactorRequiredEnum, login200TwoFactorRequiredEnum2 } from ".
 export { refresh201ModeEnum, refresh201ModeEnum2, refresh201OkEnum } from "./ts/authController/Refresh.ts";
 export { userRoleEnum } from "./ts/authController/Session.ts";
 export { getV1AuthOauthAvailableProviderPathParamsProviderEnum } from "./ts/authOauthController/GetV1AuthOauthAvailableProvider.ts";
+export { postV1BillingPatchGoCheckoutMutationRequestMarketEnum } from "./ts/billingController/PostV1BillingPatchGoCheckout.ts";
 export { patchV1ResumesResumeIdCollaboratorsUserIdMutationRequestRoleEnum } from "./ts/collaborationController/PatchV1ResumesResumeIdCollaboratorsUserId.ts";
 export { postV1ResumesResumeIdCollaboratorsMutationRequestRoleEnum } from "./ts/collaborationController/PostV1ResumesResumeIdCollaborators.ts";
 export { createJobRequestJobTypeEnum, createJobRequestPaymentCurrencyEnum, createJobRequestRemotePolicyEnum, createJobRequestMinEnglishLevelEnum } from "./ts/CreateJobRequest.ts";
@@ -945,6 +955,9 @@ export { getV1AuthOauthLinkedinCallbackQueryParamsSchema, getV1AuthOauthLinkedin
 export { getV1AuthOauthLinkedinStartQueryParamsSchema, getV1AuthOauthLinkedinStart200Schema, getV1AuthOauthLinkedinStart400Schema, getV1AuthOauthLinkedinStartQueryResponseSchema } from "./zod/authOauthController/getV1AuthOauthLinkedinStartSchema.ts";
 export { getV1AuthOauthProviders200Schema, getV1AuthOauthProviders400Schema, getV1AuthOauthProvidersQueryResponseSchema } from "./zod/authOauthController/getV1AuthOauthProvidersSchema.ts";
 export { postV1AutomationRageApply200Schema, postV1AutomationRageApply400Schema, postV1AutomationRageApply401Schema, postV1AutomationRageApply403Schema, postV1AutomationRageApplyMutationRequestSchema, postV1AutomationRageApplyMutationResponseSchema } from "./zod/automationController/postV1AutomationRageApplySchema.ts";
+export { getV1BillingPatchGo200Schema, getV1BillingPatchGo400Schema, getV1BillingPatchGo401Schema, getV1BillingPatchGoQueryResponseSchema } from "./zod/billingController/getV1BillingPatchGoSchema.ts";
+export { postV1BillingPatchGoCheckout201Schema, postV1BillingPatchGoCheckout400Schema, postV1BillingPatchGoCheckout401Schema, postV1BillingPatchGoCheckoutMutationRequestSchema, postV1BillingPatchGoCheckoutMutationResponseSchema } from "./zod/billingController/postV1BillingPatchGoCheckoutSchema.ts";
+export { postV1BillingPatchGoPortal201Schema, postV1BillingPatchGoPortal400Schema, postV1BillingPatchGoPortal401Schema, postV1BillingPatchGoPortalMutationResponseSchema } from "./zod/billingController/postV1BillingPatchGoPortalSchema.ts";
 export { bioSchema } from "./zod/bioSchema.ts";
 export { changePasswordRequestSchema } from "./zod/changePasswordRequestSchema.ts";
 export { deleteV1ChatBlockedUserIdPathParamsSchema, deleteV1ChatBlockedUserId204Schema, deleteV1ChatBlockedUserId400Schema, deleteV1ChatBlockedUserId401Schema, deleteV1ChatBlockedUserId403Schema, deleteV1ChatBlockedUserId404Schema, deleteV1ChatBlockedUserIdMutationResponseSchema } from "./zod/chatBlockUsersController/deleteV1ChatBlockedUserIdSchema.ts";
