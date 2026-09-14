@@ -207,7 +207,7 @@ importers:
         specifier: ~6.0.21
         version: 6.0.21(expo@54.0.34)
       expo-document-picker:
-        specifier: ^57.0.1
+        specifier: ~57.0.1
         version: 57.0.1(expo@54.0.34)
       expo-font:
         specifier: ~14.0.12
