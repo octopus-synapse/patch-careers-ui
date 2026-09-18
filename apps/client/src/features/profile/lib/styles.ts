@@ -15,9 +15,20 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     root: { flex: 1, backgroundColor: p.bg },
     scroll: { paddingHorizontal: 22, paddingBottom: 48, gap: 26 },
     centered: { alignItems: "center", justifyContent: "center" },
-    // Floating add CTA pinned over the scroll (so its backdrop blur frosts the
-    // content scrolling behind it); `bottom` is set inline from the tab height.
+    // Floating add CTA pinned over the scroll; `bottom` follows the tab height.
     floatingAdd: { position: "absolute", left: 22, right: 22 },
+    floatingAddWide: {
+      position: "absolute",
+      right: 22,
+      bottom: 24,
+      width: 240,
+      borderRadius: 999,
+      shadowColor: p.ink,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.18,
+      shadowRadius: 16,
+    },
+    fieldEditorScroll: { flexShrink: 1 },
 
     // Desktop web (≥1024): two columns starting at the SAME top edge — the
     // cover and the rail's first card begin on one line. The header used to
@@ -49,26 +60,16 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     railCardTitle: {
       fontFamily: fonts.serif,
       fontSize: 17,
-      lineHeight: 17,
+      lineHeight: 23,
       letterSpacing: -0.2,
       color: p.ink,
     },
     railCardHead: {
       flexDirection: "row",
-      alignItems: "flex-start",
+      alignItems: "center",
       justifyContent: "space-between",
       gap: 12,
     },
-    railCardAction: {
-      width: 32,
-      height: 32,
-      marginTop: -6,
-      marginRight: -6,
-      borderRadius: 16,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    railCardActionActive: { backgroundColor: p.bg },
 
     // ── Identity, rendered open (desktop main column) ──
     // The heading is sans, not the page serif: the serif is spoken by the
@@ -173,6 +174,7 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     dialogLink: { marginTop: 28 },
 
     // ── Resume language ──
+    languageCard: { paddingVertical: 24, gap: 18 },
     railCaption: {
       marginTop: 12,
       fontFamily: fonts.sans,
@@ -197,7 +199,6 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       lineHeight: 18,
       color: p.muted,
     },
-    publicCta: { marginTop: 12 },
 
     // ── "Falta no seu perfil" ──
     gapsList: { marginTop: 12 },
@@ -211,17 +212,7 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       borderTopColor: p.hairline,
     },
     gapsItemFirst: { borderTopWidth: 0 },
-    gapsItemDisabled: { opacity: 0.45 },
     gapsItemLabel: { flex: 1, fontFamily: fonts.sans, fontSize: 13.5, color: p.ink },
-    gapsPlus: {
-      width: 24,
-      height: 24,
-      borderRadius: 12,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    gapsPlusActive: { backgroundColor: p.ink },
-    gapsSeeAll: { marginTop: 16 },
 
     /** Mono versalete — the page's quiet label voice ("FALTA"). */
     smallcaps: {
@@ -298,8 +289,8 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     },
     avatarBadge: {
       position: "absolute",
-      right: -2,
-      bottom: -2,
+      right: 4,
+      bottom: 4,
       width: 30,
       height: 30,
       borderRadius: 15,

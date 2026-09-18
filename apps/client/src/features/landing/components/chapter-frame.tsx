@@ -6,7 +6,7 @@
  * deck's live offset and translates against it at a depth-dependent rate, so
  * while the strip travels, headings, paragraphs and cards separate into
  * planes — the deeper the layer, the farther it lags — and they all settle
- * (riding the deck's overshoot) exactly as the chapter lands. Travelling away
+ * exactly as the chapter lands. Travelling away
  * plays the same field in reverse. Content therefore stays mounted; nothing
  * pops in or out.
  *
@@ -19,52 +19,34 @@ import { createContext, type ReactElement, type ReactNode, useContext, useMemo }
 import { useWindowDimensions } from "react-native";
 import Animated, { type SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { DESKTOP_WEB_BREAKPOINT } from "@/hooks/use-desktop-web";
+import { ChapterSurface } from "./chapter-surface";
 
-/**
- * How far each depth lags the strip, in px at full travel. Deeper layers lag
- * more — that difference in rate is the parallax.
- */
-const LAYER_TRAVEL = [110, 70, 170] as const;
-/** How fast each depth fades with distance from alignment (higher = sooner). */
-const LAYER_FADE = [1.35, 1.5, 1.2] as const;
+export { ChapterLayer } from "./chapter-layer";
 
 interface RevealFrame {
+  readonly focus?: SharedValue<number> | undefined;
   readonly offset: SharedValue<number>;
-  readonly top: number;
+  readonly heights: SharedValue<number[]>;
+  readonly index: number;
   readonly viewport: number;
+  readonly narrow: boolean;
 }
 
 const RevealContext = createContext<RevealFrame | null>(null);
+export const useChapterReveal = (): RevealFrame | null => useContext(RevealContext);
 
 export interface ChapterLayerProps {
   /** 0 = heading, 1 = paragraphs/sources, 2 = cards, big numbers, demos. */
   readonly depth?: 0 | 1 | 2;
+  /** Independent travel for neighbouring cards in the same depth plane. */
+  readonly order?: number;
   readonly children: ReactNode;
 }
 
-/** One parallax plane of a chapter's content. */
-export function ChapterLayer({ depth = 1, children }: ChapterLayerProps): ReactElement {
-  const frame = useContext(RevealContext);
-  const travel = LAYER_TRAVEL[depth] ?? LAYER_TRAVEL[1];
-  const fade = LAYER_FADE[depth] ?? LAYER_FADE[1];
-  const offset = frame?.offset;
-  const top = frame?.top ?? 0;
-  const viewport = frame?.viewport ?? 1;
-
-  const style = useAnimatedStyle(() => {
-    if (!offset) return {};
-    // 0 when this chapter is aligned; ±1 when a full viewport away.
-    const progress = Math.max(-1.2, Math.min(1.2, (offset.value - top) / viewport));
-    return {
-      transform: [{ translateY: progress * travel }],
-      opacity: 1 - Math.min(1, Math.abs(progress) * fade),
-    };
-  });
-
-  return <Animated.View style={style}>{children}</Animated.View>;
-}
-
 export interface ChapterFrameProps {
+  readonly positioned?: boolean;
+  readonly focus?: SharedValue<number> | undefined;
+  readonly active: boolean;
   readonly height: number;
   readonly onMeasure: (height: number) => void;
   /** Left inset of the copy — the grid's gutter on desktop. */
@@ -73,20 +55,24 @@ export interface ChapterFrameProps {
   readonly copyWidth: number;
   /** The deck's live translation, feeding every layer's parallax. */
   readonly offset: SharedValue<number>;
-  /** This chapter's y in the strip (approximated as index × viewport). */
-  readonly top: number;
+  readonly heights: SharedValue<number[]>;
+  readonly index: number;
   /** Window-spanning chapters (the scene, the finale) skip the copy column. */
   readonly fullBleed?: boolean;
   readonly children: ReactNode;
 }
 
 export function ChapterFrame({
+  positioned = false,
+  focus,
+  active,
   height,
   onMeasure,
   inset,
   copyWidth,
   offset,
-  top,
+  heights,
+  index,
   fullBleed = false,
   children,
 }: ChapterFrameProps): ReactElement {
@@ -95,24 +81,42 @@ export function ChapterFrame({
   // chapter also stops being vertically centred so long copy can breathe.
   const isNarrow = width < DESKTOP_WEB_BREAKPOINT;
   const frame = useMemo<RevealFrame>(
-    () => ({ offset, top, viewport: height }),
-    [offset, top, height],
+    () => ({ offset, heights, index, viewport: height, narrow: isNarrow, focus }),
+    [offset, heights, index, height, isNarrow, focus],
   );
+  const positionStyle = useAnimatedStyle(() => {
+    if (!positioned) return {};
+    let top = 0;
+    for (let at = 0; at < index; at += 1) top += heights.value[at] ?? height;
+    return {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      transform: [{ translateY: top - offset.value }],
+    };
+  });
   return (
     <RevealContext.Provider value={frame}>
-      <YStack
-        minHeight={height}
-        flexShrink={0}
-        justifyContent={isNarrow ? "flex-start" : "center"}
-        paddingLeft={fullBleed ? 0 : inset}
-        paddingRight={isNarrow && !fullBleed ? inset : 0}
-        paddingVertical={isNarrow ? 96 : fullBleed ? 0 : 72}
-        onLayout={(event: { nativeEvent: { layout: { height: number } } }) =>
-          onMeasure(event.nativeEvent.layout.height)
-        }
-      >
-        <YStack maxWidth={fullBleed ? undefined : copyWidth}>{children}</YStack>
-      </YStack>
+      <Animated.View style={positionStyle}>
+        <YStack
+          testID={`landing-chapter-${index}`}
+          minHeight={height}
+          flexShrink={0}
+          overflow="hidden"
+          justifyContent={isNarrow ? "flex-start" : "center"}
+          paddingLeft={fullBleed ? 0 : inset}
+          paddingRight={isNarrow && !fullBleed ? inset : 0}
+          paddingVertical={fullBleed ? 0 : isNarrow ? 96 : 72}
+          onLayout={(event: { nativeEvent: { layout: { height: number } } }) =>
+            onMeasure(event.nativeEvent.layout.height)
+          }
+        >
+          <ChapterSurface active={active}>
+            <YStack maxWidth={fullBleed ? undefined : copyWidth}>{children}</YStack>
+          </ChapterSurface>
+        </YStack>
+      </Animated.View>
     </RevealContext.Provider>
   );
 }

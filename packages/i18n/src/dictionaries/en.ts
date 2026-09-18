@@ -35,7 +35,7 @@ export const en: TranslationDict = {
   sections: sectionsEn,
   settings: settingsEn,
   tabs: {
-    jobs: "Jobs",
+    jobs: "Home",
     messages: "Messages",
     // "Applications" is no longer a tab — it's a scope inside Jobs — but the
     // label is reused there (see jobs.scope.applications).
@@ -85,6 +85,9 @@ export const en: TranslationDict = {
     dialogTitlePre: "Sign in",
     dialogTitleOr: "or",
     dialogTitlePost: "create an account.",
+    dialogHeroTitlePre: "Your next chapter",
+    dialogHeroTitleEmphasis: "starts here.",
+    dialogSubtitle: "Sign in or create your account using your email.",
     dialogContinue: "Continue",
     dialogWelcomeBack: "Good to see you again.",
     dialogCreatePasswordTitle: "Nice to meet you. Create a password.",
@@ -100,6 +103,7 @@ export const en: TranslationDict = {
     fullName: "Full name",
     fullNamePlaceholder: "Your name",
     email: "Email",
+    emailAddress: "Email address",
     emailPlaceholder: "you@example.com",
     password: "Password",
     passwordPlaceholder: "Your password",
@@ -197,6 +201,7 @@ export const en: TranslationDict = {
       close: "Close",
     },
     location: {
+      modalTitle: "Location",
       titleHead: "Where are you",
       titleTail: "based",
       placeholder: "Select your location",
@@ -296,10 +301,6 @@ export const en: TranslationDict = {
       items: "{count} items",
       itemsOne: "1 item",
     },
-    done: {
-      title: "Your resume is ready.",
-      cta: "Get started",
-    },
     resumeStyle: {
       use: "Use this template",
       preview: "Preview",
@@ -365,6 +366,10 @@ export const en: TranslationDict = {
       placeholder: "Select date",
       prevYear: "Previous year",
       nextYear: "Next year",
+      year: "Year",
+      yearHint: "Type a year or use the arrows",
+      yearRange: "Enter a year between {min} and {max}.",
+      clear: "Clear date",
     },
     experience: {
       statusPrompt: "What's your current situation?",

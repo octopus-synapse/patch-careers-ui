@@ -12,9 +12,10 @@
  * "what is in here".
  */
 
-import { type ReactElement, type ReactNode, useState } from "react";
-import { Pressable, Text, View } from "react-native";
-import { useEd, webNoOutline } from "../lib/styles";
+import type { ReactElement, ReactNode } from "react";
+import { Text, View } from "react-native";
+import { useEd } from "../lib/styles";
+import { AddRow } from "./primitives";
 
 export function SectionPanelCard({
   title,
@@ -32,7 +33,6 @@ export function SectionPanelCard({
   children: ReactNode;
 }): ReactElement {
   const ed = useEd();
-  const [active, setActive] = useState(false);
 
   return (
     <View style={ed.panelCard}>
@@ -41,22 +41,13 @@ export function SectionPanelCard({
       </Text>
       {children}
       {onAdd && addLabel ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={addLabel}
+        <AddRow
+          label={addLabel}
           onPress={onAdd}
-          onHoverIn={() => setActive(true)}
-          onHoverOut={() => setActive(false)}
-          onFocus={() => setActive(true)}
-          onBlur={() => setActive(false)}
-          style={({ pressed }) => [
-            ed.addWide,
-            (active || pressed) && ed.addWideActive,
-            webNoOutline,
-          ]}
-        >
-          <Text style={ed.addWideLabel}>{`+  ${addLabel}`}</Text>
-        </Pressable>
+          style={ed.panelAddRow}
+          labelStyle={ed.panelAddLabel}
+          iconSize={14}
+        />
       ) : null}
     </View>
   );

@@ -4,7 +4,7 @@
  * Two layouts, one screen:
  *
  * MOBILE / NARROW WEB (unchanged): identity header → score hero (tap =
- * Desempenho sheet) → Fit Profile card → the master sections as an INDEX,
+ * Desempenho sheet) → the master sections as an INDEX,
  * each row pushing its own detail screen, with the floating add CTA.
  *
  * DESKTOP WEB: two columns starting at the SAME top edge — the cover and the
@@ -19,7 +19,6 @@
  */
 
 import { getV1MeScoresQueryKey, getV1ResumesQueryKey } from "@patch-careers/api-client";
-import type { Locale } from "@patch-careers/i18n";
 import { EmptyState } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -41,9 +40,7 @@ import { useI18n } from "@/providers/i18n-provider";
 import { useProfile, useProfileCompleteness, useProfileMutations } from "../hooks/queries";
 import { useProfileCover } from "../hooks/use-profile-cover";
 import { usePf } from "../lib/styles";
-import { FitProfileCard } from "./fit-profile-card";
 import { IdentityPanelCard } from "./identity-panel-card";
-import { ImageActionSheet } from "./image-action-sheet";
 import { MasterAddSection } from "./master-add-section";
 import { MasterSectionsTab } from "./master-sections-tab";
 import { PerformanceSheet } from "./performance-sheet";
@@ -54,7 +51,6 @@ import { ProfileScoreCard } from "./profile-score-card";
 import { ProfileScoreDialog } from "./profile-score-dialog";
 import { ProfileSkeleton } from "./profile-skeleton";
 import { PublicProfileCard } from "./public-profile-card";
-import { ResumePreviewCard } from "./resume-preview-card";
 import { ScoreHero } from "./score-hero";
 
 export function ProfileScreen(): ReactElement {
@@ -64,18 +60,16 @@ export function ProfileScreen(): ReactElement {
   // Bar floats over content; pad the scroll so the last items clear it.
   const tabBarHeight = useBottomTabBarHeight();
   const navInset = useNavBarInset();
-  // Desktop web: two-column body (sections main + insights rail) and the add
-  // CTA lives inline in the rail instead of floating over a bottom bar.
+  // Desktop web uses a two-column body; the add CTA stays outside the scroll
+  // on every layout so it is always within reach.
   const isDesktopWeb = useIsDesktopWeb();
   const profileQuery = useProfile();
   const profile = profileQuery.data;
-  const { updatePhoto, removePhoto, photoPending } = useProfileMutations();
-  const { coverURL, updateCover, removeCover, coverPending } = useProfileCover();
+  const { updatePhoto, photoPending } = useProfileMutations();
+  const { coverURL, updateCover, coverPending } = useProfileCover();
   const { percent: completeness } = useProfileCompleteness();
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
-  const [photoSheetOpen, setPhotoSheetOpen] = useState(false);
-  const [coverSheetOpen, setCoverSheetOpen] = useState(false);
   const [performanceOpen, setPerformanceOpen] = useState(false);
   const [scoreOpen, setScoreOpen] = useState(false);
   const { resumeId, language, updatedAt } = useMasterResumeId();
@@ -101,6 +95,7 @@ export function ProfileScreen(): ReactElement {
       onChange={contentLocale.switchTo}
       status={contentLocale.status}
       progress={contentLocale.progress}
+      showCaption={false}
     />
   );
 
@@ -119,32 +114,24 @@ export function ProfileScreen(): ReactElement {
     }
   };
 
-  // `allowsEditing` opens the native crop/zoom UI for both sources, so the
-  // image is framed — square for the avatar, banner-shaped for the cover —
-  // before it ever leaves the device.
-  const pick = async (
-    source: "camera" | "gallery",
+  // Go straight to the library. `allowsEditing` keeps the native crop/zoom
+  // step so avatar and cover images are framed before upload.
+  const pickFromLibrary = async (
     aspect: [number, number],
   ): Promise<ImagePicker.ImagePickerAsset | undefined> => {
-    const perm =
-      source === "camera"
-        ? await ImagePicker.requestCameraPermissionsAsync()
-        : await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!perm.granted) return undefined;
-    const result =
-      source === "camera"
-        ? await ImagePicker.launchCameraAsync({ allowsEditing: true, aspect, quality: 0.85 })
-        : await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ["images"],
-            allowsEditing: true,
-            aspect,
-            quality: 0.85,
-          });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect,
+      quality: 0.85,
+    });
     return result.canceled ? undefined : result.assets[0];
   };
 
-  const pickAndUploadPhoto = async (source: "camera" | "gallery"): Promise<void> => {
-    const asset = await pick(source, [1, 1]);
+  const pickAndUploadPhoto = async (): Promise<void> => {
+    const asset = await pickFromLibrary([1, 1]);
     if (!asset) return;
     try {
       await updatePhoto({
@@ -157,8 +144,8 @@ export function ProfileScreen(): ReactElement {
     }
   };
 
-  const pickAndUploadCover = async (source: "camera" | "gallery"): Promise<void> => {
-    const asset = await pick(source, [3, 1]);
+  const pickAndUploadCover = async (): Promise<void> => {
+    const asset = await pickFromLibrary([3, 1]);
     if (!asset) return;
     // Its own toasts; nothing to roll back (the store only takes the URL that
     // came back from a successful upload).
@@ -192,7 +179,7 @@ export function ProfileScreen(): ReactElement {
 
   // The floating add CTA is pinned over the scroll; reserve room at the
   // bottom so the last list items clear it.
-  const floatingAddHeight = 58 + 32; // slab height + breathing room
+  const floatingAddHeight = 54 + 48; // button height + breathing room
 
   return (
     <View style={pf.root}>
@@ -201,7 +188,7 @@ export function ProfileScreen(): ReactElement {
           pf.scroll,
           {
             paddingTop: isDesktopWeb ? navInset + 36 : navInset,
-            paddingBottom: isDesktopWeb ? 56 : tabBarHeight + floatingAddHeight,
+            paddingBottom: (isDesktopWeb ? 0 : tabBarHeight) + floatingAddHeight,
           },
         ]}
         showsVerticalScrollIndicator={false}
@@ -223,8 +210,8 @@ export function ProfileScreen(): ReactElement {
               <ProfileHeader
                 variant="card"
                 profile={profile}
-                onChangePhoto={() => setPhotoSheetOpen(true)}
-                onChangeCover={() => setCoverSheetOpen(true)}
+                onChangePhoto={() => void pickAndUploadPhoto()}
+                onChangeCover={() => void pickAndUploadCover()}
                 coverURL={coverURL}
                 uploading={photoPending}
                 coverUploading={coverPending}
@@ -262,20 +249,14 @@ export function ProfileScreen(): ReactElement {
               <PublicProfileCard username={profile?.username ?? null} />
               <ProfileScoreCard onOpen={() => setScoreOpen(true)} />
               <ProfileGapsCard resumeId={resumeId} locales={sectionLocales} />
-              {/* The generic door, after the specific ones: the rail names the
-                  four sections worth doing next, and this is for everything
-                  else. */}
-              <MasterAddSection variant="ink" />
-              <FitProfileCard />
-              <ResumePreviewCard />
             </View>
           </View>
         ) : (
           <>
             <ProfileHeader
               profile={profile}
-              onChangePhoto={() => setPhotoSheetOpen(true)}
-              onChangeCover={() => setCoverSheetOpen(true)}
+              onChangePhoto={() => void pickAndUploadPhoto()}
+              onChangeCover={() => void pickAndUploadCover()}
               coverURL={coverURL}
               uploading={photoPending}
               coverUploading={coverPending}
@@ -283,18 +264,17 @@ export function ProfileScreen(): ReactElement {
               trailing={mobileLanguageSwitch}
             />
             <ScoreHero onOpen={() => setPerformanceOpen(true)} />
-            <FitProfileCard />
-
             <MasterSectionsTab profile={profile} />
           </>
         )}
       </ScrollView>
 
-      {isDesktopWeb ? null : (
-        <View pointerEvents="box-none" style={[pf.floatingAdd, { bottom: tabBarHeight + 16 }]}>
-          <MasterAddSection />
-        </View>
-      )}
+      <View
+        pointerEvents="box-none"
+        style={isDesktopWeb ? pf.floatingAddWide : [pf.floatingAdd, { bottom: tabBarHeight + 16 }]}
+      >
+        <MasterAddSection />
+      </View>
 
       <ProfileScoreDialog
         open={scoreOpen}
@@ -303,25 +283,6 @@ export function ProfileScreen(): ReactElement {
       />
 
       <PerformanceSheet open={performanceOpen} onOpenChange={setPerformanceOpen} />
-
-      <ImageActionSheet
-        open={photoSheetOpen}
-        onClose={() => setPhotoSheetOpen(false)}
-        onCamera={() => void pickAndUploadPhoto("camera")}
-        onGallery={() => void pickAndUploadPhoto("gallery")}
-        onRemove={() => void removePhoto()}
-        canRemove={Boolean(profile?.photoURL)}
-      />
-
-      <ImageActionSheet
-        open={coverSheetOpen}
-        kind="cover"
-        onClose={() => setCoverSheetOpen(false)}
-        onCamera={() => void pickAndUploadCover("camera")}
-        onGallery={() => void pickAndUploadCover("gallery")}
-        onRemove={removeCover}
-        canRemove={Boolean(coverURL)}
-      />
     </View>
   );
 }

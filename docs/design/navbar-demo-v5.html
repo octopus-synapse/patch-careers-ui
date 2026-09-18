@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Patch Careers — Navbar v5 · Essência</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: {
+          paper: 'var(--paper)', panel: 'var(--panel)', surface: 'var(--surface)',
+          ink: 'var(--ink)', body: 'var(--body)', muted: 'var(--muted)', hair: 'var(--hair)',
+          wash: 'var(--wash)', brand: '#5766E8',
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        },
+      } },
+    };
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #F2F1EC; --panel: #FDFDFC; --surface: #FAFAF7;
+      --ink: #0A0A0A; --body: #3F3F46; --muted: #71717A;
+      --hair: #E4E4E7; --hair-strong: #CBCBCB;
+      --wash: rgba(10,10,10,.045); --press: rgba(10,10,10,.075);
+      --nav: rgba(242,241,236,.68); --brand-plain: #000;
+      --search-bg: rgba(255,255,255,.42); --search-hover: rgba(255,255,255,.85); --search-accent: #2563EB;
+      --avatar-bg: #33322E; --avatar-ink: #F7F4EE;
+      --soft-blue: #E9ECF8; --soft-green: #E5ECE4;
+      --cover-a: #E2E8EB; --cover-b: #C4CFD7;
+      --shadow: 0 18px 48px -16px rgba(35,33,26,.18), 0 2px 6px rgba(35,33,26,.03);
+    }
+    :root.dark {
+      color-scheme: dark;
+      --paper: #1A1916; --panel: #232220; --surface: #2B2A26;
+      --ink: #F5F5F0; --body: #C8C8C2; --muted: #A5A59D;
+      --hair: #373630; --hair-strong: #53524B;
+      --wash: rgba(245,245,240,.06); --press: rgba(245,245,240,.10);
+      --nav: rgba(26,25,22,.68); --brand-plain: #FFF;
+      --search-bg: rgba(43,42,38,.42); --search-hover: rgba(43,42,38,.85); --search-accent: #60A5FA;
+      --avatar-bg: #DAD8D1; --avatar-ink: #2B2A27;
+      --soft-blue: #303448; --soft-green: #303D32;
+      --cover-a: #4C565B; --cover-b: #394145;
+      --shadow: 0 18px 48px -16px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.12);
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; background: var(--paper); color: var(--ink); -webkit-font-smoothing: antialiased; }
+    button, a, input { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    button, a { touch-action: manipulation; }
+    button:focus-visible, a:focus-visible, input:focus-visible {
+      outline: 2px solid #5766E8; outline-offset: 4px;
+    }
+    ::selection { background: #5766E8; color: white; }
+    .icon { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-sm { width: 16px; height: 16px; }
+    .eyebrow { font: 400 10px/1.5 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; }
+    #profile-name, #page-content h2, #detail-title { overflow-wrap: anywhere; }
+    .navbar { position: sticky; top: 0; z-index: 30; background: var(--nav); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+    .nav-layout { display: grid; grid-template-columns: minmax(0,1fr) 814px minmax(0,1fr); align-items: center; gap: 24px; max-width: 1600px; height: 88px; padding: 0 36px; margin: auto; }
+    .nav-cluster { display: flex; align-items: center; gap: 30px; width: 100%; height: 100%; min-width: 0; }
+    .search-trigger { flex: 1; min-width: 0; height: 42px; padding: 0 18px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--hair); border-radius: 12px; color: var(--body); background: var(--search-bg); font-size: 14px; text-align: left; }
+    .search-trigger > .icon { width: 15px; height: 15px; stroke-width: 2.5; color: var(--search-accent); }
+    .nav-links { display: flex; align-self: stretch; flex: none; gap: 36px; }
+    .nav-link { position: relative; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; width: auto; padding-inline: 10px; height: 88px; color: var(--muted); font-size: 13px; line-height: 16px; white-space: nowrap; }
+    .nav-glyph { display: grid; place-items: center; width: 24px; height: 24px; }
+    .nav-glyph .icon { width: 23px; height: 23px; }
+    .nav-glyph .glyph-filled { display: none; fill: currentColor; stroke: none; width: 22px; height: 22px; }
+    .nav-link[aria-current="page"] .glyph-outline { display: none; }
+    .nav-link[aria-current="page"] .glyph-filled { display: block; }
+    .nav-avatar { display: block; width: 23px; height: 23px; overflow: hidden; border-radius: 50%; background: var(--avatar-bg); }
+    .account-avatar { flex: none; background: #33322E; outline: 2px solid #0A0A0A; outline-offset: -2px; }
+    .nav-link[aria-current="page"] .nav-avatar { outline: 2px solid var(--ink); outline-offset: -2px; }
+    .nav-link[aria-current="page"] { color: var(--ink); font-weight: 600; }
+    .nav-controls { display: flex; justify-content: flex-end; align-items: center; gap: 8px; min-width: 0; }
+    .quiet-icon { position: relative; display: grid; place-items: center; width: 42px; height: 42px; flex: none; border-radius: 50%; color: var(--body); background: transparent; }
+    .nav-action { background: #FFF; color: #0A0A0A; border: 1px solid var(--hair); }
+    .nav-action .glyph-outline, .nav-action .glyph-filled { grid-area: 1 / 1; transition: opacity 220ms cubic-bezier(.2, .7, .2, 1); }
+    .nav-action .glyph-filled { opacity: 0; fill: currentColor; stroke: none; }
+    .nav-action[aria-expanded="true"] .glyph-outline { opacity: 0; }
+    .nav-action[aria-expanded="true"] .glyph-filled { opacity: 1; }
+    .nav-glyph .icon, .nav-action .icon, .account-pill > .icon { stroke-width: 2.5; }
+    .badge { position: absolute; z-index: 1; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: #5766E8; box-shadow: 0 0 0 2px #FFF; }
+    .account-pill { display: flex; align-items: center; justify-content: center; gap: 9px; max-width: min(180px,100%); height: 42px; padding: 0 15px; border-radius: 999px; border: 1px solid var(--hair-strong); color: #0A0A0A; background: #FFF; font-size: 13px; font-weight: 600; }
+    .account-pill .chevron { width: 13px; height: 13px; margin-left: 2px; color: inherit; opacity: .65; transition: transform 160ms ease; }
+    .account-pill[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+    .account-pill[aria-expanded="true"], .quiet-icon[aria-expanded="true"] { background: var(--press); color: var(--ink); }
+    .quiet-icon, .account-pill, .search-trigger, .nav-link, .menu-row, .soft-button, .demo-option, .filter {
+      transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+    .nav-action, .account-pill {
+      transition: background-color 220ms cubic-bezier(.2, .7, .2, 1), color 220ms cubic-bezier(.2, .7, .2, 1), border-color 220ms cubic-bezier(.2, .7, .2, 1);
+    }
+    .nav-action .badge { transition: background-color 220ms cubic-bezier(.2, .7, .2, 1), box-shadow 220ms cubic-bezier(.2, .7, .2, 1); }
+    @media (hover: hover) {
+      .quiet-icon:hover, .account-pill:hover, .menu-row:hover, .soft-button:hover { background: var(--wash); color: var(--ink); }
+      .account-pill:hover, .search-trigger:hover { border-color: var(--hair-strong); }
+      .search-trigger:hover { background: var(--search-hover); color: var(--ink); }
+      .nav-link:hover { color: var(--ink); }
+      .nav-action:hover { background: #5766E8; color: #FFF; border-color: transparent; }
+      .nav-action:hover .glyph-outline { opacity: 0; }
+      .nav-action:hover .glyph-filled { opacity: 1; }
+      .account-pill:hover { background: #5766E8; color: #FFF; border-color: transparent; }
+      .nav-action:hover .badge { background: #FFF; box-shadow: 0 0 0 2px #5766E8; }
+    }
+    .quiet-icon:active, .account-pill:active, .soft-button:active { background: var(--press); }
+    .nav-action[aria-expanded="true"], .account-pill[aria-expanded="true"] { background: #5766E8; color: #FFF; border-color: transparent; }
+    .nav-action[aria-expanded="true"] .badge { background: #FFF; box-shadow: 0 0 0 2px #5766E8; }
+    .nav-action:active, .account-pill:active { background: #4B59D4; color: #FFF; border-color: transparent; }
+    .quiet-icon[aria-pressed="true"] .icon { fill: currentColor; }
+    .popover { position: absolute; right: 0; top: calc(100% + 14px); width: 292px; padding: 7px; border: 1px solid var(--hair); border-radius: 18px; background: var(--panel); box-shadow: var(--shadow); animation: appear 150ms ease both; }
+    .menu-row { display: flex; align-items: center; gap: 11px; width: 100%; min-height: 44px; padding: 10px 12px; border-radius: 10px; font-size: 12px; text-align: left; color: var(--body); }
+    .menu-row .icon { width: 17px; height: 17px; }
+    .menu-row .trailing { margin-left: auto; color: var(--muted); font-size: 10px; }
+    .soft-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 16px; border: 1px solid var(--hair); border-radius: 999px; color: var(--body); font-size: 12px; }
+    .filter { border: 1px solid var(--hair); border-radius: 999px; padding: 8px 14px; min-height: 38px; color: var(--muted); font-size: 11px; }
+    .filter[aria-pressed="true"] { color: var(--ink); background: var(--panel); border-color: var(--hair-strong); }
+    .job-card { border-bottom: 1px solid var(--hair); padding: 23px 0; }
+    .job-card:last-child { border-bottom: 0; }
+    .demo-option { border-radius: 999px; padding: 8px 13px; min-height: 36px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .demo-option[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+    dialog { color: var(--ink); background: var(--panel); border: 1px solid var(--hair); border-radius: 22px; width: min(480px, calc(100% - 32px)); padding: 28px; box-shadow: var(--shadow); }
+    dialog::backdrop { background: rgba(20,19,16,.32); backdrop-filter: blur(4px); }
+    .field { width: 100%; border: 1px solid var(--hair-strong); border-radius: 12px; background: var(--surface); color: var(--ink); padding: 13px 14px; font-size: 14px; }
+    .primary-button { display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 999px; min-height: 44px; padding: 0 20px; background: var(--ink); color: var(--paper); font-size: 12px; }
+    .primary-button:hover { opacity: .86; }
+    .skip-link { position: fixed; left: 16px; top: -100px; padding: 12px; border-radius: 8px; background: var(--panel); z-index: 100; }
+    .skip-link:focus { top: 12px; }
+    @keyframes appear { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    /* V5: one scale for navigation, search and account controls. */
+    .nav-layout { grid-template-columns: 44px minmax(0, 1fr) auto; max-width: 1280px; height: 80px; gap: 28px; padding-inline: 32px; }
+    .brand-mark { height: 40px !important; }
+    .nav-cluster { gap: 28px; }
+    .search-trigger, .nav-link, .nav-action, .account-pill { height: 44px; border-radius: 12px; }
+    .search-trigger { border-radius: 18px; padding-inline: 14px; background: var(--surface); color: var(--muted); font-size: 13px; }
+    .search-trigger > .icon { width: 18px; height: 18px; stroke-width: 1.8; color: var(--muted); }
+    .nav-links { align-self: center; align-items: center; gap: 12px; }
+    .nav-link { padding-inline: 14px; gap: 8px; font-weight: 500; }
+    .nav-link[aria-current="page"] { background: var(--wash); color: var(--ink); font-weight: 500; }
+    .nav-glyph, .nav-glyph .icon { width: 20px; height: 20px; }
+    .nav-glyph .nav-avatar { width: 22px; height: 22px; }
+    .nav-glyph .icon, .nav-action .icon, .account-pill > .icon { stroke-width: 1.8; }
+    .nav-controls { gap: 8px; }
+    .nav-action { width: 44px; border-radius: 50%; background: #FFF; border-color: var(--hair); color: #0A0A0A; }
+    .account-pill { border-radius: 999px; padding-inline: 14px; gap: 8px; background: #FFF; border-color: var(--hair-strong); color: #0A0A0A; font-weight: 600; }
+    .nav-action .icon, .account-pill > .icon { stroke-width: 2.5; }
+    .account-avatar { width: 22px; height: 22px; outline: none; }
+    .badge { width: 7px; height: 7px; top: 5px; right: 5px; box-shadow: 0 0 0 2px #FFF; }
+    @media (hover: hover) {
+      .nav-link:hover { background: var(--wash); color: var(--ink); }
+    }
+    @media (max-width: 1199px) {
+      .nav-layout { padding-inline: 24px; gap: 20px; }
+      .nav-cluster { gap: 20px; }
+      .nav-links { gap: 8px; }
+      .nav-link { padding-inline: 12px; }
+    }
+    @media (max-width: 959px) {
+      .nav-layout { grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-rows: 72px 60px; height: auto; column-gap: 20px; row-gap: 0; }
+      .brand-group { grid-row: 1; grid-column: 1; }
+      .nav-cluster { display: contents; }
+      .search-trigger { grid-row: 1; grid-column: 2; width: 100%; }
+      .nav-controls { grid-row: 1; grid-column: 3; }
+      .nav-links { grid-row: 2; grid-column: 1 / -1; justify-self: center; gap: 24px; }
+      .nav-link { min-width: 100px; }
+    }
+    @media (max-width: 600px) {
+      .nav-layout { grid-template-columns: 1fr auto; grid-template-rows: 68px 44px 68px; padding-inline: 16px; }
+      .nav-controls { grid-column: 2; }
+      .search-trigger { grid-row: 2; grid-column: 1 / -1; }
+      .nav-links { grid-row: 3; gap: 8px; width: 100%; justify-content: space-between; }
+      .nav-link { min-width: 0; padding-inline: 12px; }
+      .account-pill { max-width: 132px; }
+      .popover { position: fixed; top: 62px; right: 16px; width: min(310px, calc(100vw - 32px)); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <a class="skip-link" href="#content">Pular para o conteúdo</a>
+  <!-- Inline symbols keep the demo's icons independent of an icon CDN. -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="absolute h-0 w-0 overflow-hidden" aria-hidden="true">
+    <defs>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+      <symbol id="i-bell-filled" viewBox="0 0 24 24"><path d="M12 1a7 7 0 0 0-7 7c0 3.8-.9 5.3-1.8 6.5C2.6 15.3 2 16 2 17a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1c0-1-.6-1.7-1.2-2.5C19.9 13.3 19 11.8 19 8a7 7 0 0 0-7-7ZM9 20a3 3 0 0 0 6 0Z"/></symbol>
+      <symbol id="i-message-filled" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1C5.9 1 1 5 1 10c0 3.2 1.9 6 5 7.6V22a1 1 0 0 0 1.6.8l4.8-3.8C18.3 18.8 23 14.9 23 10c0-5-4.9-9-11-9ZM8.4 10a1.4 1.4 0 1 0-2.8 0 1.4 1.4 0 0 0 2.8 0Zm5 0a1.4 1.4 0 1 0-2.8 0 1.4 1.4 0 0 0 2.8 0Zm5 0a1.4 1.4 0 1 0-2.8 0 1.4 1.4 0 0 0 2.8 0Z"/></symbol>
+      <symbol id="i-message" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 5.6 2 10c0 3 2 5.6 5 7v5l5-4c5.5 0 10-3.6 10-8S17.5 2 12 2Z" stroke-linejoin="miter"/><g fill="currentColor" stroke="none"><circle cx="7" cy="10" r="1.4"/><circle cx="12" cy="10" r="1.4"/><circle cx="17" cy="10" r="1.4"/></g></symbol>
+      <symbol id="i-case" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3M3 12a20 20 0 0 0 18 0M10 13v2h4v-2"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9ZM14 3v6h6M8 13h8M8 17h5"/></symbol>
+      <symbol id="i-case-filled" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M8 3a1 1 0 0 0-1 1v2H4a2 2 0 0 0-2 2v4h8v-1h4v1h8V8a2 2 0 0 0-2-2h-3V4a1 1 0 0 0-1-1ZM9 5h6v1H9ZM2 13.5V20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6.5h-8V15h-4v-1.5Z"/></symbol>
+      <symbol id="i-file-filled" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10h-5a2 2 0 0 1-2-2V2Zm1 10h10v1.5H7Zm0 4h10v1.5H7ZM15 2.5V8h5.5Z"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+      <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17l-6-4Z"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.8 13A9 9 0 0 1 11 3.2 9 9 0 1 0 20.8 13Z"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><path d="m9 3-.5 2.4-2 1.2L4 6l-2 4 1.9 1.7v2.2L2 16l2 3 2.5-.6 2 1.2L9 22h5l.5-2.4 2-1.2 2.5.6 2-3-1.9-2.1v-2.2L21 10l-2-4-2.5.6-2-1.2L14 3Z"/><circle cx="11.5" cy="12.5" r="3"/></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M9 12h12m-4-4 4 4-4 4"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+      <symbol id="i-location" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="navbar">
+    <div class="nav-layout">
+      <div class="brand-group flex min-w-0 items-center gap-8">
+        <a href="#vagas" aria-label="Patch Careers — início" class="shrink-0 rounded-lg">
+          <!-- Same mascot geometry and colors as packages/ui/.../brand-face.tsx. -->
+          <svg class="brand-mark block h-[48px] w-auto" viewBox="0 0 280 290" aria-hidden="true">
+            <path d="M20 0H135V66H149A22 22 0 1 1 149 94H135V157.9A42 42 0 1 0 95 228.5V282A8 8 0 0 1 87 290H20A20 20 0 0 1 0 270V20A20 20 0 0 1 20 0Z" fill="var(--brand-plain)"/>
+            <path d="M153 23H256A24 24 0 0 1 280 47V163A22 22 0 0 0 280 207V266A24 24 0 0 1 256 290H115A8 8 0 0 1 107 282V224A8 8 0 0 0 98 217A30 30 0 1 1 128 168A11 11 0 0 0 147 160V108.2A34 34 0 1 0 147 51.8V29A6 6 0 0 1 153 23Z" fill="#5766E8"/>
+            <g fill="#DDE3F5"><circle cx="78" cy="110" r="30"/><circle cx="212" cy="110" r="30"/></g>
+            <g fill="#151A30"><circle cx="81" cy="110" r="15"/><circle cx="215" cy="110" r="15"/></g>
+            <g fill="#fff"><circle cx="88" cy="102" r="5"/><circle cx="222" cy="102" r="5"/></g>
+            <path d="M146 168Q162 184 178 168" fill="none" stroke="#151A30" stroke-width="9" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="nav-cluster">
+        <button class="search-trigger" data-open="search-dialog" aria-label="Buscar vagas, empresas" aria-haspopup="dialog">
+          <svg class="icon icon-sm" aria-hidden="true"><use href="#i-search"/></svg>
+          <span class="search-label truncate">Buscar vagas, empresas...</span>
+        </button>
+
+        <nav class="nav-links" aria-label="Navegação principal">
+          <a class="nav-link" href="#vagas" data-page="vagas" aria-current="page"><span class="nav-glyph"><svg class="icon glyph-outline" aria-hidden="true"><use href="#i-case"/></svg><svg class="icon glyph-filled" aria-hidden="true"><use href="#i-case-filled"/></svg></span><span>Vagas</span></a>
+          <a class="nav-link" href="#curriculos" data-page="curriculos"><span class="nav-glyph"><svg class="icon glyph-outline" aria-hidden="true"><use href="#i-file"/></svg><svg class="icon glyph-filled" aria-hidden="true"><use href="#i-file-filled"/></svg></span><span>Currículos</span></a>
+          <a class="nav-link" href="#perfil" data-page="perfil" aria-label="Eu — meu perfil"><span class="nav-glyph"><svg class="nav-avatar" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.7a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8ZM12 15.2c-5.4 0-9.8 3.6-10.4 8.2-.1.9.6 1.6 1.5 1.6h17.8c.9 0 1.6-.7 1.5-1.6-.6-4.6-5-8.2-10.4-8.2Z" fill="var(--avatar-ink)"/></svg></span><span>Eu</span></a>
+        </nav>
+      </div>
+
+      <div class="nav-controls">
+        <div class="relative" data-authed>
+          <button id="messages-trigger" class="quiet-icon nav-action" data-popover="messages-panel" aria-expanded="false" aria-controls="messages-panel" aria-label="Mensagens, 1 não lida" title="Mensagens">
+            <svg class="icon glyph-outline" aria-hidden="true"><use href="#i-message"/></svg><svg class="icon glyph-filled" aria-hidden="true"><use href="#i-message-filled"/></svg><span class="badge" aria-hidden="true"></span>
+          </button>
+          <section id="messages-panel" class="popover" aria-label="Mensagens" hidden>
+            <div class="flex items-center justify-between px-3 py-3"><h2 class="text-sm font-medium">Mensagens</h2><span class="eyebrow text-muted">1 nova</span></div>
+            <button class="menu-row items-start" data-message><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-wash text-xs">JL</span><span><span class="mb-1 block font-medium text-ink">Julia Lima</span><span class="block leading-relaxed text-muted">Oi, Enzo! Vamos conversar sobre a oportunidade?</span></span></button>
+          </section>
+        </div>
+        <div class="relative" data-authed>
+          <button id="notifications-trigger" class="quiet-icon nav-action" data-popover="notifications-panel" aria-expanded="false" aria-controls="notifications-panel" aria-label="Notificações" title="Notificações">
+            <svg class="icon glyph-outline" aria-hidden="true"><use href="#i-bell"/></svg><svg class="icon glyph-filled" aria-hidden="true"><use href="#i-bell-filled"/></svg>
+          </button>
+          <section id="notifications-panel" class="popover" aria-label="Notificações" hidden>
+            <h2 class="px-3 py-3 text-sm font-medium">Tudo em dia por aqui.</h2>
+            <p class="px-3 pb-4 text-xs leading-relaxed text-muted">Novas oportunidades e atualizações do seu perfil aparecem aqui.</p>
+          </section>
+        </div>
+        <div class="relative min-w-0">
+          <button id="account-trigger" class="account-pill" aria-expanded="false" aria-controls="account-panel" aria-label="Abrir menu de Enzo">
+            <svg id="account-avatar" class="nav-avatar account-avatar" viewBox="0 0 24 24" aria-hidden="true" data-authed><path d="M12 3.7a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8ZM12 15.2c-5.4 0-9.8 3.6-10.4 8.2-.1.9.6 1.6 1.5 1.6h17.8c.9 0 1.6-.7 1.5-1.6-.6-4.6-5-8.2-10.4-8.2Z" fill="#F7F4EE"/></svg>
+            <svg id="account-user-icon" class="icon icon-sm" aria-hidden="true" hidden><use href="#i-user"/></svg>
+            <span id="account-label" class="truncate">Enzo</span>
+            <svg id="account-chevron" class="icon chevron" aria-hidden="true"><use href="#i-chevron"/></svg>
+          </button>
+          <section id="account-panel" class="popover" aria-label="Sua conta" hidden>
+            <div class="flex items-center gap-3 px-3 pb-4 pt-3">
+              <span id="menu-avatar" class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-wash text-xs font-medium">EP</span>
+              <div class="min-w-0"><p id="menu-name" class="truncate text-[13px] font-medium">Enzo Patti</p><p id="menu-subtitle" class="mt-1 text-[11px] text-muted">Seu espaço no Patch</p></div>
+            </div>
+            <div class="mx-3 mb-2 border-t border-hair"></div>
+            <a href="#perfil" class="menu-row" data-authed><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>Meu perfil<svg class="icon icon-sm ml-auto text-muted" aria-hidden="true"><use href="#i-external"/></svg></a>
+            <button class="menu-row" data-open="settings-dialog" data-authed><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg>Configurações</button>
+            <button class="menu-row" data-theme-toggle><svg class="icon" aria-hidden="true"><use href="#i-sun" data-theme-icon/></svg>Aparência<span class="trailing" data-theme-label>Claro</span></button>
+            <div class="mx-3 my-2 border-t border-hair"></div>
+            <button id="sign-out" class="menu-row" data-authed><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg>Sair da conta</button>
+            <button class="menu-row" data-open="auth-dialog" data-guest hidden><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>Entrar ou criar conta<svg class="icon icon-sm ml-auto" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </section>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="content" class="mx-auto max-w-[1180px] px-6 pb-12 pt-10 md:px-10 md:pt-14" tabindex="-1">
+    <div class="mb-9 flex items-center gap-2 text-[11px] text-muted"><span>Seu espaço</span><span class="opacity-40">/</span><span id="breadcrumb" class="text-body">Vagas</span></div>
+    <div class="mb-10 flex flex-wrap items-end justify-between gap-6">
+      <div><p id="page-eyebrow" class="eyebrow mb-3 text-muted">ENCONTRE O QUE COMBINA COM VOCÊ</p><h1 id="page-title" class="font-serif text-[36px] leading-[1.16] tracking-[-1.2px] sm:text-[46px]">Seu próximo capítulo.</h1><p id="page-description" class="mt-4 max-w-lg text-[13px] leading-6 text-muted">Oportunidades que fazem sentido para a sua história.</p></div>
+      <button id="page-action" class="soft-button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-bookmark"/></svg>Vagas salvas<span id="saved-count" class="ml-1 text-[10px] text-muted">0</span></button>
+    </div>
+
+    <div class="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_286px] lg:gap-12">
+      <section id="page-content" class="min-w-0" aria-label="Oportunidades"></section>
+      <aside class="space-y-4">
+        <div class="overflow-hidden rounded-[20px] border border-hair bg-panel">
+          <div class="relative h-[74px] overflow-hidden">
+            <svg class="h-full w-full" viewBox="0 0 290 72" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M0 0H88V25c15-6.5 15 28 0 21.5V72H0Z" fill="var(--cover-a)"/><path d="M290 0H88V25c15-6.5 15 28 0 21.5V72H290Z" fill="var(--cover-b)"/><path d="M88 0V25c15-6.5 15 28 0 21.5V72" fill="none" stroke="rgba(15,23,42,.10)"/></svg>
+          </div>
+          <div class="px-6 pb-5">
+            <div id="profile-avatar" class="relative -mt-6 mb-4 grid h-12 w-12 place-items-center rounded-full border-[4px] border-panel bg-ink text-xs text-paper">EP</div>
+            <h2 id="profile-name" class="font-serif text-[23px] tracking-[-.4px]">Enzo Patti</h2>
+            <p id="profile-caption" class="mt-1.5 text-[11px] leading-5 text-muted">Uma boa história merece ser vista.</p>
+            <div class="my-5 border-t border-hair"></div>
+            <div class="flex items-center justify-between"><span class="text-[11px] text-body">Seu perfil está quase lá</span><span class="font-mono text-xs">82<span class="text-[9px] text-muted"> / 100</span></span></div>
+            <div class="mb-3 mt-3 h-[3px] overflow-hidden rounded-full bg-hair"><div class="h-full w-[82%] rounded-full bg-ink"></div></div>
+            <p class="text-[10px] leading-5 text-muted">Mais detalhes, mais chances de encontrar o seu próximo encaixe.</p>
+            <a href="#perfil" class="mt-4 flex min-h-10 items-center justify-between text-xs font-medium">Cuidar do meu perfil<svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </div>
+        </div>
+        <div class="px-1 py-3"><span class="eyebrow text-muted">CADA PASSO CONTA</span><p class="mt-3 font-serif text-[22px] leading-[1.4] tracking-[-.3px]">Você não precisa caber.<br>Precisa encontrar seu lugar.</p><p class="mt-3 text-[10px] text-muted">Do seu jeito. No seu tempo.</p></div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Demo controls live outside the product preview. No real authentication. -->
+  <footer class="mx-auto mb-8 mt-2 max-w-[1100px] border-t border-hair px-6 pt-5 md:px-0" aria-label="Controles da demonstração">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div><p class="eyebrow text-body">ESTUDO DE NAVBAR <span class="ml-2 text-muted">05 · ESSÊNCIA</span></p><p class="mt-1.5 text-[11px] text-muted">Ícones ativos preenchidos e fundo translúcido, sem borda. <a class="underline underline-offset-4" href="navbar-demo-v4.html#vagas">Comparar com a v4</a>.</p></div>
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex rounded-full border border-hair p-1" role="group" aria-label="Estado da conta na demo">
+          <button class="demo-option" data-mode="signed-in" aria-pressed="true">Logado</button>
+          <button class="demo-option" data-mode="signed-out" aria-pressed="false">Entrar</button>
+          <button class="demo-option" data-mode="visitor" aria-pressed="false">Visitante</button>
+        </div>
+        <button class="quiet-icon border border-hair" data-theme-toggle aria-label="Alternar tema claro e escuro" title="Alternar tema"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-moon" data-theme-opposite-icon/></svg></button>
+      </div>
+    </div>
+    <p id="demo-explanation" class="mt-4 text-[11px] leading-5 text-muted">Logado: o primeiro nome identifica a conta; a seta indica que há um menu.</p>
+    <p class="mt-2 text-[10px] text-muted">Prévia em HTML + Tailwind CSS · Dados ilustrativos.</p>
+  </footer>
+
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="mb-5 flex items-center justify-between"><h2 id="search-title" class="font-serif text-2xl">O que você procura?</h2><button class="quiet-icon" data-close aria-label="Fechar busca"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <label for="search-input" class="sr-only">Buscar páginas e oportunidades</label><input id="search-input" class="field" type="search" placeholder="Vagas, currículos, meu perfil…" autocomplete="off">
+    <div id="search-results" class="mt-4" aria-live="polite"></div>
+    <p class="mt-4 text-[10px] text-muted">Esc para fechar · Enter para abrir o primeiro resultado</p>
+  </dialog>
+
+  <dialog id="auth-dialog" aria-labelledby="auth-title">
+    <div class="mb-4 flex items-center justify-between"><span class="eyebrow text-muted">SEU ESPAÇO NO PATCH</span><button class="quiet-icon" data-close aria-label="Fechar acesso"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <h2 id="auth-title" class="font-serif text-[32px] tracking-[-.7px]">Seu próximo passo<br>começa com você.</h2><p class="mb-7 mt-4 text-sm leading-6 text-muted">Guarde suas vagas, cuide do seu perfil e dê forma à sua próxima oportunidade.</p>
+    <button id="demo-login" class="primary-button w-full">Experimentar como Enzo<svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow"/></svg></button><p class="mt-4 text-center text-[10px] text-muted">Acesso simulado para esta demonstração.</p>
+  </dialog>
+
+  <dialog id="settings-dialog" aria-labelledby="settings-title">
+    <div class="mb-6 flex items-center justify-between"><h2 id="settings-title" class="font-serif text-2xl">Sua conta</h2><button class="quiet-icon" data-close aria-label="Fechar configurações"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <form id="settings-form"><label for="name-input" class="mb-2 block text-xs text-body">Nome completo</label><input id="name-input" class="field" value="Enzo Patti" required maxlength="80" autocomplete="name"><p class="mt-3 text-[11px] leading-5 text-muted">O primeiro nome aparece na navbar.</p><button class="primary-button mt-6 w-full" type="submit">Salvar alterações</button></form>
+  </dialog>
+
+  <dialog id="detail-dialog" aria-labelledby="detail-title">
+    <div class="mb-4 flex items-center justify-between"><span id="detail-eyebrow" class="eyebrow text-muted">OPORTUNIDADE</span><button class="quiet-icon" data-close aria-label="Fechar detalhes"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <h2 id="detail-title" class="font-serif text-[28px]"></h2><p id="detail-copy" class="mb-6 mt-4 text-sm leading-7 text-muted"></p><button class="soft-button w-full" data-close>Voltar</button>
+  </dialog>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+
+  <script>
+    const $ = (selector, context = document) => context.querySelector(selector);
+    const $$ = (selector, context = document) => [...context.querySelectorAll(selector)];
+    const icon = (name, extra = '') => `<svg class="icon ${extra}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+    const escapeHTML = (value) => String(value).replace(/[&<>"']/g, (character) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
+    let mode = 'signed-in';
+    let userName = 'Enzo Patti';
+    let page = 'vagas';
+    let filter = 'Todas';
+    let savedOnly = false;
+    const saved = new Set();
+    const jobs = [
+      { id: 'forma', company: 'Studio Forma', initials: 'f.', title: 'Product Designer', location: 'Remoto', kind: 'Tempo integral', time: 'Há 2 horas', tone: 'var(--soft-blue)', description: 'Ajude a transformar problemas complexos em experiências simples. Uma oportunidade para trabalhar com pesquisa, interfaces e um time que valoriza a sua perspectiva.' },
+      { id: 'orbital', company: 'Orbital', initials: 'O', title: 'Desenvolvedor(a) Front-end', location: 'Remoto', kind: 'CLT', time: 'Há 4 horas', tone: 'var(--soft-green)', description: 'Construa interfaces acessíveis e cuidadosas. O time procura alguém com experiência em desenvolvimento web, atenção aos detalhes e vontade de colaborar.' },
+      { id: 'norte', company: 'Norte', initials: 'n', title: 'Designer de Experiência', location: 'São Paulo · Híbrido', kind: 'Tempo integral', time: 'Há 6 horas', tone: 'var(--wash)', description: 'Conecte pesquisa e design para melhorar a experiência de quem usa o produto. Trabalho híbrido, com espaço para aprender e compartilhar descobertas.' },
+    ];
+    const pages = {
+      vagas: { title: 'Seu próximo capítulo.', eyebrow: 'ENCONTRE O QUE COMBINA COM VOCÊ', description: 'Oportunidades que fazem sentido para a sua história.', label: 'Vagas' },
+      curriculos: { title: 'Sua história abre portas.', eyebrow: 'UM CURRÍCULO. MUITAS POSSIBILIDADES.', description: 'A sua experiência, apresentada do jeito certo para cada oportunidade.', label: 'Currículos' },
+      perfil: { title: 'Uma carreira com a sua cara.', eyebrow: 'SEU TALENTO, BEM APRESENTADO', description: 'Cada experiência é uma peça importante da sua história.', label: 'Meu perfil' },
+    };
+
+    function closePopovers(returnFocus = false) {
+      const trigger = $('[aria-expanded="true"][aria-controls]');
+      $$('.popover').forEach(panel => { panel.hidden = true; });
+      $$('[aria-expanded]').forEach(button => button.setAttribute('aria-expanded', 'false'));
+      if (returnFocus) trigger?.focus();
+    }
+
+    function togglePopover(trigger, id) {
+      const shouldOpen = $(id).hidden;
+      closePopovers();
+      if (shouldOpen) {
+        $(id).hidden = false;
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    function openDialog(id) {
+      closePopovers();
+      const dialog = document.getElementById(id);
+      if (!dialog.open) dialog.showModal();
+      if (id === 'search-dialog') { $('#search-input').value = ''; renderSearch(''); $('#search-input').focus(); }
+      if (id === 'settings-dialog') { $('#name-input').value = userName; $('#name-input').focus(); }
+    }
+
+    function showDetail(title, copy, eyebrow = 'OPORTUNIDADE') {
+      $('#detail-title').textContent = title;
+      $('#detail-copy').textContent = copy;
+      $('#detail-eyebrow').textContent = eyebrow;
+      openDialog('detail-dialog');
+    }
+
+    function setMode(next) {
+      closePopovers();
+      mode = next;
+      const authed = mode === 'signed-in';
+      const firstName = userName.split(/\s+/)[0];
+      const initials = userName.split(/\s+/).slice(0, 2).map(part => [...part][0]).join('').toUpperCase();
+      $$('[data-authed]').forEach(element => element.toggleAttribute('hidden', !authed));
+      $$('[data-guest]').forEach(element => { element.hidden = authed; });
+      $('#account-label').textContent = authed ? firstName : mode === 'visitor' ? 'Visitante' : 'Entrar';
+      $('#account-user-icon').toggleAttribute('hidden', authed);
+      $('#account-trigger').setAttribute('aria-label', authed ? `Abrir menu de ${firstName}` : mode === 'visitor' ? 'Abrir menu de visitante' : 'Entrar na sua conta');
+      $('#account-trigger').setAttribute('title', authed ? userName : mode === 'visitor' ? 'Menu de visitante' : 'Entrar na sua conta');
+      $('#account-chevron').toggleAttribute('hidden', mode === 'signed-out');
+      if (mode === 'signed-out') {
+        $('#account-trigger').removeAttribute('aria-expanded');
+        $('#account-trigger').setAttribute('aria-controls', 'auth-dialog');
+        $('#account-trigger').setAttribute('aria-haspopup', 'dialog');
+      } else {
+        $('#account-trigger').setAttribute('aria-expanded', 'false');
+        $('#account-trigger').setAttribute('aria-controls', 'account-panel');
+        $('#account-trigger').removeAttribute('aria-haspopup');
+      }
+      $('#menu-name').textContent = authed ? userName : 'Boas-vindas ao Patch';
+      $('#menu-subtitle').textContent = authed ? 'Seu espaço no Patch' : 'Seu próximo capítulo começa aqui';
+      $('#menu-avatar').textContent = authed ? initials : 'P';
+      $('#profile-name').textContent = authed ? userName : 'Seu espaço no Patch';
+      $('#profile-avatar').textContent = authed ? initials : 'P';
+      $('#profile-caption').textContent = authed ? 'Uma boa história merece ser vista.' : 'Entre para começar a sua história.';
+      $$('[data-mode]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.mode === mode)));
+      $('#demo-explanation').textContent = {
+        'signed-in': 'Logado: o primeiro nome identifica a conta; a seta indica que há um menu.',
+        'signed-out': 'Deslogado: “Entrar” comunica a ação diretamente. Clique na cápsula para experimentar o acesso.',
+        visitor: 'Alternativa: “Visitante” abre o menu com acesso à conta e aparência. Mantém o menu visível antes do login.',
+      }[mode];
+      renderPage();
+    }
+
+    function renderJobs() {
+      const filtered = jobs.filter(job => (filter !== 'Remoto' || job.location === 'Remoto') && (!savedOnly || saved.has(job.id)));
+      $('#page-content').innerHTML = `<div class="flex flex-wrap items-center justify-between gap-4 border-b border-hair pb-5"><div class="flex gap-2">${['Todas', 'Remoto'].map(label => `<button class="filter" data-filter="${label}" aria-pressed="${filter === label}">${label === 'Todas' && savedOnly ? 'Salvas' : label}</button>`).join('')}</div><span class="eyebrow text-muted">${String(filtered.length).padStart(2, '0')} OPORTUNIDADES</span></div><div>${filtered.map(job => `<article class="job-card"><div class="flex items-start gap-4"><div class="grid h-12 w-12 shrink-0 place-items-center rounded-[14px] font-serif text-[26px]" style="background:${job.tone}">${job.initials}</div><div class="min-w-0 flex-1"><div class="mb-1.5 flex flex-wrap items-center justify-between gap-2"><span class="text-[11px] text-muted">${job.company}</span><span class="text-[9px] text-muted">${job.time}</span></div><button class="rounded text-left text-[16px] font-medium tracking-[-.3px] hover:underline underline-offset-4" data-job="${job.id}">${job.title}</button><div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] text-muted"><span class="flex items-center gap-1.5">${icon('location', 'icon-sm')}${job.location}</span><span>${job.kind}</span></div></div><button class="quiet-icon -mr-2 mt-6" data-save="${job.id}" aria-pressed="${saved.has(job.id)}" aria-label="${saved.has(job.id) ? 'Remover dos' : 'Adicionar aos'} favoritos: ${job.title}">${icon('bookmark', saved.has(job.id) ? 'fill-current' : '')}</button></div></article>`).join('') || '<p class="py-14 text-center text-sm text-muted">Nenhuma vaga salva por aqui ainda.</p>'}</div><p class="mt-5 flex items-center gap-2 text-[10px] text-muted">${icon('check', 'icon-sm')}Um bom encaixe faz toda a diferença.</p>`;
+    }
+
+    function renderPage() {
+      if (mode !== 'signed-in' && page !== 'vagas') {
+        page = 'vagas';
+        history.replaceState(null, '', '#vagas');
+      }
+      const current = pages[page];
+      $('#page-title').textContent = current.title;
+      $('#page-eyebrow').textContent = current.eyebrow;
+      $('#page-description').textContent = current.description;
+      $('#breadcrumb').textContent = current.label;
+      $('#page-content').setAttribute('aria-label', current.label);
+      $$('[data-page]').forEach(link => {
+        if (link.dataset.page === page) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      });
+      $('#page-action').hidden = page !== 'vagas';
+      $('#page-action').setAttribute('aria-pressed', String(savedOnly));
+      $('#page-action').innerHTML = `${icon('bookmark', 'icon-sm')}${savedOnly ? 'Todas as vagas' : 'Vagas salvas'}<span id="saved-count" class="ml-1 text-[10px] text-muted">${saved.size}</span>`;
+      if (page === 'vagas') renderJobs();
+      if (page === 'curriculos') $('#page-content').innerHTML = `<div class="rounded-[20px] border border-hair bg-panel p-7"><div class="mb-8 flex items-center justify-between"><span class="eyebrow text-muted">CURRÍCULO PRINCIPAL</span>${icon('file', 'text-muted')}</div><h2 class="font-serif text-3xl">${escapeHTML(userName)}</h2><p class="mb-7 mt-3 text-xs leading-6 text-muted">Sua experiência, suas habilidades e o que vem a seguir.<br>Um ponto de partida para cada nova oportunidade.</p><button class="soft-button" data-resume>Visualizar currículo ${icon('external', 'icon-sm')}</button></div><div class="mt-4 flex items-start gap-3 px-1 py-5 text-xs leading-6 text-muted">${icon('check', 'icon-sm mt-1')}Seu currículo acompanha as atualizações do seu perfil.</div>`;
+      if (page === 'perfil') $('#page-content').innerHTML = `<div class="rounded-[20px] border border-hair bg-panel p-7"><div class="mb-6 flex items-center justify-between"><span class="eyebrow text-muted">SOBRE VOCÊ</span><button class="soft-button" data-open="settings-dialog">Editar perfil</button></div><h2 class="font-serif text-3xl">${escapeHTML(userName)}</h2><p class="mt-4 max-w-md text-[13px] leading-7 text-body">Curioso por natureza. Gosto de transformar ideias em experiências simples e encontrar novas formas de conectar pessoas e possibilidades.</p><div class="my-7 border-t border-hair"></div><p class="eyebrow mb-4 text-muted">SUAS HABILIDADES</p><div class="flex flex-wrap gap-2">${['Design de produto', 'Desenvolvimento web', 'Colaboração'].map(skill => `<span class="rounded-full border border-hair px-3 py-2 text-[11px] text-body">${skill}</span>`).join('')}</div></div>`;
+    }
+
+    function navigate(next) {
+      closePopovers();
+      if (mode !== 'signed-in' && next !== 'vagas') { openDialog('auth-dialog'); return; }
+      page = next;
+      renderPage();
+    }
+
+    function renderSearch(query) {
+      const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      const term = normalize(query.trim());
+      const results = [
+        ...Object.entries(pages).map(([key, value]) => ({ title: value.label, href: `#${key}`, kind: 'Página' })),
+        ...jobs.map(job => ({ title: job.title, job: job.id, kind: job.company })),
+      ].filter(item => normalize(`${item.title} ${item.kind}`).includes(term));
+      $('#search-results').innerHTML = results.map(item => item.href
+        ? `<a class="menu-row" href="${item.href}">${icon('arrow')}<span>${item.title}</span><span class="trailing">${item.kind}</span></a>`
+        : `<button class="menu-row" data-job="${item.job}">${icon('case')}<span>${item.title}</span><span class="trailing">${item.kind}</span></button>`).join('') || '<p class="py-6 text-center text-xs text-muted">Nenhum resultado. Tente “perfil” ou “designer”.</p>';
+    }
+
+    document.addEventListener('click', event => {
+      const target = event.target.closest('button, a');
+      if (!event.target.closest('.popover') && !event.target.closest('[aria-controls]')) closePopovers();
+      if (!target) return;
+      if (target.dataset.mode) setMode(target.dataset.mode);
+      if (target.hasAttribute('data-theme-toggle')) {
+        const dark = document.documentElement.classList.toggle('dark');
+        $$('[data-theme-label]').forEach(label => { label.textContent = dark ? 'Escuro' : 'Claro'; });
+        $$('[data-theme-icon]').forEach(use => use.setAttribute('href', dark ? '#i-moon' : '#i-sun'));
+        $$('[data-theme-opposite-icon]').forEach(use => use.setAttribute('href', dark ? '#i-sun' : '#i-moon'));
+        $('#announcement').textContent = `Tema ${dark ? 'escuro' : 'claro'} ativado.`;
+      }
+      if (target.dataset.popover) togglePopover(target, `#${target.dataset.popover}`);
+      if (target.id === 'account-trigger') {
+        if (mode === 'signed-out') openDialog('auth-dialog');
+        else togglePopover(target, '#account-panel');
+      }
+      if (target.dataset.open) openDialog(target.dataset.open);
+      if (target.hasAttribute('data-close')) target.closest('dialog').close();
+      if (target.id === 'sign-out') setMode('signed-out');
+      if (target.id === 'demo-login') { $('#auth-dialog').close(); setMode('signed-in'); }
+      if (target.matches('a[href^="#"]')) {
+        const destination = target.getAttribute('href').slice(1);
+        if (pages[destination]) {
+          event.preventDefault();
+          target.closest('dialog')?.close();
+          if (mode === 'signed-in' || destination === 'vagas') history.pushState(null, '', `#${destination}`);
+          navigate(destination);
+        }
+      }
+      if (target.dataset.filter) { filter = target.dataset.filter; renderJobs(); $(`[data-filter="${filter}"]`).focus(); }
+      if (target.dataset.save) {
+        if (mode !== 'signed-in') { openDialog('auth-dialog'); return; }
+        const id = target.dataset.save;
+        saved.has(id) ? saved.delete(id) : saved.add(id);
+        renderPage();
+        ($(`[data-save="${id}"]`) || $('#page-action')).focus();
+        $('#announcement').textContent = saved.has(id) ? 'Vaga salva.' : 'Vaga removida dos favoritos.';
+      }
+      if (target.id === 'page-action') { savedOnly = !savedOnly; renderPage(); }
+      if (target.dataset.job) {
+        const job = jobs.find(item => item.id === target.dataset.job);
+        target.closest('dialog')?.close();
+        showDetail(job.title, `${job.company} · ${job.location}. ${job.description}`, 'VAGA ILUSTRATIVA');
+      }
+      if (target.hasAttribute('data-message')) { $('#messages-trigger .badge')?.remove(); $('#messages-trigger').setAttribute('aria-label', 'Mensagens'); showDetail('Julia Lima', 'Oi, Enzo! Gostamos muito do seu perfil e queremos conhecer melhor a sua trajetória. Vamos conversar sobre a oportunidade?', 'MENSAGEM ILUSTRATIVA'); }
+      if (target.hasAttribute('data-resume')) showDetail(userName, 'Design de produto · Desenvolvimento web · Colaboração. Este currículo ilustrativo reúne suas experiências em uma apresentação clara e organizada.', 'CURRÍCULO PRINCIPAL');
+    });
+
+    document.addEventListener('keydown', event => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        if (!$('dialog[open]')) openDialog('search-dialog');
+      }
+      if (event.key === 'Escape') {
+        const dialog = $('dialog[open]');
+        if (dialog) { event.preventDefault(); dialog.close(); }
+        else closePopovers(true);
+      }
+      if (event.key === 'ArrowDown' && event.target.matches('[aria-expanded][aria-controls]')) {
+        event.preventDefault();
+        const id = event.target.getAttribute('aria-controls');
+        if (document.getElementById(id).hidden) togglePopover(event.target, `#${id}`);
+        $('button, a', document.getElementById(id))?.focus();
+      }
+    });
+    document.addEventListener('focusin', event => {
+      const trigger = $('[aria-expanded="true"][aria-controls]');
+      if (trigger && !trigger.parentElement.contains(event.target)) closePopovers();
+    });
+    $$('dialog').forEach(dialog => dialog.addEventListener('click', event => {
+      if (event.target !== dialog) return;
+      const box = dialog.getBoundingClientRect();
+      if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close();
+    }));
+    $('#search-input').addEventListener('input', event => renderSearch(event.target.value));
+    $('#search-input').addEventListener('keydown', event => {
+      if (event.key === 'Enter') { event.preventDefault(); $('#search-results a, #search-results button')?.click(); }
+    });
+    $('#settings-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const input = $('#name-input');
+      const value = input.value.trim().replace(/\s+/g, ' ');
+      if (!value) { input.setCustomValidity('Digite seu nome.'); input.reportValidity(); return; }
+      userName = value;
+      $('#settings-dialog').close();
+      setMode(mode);
+      $('#announcement').textContent = 'Nome atualizado.';
+    });
+    $('#name-input').addEventListener('input', event => event.target.setCustomValidity(''));
+    window.addEventListener('popstate', () => {
+      const destination = location.hash.slice(1);
+      navigate(pages[destination] ? destination : 'vagas');
+      if (mode !== 'signed-in' && destination !== 'vagas') history.replaceState(null, '', '#vagas');
+    });
+    const initialPage = location.hash.slice(1);
+    page = pages[initialPage] ? initialPage : 'vagas';
+    setMode('signed-in');
+  </script>
+</body>
+</html>

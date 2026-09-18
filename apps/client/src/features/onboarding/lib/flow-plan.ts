@@ -48,7 +48,7 @@ export interface FlowStep {
    *  show the masthead and aren't part of the "NN / NN" total or time estimate. */
   readonly intro?: boolean;
   /** Hides the masthead (progress bar + phase label + time estimate) while
-   *  keeping the step counted. Used by the language/theme picks, which read as
+   *  keeping the step counted. Used by the language pick, which reads as
    *  pre-flow preferences rather than profile-building progress. */
   readonly hideMasthead?: boolean;
 }
@@ -66,16 +66,6 @@ export const FLOW_PLAN: readonly FlowStep[] = [
     optional: false,
     hideMasthead: true,
     titleKey: "onboarding.flow.language.title",
-  },
-  {
-    // Light/dark/system pick, right after language so its copy is already
-    // translated. App-local (color-scheme store) — nothing goes to the
-    // backend. Counted, but no masthead (reads as a preference, not progress).
-    id: "theme",
-    kind: "local",
-    optional: false,
-    hideMasthead: true,
-    titleKey: "onboarding.flow.theme.title",
   },
   {
     // Shown AFTER the language pick so the value-prop reads in the chosen

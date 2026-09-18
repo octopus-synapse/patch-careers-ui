@@ -87,7 +87,6 @@ export function useOnboardingFlow() {
   const setItems = useWizardStore((s) => s.setItems);
 
   const [fallbackSession, setFallbackSession] = useState<OnboardingSession | null>(null);
-  const [completed, setCompleted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [completeError, setCompleteError] = useState("");
   const [flowStepId, setFlowStepId] = useState<FlowStepId>("language");
@@ -144,10 +143,7 @@ export function useOnboardingFlow() {
     mutation: {
       async onSuccess() {
         await clearSessionSnapshot();
-        // Show the completion screen BEFORE refreshing auth: bootstrap flips
-        // `hasCompletedOnboarding`, and the onboarding route guard redirects
-        // the moment it does. Both run in `finishOnboarding` (the CTA).
-        setCompleted(true);
+        await finishOnboarding();
       },
       onError(error) {
         const data = error.response?.data as { code?: unknown; message?: unknown } | undefined;
@@ -414,8 +410,7 @@ export function useOnboardingFlow() {
     advanceFlow();
   }
 
-  /** Leave the completion screen: refresh auth (flips the onboarding flag,
-   *  which also unlocks the guarded routes) and enter the app. */
+  /** Refresh auth so guarded routes unlock, then enter the app. */
   async function finishOnboarding() {
     await bootstrap().catch(() => undefined);
     router.replace(getCompletedOnboardingRoute());
@@ -475,7 +470,5 @@ export function useOnboardingFlow() {
     handleAddSection,
     retrySave,
     markWelcomeSeenAndAdvance,
-    completed,
-    finishOnboarding,
   };
 }

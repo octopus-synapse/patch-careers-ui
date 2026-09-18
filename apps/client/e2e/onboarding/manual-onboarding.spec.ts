@@ -329,8 +329,6 @@ test("onboarding flow atual funciona no Expo Web", async ({ page }) => {
   await expect(page.getByText("Dados pessoais")).toBeVisible();
   await page.getByTestId("onboarding.complete").click();
 
-  // 13. Tela de conclusão — payoff antes de entrar no app.
-  await expect(page.getByText("Seu currículo está pronto.")).toBeVisible();
-  await page.getByTestId("onboarding.done").click();
+  // 13. Ao concluir, entra diretamente no app.
   await page.waitForURL("**/profile", { timeout: 30_000 });
 });

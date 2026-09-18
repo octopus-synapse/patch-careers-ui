@@ -11,13 +11,14 @@ import {
   editorialPalette,
   editorialPaletteDark,
 } from "@patch-careers/tokens";
+import { ModalHeader, YStack } from "@patch-careers/ui";
 import {
   editorialFonts as fonts,
   PrimaryAction,
   useEditorialPalette,
   useThemeName,
 } from "@patch-careers/ui/editorial";
-import { ChevronLeft, ChevronRight, X } from "lucide-react-native";
+import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -148,31 +149,25 @@ export function AddSectionFlowModal({
         />
         <View style={ed.editorModalCard}>
           <View style={ed.editorModalHeader}>
-            <View style={styles.headerLead}>
-              {/* No back arrow when the catalog was skipped: "back" would land
-                  on a one-row list that only leads here again. */}
-              {picked && !initialPick ? (
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={t("common.back")}
-                  hitSlop={12}
-                  onPress={() => setPicked(null)}
-                >
-                  <ChevronLeft size={22} color={authTokens.muted} />
-                </Pressable>
-              ) : null}
-              <Text style={ed.editorModalTitle} numberOfLines={1}>
-                {picked ? picked.addLabel : t("sections.addToResume")}
-              </Text>
-            </View>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t("common.cancel")}
-              hitSlop={12}
-              onPress={close}
-            >
-              <X size={22} color={authTokens.muted} />
-            </Pressable>
+            <YStack flex={1}>
+              <ModalHeader
+                title={picked ? picked.title : t("sections.addToResume")}
+                closeLabel={t("common.cancel")}
+                onClose={close}
+                leadingAction={
+                  picked && !initialPick ? (
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={t("common.back")}
+                      hitSlop={12}
+                      onPress={() => setPicked(null)}
+                    >
+                      <ChevronLeft size={22} color={authTokens.muted} />
+                    </Pressable>
+                  ) : null
+                }
+              />
+            </YStack>
           </View>
 
           {picked ? (
@@ -228,7 +223,6 @@ export function AddSectionFlowModal({
 const stylesFor = (p: EditorialPalette) =>
   // @style-allow stylesheet: modal/sheet styles applied via ScrollView contentContainerStyle and a dynamic Pressable function-style (pressed/atCapacity) — not 1:1 convertible to Tamagui props
   StyleSheet.create({
-    headerLead: { flexDirection: "row", alignItems: "center", gap: 10, flex: 1, marginRight: 12 },
     catalogScroll: { paddingHorizontal: 24, paddingVertical: 12 },
     catalogRow: {
       flexDirection: "row",

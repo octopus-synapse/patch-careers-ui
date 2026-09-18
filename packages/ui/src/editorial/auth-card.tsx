@@ -43,7 +43,14 @@ export function AuthCard({
   return (
     <Animated.View {...(animateIn ? { entering: FadeIn.duration(420) } : {})}>
       <Animated.View
-        style={[styles.panel, { backgroundColor: editorialPalette.panel }, panelStyle]}
+        style={[
+          styles.panel,
+          {
+            backgroundColor: editorialPalette.panel,
+            borderColor: editorialPalette.hairlineStrong,
+          },
+          panelStyle,
+        ]}
       >
         <View onLayout={onContentLayout}>{children}</View>
       </Animated.View>
@@ -57,7 +64,8 @@ const styles = StyleSheet.create({
     width: "90%",
     maxWidth: 460,
     alignSelf: "center",
-    borderRadius: 30,
+    borderRadius: 17,
+    borderWidth: 1,
     paddingHorizontal: 26,
     paddingVertical: AUTH_CARD_PADDING_Y,
     overflow: "hidden",

@@ -8,37 +8,26 @@
  * constants without pulling in a line of DOM code.
  *
  * Two heights on purpose. The app bar carries icon-over-label columns and needs
- * 88 to seat them; the public bar carries a mark and a button, so 76 is already
+ * 80 to seat them; the public bar carries a mark and a button, so 76 is already
  * generous — and holding it there keeps the landing's composition and the
  * onboarding wizard's top padding exactly where they are.
  */
 
-export const NAV_BAR_HEIGHT_APP = 88;
+export const NAV_BAR_HEIGHT_APP = 80;
 export const NAV_BAR_HEIGHT_PUBLIC = 76;
 
 /** Kept under its old name: the onboarding wizard pads its column by it. */
 export const PUBLIC_NAV_BAR_HEIGHT = NAV_BAR_HEIGHT_PUBLIC;
 
-/** One destination column — sized for the widest label at 13px. */
-export const NAV_ITEM_WIDTH = 96;
-/**
- * The search pill, in two sizes. Messages left the cluster for a circular
- * control, so three columns now cost `3*96 + 2*8 = 304` instead of four's 376 —
- * and the pill takes the slack back. Below 1200 it gives some of it up again:
- * the cluster is centred on the viewport, so each margin is
- * `(width - cluster) / 2`, and the busier right side needs
- * `36 (padding) + 3*42 (messages, bell, hamburger) + 2*12 ≈ 186`.
- */
-export const NAV_SEARCH_WIDTH = 380;
-export const NAV_SEARCH_WIDTH_TIGHT = 290;
-/** Between the search pill and the tab cluster. */
-export const NAV_CLUSTER_GAP = 30;
-export const NAV_TAB_GAP = 8;
-
 /** The circular glass controls (bell, hamburger). */
 export const NAV_CONTROL_SIZE = 42;
+export const NAV_CONTROL_SIZE_APP = 44;
+export const NAV_APP_MAX_WIDTH = 1440;
+export const NAV_APP_TIGHT_BREAKPOINT = 1200;
+export const NAV_APP_TABS_WIDTH = 420;
+export const NAV_APP_TABS_WIDTH_TIGHT = 384;
 
-export const MENU_PANEL_WIDTH = 290;
+export const MENU_PANEL_WIDTH = 320;
 /**
  * The panel hangs this far below its anchor. Measured from the CONTROL, not
  * from the bar — that is what keeps it correct if either height changes (the

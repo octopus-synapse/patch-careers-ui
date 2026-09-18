@@ -34,7 +34,7 @@ export function CaptionButton({
         fontFamily={editorialFonts.sans}
         fontSize={13}
         fontWeight="500"
-        color={disabled ? "$inkSubtle" : "$accentBlue"}
+        color={disabled ? "$inkSubtle" : "$accent"}
         paddingVertical={8}
         paddingHorizontal={8}
         {...(testID ? { testID } : {})}

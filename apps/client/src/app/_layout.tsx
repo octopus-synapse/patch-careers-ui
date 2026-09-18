@@ -26,10 +26,11 @@ import { ToastProvider } from "@patch-careers/ui";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { PortalProvider } from "@tamagui/portal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { type ReactElement, useEffect, useMemo } from "react";
+import { Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -71,9 +72,14 @@ ensureWebButtonTextReset();
 ensureAppSansFont();
 
 export default function RootLayout(): ReactElement {
-  const scheme = useResolvedScheme();
-  const palette = editorialPalettes[scheme];
+  const preferredScheme = useResolvedScheme();
   const isDesktopWeb = useIsDesktopWeb();
+  const pathname = usePathname();
+  const isLanding = Platform.OS === "web" && /^\/(?:en\/?)?$/.test(pathname);
+  const scheme = isLanding ? "light" : preferredScheme;
+  const palette = editorialPalettes[scheme];
+  // Discovery reserves room for the carousel arrows outside its 1200px content.
+  const isJobsPage = pathname === "/jobs" || pathname.startsWith("/job/");
   // Editorial display serif + technical mono (bundled assets — no network).
   // editorialFonts maps to these exact family keys.
   const [fontsLoaded] = useFonts({ PlayfairDisplay_500Medium, JetBrainsMono_500Medium });
@@ -106,11 +112,11 @@ export default function RootLayout(): ReactElement {
         ? {
             backgroundColor: palette.bg,
             width: "100%" as const,
-            maxWidth: DESKTOP_CONTENT_MAX_WIDTH,
+            maxWidth: isJobsPage ? 1280 : DESKTOP_CONTENT_MAX_WIDTH,
             alignSelf: "center" as const,
           }
         : { backgroundColor: palette.bg },
-    [isDesktopWeb, palette],
+    [isDesktopWeb, isJobsPage, palette],
   );
 
   useEffect(() => {
@@ -138,7 +144,7 @@ export default function RootLayout(): ReactElement {
       <SafeAreaProvider>
         <KeyboardProvider>
           <QueryClientProvider client={queryClient}>
-            <AppTamaguiProvider>
+            <AppTamaguiProvider forceScheme={scheme}>
               <PortalProvider shouldAddRootHost>
                 <ToastProvider>
                   <I18nProvider>
@@ -231,10 +237,6 @@ export default function RootLayout(): ReactElement {
                                   alignSelf: "stretch",
                                 },
                               }}
-                            />
-                            <Stack.Screen
-                              name="fit-questionnaire"
-                              options={{ headerShown: false, animation: "slide_from_bottom" }}
                             />
                             {/* Public profile: the route opts itself out of the
                               column (so its `/en` twin gets the same), see

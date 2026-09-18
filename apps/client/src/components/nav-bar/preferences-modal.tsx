@@ -146,62 +146,64 @@ export function PreferencesModal({
             </Pressable>
           </XStack>
 
-          {tab === "lang" ? (
-            <XStack gap={10} flexWrap="wrap" marginTop={20}>
-              {langs.map((lang) => (
-                <PreferenceCell
-                  key={lang.value}
-                  active={locale === lang.value}
-                  onPress={() => {
-                    onClose();
-                    localeSwitch(lang.value);
-                  }}
-                >
-                  <XStack alignItems="baseline" gap={8}>
+          <YStack minHeight={144} marginTop={20}>
+            {tab === "lang" ? (
+              <XStack gap={10} flexWrap="wrap">
+                {langs.map((lang) => (
+                  <PreferenceCell
+                    key={lang.value}
+                    active={locale === lang.value}
+                    onPress={() => {
+                      onClose();
+                      localeSwitch(lang.value);
+                    }}
+                  >
+                    <XStack alignItems="baseline" gap={8}>
+                      <Text
+                        flex={1}
+                        fontFamily={editorialFonts.sans}
+                        fontSize={14}
+                        color={palette.ink}
+                      >
+                        {lang.label}
+                      </Text>
+                      <Text fontFamily={editorialFonts.mono} fontSize={11.5} color={palette.subtle}>
+                        {lang.value}
+                      </Text>
+                    </XStack>
+                    <Text fontFamily={editorialFonts.sans} fontSize={13} color={palette.muted}>
+                      {lang.sub}
+                    </Text>
+                  </PreferenceCell>
+                ))}
+              </XStack>
+            ) : (
+              <XStack gap={10} flexWrap="wrap">
+                {themes.map((option) => (
+                  <PreferenceCell
+                    key={option.value}
+                    active={scheme === option.value}
+                    onPress={() => setScheme(option.value)}
+                  >
+                    <ThemeSwatch kind={option.value} />
                     <Text
-                      flex={1}
                       fontFamily={editorialFonts.sans}
                       fontSize={14}
                       color={palette.ink}
+                      marginTop={10}
                     >
-                      {lang.label}
+                      {option.label}
                     </Text>
-                    <Text fontFamily={editorialFonts.mono} fontSize={11.5} color={palette.subtle}>
-                      {lang.value}
-                    </Text>
-                  </XStack>
-                  <Text fontFamily={editorialFonts.sans} fontSize={13} color={palette.muted}>
-                    {lang.sub}
-                  </Text>
-                </PreferenceCell>
-              ))}
-            </XStack>
-          ) : (
-            <XStack gap={10} flexWrap="wrap" marginTop={20}>
-              {themes.map((option) => (
-                <PreferenceCell
-                  key={option.value}
-                  active={scheme === option.value}
-                  onPress={() => setScheme(option.value)}
-                >
-                  <ThemeSwatch kind={option.value} />
-                  <Text
-                    fontFamily={editorialFonts.sans}
-                    fontSize={14}
-                    color={palette.ink}
-                    marginTop={10}
-                  >
-                    {option.label}
-                  </Text>
-                  {option.sub ? (
-                    <Text fontFamily={editorialFonts.sans} fontSize={13} color={palette.muted}>
-                      {option.sub}
-                    </Text>
-                  ) : null}
-                </PreferenceCell>
-              ))}
-            </XStack>
-          )}
+                    {option.sub ? (
+                      <Text fontFamily={editorialFonts.sans} fontSize={13} color={palette.muted}>
+                        {option.sub}
+                      </Text>
+                    ) : null}
+                  </PreferenceCell>
+                ))}
+              </XStack>
+            )}
+          </YStack>
         </YStack>
       </View>
     </View>

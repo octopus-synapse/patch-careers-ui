@@ -5,12 +5,7 @@
  * — a bespoke micro-animation the Tamagui driver can't replicate identically.
  */
 
-import {
-  type EditorialPalette,
-  editorialPalette,
-  editorialPaletteDark,
-  radius,
-} from "@patch-careers/tokens";
+import { authDialogPalette } from "@patch-careers/tokens";
 import { ArrowRight } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { ActivityIndicator, Pressable, StyleSheet } from "react-native";
@@ -41,7 +36,8 @@ export function PrimaryAction({
   const scale = useSharedValue(1);
   const arrowX = useSharedValue(0);
   const palette = useEditorialPalette();
-  const primaryStyles = stylesByTheme[useThemeName()];
+  const theme = useThemeName();
+  const primaryStyles = stylesByTheme[theme];
   const inactive = loading || disabled;
 
   const containerStyle = useAnimatedStyle(() => ({
@@ -99,13 +95,13 @@ export function PrimaryAction({
 
 // Precomputed per theme so style-object identity stays stable across renders.
 // The dark CTA is a light fill — its shadow stays black, not the fill color.
-const stylesFor = (p: EditorialPalette, shadow: string) =>
+const stylesFor = (shadow: string, primary: string) =>
   StyleSheet.create({
     button: {
-      backgroundColor: p.primary,
+      backgroundColor: primary,
       paddingVertical: 16,
       paddingHorizontal: 24,
-      borderRadius: radius.full,
+      borderRadius: 7,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
@@ -121,6 +117,6 @@ const stylesFor = (p: EditorialPalette, shadow: string) =>
   });
 
 const stylesByTheme = {
-  light: stylesFor(editorialPalette, editorialPalette.primary),
-  dark: stylesFor(editorialPaletteDark, "#000000"),
+  light: stylesFor(authDialogPalette.light.brand, authDialogPalette.light.brand),
+  dark: stylesFor("#000000", authDialogPalette.dark.brand),
 } as const;

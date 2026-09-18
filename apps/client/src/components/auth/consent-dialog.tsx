@@ -12,6 +12,7 @@
  */
 
 import {
+  authDialogPalette,
   type EditorialOverlays,
   type EditorialPalette,
   editorialOverlays,
@@ -66,6 +67,7 @@ export function ConsentDialog({
   const palette = useEditorialPalette();
   const theme = useThemeName();
   const styles = stylesByTheme[theme];
+  const dialogPalette = authDialogPalette[theme];
   const { width: screenW, height: screenH } = useWindowDimensions();
   const cardWidth = Math.min(560, screenW - 48);
   const cardMaxHeight = Math.min(720, screenH - 64);
@@ -157,7 +159,7 @@ export function ConsentDialog({
               style={({ pressed }) => [styles.close, pressed ? styles.closePressed : null]}
               {...(testID ? { testID: `${testID}.close` } : {})}
             >
-              <X size={18} color={palette.muted} strokeWidth={1.75} />
+              <X size={18} color={dialogPalette.muted} strokeWidth={1.75} />
             </Pressable>
           </View>
 
@@ -215,7 +217,11 @@ export function ConsentDialog({
   );
 }
 
-const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
+const stylesFor = (
+  p: EditorialPalette,
+  ov: EditorialOverlays,
+  dialog: (typeof authDialogPalette)[keyof typeof authDialogPalette],
+) =>
   // @style-allow stylesheet: animated consent dialog (Animated.Value enter/exit transitions)
   StyleSheet.create({
     root: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
@@ -224,10 +230,10 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       // Opaque on purpose: over the landing deck (auth dialog flow) a
       // frosted card reads as a rendering glitch — legal text needs a
       // solid page behind it.
-      backgroundColor: p.panel,
-      borderRadius: 24,
+      backgroundColor: dialog.panel,
+      borderRadius: 17,
       borderWidth: 1,
-      borderColor: p.hairline,
+      borderColor: dialog.panelBorder,
       overflow: "hidden",
       shadowColor: "#000",
       shadowOpacity: 0.14,
@@ -245,11 +251,12 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       borderBottomColor: p.hairline,
     },
     title: {
-      fontFamily: editorialFonts.serif,
-      fontSize: 26,
-      lineHeight: 32,
-      letterSpacing: -0.4,
-      color: p.ink,
+      fontFamily: editorialFonts.sans,
+      fontSize: 28,
+      lineHeight: 34,
+      fontWeight: "600",
+      letterSpacing: -1,
+      color: dialog.brand,
       textAlign: "center",
     },
     close: {
@@ -267,11 +274,12 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     scrollContent: { paddingHorizontal: 26, paddingTop: 20, paddingBottom: 24 },
     docSpacing: { marginTop: 32, paddingTop: 28, borderTopWidth: 1, borderTopColor: p.hairline },
     docTitle: {
-      fontFamily: editorialFonts.serif,
+      fontFamily: editorialFonts.sans,
       fontSize: 19,
       lineHeight: 24,
-      letterSpacing: -0.2,
-      color: p.ink,
+      fontWeight: "600",
+      letterSpacing: -0.4,
+      color: dialog.brand,
     },
     docMeta: {
       fontFamily: editorialFonts.mono,
@@ -293,7 +301,7 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       fontFamily: editorialFonts.sans,
       fontSize: 15,
       lineHeight: 24,
-      color: p.muted,
+      color: dialog.muted,
       marginTop: 4,
     },
     footer: {
@@ -313,12 +321,12 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     },
     accept: {
       minHeight: 50,
-      borderRadius: radius.full,
+      borderRadius: 7,
       alignItems: "center",
       justifyContent: "center",
       paddingVertical: 13,
       paddingHorizontal: 16,
-      backgroundColor: p.primary,
+      backgroundColor: dialog.primary,
     },
     acceptDisabled: { opacity: 0.4 },
     acceptPressed: { opacity: 0.88 },
@@ -332,6 +340,6 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
   });
 
 const stylesByTheme = {
-  light: stylesFor(editorialPalette, editorialOverlays.light),
-  dark: stylesFor(editorialPaletteDark, editorialOverlays.dark),
+  light: stylesFor(editorialPalette, editorialOverlays.light, authDialogPalette.light),
+  dark: stylesFor(editorialPaletteDark, editorialOverlays.dark, authDialogPalette.dark),
 } as const;

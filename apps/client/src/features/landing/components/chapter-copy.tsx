@@ -11,6 +11,7 @@ import { Text, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { createContext, type ReactElement, type ReactNode, useContext } from "react";
 import { landingSans } from "../lib/landing-fonts";
+import { KineticHeading } from "./kinetic-heading";
 
 /**
  * The prototype's four heading scales (Tailwind's md: sizes): the hero's 84,
@@ -64,28 +65,21 @@ export function ChapterHeading({
   breakAfterLead = false,
   centered = false,
 }: ChapterHeadingProps): ReactElement {
-  const palette = useEditorialPalette();
   const size = headingSize(width, variant);
   return (
-    <Text
-      fontFamily={editorialFonts.serif}
-      fontSize={size}
-      lineHeight={size * 1.02}
-      textAlign={centered ? "center" : "left"}
-      letterSpacing={-size * 0.012}
-      color={palette.ink}
-      fontWeight="400"
+    <KineticHeading
+      lead={lead ?? ""}
+      second={second ?? ""}
+      emphasis={emphasis ?? ""}
+      tail={tail ?? ""}
+      accent={accent}
+      width={width}
+      size={size}
       maxWidth={maxWidth}
-    >
-      {lead ? (breakAfterLead ? `${lead}\n` : `${lead} `) : null}
-      {second ? `${second} ` : null}
-      {emphasis ? (
-        <Text fontStyle="italic" color={accent} fontFamily={editorialFonts.serif} fontSize={size}>
-          {emphasis}
-        </Text>
-      ) : null}
-      {tail ? ` ${tail}` : null}
-    </Text>
+      variant={variant}
+      centered={centered}
+      breakAfterLead={breakAfterLead}
+    />
   );
 }
 
@@ -246,21 +240,6 @@ export function BigNumber({
           {unit}
         </Text>
       ) : null}
-    </Text>
-  );
-}
-
-/** Small caps-free eyebrow above a heading. */
-export function Eyebrow({
-  children,
-  accent,
-}: {
-  readonly children: ReactNode;
-  readonly accent: string;
-}): ReactElement {
-  return (
-    <Text fontFamily={landingSans} fontSize={14} fontWeight="500" color={accent}>
-      {children}
     </Text>
   );
 }

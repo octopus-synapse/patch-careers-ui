@@ -19,10 +19,11 @@
  * a "+" that opens a form the save would reject.
  */
 
-import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import { YStack } from "@patch-careers/ui";
+import { PillButton } from "@patch-careers/ui/editorial";
 import { ArrowRight, Plus } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import {
   AddSectionFlowModal,
   type MergedSection,
@@ -48,33 +49,20 @@ function GapRow({
 }): ReactElement {
   const { t } = useI18n();
   const pf = usePf();
-  const palette = useEditorialPalette();
-  const [active, setActive] = useState(false);
   const disabled = section.atCapacity;
 
   return (
-    <Pressable
-      accessibilityRole="button"
-      // `section.title` arrives localised from the backend — never rebuilt here.
-      accessibilityLabel={t("profile.gaps.addA11y", { label: section.title })}
-      accessibilityState={{ disabled }}
-      disabled={disabled}
-      onPress={onAdd}
-      onHoverIn={() => setActive(true)}
-      onHoverOut={() => setActive(false)}
-      onFocus={() => setActive(true)}
-      onBlur={() => setActive(false)}
-      style={[pf.gapsItem, isFirst && pf.gapsItemFirst, disabled && pf.gapsItemDisabled]}
-    >
+    <View style={[pf.gapsItem, isFirst && pf.gapsItemFirst]}>
       <Text style={pf.gapsItemLabel}>{section.title}</Text>
-      <View style={[pf.gapsPlus, active && !disabled && pf.gapsPlusActive]}>
-        <Plus
-          size={13}
-          color={active && !disabled ? palette.bg : palette.subtle}
-          strokeWidth={2.4}
-        />
-      </View>
-    </Pressable>
+      <PillButton
+        label={t("profile.gaps.addA11y", { label: section.title })}
+        onPress={onAdd}
+        disabled={disabled}
+        variant="ghost"
+        iconOnly
+        renderIcon={({ color, size }) => <Plus size={size} color={color} strokeWidth={2.4} />}
+      />
+    </View>
   );
 }
 
@@ -92,12 +80,10 @@ export function ProfileGapsCard({
 }): ReactElement | null {
   const { t } = useI18n();
   const pf = usePf();
-  const palette = useEditorialPalette();
   const { catalog } = useResumeSections(resumeId, locales);
   const { persistFor, isPending } = useSectionItemMutations(resumeId);
   const [addOpen, setAddOpen] = useState(false);
   const [picked, setPicked] = useState<MergedSection | null>(null);
-  const [seeAllActive, setSeeAllActive] = useState(false);
 
   const gaps = catalog
     .filter((section) => section.items.length === 0)
@@ -138,25 +124,18 @@ export function ProfileGapsCard({
       </View>
 
       {gaps.length > VISIBLE_GAPS ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("profile.gaps.seeAll", { count: gaps.length })}
-          onPress={() => openFor(null)}
-          onHoverIn={() => setSeeAllActive(true)}
-          onHoverOut={() => setSeeAllActive(false)}
-          onFocus={() => setSeeAllActive(true)}
-          onBlur={() => setSeeAllActive(false)}
-          style={[pf.quietLink, pf.gapsSeeAll]}
-        >
-          <Text style={[pf.quietLinkLabel, seeAllActive && { color: palette.ink }]}>
-            {t("profile.gaps.seeAll", { count: gaps.length })}
-          </Text>
-          <ArrowRight
-            size={13}
-            color={seeAllActive ? palette.ink : palette.muted}
-            strokeWidth={2.2}
+        <YStack marginTop={16}>
+          <PillButton
+            label={t("profile.gaps.seeAll", { count: gaps.length })}
+            onPress={() => openFor(null)}
+            variant="ghost"
+            fullWidth
+            iconPosition="end"
+            renderIcon={({ color, size }) => (
+              <ArrowRight size={size} color={color} strokeWidth={2.2} />
+            )}
           />
-        </Pressable>
+        </YStack>
       ) : null}
 
       {/* Keyed by the pick so the modal's `initialPick` seed (read on mount)

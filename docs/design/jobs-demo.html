@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Patch Careers — Vagas · Sua próxima candidatura</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: {
+          paper: 'var(--paper)', panel: 'var(--panel)', surface: 'var(--surface)',
+          ink: 'var(--ink)', body: 'var(--body)', muted: 'var(--muted)', hair: 'var(--hair)',
+          wash: 'var(--wash)', brand: '#5766E8',
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        },
+      } },
+    };
+  </script>
+  <style>
+    @property --selection { syntax:'<number>'; inherits:true; initial-value:0; }
+    :root {
+      color-scheme: light;
+      --paper: #F2F1EC; --panel: #FDFDFC; --surface: #FAFAF7;
+      --ink: #0A0A0A; --body: #3F3F46; --muted: #71717A;
+      --hair: #E4E4E7; --hair-strong: #CBCBCB;
+      --wash: rgba(10,10,10,.045); --press: rgba(10,10,10,.075);
+      --nav-active: #4B59D4; --nav: rgba(242,241,236,.68); --brand-plain: #000;
+      --search-bg: rgba(255,255,255,.42); --search-hover: rgba(255,255,255,.85); --search-accent: #2563EB;
+      --avatar-bg: #33322E; --avatar-ink: #F7F4EE;
+      --soft-blue: #E9ECF8; --soft-green: #E5ECE4;
+      --cover-a: #E2E8EB; --cover-b: #C4CFD7;
+      --shadow: 0 18px 48px -16px rgba(35,33,26,.18), 0 2px 6px rgba(35,33,26,.03);
+    }
+    :root.dark {
+      color-scheme: dark;
+      --paper: #1A1916; --panel: #232220; --surface: #2B2A26;
+      --ink: #F5F5F0; --body: #C8C8C2; --muted: #A5A59D;
+      --hair: #373630; --hair-strong: #53524B;
+      --wash: rgba(245,245,240,.06); --press: rgba(245,245,240,.10);
+      --nav-active: #A5AEFF; --nav: rgba(26,25,22,.68); --brand-plain: #FFF;
+      --search-bg: rgba(43,42,38,.42); --search-hover: rgba(43,42,38,.85); --search-accent: #60A5FA;
+      --avatar-bg: #DAD8D1; --avatar-ink: #2B2A27;
+      --soft-blue: #303448; --soft-green: #303D32;
+      --cover-a: #4C565B; --cover-b: #394145;
+      --shadow: 0 18px 48px -16px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.12);
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; background: var(--paper); color: var(--ink); -webkit-font-smoothing: antialiased; }
+    button, a, input { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    button, a { touch-action: manipulation; }
+    button:focus-visible, a:focus-visible, input:focus-visible {
+      outline: 2px solid #5766E8; outline-offset: 4px;
+    }
+    ::selection { background: #5766E8; color: white; }
+    .icon { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-sm { width: 16px; height: 16px; }
+    .eyebrow { font: 400 10px/1.5 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; }
+    #profile-name, #page-content h2, #detail-title { overflow-wrap: anywhere; }
+    .navbar { position: sticky; top: 0; z-index: 30; background: var(--nav); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+    .nav-layout { display: grid; grid-template-columns: minmax(0,1fr) 814px minmax(0,1fr); align-items: center; gap: 24px; max-width: 1600px; height: 88px; padding: 0 36px; margin: auto; }
+    .nav-cluster { display: flex; align-items: center; gap: 30px; width: 100%; height: 100%; min-width: 0; }
+    .search-trigger { flex: 1; min-width: 0; height: 42px; padding: 0 18px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--hair); border-radius: 12px; color: var(--body); background: var(--search-bg); font-size: 14px; text-align: left; }
+    .search-trigger > .icon { width: 15px; height: 15px; stroke-width: 2.5; color: var(--search-accent); }
+    .nav-avatar { display: block; width: 23px; height: 23px; overflow: hidden; border-radius: 50%; background: var(--avatar-bg); }
+    .account-avatar { flex: none; background: #33322E; outline: 2px solid #0A0A0A; outline-offset: -2px; }
+    .nav-controls { display: flex; justify-content: flex-end; align-items: center; gap: 8px; min-width: 0; }
+    .quiet-icon { position: relative; display: grid; place-items: center; width: 42px; height: 42px; flex: none; border-radius: 50%; color: var(--body); background: transparent; }
+    .nav-action { background: #FFF; color: #0A0A0A; border: 1px solid var(--hair); }
+    .nav-action .glyph-outline, .nav-action .glyph-filled { grid-area: 1 / 1; transition: opacity 220ms cubic-bezier(.2, .7, .2, 1); }
+    .nav-action .glyph-filled { opacity: 0; fill: currentColor; stroke: none; }
+    .nav-action[aria-expanded="true"] .glyph-outline { opacity: 0; }
+    .nav-action[aria-expanded="true"] .glyph-filled { opacity: 1; }
+    .badge { position: absolute; z-index: 1; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: #5766E8; box-shadow: 0 0 0 2px #FFF; }
+    .account-pill { display: flex; align-items: center; justify-content: center; gap: 9px; max-width: min(180px,100%); height: 42px; padding: 0 15px; border-radius: 999px; border: 1px solid var(--hair-strong); color: #0A0A0A; background: #FFF; font-size: 13px; font-weight: 600; }
+    .account-pill .chevron { width: 13px; height: 13px; margin-left: 2px; color: inherit; opacity: .65; transition: transform 160ms ease; }
+    .account-pill[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+    .account-pill[aria-expanded="true"], .quiet-icon[aria-expanded="true"] { background: var(--press); color: var(--ink); }
+    .quiet-icon, .account-pill, .search-trigger, .nav-link, .menu-row, .soft-button, .demo-option, .filter {
+      transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+    .nav-action, .account-pill {
+      transition: background-color 220ms cubic-bezier(.2, .7, .2, 1), color 220ms cubic-bezier(.2, .7, .2, 1), border-color 220ms cubic-bezier(.2, .7, .2, 1);
+    }
+    .nav-action .badge { transition: background-color 220ms cubic-bezier(.2, .7, .2, 1), box-shadow 220ms cubic-bezier(.2, .7, .2, 1); }
+    @media (hover: hover) {
+      .quiet-icon:hover, .account-pill:hover, .menu-row:hover, .soft-button:hover { background: var(--wash); color: var(--ink); }
+      .account-pill:hover, .search-trigger:hover { border-color: var(--hair-strong); }
+      .search-trigger:hover { background: var(--search-hover); color: var(--ink); }
+      .nav-action:hover { background: #5766E8; color: #FFF; border-color: transparent; }
+      .nav-action:hover .glyph-outline { opacity: 0; }
+      .nav-action:hover .glyph-filled { opacity: 1; }
+      .account-pill:hover { background: #5766E8; color: #FFF; border-color: transparent; }
+      .nav-action:hover .badge { background: #FFF; box-shadow: 0 0 0 2px #5766E8; }
+    }
+    .quiet-icon:active, .account-pill:active, .soft-button:active { background: var(--press); }
+    .nav-action[aria-expanded="true"], .account-pill[aria-expanded="true"] { background: #5766E8; color: #FFF; border-color: transparent; }
+    .nav-action[aria-expanded="true"] .badge { background: #FFF; box-shadow: 0 0 0 2px #5766E8; }
+    .nav-action:active, .account-pill:active { background: #4B59D4; color: #FFF; border-color: transparent; }
+    .quiet-icon[aria-pressed="true"] .icon { fill: currentColor; }
+    .popover { position: absolute; right: 0; top: calc(100% + 14px); width: 292px; padding: 7px; border: 1px solid var(--hair); border-radius: 18px; background: var(--panel); box-shadow: var(--shadow); animation: appear 150ms ease both; }
+    .menu-row { display: flex; align-items: center; gap: 11px; width: 100%; min-height: 44px; padding: 10px 12px; border-radius: 10px; font-size: 12px; text-align: left; color: var(--body); }
+    .menu-row .icon { width: 17px; height: 17px; }
+    .menu-row .trailing { margin-left: auto; color: var(--muted); font-size: 10px; }
+    .soft-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 16px; border: 1px solid var(--hair); border-radius: 999px; color: var(--body); font-size: 12px; }
+    .filter { border: 1px solid var(--hair); border-radius: 999px; padding: 8px 14px; min-height: 38px; color: var(--muted); font-size: 11px; }
+    .filter[aria-pressed="true"] { color: var(--ink); background: var(--panel); border-color: var(--hair-strong); }
+    .job-card { border-bottom: 1px solid var(--hair); padding: 23px 0; }
+    .job-card:last-child { border-bottom: 0; }
+    .demo-option { border-radius: 999px; padding: 8px 13px; min-height: 36px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .demo-option[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+    dialog { color: var(--ink); background: var(--panel); border: 1px solid var(--hair); border-radius: 22px; width: min(480px, calc(100% - 32px)); padding: 28px; box-shadow: var(--shadow); }
+    dialog::backdrop { background: rgba(20,19,16,.32); backdrop-filter: blur(4px); }
+    .field { width: 100%; border: 1px solid var(--hair-strong); border-radius: 12px; background: var(--surface); color: var(--ink); padding: 13px 14px; font-size: 14px; }
+    .primary-button { display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 999px; min-height: 44px; padding: 0 20px; background: var(--ink); color: var(--paper); font-size: 12px; }
+    .primary-button:hover { opacity: .86; }
+    .skip-link { position: fixed; left: 16px; top: -100px; padding: 12px; border-radius: 8px; background: var(--panel); z-index: 100; }
+    .skip-link:focus { top: 12px; }
+    @keyframes appear { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    /* V12: v6 layout with the navigation from navbar-indicators-5.html. */
+    .nav-layout { grid-template-columns: 44px minmax(0, 1fr) auto; max-width: 1440px; height: 80px; gap: 44px; padding-inline: 32px; }
+    .brand-mark { height: 40px !important; }
+    .nav-cluster { gap: 40px; }
+    .search-trigger, .nav-action, .account-pill { height: 44px; border-radius: 12px; }
+    .search-trigger { border-radius: 18px; padding-inline: 14px; background: var(--surface); color: var(--muted); font-size: 13px; }
+    .search-trigger > .icon { width: 18px; height: 18px; stroke-width: 2.5; color: var(--muted); }
+    .nav-controls { gap: 8px; }
+    .nav-action { width: 44px; border-radius: 50%; background: #FFF; border-color: var(--hair); color: #0A0A0A; }
+    .account-pill { border-radius: 999px; padding-inline: 14px; gap: 8px; background: #FFF; border-color: var(--hair-strong); color: #0A0A0A; font-weight: 600; }
+    .nav-action .icon, .account-pill > .icon { stroke-width: 2.5; }
+    .account-avatar { width: 22px; height: 22px; outline: none; }
+    .badge { width: 7px; height: 7px; top: 5px; right: 5px; box-shadow: 0 0 0 2px #FFF; }
+    @media (max-width: 1199px) {
+      .nav-layout { padding-inline: 24px; gap: 28px; }
+      .nav-cluster { gap: 20px; }
+    }
+    @media (max-width: 959px) {
+      .nav-layout { grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-rows: 72px 80px; height: auto; column-gap: 20px; row-gap: 0; }
+      .brand-group { grid-row: 1; grid-column: 1; }
+      .nav-cluster { display: contents; }
+      .search-trigger { grid-row: 1; grid-column: 2; width: 100%; }
+      .nav-controls { grid-row: 1; grid-column: 3; }
+    }
+    @media (max-width: 600px) {
+      .nav-layout { grid-template-columns: 1fr auto; grid-template-rows: 68px 44px 84px; padding-inline: 16px; }
+      .nav-controls { grid-column: 2; }
+      .search-trigger { grid-row: 2; grid-column: 1 / -1; }
+      .account-pill { max-width: 132px; }
+      .popover { position: fixed; top: 62px; right: 16px; width: min(310px, calc(100vw - 32px)); }
+    }
+    /* Reference navigation: stacked icons, profile photo and animated puzzle underline. */
+    .nav-links { --index:0; position:relative; display:grid; flex:none; align-self:center; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; width:420px; max-width:100%; padding-bottom:10px; }
+    .nav-link { --selection:0; display:flex; flex-direction:column; align-items:center; justify-content:center; width:auto; min-width:0; height:60px; gap:4px; padding:5px 6px; border:0; border-radius:8px; color:var(--muted); background:transparent; text-decoration:none; font-size:12px; line-height:16px; font-weight:600; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+    .nav-link[aria-current="page"] { --selection:1; }
+    .glyph { display:grid; place-items:center; width:24px; height:24px; }
+    .glyph svg { grid-area:1/1; width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .glyph .glyph-filled { color:var(--nav-active); fill:currentColor; stroke:none; clip-path:inset(0 calc((1 - var(--selection)) * 100%) 0 0); }
+    .glyph .glyph-outline { clip-path:inset(0 0 0 calc(var(--selection) * 100%)); }
+    .label { background:linear-gradient(90deg,var(--nav-active) calc(var(--selection) * 100%),var(--muted) calc(var(--selection) * 100%)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .avatar-frame { position:relative; width:24px; height:24px; flex:none; }
+    .avatar-frame::after { content:""; position:absolute; inset:0; border:3px solid var(--nav-active); border-radius:50%; clip-path:inset(0 calc((1 - var(--selection)) * 100%) 0 0); pointer-events:none; }
+    .nav-link[data-direction="left"] .glyph-filled,.nav-link[data-direction="left"] .avatar-frame::after { clip-path:inset(0 0 0 calc((1 - var(--selection)) * 100%)); }
+    .nav-link[data-direction="left"] .glyph-outline { clip-path:inset(0 calc(var(--selection) * 100%) 0 0); }
+    .nav-link[data-direction="left"] .label { background-image:linear-gradient(270deg,var(--nav-active) calc(var(--selection) * 100%),var(--muted) calc(var(--selection) * 100%)); }
+    .avatar { display:block; width:24px; height:24px; object-fit:cover; border-radius:50%; border:1px solid #000; }
+    .nav-link .glyph,.nav-link .label { transition:filter 180ms ease; }
+    .marker { position:absolute; left:0; bottom:0; display:grid; place-items:center; width:calc(100% / 3); height:14px; pointer-events:none; transform:translate3d(calc(var(--index) * 100%),0,0); transition:transform 900ms cubic-bezier(.22,.68,.24,1); will-change:transform; }
+    .marker svg { display:block; width:38px; height:14px; overflow:visible; fill:none; stroke:var(--nav-active); stroke-width:1; stroke-linecap:round; stroke-linejoin:round; }
+    .marker path { stroke-dasharray:1; stroke-dashoffset:0; }
+    .nav-link:focus-visible { outline:2px solid var(--nav-active); outline-offset:4px; }
+    @media (hover:hover) {
+      .nav-link:not([aria-current="page"]):hover .glyph,
+      .nav-link:not([aria-current="page"]):hover .label { filter:brightness(.7); }
+      :root.dark .nav-link:not([aria-current="page"]):hover .glyph,
+      :root.dark .nav-link:not([aria-current="page"]):hover .label { filter:brightness(1.2); }
+    }
+    @media (max-width:1199px) { .nav-links { width:384px; } }
+    @media (max-width:959px) { .nav-links { grid-row:2; grid-column:1 / -1; justify-self:center; width:420px; } }
+    @media (max-width:600px) { .nav-links { grid-row:3; width:100%; } }
+    @media (forced-colors:active) {
+      .nav-link .label { background:none; color:LinkText; }
+      .nav-link[aria-current="page"] .label { color:Highlight; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+      html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+    body:has(dialog[open]) { overflow: hidden; }
+    textarea { -webkit-tap-highlight-color: transparent; }
+    textarea:focus-visible, input:focus-visible { outline: 2px solid #5766E8; outline-offset: 3px; }
+    button:disabled { opacity: .42; cursor: not-allowed; }
+    .workspace { box-shadow: 0 10px 35px -28px rgba(35,33,26,.18); scroll-margin-top: 100px; }
+    .document-pane { background: color-mix(in srgb, var(--paper) 22%, var(--panel)); }
+    .flow-step { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .flow-step > span { display: grid; place-items: center; width: 19px; height: 19px; border: 1px solid var(--hair); border-radius: 50%; font: 9px 'JetBrains Mono', monospace; }
+    .flow-step.active { color: var(--ink); }
+    .flow-step.active > span { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+    .flow-step.done > span { color: var(--nav-active); background: var(--soft-blue); border-color: transparent; }
+    .source-tab { display:flex; align-items:center; justify-content:center; gap:8px; min-height:40px; border-radius:9px; color:var(--muted); font-size:11px; transition:background .2s, box-shadow .2s, color .2s; }
+    .source-tab[aria-selected="true"] { color:var(--ink); background:var(--panel); box-shadow:0 2px 5px rgba(0,0,0,.055); }
+    .job-input { display:block; min-height:153px; line-height:1.9; font-size:12px; border-color:var(--hair); background:var(--surface); }
+    .text-link:hover { color:var(--nav-active); text-decoration:underline; text-underline-offset:4px; }
+    .document-option { position:relative; display:flex; align-items:center; gap:12px; padding:16px 14px; min-height:86px; border:1px solid var(--hair); border-radius:14px; background:var(--panel); cursor:pointer; transition:border-color .16s, background .16s; }
+    .document-option:hover { border-color:var(--hair-strong); }
+    .document-option:has(input:checked) { border-color:var(--nav-active); background:color-mix(in srgb, var(--soft-blue) 30%, var(--panel)); }
+    .document-option:has(input:focus-visible) { outline:2px solid var(--nav-active); outline-offset:3px; }
+    .document-option input { position:absolute; width:1px; height:1px; opacity:0; }
+    .document-glyph { flex:none; display:grid; place-items:center; width:36px; height:40px; border-radius:10px; background:var(--wash); color:var(--muted); }
+    .document-option:has(input:checked) .document-glyph { background:var(--soft-blue); color:var(--nav-active); }
+    .radio-mark { flex:none; width:16px; height:16px; border:1px solid var(--hair-strong); border-radius:50%; }
+    .document-option:has(input:checked) .radio-mark { border:5px solid var(--nav-active); }
+    .picker-row { display:flex; align-items:center; gap:12px; width:100%; min-height:68px; padding:12px; border:1px solid transparent; border-radius:12px; text-align:left; }
+    .picker-row:hover { background:var(--wash); }
+    .picker-row[aria-pressed="true"] { border-color:var(--nav-active); background:color-mix(in srgb, var(--soft-blue) 35%, var(--panel)); }
+    .company-logo { display:grid; place-items:center; width:40px; height:40px; flex:none; border-radius:12px; font-size:18px; font-weight:600; letter-spacing:-1px; }
+    .opportunity-card { display:flex; flex-direction:column; min-width:0; min-height:278px; padding:23px; border:1px solid var(--hair); border-radius:18px; background:var(--panel); transition:transform .2s, border-color .2s, box-shadow .2s; }
+    .opportunity-card:hover { transform:translateY(-3px); border-color:var(--hair-strong); box-shadow:0 8px 24px -15px rgba(25,25,20,.15); }
+    .save-button { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; color:var(--muted); }
+    .save-button:hover { background:var(--wash); }
+    .save-button[aria-pressed="true"] { color:var(--nav-active); }
+    .save-button[aria-pressed="true"] svg { fill:var(--soft-blue); }
+    .job-tag { display:inline-flex; align-items:center; gap:4px; padding:4px 8px; border-radius:6px; background:var(--wash); color:var(--muted); font-size:9px; }
+    .filter[aria-pressed="true"] { background:var(--ink); border-color:var(--ink); color:var(--paper); }
+    #generate-button { transition:opacity .2s, background .2s; }
+    #generate-button:not(:disabled):hover { background:var(--nav-active); color:#fff; opacity:1; }
+    .job-detail-dialog { width:min(660px,calc(100% - 32px)); }
+    .result-dialog { width:min(1010px,calc(100% - 32px)); max-height:calc(100dvh - 48px); padding:0; overflow:hidden; }
+    .result-dialog[open] { display:flex; flex-direction:column; }
+    .result-layout { overflow:auto; }
+    .document-paper { background:#fff; color:#26262B; padding:42px; min-height:640px; box-shadow:0 2px 12px #00000007; border-radius:2px; font:12px/1.85 'Inter',sans-serif; }
+    .document-paper h2 { font:500 30px/1.2 'Playfair Display',serif; letter-spacing:-.5px; }
+    .document-paper h3 { font:600 10px/1.5 'Inter',sans-serif; text-transform:uppercase; letter-spacing:.1em; margin:24px 0 10px; border-bottom:1px solid #e5e5e5; padding-bottom:7px; }
+    .document-paper h4 { font-weight:600; margin:16px 0 3px; }
+    .document-paper p { margin:0 0 12px; }
+    .document-paper ul { list-style:disc; padding-left:17px; }
+    .document-paper li { margin:6px 0; }
+    .document-paper mark { background:#EEF0FE; color:inherit; padding:1px 2px; border-radius:2px; }
+    .document-paper[contenteditable="true"] { outline:2px solid #5766E8; outline-offset:-2px; }
+    .demo-toast { position:fixed; z-index:100; bottom:24px; left:50%; transform:translateX(-50%); max-width:calc(100% - 32px); padding:12px 20px; border:1px solid var(--hair); border-radius:999px; background:var(--ink); color:var(--paper); box-shadow:var(--shadow); font-size:12px; text-align:center; pointer-events:none; }
+    .spinner { width:15px; height:15px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:spin .7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @media (min-width:1024px) { .result-layout { overflow:hidden; } .document-scroll,.result-sidebar { max-height:calc(100dvh - 140px); overflow:auto; } }
+    @media (max-width:600px) { html { scroll-padding-top:210px; } .workspace { scroll-margin-top:210px; } .document-paper { padding:25px; min-height:530px; font-size:11px; } .result-dialog { max-height:calc(100dvh - 24px); } .flow-step { font-size:9px; gap:4px; } .profile-pill { width:100%; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .opportunity-card:hover { transform:none; } }
+
+  </style>
+</head>
+<body class="font-sans">
+  <a class="skip-link" href="#content">Pular para o conteúdo</a>
+  <!-- Inline symbols keep the demo's icons independent of an icon CDN. -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="absolute h-0 w-0 overflow-hidden" aria-hidden="true">
+    <defs>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+      <symbol id="i-user-outline" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M12 13c-4.42 0-8 2.69-8 6v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-3.31-3.58-6-8-6Z"/></symbol>
+      <symbol id="i-user-filled" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M12 13c-4.42 0-8 2.69-8 6v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-3.31-3.58-6-8-6Z"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+      <symbol id="i-bell-filled" viewBox="0 0 24 24"><path d="M12 1a7 7 0 0 0-7 7c0 3.8-.9 5.3-1.8 6.5C2.6 15.3 2 16 2 17a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1c0-1-.6-1.7-1.2-2.5C19.9 13.3 19 11.8 19 8a7 7 0 0 0-7-7ZM9 20a3 3 0 0 0 6 0Z"/></symbol>
+      <symbol id="i-message-filled" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1C5.9 1 1 5 1 10c0 3.2 1.9 6 5 7.6V22a1 1 0 0 0 1.6.8l4.8-3.8C18.3 18.8 23 14.9 23 10c0-5-4.9-9-11-9ZM8.4 10a1.4 1.4 0 1 0-2.8 0 1.4 1.4 0 0 0 2.8 0Zm5 0a1.4 1.4 0 1 0-2.8 0 1.4 1.4 0 0 0 2.8 0Zm5 0a1.4 1.4 0 1 0-2.8 0 1.4 1.4 0 0 0 2.8 0Z"/></symbol>
+      <symbol id="i-message" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 5.6 2 10c0 3 2 5.6 5 7v5l5-4c5.5 0 10-3.6 10-8S17.5 2 12 2Z" stroke-linejoin="miter"/><g fill="currentColor" stroke="none"><circle cx="7" cy="10" r="1.4"/><circle cx="12" cy="10" r="1.4"/><circle cx="17" cy="10" r="1.4"/></g></symbol>
+      <symbol id="i-case" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3M3 12a20 20 0 0 0 18 0M10 13v2h4v-2"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9ZM14 3v6h6M8 13h8M8 17h5"/></symbol>
+      <symbol id="i-case-filled" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M8 3a1 1 0 0 0-1 1v2H4a2 2 0 0 0-2 2v4h8v-1h4v1h8V8a2 2 0 0 0-2-2h-3V4a1 1 0 0 0-1-1ZM9 5h6v1H9ZM2 13.5V20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6.5h-8V15h-4v-1.5Z"/></symbol>
+      <symbol id="i-file-filled" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10h-5a2 2 0 0 1-2-2V2Zm1 10h10v1.5H7Zm0 4h10v1.5H7ZM15 2.5V8h5.5Z"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+      <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17l-6-4Z"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.8 13A9 9 0 0 1 11 3.2 9 9 0 1 0 20.8 13Z"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><path d="m9 3-.5 2.4-2 1.2L4 6l-2 4 1.9 1.7v2.2L2 16l2 3 2.5-.6 2 1.2L9 22h5l.5-2.4 2-1.2 2.5.6 2-3-1.9-2.1v-2.2L21 10l-2-4-2.5.6-2-1.2L14 3Z"/><circle cx="11.5" cy="12.5" r="3"/></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M9 12h12m-4-4 4 4-4 4"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+      <symbol id="i-location" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+
+      <symbol id="i-link" viewBox="0 0 24 24"><path d="m10 13 4-4m-6 6-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m2 3 1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0" transform="translate(1 1)"/></symbol>
+      <symbol id="i-letter" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></symbol>
+      <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="m12 3 2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6ZM20 2v4m-2-2h4"/></symbol>
+      <symbol id="i-puzzle" viewBox="0 0 24 24"><path d="M8 3h3a3 3 0 1 1 6 0h4v7a3 3 0 1 0 0 6v5h-7a3 3 0 1 0-6 0H3v-7a3 3 0 1 0 0-6V3Z"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="m15 5 4 4M4 20l4-1L21 6a2.8 2.8 0 0 0-4-4L4 15ZM13 20h7"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="navbar">
+    <div class="nav-layout">
+      <div class="brand-group flex min-w-0 items-center gap-8">
+        <a href="#content" aria-label="Patch Careers — início" class="shrink-0 rounded-lg">
+          <!-- Same mascot geometry and colors as packages/ui/.../brand-face.tsx. -->
+          <svg class="brand-mark block h-[48px] w-auto" viewBox="0 0 280 290" aria-hidden="true">
+            <path d="M20 0H135V66H149A22 22 0 1 1 149 94H135V157.9A42 42 0 1 0 95 228.5V282A8 8 0 0 1 87 290H20A20 20 0 0 1 0 270V20A20 20 0 0 1 20 0Z" fill="var(--brand-plain)"/>
+            <path d="M153 23H256A24 24 0 0 1 280 47V163A22 22 0 0 0 280 207V266A24 24 0 0 1 256 290H115A8 8 0 0 1 107 282V224A8 8 0 0 0 98 217A30 30 0 1 1 128 168A11 11 0 0 0 147 160V108.2A34 34 0 1 0 147 51.8V29A6 6 0 0 1 153 23Z" fill="#5766E8"/>
+            <g fill="#DDE3F5"><circle cx="78" cy="110" r="30"/><circle cx="212" cy="110" r="30"/></g>
+            <g fill="#151A30"><circle cx="81" cy="110" r="15"/><circle cx="215" cy="110" r="15"/></g>
+            <g fill="#fff"><circle cx="88" cy="102" r="5"/><circle cx="222" cy="102" r="5"/></g>
+            <path d="M146 168Q162 184 178 168" fill="none" stroke="#151A30" stroke-width="9" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="nav-cluster">
+        <button class="search-trigger" data-open="search-dialog" aria-label="Buscar vagas, empresas ou pessoas" aria-haspopup="dialog">
+          <svg class="icon icon-sm" aria-hidden="true"><use href="#i-search"/></svg>
+          <span class="search-label truncate">Buscar vagas, empresas ou pessoas…</span>
+        </button>
+
+        <nav class="nav-links" aria-label="Navegação principal">
+          <a class="nav-link" href="#content" data-page="vagas" aria-current="page">
+            <span class="glyph"><svg class="glyph-outline" aria-hidden="true"><use href="#i-case"/></svg><svg class="glyph-filled" aria-hidden="true"><use href="#i-case-filled"/></svg></span><span class="label">Vagas</span>
+          </a>
+          <a class="nav-link" href="navbar-demo-v12.html#curriculos" data-page="curriculos">
+            <span class="glyph"><svg class="glyph-outline" aria-hidden="true"><use href="#i-file"/></svg><svg class="glyph-filled" aria-hidden="true"><use href="#i-file-filled"/></svg></span><span class="label">Currículos</span>
+          </a>
+          <a class="nav-link" href="navbar-demo-v12.html#perfil" data-page="perfil" aria-label="Eu — Meu perfil">
+            <span class="avatar-frame" data-authed><img class="avatar" src="avatar-demo.jpg" width="24" height="24" alt=""></span><span class="glyph" data-guest hidden><svg class="glyph-outline" aria-hidden="true"><use href="#i-user-outline"/></svg><svg class="glyph-filled" aria-hidden="true"><use href="#i-user-filled"/></svg></span><span class="label">Eu</span>
+          </a>
+          <span class="marker" aria-hidden="true"><svg viewBox="0 0 48 18"><path pathLength="1" d="M3 11H21C22.2 11 22.5 10.4 21.6 9.5C19.5 7.1 21.3 5 24 5S28.5 7.1 26.4 9.5C25.5 10.4 25.8 11 27 11H34.8C35.7 11 35.9 11.45 35.25 12.1C33.7 13.9 35 15.5 37 15.5S40.3 13.9 38.75 12.1C38.1 11.45 38.3 11 39.2 11H45"/></svg></span>
+        </nav>
+      </div>
+
+      <div class="nav-controls">
+        <div class="relative" data-authed>
+          <button id="messages-trigger" class="quiet-icon nav-action" data-popover="messages-panel" aria-expanded="false" aria-controls="messages-panel" aria-label="Mensagens, 1 não lida" title="Mensagens">
+            <svg class="icon glyph-outline" aria-hidden="true"><use href="#i-message"/></svg><svg class="icon glyph-filled" aria-hidden="true"><use href="#i-message-filled"/></svg><span class="badge" aria-hidden="true"></span>
+          </button>
+          <section id="messages-panel" class="popover" aria-label="Mensagens" hidden>
+            <div class="flex items-center justify-between px-3 py-3"><h2 class="text-sm font-medium">Mensagens</h2><span class="eyebrow text-muted">1 nova</span></div>
+            <button class="menu-row items-start" data-message><span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-wash text-xs">JL</span><span><span class="mb-1 block font-medium text-ink">Julia Lima</span><span class="block leading-relaxed text-muted">Oi, Enzo! Vamos conversar sobre a oportunidade?</span></span></button>
+          </section>
+        </div>
+        <div class="relative" data-authed>
+          <button id="notifications-trigger" class="quiet-icon nav-action" data-popover="notifications-panel" aria-expanded="false" aria-controls="notifications-panel" aria-label="Notificações" title="Notificações">
+            <svg class="icon glyph-outline" aria-hidden="true"><use href="#i-bell"/></svg><svg class="icon glyph-filled" aria-hidden="true"><use href="#i-bell-filled"/></svg>
+          </button>
+          <section id="notifications-panel" class="popover" aria-label="Notificações" hidden>
+            <h2 class="px-3 py-3 text-sm font-medium">Tudo em dia por aqui.</h2>
+            <p class="px-3 pb-4 text-xs leading-relaxed text-muted">Novas oportunidades e atualizações do seu perfil aparecem aqui.</p>
+          </section>
+        </div>
+        <div class="relative min-w-0">
+          <button id="account-trigger" class="account-pill" aria-expanded="false" aria-controls="account-panel" aria-label="Abrir menu de Enzo">
+            <svg id="account-avatar" class="nav-avatar account-avatar" viewBox="0 0 24 24" aria-hidden="true" data-authed><path d="M12 3.7a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8ZM12 15.2c-5.4 0-9.8 3.6-10.4 8.2-.1.9.6 1.6 1.5 1.6h17.8c.9 0 1.6-.7 1.5-1.6-.6-4.6-5-8.2-10.4-8.2Z" fill="#F7F4EE"/></svg>
+            <svg id="account-user-icon" class="icon icon-sm" aria-hidden="true" hidden><use href="#i-user"/></svg>
+            <span id="account-label" class="truncate">Enzo</span>
+            <svg id="account-chevron" class="icon chevron" aria-hidden="true"><use href="#i-chevron"/></svg>
+          </button>
+          <section id="account-panel" class="popover" aria-label="Sua conta" hidden>
+            <div class="flex items-center gap-3 px-3 pb-4 pt-3">
+              <span id="menu-avatar" class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-wash text-xs font-medium">EP</span>
+              <div class="min-w-0"><p id="menu-name" class="truncate text-[13px] font-medium">Enzo Patti</p><p id="menu-subtitle" class="mt-1 text-[11px] text-muted">Seu espaço no Patch</p></div>
+            </div>
+            <div class="mx-3 mb-2 border-t border-hair"></div>
+            <a href="navbar-demo-v12.html#perfil" class="menu-row" data-authed><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>Meu perfil<svg class="icon icon-sm ml-auto text-muted" aria-hidden="true"><use href="#i-external"/></svg></a>
+            <button class="menu-row" data-open="settings-dialog" data-authed><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg>Configurações</button>
+            <button class="menu-row" data-theme-toggle><svg class="icon" aria-hidden="true"><use href="#i-sun" data-theme-icon/></svg>Aparência<span class="trailing" data-theme-label>Claro</span></button>
+            <div class="mx-3 my-2 border-t border-hair"></div>
+            <button id="sign-out" class="menu-row" data-authed><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg>Sair da conta</button>
+            <button class="menu-row" data-open="auth-dialog" data-guest hidden><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>Entrar ou criar conta<svg class="icon icon-sm ml-auto" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </section>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="content" class="mx-auto max-w-[1200px] px-5 pb-16 pt-8 sm:px-8 lg:pt-11" tabindex="-1">
+    <div class="mb-8 flex items-center justify-between gap-4 text-[11px] text-muted">
+      <div class="flex items-center gap-3"><span>Seu espaço</span><span class="opacity-40">/</span><span class="text-ink">Vagas</span></div>
+      <span class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-[#77836B]"></span>Um próximo passo de cada vez.</span>
+    </div>
+
+    <section class="mb-9 flex flex-wrap items-end justify-between gap-7" aria-labelledby="page-heading">
+      <div>
+        <p class="eyebrow mb-3 text-muted">SUA HISTÓRIA. NOVAS POSSIBILIDADES.</p>
+        <h1 id="page-heading" class="font-serif text-[35px] leading-[1.15] tracking-[-1.5px] sm:text-[49px]">A próxima vaga merece<br>a <em class="font-normal text-[var(--nav-active)]">sua melhor versão.</em></h1>
+        <p class="mt-4 max-w-[520px] text-[13px] leading-[1.85] text-muted">Traga uma oportunidade ou encontre uma por aqui.<br class="hidden sm:block"> Prepare um currículo ou uma carta com a sua história e o contexto da vaga.</p>
+      </div>
+      <a href="navbar-demo-v12.html#perfil" class="profile-pill mb-1 flex items-center gap-3 rounded-2xl border border-hair px-4 py-3 transition-colors hover:bg-panel">
+        <img src="avatar-demo.jpg" width="34" height="34" class="h-[34px] w-[34px] rounded-full object-cover" alt="">
+        <span><span class="block text-xs font-medium">Seu ponto de partida está pronto.</span><span class="mt-1 block text-[11px] text-muted">Perfil de Enzo · Ver meu perfil <span aria-hidden="true">↗</span></span></span>
+      </a>
+    </section>
+
+    <section id="preparation" class="workspace overflow-hidden rounded-[24px] border border-hair bg-panel" aria-labelledby="preparation-title">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-hair px-6 py-5 sm:px-7">
+        <h2 id="preparation-title" class="flex items-center gap-2.5 text-[13px] font-semibold"><svg class="icon icon-sm text-[var(--nav-active)]" aria-hidden="true"><use href="#i-sparkles"/></svg>Prepare sua candidatura</h2>
+        <ol class="flex items-center gap-3 text-[10px] text-muted" aria-label="Etapas da candidatura">
+          <li class="flow-step active" data-step="1"><span>1</span>A vaga</li><li aria-hidden="true" class="text-[var(--hair-strong)]">—</li>
+          <li class="flow-step" data-step="2"><span>2</span>O documento</li><li aria-hidden="true" class="text-[var(--hair-strong)]">—</li>
+          <li class="flow-step" data-step="3"><span>3</span>Sua revisão</li>
+        </ol>
+      </div>
+
+      <div class="grid lg:grid-cols-[1.2fr_1fr]">
+        <div class="min-w-0 p-6 sm:p-7 lg:border-r lg:border-hair">
+          <div class="mb-5 flex items-center justify-between"><p class="eyebrow text-muted">01 / ONDE ESTÁ A OPORTUNIDADE?</p><span id="target-status" class="text-[10px] text-[var(--nav-active)]" hidden>Vaga selecionada ✓</span></div>
+          <div class="source-tabs mb-5 grid grid-cols-2 rounded-xl bg-wash p-1" role="tablist" aria-label="Origem da vaga">
+            <button id="paste-tab" class="source-tab" role="tab" aria-selected="true" aria-controls="paste-panel" data-source="paste"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-link"/></svg>Colar uma vaga</button>
+            <button id="database-tab" class="source-tab" role="tab" aria-selected="false" aria-controls="database-panel" tabindex="-1" data-source="database"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-case"/></svg>Escolher da base</button>
+          </div>
+
+          <div id="paste-panel" role="tabpanel" aria-labelledby="paste-tab">
+            <div id="paste-editor">
+              <label class="mb-2.5 block text-xs font-medium" for="job-input">Link ou descrição da vaga</label>
+              <textarea id="job-input" class="job-input field resize-y" rows="5" maxlength="12000" placeholder="Cole o link da vaga aqui…&#10;&#10;Ou cole a descrição completa, com o cargo, a empresa e o que estão buscando." aria-describedby="job-input-help source-error"></textarea>
+              <div class="mt-2 flex items-start justify-between gap-3 text-[10px] leading-5 text-muted"><p id="job-input-help">LinkedIn, Gupy, site da empresa ou qualquer descrição.</p><span id="input-kind" class="shrink-0 font-mono"></span></div>
+              <p id="source-error" class="mt-2 text-xs text-[#B44747]" role="alert" hidden></p>
+              <div class="mt-5 flex flex-wrap items-center justify-between gap-3">
+                <button id="example-button" class="text-link text-[11px] text-muted">Experimentar com uma descrição <span aria-hidden="true">↗</span></button>
+                <button id="use-pasted-job" class="soft-button min-h-[42px] border-[var(--hair-strong)] text-ink" disabled>Usar esta vaga<svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+              </div>
+            </div>
+            <div id="pasted-preview" hidden></div>
+          </div>
+
+          <div id="database-panel" role="tabpanel" aria-labelledby="database-tab" hidden>
+            <label class="sr-only" for="picker-search">Buscar vaga na base</label>
+            <div class="relative"><svg class="icon icon-sm pointer-events-none absolute left-3.5 top-3.5 text-muted" aria-hidden="true"><use href="#i-search"/></svg><input id="picker-search" class="field !py-3 !pl-10 !text-xs" type="search" placeholder="Busque por cargo, empresa ou tecnologia"></div>
+            <div id="picker-jobs" class="picker-jobs mt-3 max-h-[236px] overflow-y-auto pr-1" aria-label="Vagas disponíveis"></div>
+            <p class="mt-3 text-[10px] leading-5 text-muted">A descrição e os requisitos da vaga entram automaticamente.</p>
+          </div>
+
+          <div class="mt-6 flex items-start gap-2.5 border-t border-hair pt-5 text-[11px] leading-[1.7] text-muted"><svg class="icon icon-sm mt-0.5 text-[var(--nav-active)]" aria-hidden="true"><use href="#i-puzzle"/></svg><p id="source-note">A oportunidade pode estar em qualquer lugar.<br><span class="text-body">O ponto de partida é sempre a sua experiência.</span></p></div>
+        </div>
+
+        <div class="document-pane min-w-0 border-t border-hair p-6 sm:p-7 lg:border-t-0">
+          <p class="eyebrow mb-5 text-muted">02 / O QUE VAMOS PREPARAR?</p>
+          <fieldset class="grid gap-3"><legend class="sr-only">Tipo de documento</legend>
+            <label class="document-option"><input type="radio" name="document-type" value="resume" checked><span class="document-glyph"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg></span><span class="min-w-0 flex-1"><span class="block text-[13px] font-semibold">Currículo personalizado</span><span class="mt-1 block text-[11px] leading-[1.6] text-muted">Destaque as experiências que fazem sentido para a vaga.</span></span><span class="radio-mark" aria-hidden="true"></span></label>
+            <label class="document-option"><input type="radio" name="document-type" value="letter"><span class="document-glyph"><svg class="icon" aria-hidden="true"><use href="#i-letter"/></svg></span><span class="min-w-0 flex-1"><span class="block text-[13px] font-semibold">Carta de apresentação</span><span class="mt-1 block text-[11px] leading-[1.6] text-muted">Conecte sua trajetória ao que te move nesta oportunidade.</span></span><span class="radio-mark" aria-hidden="true"></span></label>
+          </fieldset>
+
+          <div id="resume-context" class="mt-5 flex items-center gap-3 rounded-xl border border-hair px-3.5 py-3"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-wash"><svg class="icon icon-sm text-muted" aria-hidden="true"><use href="#i-user"/></svg></span><span class="text-[11px]"><span class="block font-medium">A partir do seu currículo principal</span><span class="mt-1 block text-muted">Enzo Patti · Engenharia de Software</span></span></div>
+
+          <div id="letter-context" class="mt-5" hidden>
+            <label for="personal-context" class="block text-xs font-semibold">Antes da carta, queremos ouvir você.</label>
+            <p id="personal-help" class="mb-3 mt-2 text-[11px] leading-[1.8] text-muted">Por que essa vaga te interessa? Que experiências você gostaria de destacar? Escreva pelo menos 200 caracteres.</p>
+            <textarea id="personal-context" class="field resize-y !text-xs !leading-6" rows="5" maxlength="3000" placeholder="Essa oportunidade me chamou a atenção porque…" aria-describedby="personal-help personal-counter personal-remaining"></textarea>
+            <div class="mt-2 flex items-center justify-between gap-2 text-[10px]"><span id="personal-remaining" class="text-muted">Faltam 200 caracteres</span><span id="personal-counter" class="font-mono text-muted">0 / 200 mín.</span></div>
+            <div class="mt-2 h-[3px] overflow-hidden rounded-full bg-wash" aria-hidden="true"><div id="personal-progress" class="h-full w-0 rounded-full bg-brand transition-all duration-200"></div></div>
+          </div>
+
+          <button id="generate-button" class="primary-button mt-5 min-h-[48px] w-full gap-3 !text-[13px]" disabled><svg class="icon icon-sm" aria-hidden="true"><use href="#i-sparkles"/></svg><span id="generate-label">Criar meu currículo</span><svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <p id="generate-help" class="mt-3 text-center text-[10px] leading-5 text-muted" aria-live="polite">Escolha uma vaga para começar.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="discover" class="mt-12 scroll-mt-[110px]" aria-labelledby="discover-title">
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-5">
+        <div><p class="eyebrow mb-2 text-muted">TALVEZ O SEU PRÓXIMO PASSO ESTEJA AQUI</p><h2 id="discover-title" class="font-serif text-[30px] leading-tight tracking-[-.6px]">Encontre uma oportunidade.</h2></div>
+        <div class="flex items-center gap-2 text-[10px] text-muted"><span class="h-1.5 w-1.5 rounded-full bg-[#77836B]"></span>Novas possibilidades, todos os dias</div>
+      </div>
+      <div class="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-hair pb-5">
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar vagas"><button class="filter" aria-pressed="true" data-filter="all">Todas as vagas <span class="ml-1.5 font-mono text-[10px]">6</span></button><button class="filter" aria-pressed="false" data-filter="remote">Remotas</button><button class="filter flex items-center gap-1.5" aria-pressed="false" data-filter="saved"><svg class="icon !h-3 !w-3" aria-hidden="true"><use href="#i-bookmark"/></svg>Salvas <span id="saved-count" class="ml-0.5 font-mono text-[10px]">2</span></button></div>
+        <div class="relative w-full sm:w-[264px]"><svg class="icon icon-sm pointer-events-none absolute left-3 top-3 text-muted" aria-hidden="true"><use href="#i-search"/></svg><label for="discover-search" class="sr-only">Buscar nas oportunidades</label><input id="discover-search" type="search" class="w-full rounded-xl border border-hair bg-transparent py-2.5 pl-9 pr-3 text-[11px] outline-none focus:border-brand" placeholder="Cargo, empresa ou palavra-chave"></div>
+      </div>
+      <p id="jobs-count" class="sr-only" role="status"></p>
+      <div id="job-grid" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"></div>
+      <div id="jobs-empty" class="rounded-2xl border border-dashed border-hair py-12 text-center" hidden><h3 class="font-serif text-2xl">Ainda não encontramos por aqui.</h3><p class="mt-3 text-xs text-muted">Tente outro termo ou traga o link de uma oportunidade.</p><button id="reset-filters" class="soft-button mx-auto mt-5">Limpar filtros</button></div>
+      <div class="mt-5 flex flex-wrap items-center justify-between gap-3 text-[10px] text-muted"><p>Gostou de uma vaga? Salve para depois ou prepare sua candidatura.</p><span class="font-mono">6 oportunidades selecionadas</span></div>
+    </section>
+
+    <section id="recent-section" class="mt-12 rounded-2xl border border-hair px-5 py-5 sm:px-6" aria-labelledby="recent-title" hidden><div class="mb-4 flex items-center justify-between"><h2 id="recent-title" class="font-serif text-xl">O que você preparou por aqui.</h2><span class="eyebrow text-muted">NESTA SESSÃO</span></div><div id="recent-documents"></div></section>
+    <footer class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-hair pt-5 text-[10px] text-muted"><span>Patch Careers <span class="mx-2 opacity-30">/</span> Cada parte da sua história importa.</span><span>Demonstração interativa · vagas e documentos ilustrativos</span></footer>
+  </main>
+
+  <dialog id="result-dialog" aria-labelledby="result-title" class="result-dialog">
+    <div class="result-top flex flex-wrap items-center justify-between gap-3 border-b border-hair px-5 py-4 sm:px-7"><div><p class="eyebrow mb-1 text-[var(--nav-active)]">03 / SUA REVISÃO</p><h2 id="result-title" class="font-serif text-[25px]">Um currículo com a sua história.</h2></div><button class="quiet-icon" data-close aria-label="Fechar prévia"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <div class="result-layout grid min-h-0 lg:grid-cols-[1fr_275px]">
+      <div class="document-scroll overflow-y-auto bg-wash p-4 sm:p-7"><article id="document-preview" class="document-paper" aria-label="Prévia do documento"></article></div>
+      <aside class="result-sidebar flex flex-col border-t border-hair p-5 lg:border-l lg:border-t-0 lg:p-6">
+        <div class="flex items-center gap-2 text-[11px] font-medium text-[var(--nav-active)]"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-check"/></svg>Pronto para a sua revisão</div>
+        <div class="my-5 rounded-xl border border-hair p-3.5"><span class="eyebrow text-muted">PARA ESTA OPORTUNIDADE</span><h3 id="result-job-title" class="mt-2 text-xs font-semibold leading-5"></h3><p id="result-company" class="mt-1 text-[11px] text-muted"></p></div>
+        <h3 class="mb-3 text-xs font-semibold">O que ganhou destaque</h3><ul id="result-highlights" class="space-y-3 text-[11px] leading-[1.8] text-muted"></ul>
+        <div class="mt-6 space-y-2"><button id="edit-document" class="soft-button w-full"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-edit"/></svg><span>Editar texto</span></button><button id="copy-document" class="soft-button w-full"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-copy"/></svg>Copiar texto</button><button id="download-document" class="primary-button w-full"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-download"/></svg>Baixar documento</button></div>
+        <p id="download-note" class="mt-2 text-center text-[10px] text-muted">Arquivo de texto (.txt)</p>
+        <p class="mb-0 mt-auto pt-6 text-[10px] leading-[1.8] text-muted">Prévia ilustrativa desta demo. Revise o conteúdo e deixe tudo com a sua voz antes de usar.</p>
+      </aside>
+    </div>
+  </dialog>
+
+  <dialog id="job-dialog" aria-labelledby="job-detail-title" class="job-detail-dialog">
+    <div class="mb-5 flex items-center justify-between"><span class="eyebrow text-muted">CONHEÇA A OPORTUNIDADE</span><button class="quiet-icon" data-close aria-label="Fechar vaga"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <div id="job-detail-content"></div><button id="detail-use-job" class="primary-button mt-6 w-full">Preparar minha candidatura<svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+  </dialog>
+
+  <dialog id="search-dialog" aria-labelledby="search-title"><div class="mb-5 flex items-center justify-between"><h2 id="search-title" class="font-serif text-2xl">Encontre o próximo passo.</h2><button class="quiet-icon" data-close aria-label="Fechar busca"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div><label for="search-input" class="sr-only">Buscar oportunidades</label><input id="search-input" class="field" type="search" placeholder="Busque um cargo, uma empresa…" autocomplete="off"><div id="search-results" class="mt-4 max-h-[340px] overflow-auto" aria-live="polite"></div><p class="mt-4 text-[10px] text-muted">Selecione uma oportunidade para preparar sua candidatura.</p></dialog>
+  <dialog id="settings-dialog" aria-labelledby="settings-title"><div class="mb-5 flex items-center justify-between"><h2 id="settings-title" class="font-serif text-2xl">Sua conta</h2><button class="quiet-icon" data-close aria-label="Fechar configurações"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div><form id="settings-form"><label for="name-input" class="mb-2 block text-xs">Como podemos chamar você?</label><input id="name-input" class="field" value="Enzo Patti" required maxlength="80"><button class="primary-button mt-5 w-full" type="submit">Salvar nome na demo</button></form></dialog>
+  <dialog id="message-dialog" aria-labelledby="message-title"><div class="mb-5 flex items-center justify-between"><h2 id="message-title" class="font-serif text-2xl">Uma conversa para começar.</h2><button class="quiet-icon" data-close aria-label="Fechar mensagem"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div><p class="mb-2 text-xs font-semibold">Julia Lima</p><p class="text-sm leading-7 text-muted">Oi, Enzo! Gostamos do seu perfil e queremos conhecer melhor sua trajetória. Vamos conversar sobre a oportunidade?</p><p class="mt-5 text-[10px] text-muted">Mensagem ilustrativa da demonstração.</p></dialog>
+  <dialog id="auth-dialog" aria-labelledby="auth-title"><h2 id="auth-title" class="font-serif text-2xl">Seu espaço continua aqui.</h2><p class="mt-3 text-sm leading-6 text-muted">Nesta demonstração, você pode voltar à conta de exemplo para continuar explorando.</p><button id="demo-login" class="primary-button mt-6 w-full">Continuar como Enzo</button><button class="soft-button mt-2 w-full" data-close>Voltar</button></dialog>
+  <div id="toast" class="demo-toast" role="status" hidden></div>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+
+  <script>
+    const $ = (selector, context = document) => context.querySelector(selector);
+    const $$ = (selector, context = document) => [...context.querySelectorAll(selector)];
+    const icon = (name, extra = '') => `<svg class="icon ${extra}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+    const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const normalize = value => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const PERSONAL_MIN = 200;
+    const jobs = [
+      {id:'linear', company:'Linear', title:'Senior Frontend Engineer', location:'Remoto · Global', remote:true, contract:'Full-time', tags:['React','TypeScript','Design systems'], initials:'L', background:'#ECEAF8', color:'#6055AB', posted:'há 2 horas', description:'Ajude a construir ferramentas que tornam o trabalho de equipes de produto mais simples. Buscamos experiência com React, TypeScript, interfaces acessíveis e atenção aos detalhes. Você vai colaborar com design e engenharia na evolução do produto.', requirements:['Experiência com React e TypeScript em produção','Cuidado com acessibilidade, performance e qualidade visual','Colaboração com equipes de produto e design']},
+      {id:'nubank', company:'Nubank', title:'Engenheiro de Software Sênior', location:'São Paulo · Híbrido', remote:false, contract:'CLT', tags:['APIs','Sistemas distribuídos','Cloud'], initials:'nu', background:'#F0E8F7', color:'#7C3EB5', posted:'há 4 horas', description:'Faça parte de uma equipe que constrói produtos financeiros com foco nas pessoas. Você vai desenvolver serviços, contribuir com decisões de arquitetura e trabalhar na confiabilidade de sistemas distribuídos.', requirements:['Experiência com desenvolvimento de APIs','Prática com sistemas distribuídos e testes automatizados','Comunicação e colaboração entre equipes']},
+      {id:'vercel', company:'Vercel', title:'Design Engineer', location:'Remoto · Américas', remote:true, contract:'Full-time', tags:['Next.js','React','UI / UX'], initials:'▲', background:'#ECECEB', color:'#222222', posted:'há 6 horas', description:'Conecte design e desenvolvimento para criar experiências web rápidas e cuidadosas. Trabalhe com React e Next.js em protótipos, componentes e interfaces, em colaboração próxima com a equipe de design.', requirements:['Experiência com React, Next.js e CSS','Sensibilidade para interação e tipografia','Portfólio de interfaces web']},
+      {id:'loft', company:'Loft', title:'Product Designer Pleno', location:'São Paulo · Híbrido', remote:false, contract:'CLT', tags:['Produto','Figma','Pesquisa'], initials:'loft', background:'#FAEDE4', color:'#C17545', posted:'há 1 dia', description:'Desenhe jornadas mais simples para quem busca um novo lugar para morar. Trabalhe da descoberta à entrega, com pesquisa, prototipação e colaboração com engenharia.', requirements:['Experiência em design de produtos digitais','Domínio de ferramentas de prototipação','Capacidade de conduzir e sintetizar pesquisa']},
+      {id:'conta', company:'Conta Simples', title:'Full Stack Developer', location:'Remoto · Brasil', remote:true, contract:'CLT', tags:['Node.js','React','PostgreSQL'], initials:'cs', background:'#E9EFE1', color:'#536D31', posted:'há 1 dia', description:'Crie soluções para simplificar a gestão financeira de empresas. Desenvolva interfaces em React e serviços em Node.js, trabalhando com PostgreSQL e testes automatizados.', requirements:['Experiência com React e Node.js','Conhecimento de bancos de dados relacionais','Atenção à qualidade e à experiência de uso']},
+      {id:'meli', company:'Mercado Livre', title:'Backend Engineer', location:'Remoto · Brasil', remote:true, contract:'CLT', tags:['Java','Go','Escalabilidade'], initials:'ml', background:'#F7F0D3', color:'#897019', posted:'há 2 dias', description:'Construa serviços que apoiam milhões de experiências de compra. Participe da evolução de APIs e sistemas com foco em confiabilidade, observabilidade e escalabilidade.', requirements:['Experiência em desenvolvimento backend','Conhecimento de Java ou Go','Experiência com observabilidade e sistemas distribuídos']},
+    ];
+    const saved = new Set(['linear','vercel']);
+    const state = {source:'paste', targets:{paste:null,database:null}, documentType:'resume', filter:'all', generating:false, detailId:null, currentDocument:null, documents:[], userName:'Enzo Patti'};
+    let generationId = 0;
+    let importId = 0;
+    let toastTimer;
+    const targetJob = () => state.targets[state.source];
+    const personalLength = () => Array.from($('#personal-context').value.trim()).length;
+    const logo = job => `<span class="company-logo" style="background:${job.background || '#E9ECF8'};color:${job.color || '#5766E8'};${job.initials?.length > 3 ? 'font-size:13px' : ''}">${escapeHTML(job.initials || '↗')}</span>`;
+    const matchingJobs = query => jobs.filter(job => normalize([job.title,job.company,job.location,...job.tags].join(' ')).includes(normalize(query.trim())));
+
+    function toast(message) {
+      clearTimeout(toastTimer);
+      $('#toast').textContent = message;
+      $('#toast').hidden = false;
+      toastTimer = setTimeout(() => { $('#toast').hidden = true; }, 3400);
+    }
+
+    function closePopovers(returnFocus = false) {
+      const trigger = $('[aria-expanded="true"][aria-controls]');
+      $$('.popover').forEach(panel => { panel.hidden = true; });
+      $$('[aria-expanded]').forEach(button => button.setAttribute('aria-expanded','false'));
+      if (returnFocus) trigger?.focus();
+    }
+
+    function togglePopover(trigger, id) {
+      const panel = document.getElementById(id);
+      const shouldOpen = panel.hidden;
+      closePopovers();
+      if (shouldOpen) { panel.hidden = false; trigger.setAttribute('aria-expanded','true'); }
+    }
+
+    function openDialog(id) {
+      closePopovers();
+      const dialog = document.getElementById(id);
+      if (!dialog.open) dialog.showModal();
+      if (id === 'search-dialog') { $('#search-input').value = ''; renderGlobalSearch(); $('#search-input').focus(); }
+      if (id === 'settings-dialog') { $('#name-input').value = state.userName; $('#name-input').focus(); }
+    }
+
+    function setSource(source) {
+      cancelGeneration();
+      state.source = source;
+      $$('[data-source]').forEach(tab => { const selected = tab.dataset.source === source; tab.setAttribute('aria-selected',String(selected)); tab.tabIndex = selected ? 0 : -1; });
+      $('#paste-panel').hidden = source !== 'paste';
+      $('#database-panel').hidden = source !== 'database';
+      updateControls();
+      renderPicker();
+    }
+
+    function updateControls() {
+      const job = targetJob();
+      const isLetter = state.documentType === 'letter';
+      const count = personalLength();
+      const canGenerate = Boolean(job) && (!isLetter || count >= PERSONAL_MIN);
+      $('#letter-context').hidden = !isLetter;
+      $('#resume-context').hidden = isLetter;
+      $('#target-status').hidden = !job;
+      $('#personal-counter').textContent = `${count} / ${PERSONAL_MIN} mín.`;
+      $('#personal-remaining').textContent = count >= PERSONAL_MIN ? 'Pronto. Agora a carta pode ter a sua voz.' : PERSONAL_MIN - count === 1 ? 'Falta 1 caractere' : `Faltam ${PERSONAL_MIN - count} caracteres`;
+      $('#personal-remaining').style.color = count >= PERSONAL_MIN ? 'var(--nav-active)' : 'var(--muted)';
+      $('#personal-progress').style.width = `${Math.min(count / PERSONAL_MIN * 100,100)}%`;
+      $('#generate-button').disabled = !canGenerate || state.generating;
+      $('#generate-button').setAttribute('aria-busy', String(state.generating));
+      if (!state.generating) {
+        $('#generate-label').textContent = isLetter ? 'Criar minha carta' : 'Criar meu currículo';
+        $('#generate-button > svg:first-of-type').removeAttribute('hidden');
+        $('#generate-button .spinner')?.remove();
+      }
+      $('#generate-help').textContent = !job ? 'Escolha uma vaga para começar.' : isLetter && count < PERSONAL_MIN ? 'Seu texto pessoal é o ponto de partida da carta.' : 'Você revisa e ajusta tudo antes de usar.';
+      $('#source-note').innerHTML = job ? `Uma candidatura para <strong class="font-medium text-body">${escapeHTML(job.title)}</strong>.<br>${escapeHTML(job.company)} · ${state.source === 'database' ? 'Selecionada da nossa base' : 'Adicionada por você'}` : 'A oportunidade pode estar em qualquer lugar.<br><span class="text-body">O ponto de partida é sempre a sua experiência.</span>';
+      $$('[data-step]').forEach(item => { const step = Number(item.dataset.step); item.classList.toggle('active',step === (job ? 2 : 1)); item.classList.toggle('done',Boolean(job) && step === 1); });
+    }
+
+    function cancelGeneration() {
+      generationId += 1;
+      state.generating = false;
+    }
+
+    function renderPicker() {
+      const list = matchingJobs($('#picker-search').value);
+      $('#picker-jobs').innerHTML = list.length ? list.map(job => `<button class="picker-row" data-select-job="${job.id}" aria-pressed="${state.targets.database?.id === job.id}">${logo(job)}<span class="min-w-0 flex-1"><span class="block text-[11px] font-semibold leading-5">${escapeHTML(job.title)}</span><span class="mt-0.5 block text-[10px] text-muted">${escapeHTML(job.company)} · ${job.remote ? 'Remoto' : 'Híbrido'}</span></span>${state.targets.database?.id === job.id ? icon('check','icon-sm text-[var(--nav-active)]') : icon('arrow','icon-sm text-muted')}</button>`).join('') : '<p class="px-3 py-8 text-xs leading-6 text-muted">Nenhuma vaga encontrada. Tente outro cargo, empresa ou tecnologia.</p>';
+    }
+
+    function selectJob(id, scroll = false) {
+      const job = jobs.find(item => item.id === id);
+      if (!job) return;
+      state.targets.database = job;
+      $('#picker-search').value = '';
+      setSource('database');
+      if (scroll) { $('#preparation').scrollIntoView({behavior:'smooth',block:'start'}); $('#database-tab').focus({preventScroll:true}); }
+      $('#announcement').textContent = `${job.title} na ${job.company} selecionada.`;
+    }
+
+    function renderJobs() {
+      const list = matchingJobs($('#discover-search').value).filter(job => state.filter === 'remote' ? job.remote : state.filter === 'saved' ? saved.has(job.id) : true);
+      $('#saved-count').textContent = saved.size;
+      $('#jobs-count').textContent = `${list.length} oportunidades encontradas.`;
+      $('#jobs-empty').hidden = list.length > 0;
+      $('#job-grid').innerHTML = list.map(job => `<article class="opportunity-card">
+        <div class="flex items-start justify-between gap-2"><div class="flex items-center gap-3">${logo(job)}<span><span class="block text-[12px] font-semibold">${escapeHTML(job.company)}</span><span class="mt-1 block text-[10px] text-muted">${escapeHTML(job.posted)}</span></span></div><button class="save-button" data-save="${job.id}" aria-label="${saved.has(job.id) ? 'Remover dos salvos' : 'Salvar vaga'}: ${escapeHTML(job.title)}" aria-pressed="${saved.has(job.id)}">${icon('bookmark','icon-sm')}</button></div>
+        <h3 class="mb-2 mt-5 font-serif text-[22px] leading-[1.3] tracking-[-.35px]"><button data-detail-job="${job.id}" class="text-left hover:text-[var(--nav-active)]">${escapeHTML(job.title)}</button></h3>
+        <p class="flex items-center gap-1.5 text-[10px] text-muted">${icon('location','!h-3 !w-3')}${escapeHTML(job.location)}<span class="mx-0.5 opacity-40">·</span>${job.contract}</p>
+        <div class="mb-5 mt-4 flex flex-wrap gap-1.5">${job.tags.map(tag => `<span class="job-tag">${escapeHTML(tag)}</span>`).join('')}</div>
+        <div class="mt-auto flex items-center justify-between border-t border-hair pt-4"><button data-prepare-job="${job.id}" class="flex items-center gap-2 text-[11px] font-semibold text-[var(--nav-active)] hover:underline">Usar esta vaga ${icon('arrow','!h-3.5 !w-3.5')}</button><button data-detail-job="${job.id}" class="text-link text-[10px] text-muted">Ver detalhes</button></div>
+      </article>`).join('');
+    }
+
+    function renderGlobalSearch() {
+      const list = matchingJobs($('#search-input').value);
+      $('#search-results').innerHTML = list.length ? list.map(job => `<button class="picker-row" data-search-job="${job.id}">${logo(job)}<span><span class="block text-xs font-medium">${escapeHTML(job.title)}</span><span class="mt-1 block text-[11px] text-muted">${escapeHTML(job.company)} · ${escapeHTML(job.location)}</span></span></button>`).join('') : '<p class="py-8 text-center text-xs text-muted">Nenhuma oportunidade com esse termo.</p>';
+    }
+
+    function showJob(id) {
+      const job = jobs.find(item => item.id === id);
+      if (!job) return;
+      state.detailId = id;
+      $('#job-detail-content').innerHTML = `<div class="mb-5 flex items-center gap-3">${logo(job)}<p class="text-sm font-medium">${escapeHTML(job.company)}</p></div><h2 id="job-detail-title" class="font-serif text-[30px] leading-tight">${escapeHTML(job.title)}</h2><p class="mb-6 mt-3 text-xs text-muted">${escapeHTML(job.location)} · ${job.contract}</p><p class="text-sm leading-7 text-body">${escapeHTML(job.description)}</p><h3 class="mb-2 mt-6 text-xs font-semibold">O que essa oportunidade pede</h3><ul class="list-disc space-y-2 pl-4 text-xs leading-6 text-muted">${job.requirements.map(requirement => `<li>${escapeHTML(requirement)}</li>`).join('')}</ul><p class="mt-5 text-[10px] text-muted">Vaga ilustrativa para explorar a demonstração.</p>`;
+      openDialog('job-dialog');
+    }
+
+    function classifyInput(raw) {
+      const text = raw.trim();
+      const looksLikeURL = /^(https?:\/\/|www\.)/i.test(text) || /^[^\s]+\.[a-z]{2,}(\/|$)/i.test(text);
+      if (!looksLikeURL) return {kind:'description',valid:text.length >= 50};
+      try {
+        const url = new URL(/^https?:\/\//i.test(text) ? text : `https://${text}`);
+        return {kind:'link',valid:['http:','https:'].includes(url.protocol) && url.hostname.includes('.') && !/\s/.test(text),url};
+      } catch { return {kind:'link',valid:false}; }
+    }
+
+    function updateJobInput() {
+      importId += 1;
+      const input = $('#job-input').value.trim();
+      const info = classifyInput(input);
+      $('#use-pasted-job').disabled = !input;
+      $('#use-pasted-job').innerHTML = `Usar esta vaga${icon('arrow','icon-sm')}`;
+      $('#input-kind').textContent = input ? info.kind === 'link' ? '↗ link' : '≡ descrição' : '';
+      $('#source-error').hidden = true;
+    }
+
+    async function usePastedJob() {
+      const input = $('#job-input').value.trim();
+      const info = classifyInput(input);
+      if (!info.valid) {
+        $('#source-error').textContent = info.kind === 'link' ? 'Confira o endereço da vaga e tente novamente.' : 'Inclua um pouco mais da descrição da vaga (pelo menos 50 caracteres).';
+        $('#source-error').hidden = false;
+        $('#job-input').focus();
+        return;
+      }
+      const currentImport = ++importId;
+      $('#use-pasted-job').disabled = true;
+      $('#use-pasted-job').innerHTML = `<span class="spinner" aria-hidden="true"></span>${info.kind === 'link' ? 'Preparando prévia…' : 'Organizando a vaga…'}`;
+      await new Promise(resolve => setTimeout(resolve,650));
+      if (currentImport !== importId) return;
+      const lines = input.split('\n').map(line => line.trim()).filter(Boolean);
+      const job = info.kind === 'link' ? {...jobs[0],id:'pasted',title:'Senior Frontend Engineer',company:'Empresa do link',sourceURL:info.url.href,previewNotice:'Exemplo de importação. Nesta demo, o link usa uma vaga ilustrativa.'} : {
+        id:'pasted', title:lines[0].length <= 110 ? lines[0] : 'Vaga adicionada por você', company:lines.find(line => /^empresa\s*:/i.test(line))?.replace(/^empresa\s*:\s*/i,'') || 'Vaga externa', description:input, location:'Conforme a descrição', tags:['Vaga externa'], initials:'↗', previewNotice:'Descrição adicionada. Você pode trocar a vaga a qualquer momento.'
+      };
+      state.targets.paste = job;
+      $('#paste-editor').hidden = true;
+      $('#pasted-preview').hidden = false;
+      $('#pasted-preview').innerHTML = `<div class="rounded-2xl border border-[var(--nav-active)] bg-[color:var(--surface)] p-5"><div class="mb-4 flex items-center justify-between"><span class="flex items-center gap-1.5 text-[10px] text-[var(--nav-active)]">${icon('check','!h-3.5 !w-3.5')}Vaga adicionada</span><button id="change-pasted-job" class="text-link text-[10px] text-muted">Trocar vaga</button></div><h3 class="font-serif text-[25px] leading-tight">${escapeHTML(job.title)}</h3><p class="mt-2 text-[11px] text-muted">${escapeHTML(job.company)}</p><p class="mt-4 line-clamp-4 text-xs leading-6 text-body">${escapeHTML(job.description)}</p>${job.sourceURL ? `<p class="mt-3 break-all font-mono text-[9px] text-muted">${escapeHTML(job.sourceURL)}</p>` : ''}</div><p class="mt-3 text-[10px] leading-5 text-muted">${escapeHTML(job.previewNotice)}</p>`;
+      setSource('paste');
+      $('#announcement').textContent = 'Vaga adicionada. Escolha o documento que deseja preparar.';
+    }
+
+    function buildDocument(job,type,personal) {
+      const name = escapeHTML(state.userName);
+      if (type === 'letter') {
+        return `<p style="font-size:10px;color:#777;margin-bottom:26px">CARTA DE APRESENTAÇÃO</p><h2>${name}</h2><p style="font-size:11px;color:#666;margin-top:10px">${escapeHTML(job.title)} · ${escapeHTML(job.company)}</p><hr style="border:0;border-top:1px solid #ddd;margin:24px 0"><p>Olá, equipe da ${escapeHTML(job.company)},</p><p>Gostaria de apresentar meu interesse na oportunidade de ${escapeHTML(job.title)} e compartilhar um pouco do que me aproxima desse próximo passo.</p>${personal.split(/\n+/).filter(Boolean).map(paragraph => `<p>${escapeHTML(paragraph)}</p>`).join('')}<p>Minha trajetória em desenvolvimento de software me ensinou a conectar decisões técnicas às necessidades das pessoas. Gostaria de conversar sobre como essas experiências podem contribuir para os desafios desta posição.</p><p>Agradeço pela atenção e pela oportunidade de compartilhar minha história.</p><p style="margin-top:24px">Atenciosamente,<br><strong>${name}</strong></p>`;
+      }
+      return `<h2>${name}</h2><p style="font-size:12px;margin-top:8px">Engenheiro de Software · React, TypeScript e Node.js</p><p style="font-size:10px;color:#777">São Paulo, Brasil · enzo@example.com</p><h3>Perfil profissional</h3><p>Engenheiro de software com experiência na construção de produtos digitais. Atuação em <mark>interfaces com React e TypeScript</mark>, desenvolvimento de APIs e colaboração com equipes de produto e design. Interesse em transformar problemas complexos em experiências claras, acessíveis e bem construídas.</p><h3>Experiência profissional</h3><h4>Engenheiro de Software</h4><p style="font-size:10px;color:#777">Empresa de exemplo · 2022 — Atual</p><ul><li>Desenvolvimento de interfaces em <mark>React e TypeScript</mark>, em colaboração com a equipe de design.</li><li>Construção de APIs e integrações usando Node.js e PostgreSQL.</li><li>Criação de componentes reutilizáveis e testes automatizados, com atenção à <mark>acessibilidade e à experiência de uso</mark>.</li></ul><h3>Competências</h3><p>React · TypeScript · JavaScript · Node.js · PostgreSQL · Git · Testes automatizados · Desenvolvimento colaborativo</p><h3>Formação</h3><h4>Bacharelado em Ciência da Computação</h4><p style="font-size:10px;color:#777">Instituição de exemplo · 2018 — 2021</p><p style="font-size:9px;color:#888;margin-top:34px;border-top:1px solid #eee;padding-top:12px">Prévia ilustrativa preparada para ${escapeHTML(job.title)} · ${escapeHTML(job.company)}.</p>`;
+    }
+
+    async function generateDocument() {
+      const job = targetJob();
+      const type = state.documentType;
+      if (!job || state.generating || (type === 'letter' && personalLength() < PERSONAL_MIN)) return;
+      const personal = $('#personal-context').value.trim();
+      const currentGeneration = ++generationId;
+      state.generating = true;
+      updateControls();
+      $('#generate-button > svg:first-of-type').setAttribute('hidden','');
+      $('#generate-button').insertAdjacentHTML('afterbegin','<span class="spinner" aria-hidden="true"></span>');
+      const labels = ['Conectando sua história à vaga…',type === 'letter' ? 'Dando espaço à sua voz…' : 'Organizando suas experiências…','Preparando sua revisão…'];
+      for (const label of labels) {
+        if (currentGeneration !== generationId) return;
+        $('#generate-label').textContent = label;
+        await new Promise(resolve => setTimeout(resolve,560));
+      }
+      if (currentGeneration !== generationId) return;
+      const generated = {id:Date.now(),job:{...job},type,html:buildDocument(job,type,personal)};
+      state.documents.unshift(generated);
+      state.generating = false;
+      updateControls();
+      renderRecent();
+      openDocument(generated);
+    }
+
+    function openDocument(generated) {
+      state.currentDocument = generated;
+      $('#document-preview').innerHTML = generated.html;
+      $('#document-preview').removeAttribute('contenteditable');
+      $('#edit-document span').textContent = 'Editar texto';
+      $('#edit-document').setAttribute('aria-pressed','false');
+      $('#result-title').textContent = generated.type === 'letter' ? 'Uma carta com a sua voz.' : 'Um currículo com a sua história.';
+      $('#result-job-title').textContent = generated.job.title;
+      $('#result-company').textContent = generated.job.company;
+      const highlights = generated.type === 'letter' ? ['Seu interesse pela oportunidade, a partir do que você escreveu.','Sua trajetória conectada à vaga escolhida.','Uma apresentação que você pode editar à vontade.'] : ['Resumo com foco na oportunidade escolhida.','Experiências organizadas para uma leitura mais clara.','Competências da trajetória de exemplo em evidência.'];
+      $('#result-highlights').innerHTML = highlights.map(text => `<li class="flex gap-2"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand"></span><span>${escapeHTML(text)}</span></li>`).join('');
+      $$('[data-step]').forEach(item => { item.classList.toggle('active',item.dataset.step === '3'); item.classList.toggle('done',item.dataset.step !== '3'); });
+      openDialog('result-dialog');
+    }
+
+    function renderRecent() {
+      $('#recent-section').hidden = state.documents.length === 0;
+      $('#recent-documents').innerHTML = state.documents.slice(0,5).map(doc => `<button data-reopen="${doc.id}" class="flex w-full flex-wrap items-center gap-3 rounded-xl px-3 py-3 text-left hover:bg-wash">${icon(doc.type === 'letter' ? 'letter' : 'file','text-muted')}<span class="min-w-0 flex-1"><span class="block text-xs font-medium">${doc.type === 'letter' ? 'Carta de apresentação' : 'Currículo personalizado'}</span><span class="mt-1 block text-[10px] text-muted">${escapeHTML(doc.job.title)} · ${escapeHTML(doc.job.company)}</span></span><span class="rounded-full bg-[var(--soft-blue)] px-2.5 py-1 text-[9px] text-[var(--nav-active)]">Rascunho</span>${icon('arrow','icon-sm text-muted')}</button>`).join('');
+    }
+
+    async function copyDocument() {
+      const text = $('#document-preview').innerText;
+      try {
+        if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(text);
+        $('#copy-document').innerHTML = `${icon('check','icon-sm')}Texto copiado`;
+      } catch {
+        const field = document.createElement('textarea');
+        field.value = text;
+        field.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+        $('#result-dialog').append(field);
+        field.select();
+        const copied = document.execCommand('copy');
+        field.remove();
+        $('#copy-document').innerHTML = `${icon(copied ? 'check' : 'copy','icon-sm')}${copied ? 'Texto copiado' : 'Selecione e copie o texto'}`;
+        if (!copied) { const range = document.createRange(); range.selectNodeContents($('#document-preview')); const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range); }
+      }
+      setTimeout(() => { $('#copy-document').innerHTML = `${icon('copy','icon-sm')}Copiar texto`; },2400);
+    }
+
+    function downloadDocument() {
+      const doc = state.currentDocument;
+      if (!doc) return;
+      const blob = new Blob([$('#document-preview').innerText],{type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${doc.type === 'letter' ? 'carta' : 'curriculo'}-${normalize(doc.job.company).replace(/[^a-z0-9]+/g,'-')}.txt`;
+      document.body.append(link);
+      link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url),1000);
+    }
+
+    document.addEventListener('click',event => {
+      if (!event.target.closest('.popover') && !event.target.closest('[aria-controls]')) closePopovers();
+      const button = event.target.closest('button,a');
+      if (!button || button.disabled) return;
+      if (button.dataset.source) setSource(button.dataset.source);
+      if (button.dataset.selectJob) selectJob(button.dataset.selectJob);
+      if (button.dataset.prepareJob) selectJob(button.dataset.prepareJob,true);
+      if (button.dataset.searchJob) { $('#search-dialog').close(); selectJob(button.dataset.searchJob,true); }
+      if (button.dataset.detailJob) showJob(button.dataset.detailJob);
+      if (button.dataset.filter) { state.filter = button.dataset.filter; $$('[data-filter]').forEach(item => item.setAttribute('aria-pressed',String(item === button))); renderJobs(); }
+      if (button.dataset.save) { const id = button.dataset.save; saved.has(id) ? saved.delete(id) : saved.add(id); renderJobs(); $(`[data-save="${id}"]`)?.focus({preventScroll:true}); toast(saved.has(id) ? 'Vaga salva para o seu próximo passo.' : 'Vaga removida dos salvos.'); }
+      if (button.dataset.reopen) openDocument(state.documents.find(doc => String(doc.id) === button.dataset.reopen));
+      if (button.dataset.popover) togglePopover(button,button.dataset.popover);
+      if (button.id === 'account-trigger') togglePopover(button,'account-panel');
+      if (button.dataset.open) openDialog(button.dataset.open);
+      if (button.hasAttribute('data-close')) button.closest('dialog').close();
+      if (button.hasAttribute('data-theme-toggle')) {
+        const dark = document.documentElement.classList.toggle('dark');
+        $$('[data-theme-label]').forEach(label => { label.textContent = dark ? 'Escuro' : 'Claro'; });
+        $$('[data-theme-icon]').forEach(use => use.setAttribute('href',dark ? '#i-moon' : '#i-sun'));
+        toast(`Aparência ${dark ? 'escura' : 'clara'} ativada.`);
+      }
+      if (button.hasAttribute('data-message')) openDialog('message-dialog');
+      if (button.id === 'sign-out') { closePopovers(); openDialog('auth-dialog'); }
+      if (button.id === 'demo-login') $('#auth-dialog').close();
+      if (button.id === 'change-pasted-job') {
+        state.targets.paste = null;
+        cancelGeneration();
+        $('#paste-editor').hidden = false;
+        $('#pasted-preview').hidden = true;
+        updateJobInput(); updateControls(); $('#job-input').focus();
+      }
+    });
+
+    $('#example-button').addEventListener('click',() => {
+      $('#job-input').value = 'Senior Frontend Engineer\nEmpresa: Linear\n\nBuscamos uma pessoa com experiência em React e TypeScript para construir interfaces acessíveis, rápidas e cuidadosas. Você vai colaborar com design e produto, desenvolver componentes reutilizáveis e contribuir com testes automatizados. Valorizamos comunicação clara, atenção aos detalhes e interesse em simplificar o trabalho de outras pessoas.\n\nModalidade: remoto.';
+      updateJobInput(); usePastedJob();
+    });
+    $('#use-pasted-job').addEventListener('click',usePastedJob);
+    $('#job-input').addEventListener('input',updateJobInput);
+    $('#personal-context').addEventListener('input',() => { cancelGeneration(); updateControls(); });
+    $$('[name="document-type"]').forEach(input => input.addEventListener('change',() => { cancelGeneration(); state.documentType = input.value; updateControls(); }));
+    $('#picker-search').addEventListener('input',renderPicker);
+    $('#discover-search').addEventListener('input',renderJobs);
+    $('#search-input').addEventListener('input',renderGlobalSearch);
+    $('#generate-button').addEventListener('click',generateDocument);
+    $('#detail-use-job').addEventListener('click',() => { $('#job-dialog').close(); selectJob(state.detailId,true); });
+    $('#reset-filters').addEventListener('click',() => { $('#discover-search').value = ''; $('[data-filter="all"]').click(); });
+    $('#copy-document').addEventListener('click',copyDocument);
+    $('#download-document').addEventListener('click',downloadDocument);
+    $('#edit-document').addEventListener('click',() => {
+      const preview = $('#document-preview');
+      const editing = preview.getAttribute('contenteditable') !== 'true';
+      preview.setAttribute('contenteditable',String(editing));
+      $('#edit-document').setAttribute('aria-pressed',String(editing));
+      $('#edit-document span').textContent = editing ? 'Concluir edição' : 'Editar texto';
+      if (editing) preview.focus();
+      else if (state.currentDocument) state.currentDocument.html = preview.innerHTML;
+    });
+    $('#document-preview').addEventListener('input',() => { if (state.currentDocument) state.currentDocument.html = $('#document-preview').innerHTML; });
+    $('#result-dialog').addEventListener('close',updateControls);
+    $('#settings-form').addEventListener('submit',event => { event.preventDefault(); const name = $('#name-input').value.trim(); if (!name) return; state.userName = name; $('#account-label').textContent = name.split(/\s+/)[0]; $('#menu-name').textContent = name; $('#account-trigger').setAttribute('aria-label',`Abrir menu de ${name.split(/\s+/)[0]}`); $('#settings-dialog').close(); toast('Nome atualizado nesta demonstração.'); });
+    $$('dialog').forEach(dialog => dialog.addEventListener('click',event => { if (event.target !== dialog) return; const box = dialog.getBoundingClientRect(); if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close(); }));
+    document.addEventListener('keydown',event => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); if (!$('dialog[open]')) openDialog('search-dialog'); }
+      if (event.key === 'Escape' && !$('dialog[open]')) closePopovers(true);
+      if (event.target.matches('[data-source]') && ['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) { event.preventDefault(); const next = event.key === 'Home' ? 'paste' : event.key === 'End' ? 'database' : state.source === 'paste' ? 'database' : 'paste'; setSource(next); $(`[data-source="${next}"]`).focus(); }
+      if (event.key === 'ArrowDown' && event.target.matches('[aria-expanded][aria-controls]')) { event.preventDefault(); const panelId = event.target.getAttribute('aria-controls'); if (document.getElementById(panelId).hidden) togglePopover(event.target,panelId); $('button,a',document.getElementById(panelId))?.focus(); }
+    });
+    renderJobs(); renderPicker(); updateControls();
+
+    const nav=document.querySelector('.nav-links');
+    const items=[...nav.querySelectorAll('.nav-link')];
+    const markerPath=nav.querySelector('.marker path');
+    const reducedMotion=window.matchMedia('(prefers-reduced-motion:reduce)');
+    const motion={duration:1150,initialDuration:1000,retractEnd:.16,drawStart:.22,easing:'cubic-bezier(.45,0,.25,1)',itemDuration:420,itemExitDuration:240,itemEasing:'cubic-bezier(.25,.1,.25,1)'};
+    let selectedIndex=-1;
+    let selectionAnimations=[];
+    function cancelSelectionAnimations() {
+      selectionAnimations.forEach(animation=>animation.cancel());
+      selectionAnimations=[];
+    }
+    function selectNavigation(key) {
+      const index=items.findIndex(item=>item.dataset.page===key);
+      if(index<0)return;
+      if(index!==selectedIndex) {
+        const initial=selectedIndex<0;
+        const direction=index<selectedIndex?'left':'right';
+        const drawOffset=direction==='left'?-1:1;
+        const style=getComputedStyle(markerPath);
+        const current={strokeDashoffset:style.strokeDashoffset,opacity:style.opacity};
+        const selection=items.map(item=>initial?0:Number(getComputedStyle(item).getPropertyValue('--selection')));
+        cancelSelectionAnimations();
+        items.forEach((item,i)=>{
+          if(i===index) {
+            item.dataset.direction=direction;
+            item.setAttribute('aria-current','page');
+          } else {
+            // A full selection clears in the same direction as the navigation.
+            if(selection[i]===1)item.dataset.direction=direction==='left'?'right':'left';
+            item.removeAttribute('aria-current');
+          }
+        });
+        nav.style.setProperty('--index',index);
+        if(!reducedMotion.matches) {
+          const timing={duration:initial?motion.initialDuration:motion.duration,easing:initial?motion.easing:'linear'};
+          const startTime=document.timeline.currentTime;
+          const animate=(element,frames,options=timing)=>{
+            const animation=element.animate(frames,options);
+            if(startTime!==null)animation.startTime=startTime;
+            selectionAnimations.push(animation);
+          };
+          // Selection responds immediately; the underline keeps its longer drawing motion.
+          const frames=initial
+            ? [{strokeDashoffset:drawOffset,opacity:0},{strokeDashoffset:0,opacity:1}]
+            : [
+                {...current,offset:0,easing:'ease-in-out'},
+                {strokeDashoffset:drawOffset,opacity:0,offset:motion.retractEnd},
+                {strokeDashoffset:drawOffset,opacity:0,offset:motion.drawStart,easing:motion.easing},
+                {strokeDashoffset:0,opacity:1,offset:1},
+              ];
+          animate(markerPath,frames);
+          items.forEach((item,i)=>{
+            const from=selection[i];
+            const to=i===index?1:0;
+            if(from===to)return;
+            animate(item,[{'--selection':from},{'--selection':to}],{
+              duration:to===1?motion.itemDuration:motion.itemExitDuration,
+              easing:motion.itemEasing,
+            });
+          });
+        }
+        selectedIndex=index;
+      }
+    }
+    reducedMotion.addEventListener('change',event=>{if(event.matches)cancelSelectionAnimations();});
+
+
+    selectNavigation('vagas');
+  </script>
+</body>
+</html>

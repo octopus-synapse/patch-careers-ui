@@ -14,11 +14,11 @@
  */
 
 import {
+  authDialogPalette,
   type EditorialPalette,
   editorialOverlays,
   editorialPalette,
   editorialPaletteDark,
-  landingAccentPalettes,
 } from "@patch-careers/tokens";
 import { MapPin, X } from "lucide-react-native";
 import { type ReactElement, useEffect, useState } from "react";
@@ -35,6 +35,7 @@ import {
 import { editorialFonts } from "../editorial/fonts";
 import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { useThemeName } from "../internal/use-theme-name";
+import { ModalHeader } from "./modal-header";
 import { Sheet } from "./sheet";
 
 export interface LocationSheetItem {
@@ -54,12 +55,9 @@ function flagFromIso(iso: string | undefined): string {
     .replace(/./g, (c) => String.fromCodePoint(0x1f1e6 + (c.charCodeAt(0) - 65)));
 }
 
-export interface LocationPickerSheetProps {
+export type LocationPickerSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Serif question; the tail renders italic in the brand indigo. */
-  titleHead: string;
-  titleTail: string;
   searchPlaceholder: string;
   searchText: string;
   onSearchTextChange: (text: string) => void;
@@ -78,7 +76,20 @@ export interface LocationPickerSheetProps {
   items: LocationSheetItem[];
   onSelectItem: (item: LocationSheetItem) => void;
   closeLabel?: string | undefined;
-}
+} & (
+  | {
+      /** Section label rendered with the shared centered modal header. */
+      title: string;
+      titleHead?: never;
+      titleTail?: never;
+    }
+  | {
+      /** Serif question; the tail renders italic in the brand indigo. */
+      title?: never;
+      titleHead: string;
+      titleTail: string;
+    }
+);
 
 interface ParsedRow {
   item: LocationSheetItem;
@@ -131,6 +142,7 @@ function groupByCountry(items: LocationSheetItem[]): Array<[string, ParsedRow[]]
 export function LocationPickerSheet({
   open,
   onOpenChange,
+  title,
   titleHead,
   titleTail,
   searchPlaceholder,
@@ -185,19 +197,27 @@ export function LocationPickerSheet({
       {...(closeLabel ? { closeLabel } : {})}
     >
       <View style={styles.wrap}>
-        <View style={styles.headingRow}>
-          <Text style={styles.heading}>
-            {titleHead} <Text style={styles.headingTail}>{titleTail}</Text>?
-          </Text>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={closeLabel ?? "Fechar"}
-            hitSlop={12}
-            onPress={() => onOpenChange(false)}
-          >
-            <X size={22} color={palette.muted} />
-          </Pressable>
-        </View>
+        {title ? (
+          <ModalHeader
+            title={title}
+            closeLabel={closeLabel ?? "Fechar"}
+            onClose={() => onOpenChange(false)}
+          />
+        ) : (
+          <View style={styles.headingRow}>
+            <Text style={styles.heading}>
+              {titleHead} <Text style={styles.headingTail}>{titleTail}</Text>?
+            </Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={closeLabel ?? "Fechar"}
+              hitSlop={12}
+              onPress={() => onOpenChange(false)}
+            >
+              <X size={22} color={palette.muted} />
+            </Pressable>
+          </View>
+        )}
 
         <View style={styles.searchRow}>
           <TextInput
@@ -233,7 +253,7 @@ export function LocationPickerSheet({
         <View style={styles.resultBox}>
           {state === "idle" ? (
             <View style={styles.centerState}>
-              <MapPin size={26} color={palette.hairlineStrong} strokeWidth={1.5} />
+              <MapPin size={26} color={palette.body} strokeWidth={1.5} />
               <Text style={styles.idleHint}>{idleHint}</Text>
             </View>
           ) : state === "searching" ? (
@@ -296,7 +316,7 @@ export function LocationPickerSheet({
 
 const stylesFor = (p: EditorialPalette, theme: "light" | "dark") => {
   const overlay = editorialOverlays[theme];
-  const indigo = landingAccentPalettes[theme].indigo.accent;
+  const brand = authDialogPalette[theme].brand;
   return StyleSheet.create({
     wrap: { paddingHorizontal: 8, paddingTop: 8 },
     // X aligned with the question's first line; `flex-start` keeps it pinned
@@ -316,7 +336,7 @@ const stylesFor = (p: EditorialPalette, theme: "light" | "dark") => {
       letterSpacing: -0.4,
       fontWeight: "400",
     },
-    headingTail: { fontStyle: "italic", color: indigo },
+    headingTail: { fontStyle: "normal", color: brand },
     searchRow: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 20 },
     searchInput: {
       flex: 1,
@@ -333,7 +353,7 @@ const stylesFor = (p: EditorialPalette, theme: "light" | "dark") => {
     searchLine: { height: 1, width: "100%", backgroundColor: p.hairlineStrong },
     resultBox: { height: 292, marginTop: 10 },
     centerState: { flex: 1, alignItems: "center", justifyContent: "center", gap: 10 },
-    idleHint: { fontFamily: editorialFonts.sans, fontSize: 13, color: p.subtle },
+    idleHint: { fontFamily: editorialFonts.sans, fontSize: 13, color: p.body },
     searchingLabel: { fontFamily: editorialFonts.mono, fontSize: 12, color: p.muted },
     emptyTitle: { fontFamily: editorialFonts.serif, fontSize: 17, color: p.ink },
     emptyHint: { fontFamily: editorialFonts.sans, fontSize: 13, color: p.muted },
@@ -359,7 +379,7 @@ const stylesFor = (p: EditorialPalette, theme: "light" | "dark") => {
     rowActive: { backgroundColor: overlay.rowHover },
     rowFlag: { fontSize: 14, flexShrink: 0 },
     rowTitle: { fontFamily: editorialFonts.sans, fontSize: 15, color: p.ink, flexShrink: 1 },
-    rowMatch: { color: indigo, fontWeight: "600" },
+    rowMatch: { color: brand, fontWeight: "600" },
     rowMeta: { fontFamily: editorialFonts.sans, fontSize: 12.5, color: p.muted },
     footer: {
       marginTop: 12,

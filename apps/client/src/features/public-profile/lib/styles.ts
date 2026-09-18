@@ -13,9 +13,10 @@ const ppFor = (p: EditorialPalette) =>
     root: { flex: 1, backgroundColor: p.bg },
     scroll: { paddingHorizontal: 22, paddingBottom: 64, alignItems: "center" },
     centered: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 22 },
-    // One column, centred. There is no rail here: a visitor has no controls,
-    // only something to read.
-    column: { width: "100%", maxWidth: 680, gap: 24 },
+    column: { width: "100%", maxWidth: 1240, gap: 24 },
+    bodyWide: { flexDirection: "row", alignItems: "flex-start", gap: 24 },
+    mainWide: { flex: 1, minWidth: 0, gap: 16 },
+    railWide: { width: 300, gap: 16 },
 
     card: {
       borderWidth: 1,
@@ -26,21 +27,18 @@ const ppFor = (p: EditorialPalette) =>
       paddingVertical: 32,
       gap: 20,
     },
-    head: { flexDirection: "row", alignItems: "center", gap: 22 },
-    headBody: { flex: 1, minWidth: 0, gap: 6 },
-    name: {
+    contentCard: { paddingHorizontal: 36, paddingVertical: 32, gap: 24 },
+    railCard: { padding: 20, gap: 14 },
+    languageCard: { padding: 20, gap: 18 },
+    sectionTitle: {
       fontFamily: fonts.serif,
-      fontSize: 32,
-      lineHeight: 40,
-      letterSpacing: -0.5,
+      fontSize: 17,
+      lineHeight: 23,
+      letterSpacing: -0.2,
       color: p.ink,
     },
-    headline: { fontFamily: fonts.sans, fontSize: 15, lineHeight: 21, color: p.body },
-    metaRow: { flexDirection: "row", alignItems: "center", gap: 5 },
-    meta: { fontFamily: fonts.sans, fontSize: 13, letterSpacing: 0.2, color: p.muted },
     handle: { fontFamily: fonts.mono, fontSize: 12, letterSpacing: 0.3, color: p.subtle },
 
-    rule: { height: 1, backgroundColor: p.hairline },
     bio: { fontFamily: fonts.sans, fontSize: 14.5, lineHeight: 23, color: p.body },
 
     linkList: { gap: 2 },
@@ -56,27 +54,6 @@ const ppFor = (p: EditorialPalette) =>
     linkLabel: { width: 92, fontFamily: fonts.sans, fontSize: 12.5, color: p.muted },
     linkUrl: { flex: 1, fontFamily: fonts.mono, fontSize: 12.5, lineHeight: 18, color: p.ink },
     linkUrlActive: { color: p.accent },
-
-    // The two language versions, as small links above the card: the current
-    // one is ink and not a link; the other is muted and underlined on hover.
-    langRow: { flexDirection: "row", justifyContent: "flex-end", gap: 16 },
-    langLink: {
-      fontFamily: fonts.mono,
-      fontSize: 11.5,
-      letterSpacing: 1.2,
-      textTransform: "uppercase",
-      color: p.muted,
-    },
-    langLinkActive: { color: p.ink },
-
-    smallcaps: {
-      fontFamily: fonts.mono,
-      fontSize: 10.5,
-      fontWeight: "500",
-      letterSpacing: 1.7,
-      textTransform: "uppercase",
-      color: p.subtle,
-    },
   });
 
 // Precomputed per theme so style-object identity is stable across renders.

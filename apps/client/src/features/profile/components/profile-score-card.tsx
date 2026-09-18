@@ -15,10 +15,10 @@
  */
 
 import { ScoreBar, ScoreRing, scoreInk, useThemeName } from "@patch-careers/ui";
-import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import { PillButton, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { ChevronRight } from "lucide-react-native";
-import { type ReactElement, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import type { ReactElement } from "react";
+import { Text, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import { useMeScores } from "../hooks/use-me-scores";
 import { profileScoreAverage, profileScoreParts } from "../lib/profile-score";
@@ -64,9 +64,7 @@ function ScoreLine({
 export function ProfileScoreCard({ onOpen }: { onOpen: () => void }): ReactElement | null {
   const { t } = useI18n();
   const pf = usePf();
-  const palette = useEditorialPalette();
   const { scores, isColdStart } = useMeScores();
-  const [active, setActive] = useState(false);
 
   // Same gate the hero uses: nothing to show before the first score lands, and
   // an empty card in the rail is worse than no card.
@@ -81,18 +79,15 @@ export function ProfileScoreCard({ onOpen }: { onOpen: () => void }): ReactEleme
         <Text style={pf.railCardTitle} accessibilityRole="header">
           {t("profile.scoreHero.label")}
         </Text>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("profile.score.openA11y")}
+        <PillButton
+          label={t("profile.score.openA11y")}
           onPress={onOpen}
-          onHoverIn={() => setActive(true)}
-          onHoverOut={() => setActive(false)}
-          onFocus={() => setActive(true)}
-          onBlur={() => setActive(false)}
-          style={[pf.railCardAction, active && pf.railCardActionActive]}
-        >
-          <ChevronRight size={16} color={palette.muted} strokeWidth={2} />
-        </Pressable>
+          variant="ghost"
+          iconOnly
+          renderIcon={({ color, size }) => (
+            <ChevronRight size={size} color={color} strokeWidth={2} />
+          )}
+        />
       </View>
 
       {average === null ? (

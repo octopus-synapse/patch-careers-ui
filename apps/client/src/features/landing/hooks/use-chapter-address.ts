@@ -1,3 +1,4 @@
+import { useLandingSequence } from "../model/landing-variants";
 /**
  * `useChapterAddress` — keeps the tab title on the chapter and the URL clean.
  *
@@ -19,28 +20,32 @@ import { useI18n } from "@/providers/i18n-provider";
 import { CHAPTERS } from "../model/chapters";
 
 export function useChapterAddress(index: number): void {
+  const { chapters } = useLandingSequence();
   const { t } = useI18n();
 
   useEffect(() => {
     if (Platform.OS !== "web" || typeof window === "undefined") return;
-    const chapter = CHAPTERS[index];
+    const chapter = chapters[index];
     if (!chapter) return;
 
     const title = t(`landing.rail.${chapter.key}`);
     document.title = `${title} — Patch`;
     if (!window.location.hash) return;
     try {
-      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      // Expo Router may serialize a fragment before its query string.
+      const fragmentQuery = window.location.hash.split("?")[1];
+      const search = window.location.search || (fragmentQuery ? `?${fragmentQuery}` : "");
+      window.history.replaceState(null, "", window.location.pathname + search);
     } catch {
       // Some embedded browsers reject replaceState; the deck works regardless.
     }
-  }, [index, t]);
+  }, [index, t, chapters]);
 }
 
 /** The chapter a first paint should land on, read from the URL hash. */
-export function initialChapterIndex(): number {
+export function initialChapterIndex(chapters = CHAPTERS): number {
   if (Platform.OS !== "web" || typeof window === "undefined") return 0;
-  const hash = window.location.hash.replace(/^#/, "");
-  const found = CHAPTERS.findIndex((chapter) => chapter.key === hash);
+  const hash = window.location.hash.replace(/^#/, "").split("?")[0];
+  const found = chapters.findIndex((chapter) => chapter.key === hash);
   return found >= 0 ? found : 0;
 }

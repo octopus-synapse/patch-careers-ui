@@ -69,13 +69,6 @@ export const profilePtBR: TranslationDict = {
     style: "Estilo",
     a11y: "Pontuação do perfil {score} de 100, nota {grade}. Toque para ver seu desempenho",
   },
-  fitCard: {
-    title: "Fit Profile",
-    body: "Responda 5 minutos de questionário para desbloquear o Match por vaga.",
-    bodyExpired: "Seu Fit Profile expirou. Refaça o questionário para manter o Match por vaga.",
-    cta: "Começar questionário",
-    ctaExpired: "Refazer questionário",
-  },
   scores: {
     readiness: {
       label: "Readiness Score",
@@ -105,11 +98,6 @@ export const profilePtBR: TranslationDict = {
       qualityCaption: "Quão completo e bem escrito está seu currículo",
       style: "Style Score",
       styleCaption: "Quão seguro pra ATS é o visual escolhido",
-      fit: "Fit",
-      fitCaption: "Seu perfil comportamental",
-      fitDone: "Concluído",
-      fitExpired: "Refazer",
-      fitNever: "Pendente",
       rowA11y: "{label}: {value}",
     },
     cta: "Melhorar meu currículo",
@@ -120,7 +108,7 @@ export const profilePtBR: TranslationDict = {
     },
     coldStart: {
       title: "Descubra a força do seu currículo",
-      body: "Monte seu currículo principal e responda ao Fit pra desbloquear seus scores.",
+      body: "Monte seu currículo principal para desbloquear seus scores.",
       cta: "Começar",
     },
     explain: {
@@ -129,9 +117,7 @@ export const profilePtBR: TranslationDict = {
       qualityBody: "Sua nota de Quality Score mais recente.",
       coverage: "Cobertura de skills",
       coverageBody: "A variedade de habilidades demonstradas no currículo.",
-      fit: "Fit",
-      fitBody: "Se você concluiu o questionário de perfil comportamental.",
-      footnote: "O Readiness combina Qualidade, cobertura de skills e seu Fit.",
+      footnote: "O Readiness combina Qualidade e cobertura de skills.",
       a11y: "Como calculamos o Readiness Score",
     },
     loadFailed: "Não foi possível carregar seus scores.",
@@ -155,6 +141,7 @@ export const profilePtBR: TranslationDict = {
   },
   edit: {
     identityTitle: "Editar perfil",
+    fieldTitleHead: "Editar",
     aboutTitle: "Sobre você",
     linksTitle: "Links",
     locationLabel: "Localização",
@@ -214,6 +201,7 @@ export const profilePtBR: TranslationDict = {
     notFoundTitle: "Perfil não encontrado",
     notFoundBody: "Esse nome de usuário não existe ou o perfil está privado.",
     links: "Links",
+    about: "Sobre",
     linkWebsite: "Website",
     linkPortfolio: "Portfólio",
     linkLinkedin: "LinkedIn",
@@ -312,13 +300,6 @@ export const profileEn: TranslationDict = {
     style: "Style",
     a11y: "Profile score {score} of 100, grade {grade}. Tap to see your performance",
   },
-  fitCard: {
-    title: "Fit Profile",
-    body: "Answer a 5-minute questionnaire to unlock per-job Match.",
-    bodyExpired: "Your Fit Profile expired. Retake the questionnaire to keep per-job Match.",
-    cta: "Start questionnaire",
-    ctaExpired: "Retake questionnaire",
-  },
   scores: {
     readiness: {
       label: "Readiness Score",
@@ -348,11 +329,6 @@ export const profileEn: TranslationDict = {
       qualityCaption: "How complete and well-written your resume is",
       style: "Style Score",
       styleCaption: "How ATS-safe your chosen template is",
-      fit: "Fit",
-      fitCaption: "Your behavioural profile",
-      fitDone: "Done",
-      fitExpired: "Redo",
-      fitNever: "Pending",
       rowA11y: "{label}: {value}",
     },
     cta: "Improve my resume",
@@ -363,7 +339,7 @@ export const profileEn: TranslationDict = {
     },
     coldStart: {
       title: "Discover your resume's strength",
-      body: "Build your main resume and take the Fit questionnaire to unlock your scores.",
+      body: "Build your main resume to unlock your scores.",
       cta: "Get started",
     },
     explain: {
@@ -372,9 +348,7 @@ export const profileEn: TranslationDict = {
       qualityBody: "Your most recent Quality Score.",
       coverage: "Skill coverage",
       coverageBody: "The breadth of skills shown on your resume.",
-      fit: "Fit",
-      fitBody: "Whether you completed the behavioural profile questionnaire.",
-      footnote: "Readiness blends Quality, skill coverage, and your Fit.",
+      footnote: "Readiness blends Quality and skill coverage.",
       a11y: "How we calculate the Readiness Score",
     },
     loadFailed: "Couldn't load your scores.",
@@ -398,6 +372,7 @@ export const profileEn: TranslationDict = {
   },
   edit: {
     identityTitle: "Edit profile",
+    fieldTitleHead: "Edit",
     aboutTitle: "About you",
     linksTitle: "Links",
     locationLabel: "Location",
@@ -456,6 +431,7 @@ export const profileEn: TranslationDict = {
     notFoundTitle: "Profile not found",
     notFoundBody: "That username doesn't exist, or the profile is private.",
     links: "Links",
+    about: "About",
     linkWebsite: "Website",
     linkPortfolio: "Portfolio",
     linkLinkedin: "LinkedIn",

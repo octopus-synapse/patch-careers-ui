@@ -1,8 +1,8 @@
 /**
  * Editorial palette — the "Editorial Calm" auth/onboarding aesthetic.
  *
- * Warm paper background, deep-ink CTA, hairline rules, blue used sparingly
- * (focus rings + links + accent dot only). These were previously local to
+ * Warm paper background, forest CTA, hairline rules, and brand green used for
+ * focus rings, links and accent details. These were previously local to
  * `apps/client/src/components/auth/auth-shared.tsx` (`authTokens`); they now
  * live here so the Tamagui wrapper can register an `editorial` sub-theme and
  * `@patch-careers/ui/editorial` components can consume them.
@@ -16,6 +16,8 @@
  * (it needs `Platform.select`, and this package is platform-agnostic). Here we
  * only own the raw hex palette.
  */
+
+import { brandColors } from "./brand";
 
 export type EditorialPalette = {
   bg: string;
@@ -54,11 +56,11 @@ export const editorialPalette = {
   subtle: "#A1A1AA",
   hairline: "#E4E4E7",
   hairlineStrong: "#D4D4D8",
-  accent: "#2563EB",
-  accentDeep: "#1D4ED8",
-  primary: "#0F172A", // CTA fill — deep ink, more sophisticated than bright blue
-  primaryPress: "#1E293B",
-  onPrimary: "#FFFFFF",
+  accent: brandColors.focus,
+  accentDeep: brandColors.forest,
+  primary: brandColors.forest,
+  primaryPress: brandColors.forestPressed,
+  onPrimary: brandColors.ivory,
   danger: "#DC2626",
   success: "#16A34A",
   warn: "#D97706",
@@ -75,10 +77,10 @@ export const editorialPaletteDark = {
   subtle: "#5F5F5A",
   hairline: "#2E2D28",
   hairlineStrong: "#3A3933",
-  accent: "#60A5FA", // lightened blue for contrast on dark paper
-  accentDeep: "#93C5FD",
-  primary: "#F5F5F0", // CTA inverts: light fill, dark content
-  primaryPress: "#E4E4DE",
+  accent: brandColors.leaf,
+  accentDeep: brandColors.lime,
+  primary: brandColors.lime, // CTA inverts: light fill, dark content
+  primaryPress: brandColors.leaf,
   onPrimary: "#1A1916",
   danger: "#F87171",
   success: "#4ADE80",
@@ -190,20 +192,98 @@ export const editorialOverlays = {
   },
 } as const satisfies Record<EditorialTheme, EditorialOverlays>;
 
+/** Navbar controls keep a white resting surface with dark glyphs in both themes. */
+export const navControlRest = { bg: "#FFFFFF", ink: editorialPalette.ink } as const;
+
+/**
+ * Focused sign-in dialog treatment used over the public landing page. The
+ * warmer paper and olive action deliberately echo the landing wordmark while
+ * leaving the broader product/editorial palette unchanged.
+ */
+export type AuthDialogColors = {
+  panel: string;
+  panelBorder: string;
+  brand: string;
+  brandMuted: string;
+  primary: string;
+  primaryPress: string;
+  input: string;
+  inputBorder: string;
+  focus: string;
+  muted: string;
+  scrim: string;
+};
+
+export const authDialogPalette = {
+  light: {
+    panel: brandColors.ivory,
+    panelBorder: "#CBD6BA",
+    brand: brandColors.forest,
+    brandMuted: "#657C56",
+    primary: brandColors.forest,
+    primaryPress: brandColors.forestPressed,
+    input: "#FFFEF8",
+    inputBorder: "#CBD7BA",
+    focus: brandColors.focusSoft,
+    muted: "#758367",
+    // Match the public landing auth backdrop (#09231ca3): the slightly
+    // warmer green lets the 9px frost read without turning the page teal.
+    scrim: "rgba(9,35,28,0.64)",
+  },
+  dark: {
+    panel: "#232720",
+    panelBorder: "#4B5C41",
+    brand: "#DCE8D2",
+    brandMuted: brandColors.leaf,
+    primary: brandColors.olive,
+    primaryPress: brandColors.olivePressed,
+    input: "#1A1F18",
+    inputBorder: "#4B5C41",
+    focus: brandColors.leaf,
+    muted: "#A9B49F",
+    scrim: "rgba(9,16,13,0.72)",
+  },
+} as const satisfies Record<EditorialTheme, AuthDialogColors>;
+
+/** Desktop app navigation (navbar v12); public navigation keeps its own palette. */
+export const appNavPalette = {
+  light: {
+    background: "rgba(242,241,236,0.68)",
+    active: brandColors.forest,
+    muted: editorialPalette.muted,
+    hairline: editorialPalette.hairline,
+    hairlineStrong: "#CBCBCB",
+  },
+  dark: {
+    background: "rgba(26,25,22,0.68)",
+    active: brandColors.leaf,
+    muted: "#A5A59D",
+    hairline: "#373630",
+    hairlineStrong: "#53524B",
+  },
+} as const;
+
+export const appNavControl = {
+  fill: brandColors.forest,
+  pressed: brandColors.forestPressed,
+  onFill: "#FFFFFF",
+  avatarBackground: brandColors.forestDeep,
+  avatarInk: brandColors.ivory,
+} as const;
+
 /**
  * The engaged state of the navbar's chrome: its circular controls (messages,
  * notifications, hamburger) and the rows of the menu that hangs off them.
  *
  * Engaged, the glass or the paper gives way to a solid fill with the content
  * inverted on top of it — the pointer doesn't tint the thing, it takes it over.
- * `accent` is the BRAND indigo; `danger` is the fill the sign-out row wears,
+ * `accent` is the brand forest green; `danger` is the fill the sign-out row wears,
  * because leaving is not the same kind of act as switching the theme.
  *
  * Its own token rather than slots on the palette or an overlay, because it is
- * neither: the palette's `accent` is the product's UI blue (focus rings, links)
- * and every overlay carries alpha. This is the brand mark's own blue, opaque,
- * used as a fill. It is the same indigo as `landingAccents.indigo` and the
- * onboarding progress bar; the dark values step one notch lighter so a filled
+ * neither: every palette overlay carries alpha while this token is an opaque
+ * interaction fill. It uses the same green language as the landing CTA; the
+ * dark value steps one notch lighter so a filled
  * shape separates from warm dark paper without losing a white glyph.
  *
  * `onFill` is what rides on top — glyph, label, and the inverted unread badge.
@@ -215,19 +295,18 @@ export type NavFilled = {
 };
 
 export const navFilled = {
-  light: { accent: "#5766E8", danger: "#C3392F", onFill: "#FFFFFF" },
-  dark: { accent: "#6E7BF2", danger: "#C94438", onFill: "#FFFFFF" },
+  light: { accent: brandColors.forest, danger: "#C3392F", onFill: "#FFFFFF" },
+  dark: { accent: brandColors.focus, danger: "#C94438", onFill: "#FFFFFF" },
 } as const satisfies Record<EditorialTheme, NavFilled>;
 
 /**
  * The nav menu panel's own palette — a self-contained set, not slots on
  * `EditorialPalette`.
  *
- * Two reasons it stands apart. The panel's indigo is deliberately COLDER than
- * the brand's `accent`: inside a small paper card the brand blue reads hot and
- * pulls focus off the labels, so the curtain and the hover glyph run on a
- * bluer, quieter ramp. And the puzzle banner's seam needs alpha, which the
- * opaque-hex palette cannot carry.
+ * It stands apart because the puzzle banner needs its own green tonal ramp and
+ * an alpha seam, which the opaque editorial palette cannot carry. The historic
+ * `indigo*` field names remain for compatibility, but now carry the same warm
+ * forest/sage language as the landing and onboarding.
  *
  * `indigo` tints the glyph on hover, `indigoDeep` the label (it has to survive
  * against `indigoSoft`, which is the curtain sweeping in behind the row).
@@ -247,24 +326,24 @@ export type EditorialMenuTokens = {
 
 export const editorialMenu = {
   light: {
-    indigo: "#0056B3",
-    indigoDeep: "#3B47B8",
-    indigoSoft: "#E9EBFC",
-    avatarBg: "#33322E",
-    avatarInk: "#F7F4EE",
-    puzzleLeft: "#E2E8F0",
-    puzzleRight: "#C3CDDA",
-    puzzleSeam: "rgba(15,23,42,0.10)",
+    indigo: brandColors.forest,
+    indigoDeep: brandColors.forestDeep,
+    indigoSoft: brandColors.sage,
+    avatarBg: brandColors.forestDeep,
+    avatarInk: brandColors.ivory,
+    puzzleLeft: brandColors.sage,
+    puzzleRight: brandColors.leaf,
+    puzzleSeam: "rgba(21,62,43,0.16)",
   },
   dark: {
-    indigo: "#0073B1",
-    indigoDeep: "#B9C1FA",
-    indigoSoft: "#272B44",
+    indigo: brandColors.leaf,
+    indigoDeep: brandColors.lime,
+    indigoSoft: "#293629",
     avatarBg: "#DAD8D1",
     avatarInk: "#2B2A27",
-    puzzleLeft: "#4C565B",
-    puzzleRight: "#394145",
-    puzzleSeam: "rgba(0,0,0,0.35)",
+    puzzleLeft: "#354432",
+    puzzleRight: "#526849",
+    puzzleSeam: "rgba(216,234,164,0.18)",
   },
 } as const satisfies Record<EditorialTheme, EditorialMenuTokens>;
 

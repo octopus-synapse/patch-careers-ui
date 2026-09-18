@@ -54,7 +54,7 @@ describe("landingAccents", () => {
   });
 
   it("keeps the brand indigo distinct from the editorial UI accent", () => {
-    // The landing speaks in the brand mark's blue, not the focus-ring blue.
+    // Chapter indigo remains an expressive landing accent, not the UI focus green.
     expect(landingAccents.indigo.accent).toBe("#5766E8");
   });
 });

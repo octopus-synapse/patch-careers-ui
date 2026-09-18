@@ -5,11 +5,10 @@
  * is handed the other's URL.
  */
 import type { Locale } from "@patch-careers/i18n";
-import { type Href, Link } from "expo-router";
+import { PillSwitch } from "@patch-careers/ui/editorial";
+import { type Href, useRouter } from "expo-router";
 import type { ReactElement } from "react";
-import { Text, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
-import { usePp } from "../lib/styles";
 
 export function PublicProfileLanguageLinks({
   username,
@@ -19,31 +18,31 @@ export function PublicProfileLanguageLinks({
   current: Locale;
 }): ReactElement {
   const { t } = useI18n();
-  const pp = usePp();
-  const options: Array<{ locale: Locale; label: string }> = [
-    { locale: "pt-BR", label: t("profile.publicProfile.languagePt") },
-    { locale: "en", label: t("profile.publicProfile.languageEn") },
+  const router = useRouter();
+  const options: Array<{ value: Locale; label: string; accessibilityLabel: string }> = [
+    {
+      value: "en",
+      label: t("profile.publicProfile.languageEn"),
+      accessibilityLabel: t("profile.publicProfile.languageA11y", {
+        label: t("profile.publicProfile.languageEn"),
+      }),
+    },
+    {
+      value: "pt-BR",
+      label: t("profile.publicProfile.languagePt"),
+      accessibilityLabel: t("profile.publicProfile.languageA11y", {
+        label: t("profile.publicProfile.languagePt"),
+      }),
+    },
   ];
   return (
-    <View style={pp.langRow} accessibilityRole="none">
-      {options.map((option) => {
-        const on = option.locale === current;
-        return on ? (
-          <Text key={option.locale} style={[pp.langLink, pp.langLinkActive]} aria-current="page">
-            {option.label}
-          </Text>
-        ) : (
-          <Link
-            key={option.locale}
-            href={hrefFor(username, option.locale)}
-            accessibilityLabel={t("profile.publicProfile.languageA11y", { label: option.label })}
-            style={pp.langLink}
-          >
-            {option.label}
-          </Link>
-        );
-      })}
-    </View>
+    <PillSwitch
+      value={current}
+      options={options}
+      onChange={(locale) => {
+        if (locale !== current) router.push(hrefFor(username, locale));
+      }}
+    />
   );
 }
 

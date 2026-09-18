@@ -25,12 +25,12 @@ import {
 import type { ReactElement, ReactNode } from "react";
 import { MENU_PANEL_OFFSET, MENU_PANEL_WIDTH, NAV_CONTROL_SIZE } from "./nav-bar.contract";
 
-const PANEL_PADDING = 7;
-const BANNER_HEIGHT = 72;
-const AVATAR = 62;
+const PANEL_PADDING = 10;
+const BANNER_HEIGHT = 84;
+const AVATAR = 68;
 const AVATAR_BEZEL = 4;
 /** How far the avatar rides up over the banner. */
-const AVATAR_OVERLAP = 34;
+const AVATAR_OVERLAP = 38;
 
 export type NavMenuIdentity =
   | { readonly kind: "guest"; readonly label: string }
@@ -38,10 +38,14 @@ export type NavMenuIdentity =
 
 export function NavMenuPanel({
   identity,
+  menuId,
+  anchorHeight = NAV_CONTROL_SIZE,
   accessibilityLabel,
   children,
 }: {
   readonly identity: NavMenuIdentity;
+  readonly menuId?: string | undefined;
+  readonly anchorHeight?: number | undefined;
   readonly accessibilityLabel: string;
   /** The rows and their separators. */
   readonly children: ReactNode;
@@ -51,15 +55,16 @@ export function NavMenuPanel({
 
   return (
     <YStack
+      id={menuId}
       position="absolute"
-      top={NAV_CONTROL_SIZE + MENU_PANEL_OFFSET}
+      top={anchorHeight + MENU_PANEL_OFFSET}
       right={0}
       width={MENU_PANEL_WIDTH}
       padding={PANEL_PADDING}
       backgroundColor={palette.panel}
       borderWidth={1}
       borderColor={palette.hairline}
-      borderRadius={16}
+      borderRadius={20}
       overflow="hidden"
       zIndex={100}
       accessibilityRole="menu"
@@ -81,8 +86,8 @@ export function NavMenuPanel({
         alignItems="center"
         marginTop={-AVATAR_OVERLAP}
         paddingHorizontal={12}
-        paddingBottom={14}
-        gap={10}
+        paddingBottom={16}
+        gap={9}
       >
         <IdentityAvatar
           photoURL={identity.kind === "person" ? identity.photoURL : undefined}
@@ -107,10 +112,10 @@ export function NavMenuPanel({
           </XStack>
         ) : (
           <Text
-            fontFamily={editorialFonts.sans}
-            fontSize={15}
-            lineHeight={20}
-            fontWeight="600"
+            fontFamily={editorialFonts.serif}
+            fontSize={20}
+            lineHeight={26}
+            fontWeight="400"
             color={palette.ink}
             numberOfLines={1}
           >
@@ -131,7 +136,7 @@ export function NavMenuSeparator({ low = false }: { readonly low?: boolean }): R
     <YStack
       height={1}
       backgroundColor={palette.hairline}
-      marginHorizontal={5}
+      marginHorizontal={8}
       marginTop={low ? 7 : 4}
       marginBottom={7}
     />

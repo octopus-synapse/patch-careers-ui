@@ -103,7 +103,7 @@ export function ResumePreview({ resumeId }: { resumeId?: string | undefined }): 
           hitSlop={8}
         >
           <Ionicons name="download-outline" size={18} color={editorialPalette.accent} />
-          <Text preset="label" color="$accentBlue">
+          <Text preset="label" color="$accent">
             {t("resumes.preview.downloadPdf")}
           </Text>
         </Pressable>

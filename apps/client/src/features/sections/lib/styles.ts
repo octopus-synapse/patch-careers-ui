@@ -5,12 +5,12 @@
  * pixel-identically; the wizard imports `ed`/`eyebrow`/`webNoOutline` from here.
  */
 import {
+  authDialogPalette,
   type EditorialOverlays,
   type EditorialPalette,
   editorialOverlays,
   editorialPalette,
   editorialPaletteDark,
-  landingAccentPalettes,
 } from "@patch-careers/tokens";
 import { editorialFonts as fonts, useThemeName } from "@patch-careers/ui/editorial";
 import { Platform, StyleSheet, type ViewStyle } from "react-native";
@@ -76,7 +76,7 @@ const createEd = (
       borderRadius: 2,
       overflow: "hidden",
     },
-    fill: { height: "100%", backgroundColor: authTokens.ink, borderRadius: 2 },
+    fill: { height: "100%", backgroundColor: authDialogPalette[theme].brand, borderRadius: 2 },
 
     // heading
     stepTag: {
@@ -89,19 +89,18 @@ const createEd = (
       marginBottom: 10,
     },
     heading: {
-      fontFamily: fonts.serif,
+      fontFamily: fonts.sans,
       fontSize: 34,
       lineHeight: 40,
-      color: authTokens.ink,
-      letterSpacing: -0.6,
-      fontWeight: "400",
+      color: authDialogPalette[theme].brand,
+      letterSpacing: -1.2,
+      fontWeight: "600",
     },
     headingRegular: { fontStyle: "normal" },
     headingItalic: { fontStyle: "italic" },
-    // The serif italic tail of the step title, in the brand indigo — the
-    // same gesture as the auth dialog's "ou". Scoped to its own key so the
-    // section editors that share this factory keep their ink italics.
-    headingAccent: { fontStyle: "italic", color: landingAccentPalettes[theme].indigo.accent },
+    // Keep the tail as a separate style slot so the heading can share its
+    // brand treatment with the auth and landing surfaces.
+    headingAccent: { fontStyle: "normal", color: authDialogPalette[theme].brand },
     subtitle: {
       fontFamily: fonts.sans,
       fontSize: 15,
@@ -126,7 +125,7 @@ const createEd = (
       ...eyebrow,
       fontSize: 13,
       letterSpacing: 0.4,
-      color: authTokens.muted,
+      color: authDialogPalette[theme].brand,
     },
     ghostDanger: { color: authTokens.danger },
     dim: { opacity: 0.4 },
@@ -245,55 +244,6 @@ const createEd = (
       fontSize: 20,
       color: authTokens.ink,
     },
-    pickerYearRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 28,
-    },
-    pickerYear: {
-      fontFamily: fonts.mono,
-      fontSize: 18,
-      letterSpacing: 1,
-      color: authTokens.ink,
-      minWidth: 64,
-      textAlign: "center",
-    },
-    pickerGrid: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      justifyContent: "space-between",
-      rowGap: 10,
-    },
-    pickerMonth: {
-      width: "31%",
-      alignItems: "center",
-      paddingVertical: 12,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: authTokens.hairline,
-      backgroundColor: authTokens.surface,
-    },
-    pickerMonthSelected: {
-      backgroundColor: authTokens.ink,
-      borderColor: authTokens.ink,
-    },
-    pickerMonthText: {
-      fontFamily: fonts.sans,
-      fontSize: 14,
-      color: authTokens.body,
-      textTransform: "capitalize",
-    },
-    pickerMonthTextSelected: { color: authTokens.surface },
-    pickerClear: { alignItems: "center", paddingVertical: 6 },
-    pickerClearText: {
-      ...eyebrow,
-      fontSize: 13,
-      fontWeight: "500",
-      letterSpacing: 0.3,
-      color: authTokens.muted,
-    },
-
     // language
     langWrap: { gap: 10 },
     langCard: {
@@ -303,14 +253,19 @@ const createEd = (
       gap: 12,
       borderWidth: 1,
       borderColor: authTokens.hairlineStrong,
-      borderRadius: 16,
+      borderRadius: 7,
       paddingHorizontal: 20,
       paddingVertical: 16,
       backgroundColor: authTokens.surface,
     },
-    langCardSelected: { borderColor: authTokens.ink },
+    langCardSelected: { borderColor: authDialogPalette[theme].brand },
     langText: { flex: 1, gap: 3 },
-    langLabel: { fontFamily: fonts.serif, fontSize: 19, color: authTokens.ink },
+    langLabel: {
+      fontFamily: fonts.sans,
+      fontSize: 17,
+      fontWeight: "600",
+      color: authDialogPalette[theme].brand,
+    },
     langHint: {
       fontFamily: fonts.sans,
       fontSize: 12.5,
@@ -371,6 +326,22 @@ const createEd = (
       color: authTokens.ink,
       marginBottom: 40,
     },
+    panelAddRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      alignSelf: "flex-start",
+      gap: 6,
+      minHeight: 36,
+      marginTop: 20,
+      paddingRight: 10,
+    },
+    panelAddLabel: {
+      fontFamily: fonts.sans,
+      fontSize: 13.5,
+      lineHeight: 20,
+      fontWeight: "500",
+      color: authTokens.muted,
+    },
     detailRow: {
       paddingVertical: 28,
       borderBottomWidth: 1,
@@ -415,28 +386,6 @@ const createEd = (
       lineHeight: 19,
       color: authTokens.muted,
     },
-    // The per-section door. Secondary on purpose: the global "add section"
-    // lives in the rail and is the only filled button on the page.
-    addWide: {
-      marginTop: 36,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 8,
-      borderWidth: 1,
-      borderColor: authTokens.hairline,
-      borderRadius: 12,
-      backgroundColor: authTokens.surface,
-      paddingVertical: 14,
-    },
-    addWideActive: { borderColor: authTokens.hairlineStrong, backgroundColor: authTokens.bg },
-    addWideLabel: {
-      fontFamily: fonts.sans,
-      fontSize: 13.5,
-      fontWeight: "500",
-      color: authTokens.body,
-    },
-
     // multi-item — saved entry cards
     list: { gap: 10 },
     card: {
@@ -544,6 +493,8 @@ const createEd = (
       paddingTop: 24,
       paddingBottom: 32,
     },
+    editorialModalScroll: { flexShrink: 1, minHeight: 0 },
+    editorialModalScrollContent: { paddingRight: 12, paddingBottom: 24 },
     // Rewrite review (the other language's copy after a hand edit)
     rewriteField: {
       marginTop: 18,

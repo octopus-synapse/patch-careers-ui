@@ -9,8 +9,9 @@
  * with the accent, `loading` dims it.
  */
 
+import { authDialogPalette } from "@patch-careers/tokens";
 import { useEditorialPalette } from "@patch-careers/ui";
-import { editorialFonts } from "@patch-careers/ui/editorial";
+import { editorialFonts, useThemeName } from "@patch-careers/ui/editorial";
 import { type ReactElement, type RefObject, useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import Animated, {
@@ -22,8 +23,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-export const OTP_CELL_WIDTH = 50;
-export const OTP_CELL_HEIGHT = 57;
+export const OTP_CELL_WIDTH = 54;
+export const OTP_CELL_HEIGHT = 62;
 export const OTP_CELL_GAP = 8;
 
 export type EditorialOtpState = "idle" | "loading" | "error" | "done";
@@ -49,6 +50,7 @@ export function EditorialOtp({
   testID?: string;
 }): ReactElement {
   const palette = useEditorialPalette();
+  const dialogPalette = authDialogPalette[useThemeName()];
   const internalRef = useRef<TextInput>(null);
   const inputRef = externalRef ?? internalRef;
   const [focused, setFocused] = useState(false);
@@ -83,6 +85,7 @@ export function EditorialOtp({
             active={active}
             state={state}
             palette={palette}
+            accent={dialogPalette.brandMuted}
           />
         );
       })}
@@ -120,26 +123,28 @@ function Cell({
   active,
   state,
   palette,
+  accent,
 }: {
   char: string;
   active: boolean;
   state: EditorialOtpState;
   palette: ReturnType<typeof useEditorialPalette>;
+  accent: string;
 }): ReactElement {
   const filled = char.length > 0;
   const borderColor =
     state === "error"
       ? palette.danger
       : state === "done" || active
-        ? palette.accent
+        ? accent
         : filled
-          ? palette.hairlineStrong
-          : palette.hairline;
+          ? accent
+          : `${accent}80`;
   const backgroundColor =
     state === "error"
       ? `${palette.danger}17`
       : state === "done"
-        ? `${palette.accent}1F`
+        ? `${accent}1F`
         : filled || active
           ? palette.surface
           : palette.bg;
@@ -152,7 +157,7 @@ function Cell({
           {char}
         </Animated.Text>
       ) : active ? (
-        <Caret color={palette.accent} />
+        <Caret color={accent} />
       ) : (
         <View style={[styles.dot, { backgroundColor: palette.hairlineStrong }]} />
       )}
@@ -190,7 +195,7 @@ const styles = StyleSheet.create({
   cell: {
     width: OTP_CELL_WIDTH,
     height: OTP_CELL_HEIGHT,
-    borderRadius: 16,
+    borderRadius: 10,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",

@@ -76,8 +76,7 @@ export function LocationPicker({
       <LocationPickerSheet
         open={open}
         onOpenChange={setOpen}
-        titleHead={t("onboarding.location.titleHead")}
-        titleTail={t("onboarding.location.titleTail")}
+        title={t("onboarding.location.modalTitle")}
         searchPlaceholder={t("onboarding.location.searchPlaceholder")}
         searchText={text}
         onSearchTextChange={setText}

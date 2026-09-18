@@ -5,8 +5,10 @@
  */
 
 import type { TranslationDict } from "../../types";
+import { jobsDesktopEn, jobsDesktopPtBR } from "./jobs-desktop";
 
 export const jobsPtBR: TranslationDict = {
+  desktop: jobsDesktopPtBR,
   title: "Vagas",
   loading: "Carregando vagas",
   home: {
@@ -104,7 +106,6 @@ export const jobsPtBR: TranslationDict = {
       "Título, resumo e bullets reescritos pro escopo da vaga. Você revisa tudo antes.",
     chooseTailorMeta: "≈ 10s · compatibilidade estimada recalculada",
     chooseTailorLocked: "Melhore seu currículo (mín. 50 de qualidade) para personalizá-lo.",
-    chooseTailorFitGate: "Responda o Fit Profile para desbloquear a personalização.",
     chooseMaster: "Usar o currículo master",
     chooseMasterBody: "Seu currículo como está, sem alterações.",
     chooseMasterMeta: "imediato · {score}% de compatibilidade",
@@ -191,6 +192,7 @@ export const jobsPtBR: TranslationDict = {
 };
 
 export const jobsEn: TranslationDict = {
+  desktop: jobsDesktopEn,
   title: "Jobs",
   loading: "Loading jobs",
   home: {
@@ -288,7 +290,6 @@ export const jobsEn: TranslationDict = {
       "Title, summary and bullets rewritten for the job's scope. You review everything first.",
     chooseTailorMeta: "≈ 10s · estimated compatibility recalculated",
     chooseTailorLocked: "Improve your resume (min. 50 quality) to tailor it.",
-    chooseTailorFitGate: "Answer the Fit Profile to unlock tailoring.",
     chooseMaster: "Use the master resume",
     chooseMasterBody: "Your resume as it is, unchanged.",
     chooseMasterMeta: "instant · {score}% compatibility",

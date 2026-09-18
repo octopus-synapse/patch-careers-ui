@@ -1,15 +1,6 @@
 import { Redirect } from "expo-router";
-import type { ReactElement } from "react";
-import { FitQuestionnaireScreen } from "@/features/fit";
-import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
-import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 
-export default function FitQuestionnaireRoute(): ReactElement | null {
-  const { hasBootstrapped } = useAuthBootstrap();
-  const { isAuthenticated } = useAuthState();
-
-  if (!hasBootstrapped) return null;
-  if (!isAuthenticated) return <Redirect href={AUTH_SIGN_IN_ROUTE} />;
-
-  return <FitQuestionnaireScreen />;
+/** Kept as a redirect so old bookmarks do not land on a dead route while Fit is disabled. */
+export default function FitQuestionnaireRoute() {
+  return <Redirect href="/profile" />;
 }

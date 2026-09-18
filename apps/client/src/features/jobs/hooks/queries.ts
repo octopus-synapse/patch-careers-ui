@@ -5,8 +5,8 @@
  * as plain page-based endpoints; `useExternalJobs` wraps the scoped one in
  * an infinite query so the list screen gets endless scroll for free. Query
  * keys keep the generated base elements so `findExternalJob` can locate any
- * cached listing by prefix match — there is no detail endpoint, so the
- * detail screen reads from these caches (saved rows included).
+ * cached listing by prefix match. The desktop detail also fetches by ID,
+ * so a cold link does not depend on previously visiting these lists.
  */
 
 import {
@@ -35,6 +35,8 @@ type ListParams = Omit<GetV1JobsExternalQueryParams, "page">;
 export function filtersToParams(filters: JobsFilters): ListParams {
   return {
     limit: PAGE_SIZE,
+    ...(filters.search?.trim() ? { q: filters.search.trim() } : {}),
+    ...(filters.location?.trim() ? { location: filters.location.trim() } : {}),
     ...(filters.workModes.length > 0 ? { workMode: filters.workModes.join(",") } : {}),
     ...(filters.employmentTypes.length > 0
       ? { employmentType: filters.employmentTypes.join(",") }

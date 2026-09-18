@@ -10,11 +10,7 @@
 
 import { Platform, useWindowDimensions } from "react-native";
 
-// Below this the mobile chrome (bottom bar + AppHeader) fits better — tablet
-// portrait and split windows included. The bar's centred cluster (search + four
-// labeled destinations), flanked by the mark and the two circular controls,
-// needs ~1000px to breathe — and it only fits at 1024 because Notificações
-// moved out of the tab row and onto the bell.
+// Narrow web windows retain the mobile header and bottom navigation.
 export const DESKTOP_WEB_BREAKPOINT = 1024;
 
 /**
@@ -30,8 +26,8 @@ export const DESKTOP_WEB_BREAKPOINT = 1024;
  * it so no screen is an exception. Screens that read worse wide should cap
  * their own measure locally rather than shrink this back.
  *
- * The bar itself is full-bleed and unaffected: its cluster centres on the
- * VIEWPORT, not on this column.
+ * The navbar surface spans the viewport; its contents use their own 1440px
+ * maximum, independently of this scene column.
  */
 export const DESKTOP_CONTENT_MAX_WIDTH = 1240;
 

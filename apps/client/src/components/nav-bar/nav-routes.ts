@@ -22,7 +22,6 @@ const CHROMELESS_PREFIXES = [
   "/reset-password",
   "/oauth-callback",
   "/onboarding",
-  "/fit-questionnaire",
   "/legal-webview",
 ] as const;
 

@@ -18,6 +18,12 @@ import type { PropsWithChildren, ReactElement } from "react";
 const themeBootstrap = `
 (function () {
   try {
+    var path = window.location.pathname.replace(/[/]+$/, "") || "/";
+    if (path === "/" || path === "/en") {
+      document.documentElement.style.colorScheme = "light";
+      document.documentElement.style.backgroundColor = "#F2F1EC";
+      return;
+    }
     var scheme = "system";
     var raw = window.localStorage.getItem("patch-careers:color-scheme");
     if (raw) {

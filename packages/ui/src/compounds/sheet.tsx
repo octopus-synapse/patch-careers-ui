@@ -14,27 +14,26 @@
  */
 
 import {
+  authDialogPalette,
   type EditorialPalette,
   editorialPalette,
   editorialPaletteDark,
 } from "@patch-careers/tokens";
 import { Sheet as TamaguiSheet } from "@tamagui/sheet";
-import { X } from "lucide-react-native";
-import { type ComponentType, type ReactNode, useEffect } from "react";
+import type { ComponentType, ReactNode } from "react";
 import {
   KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
   StyleSheet,
-  Text,
   View,
+  type ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { editorialFonts } from "../editorial/fonts";
 import { asLoose, type LooseProps } from "../internal/tamagui-shim";
-import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { useThemeName } from "../internal/use-theme-name";
+import { ModalHeader } from "./modal-header";
 
 type SheetCompound = ComponentType<LooseProps> & {
   Overlay: ComponentType<LooseProps>;
@@ -47,7 +46,7 @@ const TSheet = asLoose<SheetCompound>(TamaguiSheet);
 export type SheetProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  /** Header title; renders a serif title + close (X) bar over a hairline. */
+  /** Shared centered modal heading above a hairline divider. */
   title?: string;
   /** Accessible label for the close affordances (backdrop + X). */
   closeLabel?: string;
@@ -55,6 +54,8 @@ export type SheetProps = {
   snapPoints?: number[];
   /** Centered-card max width in px (web always; native with `card`). */
   webMaxWidth?: number;
+  /** Centered-card height cap; defaults to the available safe-area height. */
+  webMaxHeight?: ViewStyle["maxHeight"];
   /**
    * Native presentation: `"sheet"` (default) is the Tamagui bottom sheet;
    * `"card"` is the web-style centered card (matches the editor modal).
@@ -80,20 +81,11 @@ function SheetHeader({
   onClose: () => void;
   closeLabel?: string | undefined;
 }) {
-  const palette = useEditorialPalette();
   const styles = stylesByTheme[useThemeName()];
   if (!title) return null;
   return (
     <View style={styles.header}>
-      <Text style={styles.title}>{title}</Text>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={closeLabel ?? "Fechar"}
-        hitSlop={12}
-        onPress={onClose}
-      >
-        <X size={22} color={palette.muted} />
-      </Pressable>
+      <ModalHeader title={title} closeLabel={closeLabel ?? "Fechar"} onClose={onClose} />
     </View>
   );
 }
@@ -105,6 +97,7 @@ export function Sheet({
   closeLabel,
   snapPoints = [85, 50, 25],
   webMaxWidth = 560,
+  webMaxHeight = "100%",
   presentation = "sheet",
   fillHeight = false,
   children,
@@ -114,19 +107,9 @@ export function Sheet({
   const insets = useSafeAreaInsets();
   const close = () => onOpenChange?.(false);
 
-  // RN Web never fires `onRequestClose` for Escape — it only wires it to the
-  // Android back button — so a centered card modal on the web stayed open on
-  // a key every desktop user expects to work. Listening here fixes it for
-  // every dialog built on Sheet at once, instead of each one hand-rolling the
-  // listener (which is what nav-bar/preferences-modal ended up doing).
-  useEffect(() => {
-    if (!open || typeof document === "undefined") return;
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === "Escape") onOpenChange?.(false);
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [open, onOpenChange]);
+  // RN Web routes Escape (keyup) through the active Modal's onRequestClose.
+  // A second document listener would also dismiss the parent when a nested
+  // picker closes, so let Modal own Escape and native back-button dismissal.
 
   if (Platform.OS === "web" || presentation === "card") {
     return (
@@ -156,7 +139,7 @@ export function Sheet({
           <View
             style={[
               styles.webCard,
-              { maxWidth: webMaxWidth },
+              { maxWidth: webMaxWidth, maxHeight: webMaxHeight },
               fillHeight ? styles.webCardFill : null,
             ]}
           >
@@ -201,7 +184,11 @@ export function Sheet({
   );
 }
 
-const stylesFor = (p: EditorialPalette, scrim: string) =>
+const stylesFor = (
+  p: EditorialPalette,
+  scrim: string,
+  dialog: (typeof authDialogPalette)[keyof typeof authDialogPalette],
+) =>
   StyleSheet.create({
     webOverlay: {
       flex: 1,
@@ -215,8 +202,8 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
       // the card stays compact when empty and the keyboard never covers the
       // input. The body's flex:1 ScrollView takes over scrolling at the cap.
       maxHeight: "100%",
-      backgroundColor: p.bg,
-      borderRadius: 22,
+      backgroundColor: dialog.panel,
+      borderRadius: 17,
       overflow: "hidden",
       shadowColor: "#000",
       shadowOpacity: 0.18,
@@ -231,20 +218,16 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
     webBody: { flex: 1, minHeight: 0, paddingHorizontal: 24, paddingTop: 20, paddingBottom: 24 },
     nativeBody: { flex: 1, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 16 },
     header: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
       paddingHorizontal: 22,
       paddingVertical: 16,
       borderBottomWidth: 1,
       borderBottomColor: p.hairline,
     },
-    title: { fontFamily: editorialFonts.serif, fontSize: 22, color: p.ink },
   });
 
 const stylesByTheme = {
-  light: stylesFor(editorialPalette, "rgba(10,10,10,0.45)"),
-  dark: stylesFor(editorialPaletteDark, "rgba(0,0,0,0.6)"),
+  light: stylesFor(editorialPalette, "rgba(10,10,10,0.45)", authDialogPalette.light),
+  dark: stylesFor(editorialPaletteDark, "rgba(0,0,0,0.6)", authDialogPalette.dark),
 } as const;
 
 export { TSheet as SheetRoot };

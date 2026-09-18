@@ -11,8 +11,8 @@
  * what happens on apply.
  */
 
-import { PrimaryAction, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { X } from "lucide-react-native";
+import { ModalHeader, YStack } from "@patch-careers/ui";
+import { PrimaryAction } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { useEd } from "../lib/styles";
@@ -57,7 +57,6 @@ export function RewriteReviewModal({
   t: (key: string, params?: Record<string, string | number>) => string;
 }): ReactElement {
   const ed = useEd();
-  const palette = useEditorialPalette();
   const labelFor = (key: string): string => fields.find((f) => f.key === key)?.label ?? key;
 
   return (
@@ -71,17 +70,13 @@ export function RewriteReviewModal({
         />
         <View style={ed.editorModalCard}>
           <View style={ed.editorModalHeader}>
-            <Text style={ed.editorModalTitle}>
-              {t("sections.rewrite.title", { locale: localeLabel })}
-            </Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t("sections.rewrite.keep")}
-              hitSlop={12}
-              onPress={onKeep}
-            >
-              <X size={22} color={palette.muted} />
-            </Pressable>
+            <YStack flex={1}>
+              <ModalHeader
+                title={t("sections.rewrite.title", { locale: localeLabel })}
+                closeLabel={t("sections.rewrite.keep")}
+                onClose={onKeep}
+              />
+            </YStack>
           </View>
           <ScrollView style={ed.flex} contentContainerStyle={ed.editorModalScroll}>
             <Text style={ed.detailDescription}>{t("sections.rewrite.intro")}</Text>

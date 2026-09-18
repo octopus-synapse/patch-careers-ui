@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   formatPhoneBR,
   isProfileFieldRequired,
+  normalizeProfilePhone,
   profileFieldMaxLength,
   validateProfileField,
 } from "./profile-validation";
@@ -66,5 +67,20 @@ describe("profileFieldMaxLength", () => {
     expect(profileFieldMaxLength("name")).toBe(100);
     expect(profileFieldMaxLength("headline")).toBe(120);
     expect(profileFieldMaxLength("bio")).toBe(500);
+  });
+});
+
+describe("normalizeProfilePhone", () => {
+  it("preserves the DDD of legacy Brazilian numbers when opening the country picker", () => {
+    expect(normalizeProfilePhone("(11) 99999-8888")).toBe("+5511999998888");
+    expect(normalizeProfilePhone("2133334444")).toBe("+552133334444");
+    expect(normalizeProfilePhone("55999998888")).toBe("+5555999998888");
+  });
+
+  it("keeps existing international dial codes and empty optional values", () => {
+    expect(normalizeProfilePhone("+1 (415) 555-0132")).toBe("+14155550132");
+    expect(normalizeProfilePhone("+351 912 345 678")).toBe("+351912345678");
+    expect(normalizeProfilePhone("+55 11 99999-8888")).toBe("+5511999998888");
+    expect(normalizeProfilePhone("  ")).toBe("");
   });
 });

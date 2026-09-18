@@ -29,7 +29,7 @@ export function ProfileLanguageCard({
   const { t } = useI18n();
   const pf = usePf();
   return (
-    <View style={pf.railCard}>
+    <View style={[pf.railCard, pf.languageCard]}>
       <Text style={pf.railCardTitle} accessibilityRole="header">
         {t("profile.language.title")}
       </Text>
@@ -38,6 +38,7 @@ export function ProfileLanguageCard({
         onChange={onChange}
         status={status ?? null}
         progress={progress ?? null}
+        showCaption={false}
       />
     </View>
   );

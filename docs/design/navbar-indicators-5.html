@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patch · Navegação</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    @property --selection { syntax:'<number>'; inherits:true; initial-value:0; }
+    :root { --paper:#F2F1EC; --blue:#4B59D4; --muted:#71717A; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:#25252A; font-family:Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+    main { width:min(680px,100%); margin:0 auto; padding:clamp(48px,12vh,120px) 24px 48px; }
+    .eyebrow { margin:0; font-size:10px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+    h1 { margin:14px 0 0; font-size:28px; line-height:1.25; font-weight:500; letter-spacing:-.8px; }
+    .stage { display:grid; place-items:center; min-height:240px; margin-top:24px; }
+    .nav { --index:2; position:relative; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; width:min(420px,100%); padding-bottom:10px; }
+    .item { --selection:0; display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:0; height:60px; gap:4px; padding:5px 6px; border:0; border-radius:8px; color:var(--muted); background:transparent; text-decoration:none; font-size:12px; line-height:16px; font-weight:600; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+    .item[aria-current="page"] { --selection:1; }
+    .glyph { display:grid; place-items:center; width:24px; height:24px; }
+    .glyph svg { grid-area:1/1; width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .glyph .glyph-filled { color:var(--blue); fill:currentColor; stroke:none; clip-path:inset(0 calc((1 - var(--selection)) * 100%) 0 0); }
+    .glyph .glyph-outline { clip-path:inset(0 0 0 calc(var(--selection) * 100%)); }
+    .label { background:linear-gradient(90deg,var(--blue) calc(var(--selection) * 100%),var(--muted) calc(var(--selection) * 100%)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .avatar-frame { position:relative; width:24px; height:24px; flex:none; }
+    .avatar-frame::after { content:""; position:absolute; inset:0; border:3px solid var(--blue); border-radius:50%; clip-path:inset(0 calc((1 - var(--selection)) * 100%) 0 0); pointer-events:none; }
+    .item[data-direction="left"] .glyph-filled,.item[data-direction="left"] .avatar-frame::after { clip-path:inset(0 0 0 calc((1 - var(--selection)) * 100%)); }
+    .item[data-direction="left"] .glyph-outline { clip-path:inset(0 calc(var(--selection) * 100%) 0 0); }
+    .item[data-direction="left"] .label { background-image:linear-gradient(270deg,var(--blue) calc(var(--selection) * 100%),var(--muted) calc(var(--selection) * 100%)); }
+    .avatar { display:block; width:24px; height:24px; object-fit:cover; border-radius:50%; border:1px solid #000; }
+    .item .glyph,.item .label { transition:filter 180ms ease; }
+    .marker { position:absolute; left:0; bottom:0; display:grid; place-items:center; width:calc(100% / 3); height:14px; pointer-events:none; transform:translate3d(calc(var(--index) * 100%),0,0); transition:transform 900ms cubic-bezier(.22,.68,.24,1); will-change:transform; }
+    .marker svg { display:block; width:38px; height:14px; overflow:visible; fill:none; stroke:var(--blue); stroke-width:1; stroke-linecap:round; stroke-linejoin:round; }
+    .marker path { stroke-dasharray:1; stroke-dashoffset:0; }
+    .caption { margin:0; border-top:1px solid #DFDFD9; padding-top:20px; color:var(--muted); font-size:12px; line-height:1.8; }
+    .hint { display:block; margin-top:6px; font-size:11px; }
+    .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+    .item:focus-visible { outline:2px solid var(--blue); outline-offset:4px; }
+    @media(hover:hover) { .item:not([aria-current="page"]):hover .glyph,.item:not([aria-current="page"]):hover .label { filter:brightness(.7); } }
+    @media(max-width:400px) { main { padding-inline:16px; } h1 { font-size:25px; } }
+    @media(forced-colors:active) { .label { background:none; color:LinkText; } .item[aria-current="page"] .label { color:Highlight; } }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; } }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-case" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3M3 12a20 20 0 0 0 18 0M10 13v2h4v-2"/></symbol><symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9ZM14 3v6h6M8 13h8M8 17h5"/></symbol><symbol id="i-case-filled" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M8 3a1 1 0 0 0-1 1v2H4a2 2 0 0 0-2 2v4h8v-1h4v1h8V8a2 2 0 0 0-2-2h-3V4a1 1 0 0 0-1-1ZM9 5h6v1H9ZM2 13.5V20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6.5h-8V15h-4v-1.5Z"/></symbol><symbol id="i-file-filled" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10h-5a2 2 0 0 1-2-2V2Zm1 10h10v1.5H7Zm0 4h10v1.5H7ZM15 2.5V8h5.5Z"/></symbol></defs></svg>
+  <main>
+    <p class="eyebrow">Patch Careers / Navegação</p>
+    <h1>Um detalhe de encaixe.</h1>
+    <div class="stage">
+      <nav class="nav" aria-label="Navegação principal">
+        <a class="item" href="#vagas" data-page="vagas">
+          <span class="glyph"><svg class="glyph-outline" aria-hidden="true"><use href="#i-case"/></svg><svg class="glyph-filled" aria-hidden="true"><use href="#i-case-filled"/></svg></span><span class="label">Vagas</span>
+        </a>
+        <a class="item" href="#curriculos" data-page="curriculos">
+          <span class="glyph"><svg class="glyph-outline" aria-hidden="true"><use href="#i-file"/></svg><svg class="glyph-filled" aria-hidden="true"><use href="#i-file-filled"/></svg></span><span class="label">Currículos</span>
+        </a>
+        <a class="item" href="#perfil" data-page="perfil" aria-current="page">
+          <span class="avatar-frame"><img class="avatar" src="avatar-demo.jpg" width="24" height="24" alt=""></span><span class="label">Eu</span>
+        </a>
+        <span class="marker" aria-hidden="true"><svg viewBox="0 0 48 18"><path pathLength="1" d="M3 11H21C22.2 11 22.5 10.4 21.6 9.5C19.5 7.1 21.3 5 24 5S28.5 7.1 26.4 9.5C25.5 10.4 25.8 11 27 11H34.8C35.7 11 35.9 11.45 35.25 12.1C33.7 13.9 35 15.5 37 15.5S40.3 13.9 38.75 12.1C38.1 11.45 38.3 11 39.2 11H45"/></svg></span>
+      </nav>
+    </div>
+    <p class="caption">Um traço fino, dois pequenos encaixes.<span class="hint">Clique nos itens: o traço desliza e se redesenha.</span></p>
+    <span class="sr-only" role="status" id="selection-status"></span>
+  </main>
+  <script>
+    const nav=document.querySelector('.nav');
+    const items=[...nav.querySelectorAll('.item')];
+    const markerPath=nav.querySelector('.marker path');
+    const reducedMotion=window.matchMedia('(prefers-reduced-motion:reduce)');
+    const motion={duration:1150,initialDuration:1000,retractEnd:.16,drawStart:.22,easing:'cubic-bezier(.45,0,.25,1)',itemDuration:420,itemExitDuration:240,itemEasing:'cubic-bezier(.25,.1,.25,1)'};
+    let selectedIndex=-1;
+    let selectionAnimations=[];
+    function cancelSelectionAnimations() {
+      selectionAnimations.forEach(animation=>animation.cancel());
+      selectionAnimations=[];
+    }
+    function select(key,announce=false) {
+      const index=items.findIndex(item=>item.dataset.page===key);
+      if(index<0)return;
+      if(index!==selectedIndex) {
+        const initial=selectedIndex<0;
+        const direction=index<selectedIndex?'left':'right';
+        const drawOffset=direction==='left'?-1:1;
+        const style=getComputedStyle(markerPath);
+        const current={strokeDashoffset:style.strokeDashoffset,opacity:style.opacity};
+        const selection=items.map(item=>initial?0:Number(getComputedStyle(item).getPropertyValue('--selection')));
+        cancelSelectionAnimations();
+        items.forEach((item,i)=>{
+          if(i===index) {
+            item.dataset.direction=direction;
+            item.setAttribute('aria-current','page');
+          } else {
+            // A full selection clears in the same direction as the navigation.
+            if(selection[i]===1)item.dataset.direction=direction==='left'?'right':'left';
+            item.removeAttribute('aria-current');
+          }
+        });
+        nav.style.setProperty('--index',index);
+        if(!reducedMotion.matches) {
+          const timing={duration:initial?motion.initialDuration:motion.duration,easing:initial?motion.easing:'linear'};
+          const startTime=document.timeline.currentTime;
+          const animate=(element,frames,options=timing)=>{
+            const animation=element.animate(frames,options);
+            if(startTime!==null)animation.startTime=startTime;
+            selectionAnimations.push(animation);
+          };
+          // Selection responds immediately; the underline keeps its longer drawing motion.
+          const frames=initial
+            ? [{strokeDashoffset:drawOffset,opacity:0},{strokeDashoffset:0,opacity:1}]
+            : [
+                {...current,offset:0,easing:'ease-in-out'},
+                {strokeDashoffset:drawOffset,opacity:0,offset:motion.retractEnd},
+                {strokeDashoffset:drawOffset,opacity:0,offset:motion.drawStart,easing:motion.easing},
+                {strokeDashoffset:0,opacity:1,offset:1},
+              ];
+          animate(markerPath,frames);
+          items.forEach((item,i)=>{
+            const from=selection[i];
+            const to=i===index?1:0;
+            if(from===to)return;
+            animate(item,[{'--selection':from},{'--selection':to}],{
+              duration:to===1?motion.itemDuration:motion.itemExitDuration,
+              easing:motion.itemEasing,
+            });
+          });
+        }
+        selectedIndex=index;
+      }
+      if(announce)document.getElementById('selection-status').textContent=items[index].textContent.trim()+' selecionado.';
+    }
+    reducedMotion.addEventListener('change',event=>{if(event.matches)cancelSelectionAnimations();});
+    nav.addEventListener('click',event=>{
+      const item=event.target.closest('.item');if(!item)return;
+      event.preventDefault();
+      if(location.hash!==item.hash)history.pushState(null,'',item.hash);
+      select(item.dataset.page,true);
+    });
+    window.addEventListener('popstate',()=>select(location.hash.slice(1)||'perfil'));
+    select(location.hash.slice(1)||'perfil');
+  </script>
+</body>
+</html>

@@ -9,15 +9,14 @@
  *     down. Adopts the "V5" treatment: a bigger, lighter search glyph, a taller
  *     near-transparent pill and a quieter placeholder, so the icon carries the
  *     emphasis while the field melts into the (now transparent) header.
- *   • `inset` — the desktop-web navbar base: the same glass wash the bar's
- *     circular controls wear, an accent magnifier at a heavier stroke, and a
- *     trailing ⌘K. Hover lifts the wash and the hairline.
+ *   • `inset` — the desktop-web navbar base: a neutral magnifier on the v12
+ *     surface. The keyboard shortcut remains available without a visual hint.
  *   • `active` — the search is engaged (modal open) or the pill is pressed.
  *     Adopts the "V3" treatment: an accent focus ring + accent glyph. Applies
  *     over EVERY base.
  */
 
-import { editorialOverlays } from "@patch-careers/tokens";
+import { appNavPalette, editorialOverlays } from "@patch-careers/tokens";
 import { Icon, Text, XStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import { Search } from "lucide-react-native";
@@ -34,14 +33,16 @@ export function SearchTrigger({
   onPress: () => void;
   /** Vagas header collapsed to just the search (scroll down) → "V5" base. */
   collapsed?: boolean;
-  /** Desktop-web navbar base: glass wash + accent magnifier + ⌘K hint. */
+  /** Desktop-web navbar v12 base. */
   inset?: boolean;
   /** Search engaged (modal open) → "V3" accent focus ring. */
   active?: boolean;
 }): ReactElement {
   const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
-  const overlays = editorialOverlays[useThemeName()];
+  const theme = useThemeName();
+  const overlays = editorialOverlays[theme];
+  const navPalette = appNavPalette[theme];
   // Pointer feedback for the inset (navbar) base — never fires on touch.
   const [hovered, setHovered] = useState(false);
 
@@ -57,8 +58,7 @@ export function SearchTrigger({
       {({ pressed }) => {
         // V3 ring whenever the field is engaged or pressed — over any base.
         const focused = active || pressed;
-        // The inset base draws its own accent magnifier, so this ramp only
-        // serves the mobile bases.
+        // This ramp serves the mobile bases; desktop keeps a neutral magnifier.
         const iconColor = focused
           ? editorialPalette.accent
           : collapsed
@@ -71,43 +71,23 @@ export function SearchTrigger({
             <XStack
               alignItems="center"
               gap={10}
-              height={42}
-              paddingHorizontal={18}
-              borderRadius={21}
-              borderWidth={focused ? 2 : 1}
-              borderColor={
-                focused
-                  ? `${editorialPalette.accent}4D`
-                  : hovered
-                    ? editorialPalette.hairlineStrong
-                    : editorialPalette.hairline
-              }
-              // The same glass the bell and the hamburger wear — the three
-              // controls read as one material riding the bar.
-              backgroundColor={hovered ? overlays.navGlassHover : overlays.navGlass}
+              height={44}
+              paddingHorizontal={14}
+              borderRadius={18}
+              borderWidth={1}
+              borderColor={focused || hovered ? navPalette.hairlineStrong : navPalette.hairline}
+              backgroundColor={hovered ? overlays.navGlassHover : editorialPalette.surface}
             >
-              {/* The one spot of colour in the row: the magnifier carries the
-                  accent at a heavier weight, so the field reads as the bar's
-                  active affordance without a fill or a shadow. */}
-              <Icon as={Search} size={15} color={editorialPalette.accent} strokeWidth={2.5} />
+              <Icon as={Search} size={18} color={navPalette.muted} strokeWidth={2.5} />
               <Text
                 flex={1}
+                minWidth={0}
                 fontFamily={editorialFonts.sans}
-                fontSize={14}
-                color={hovered || focused ? editorialPalette.ink : editorialPalette.body}
+                fontSize={13}
+                color={hovered || focused ? editorialPalette.ink : navPalette.muted}
                 numberOfLines={1}
               >
                 {t("search.navPlaceholder")}
-              </Text>
-              {/* The bar is wide enough to advertise the shortcut that opens
-                  the same palette from anywhere. */}
-              <Text
-                fontFamily={editorialFonts.mono}
-                fontSize={11}
-                letterSpacing={0.55}
-                color={editorialPalette.subtle}
-              >
-                {t("search.shortcutKbd")}
               </Text>
             </XStack>
           );

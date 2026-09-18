@@ -13,11 +13,12 @@
  * is worse than one that admits it.
  */
 
-import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import { YStack } from "@patch-careers/ui";
+import { PillButton } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { ArrowRight, Check, Copy } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useFeedback } from "@/hooks/use-feedback";
 import { copyToClipboard } from "@/lib/clipboard";
 import { publicProfileDisplayUrl, publicProfileUrl } from "@/lib/public-profile-url";
@@ -31,11 +32,9 @@ const COPIED_MS = 1600;
 export function PublicProfileCard({ username }: { username: string | null }): ReactElement {
   const { t } = useI18n();
   const pf = usePf();
-  const palette = useEditorialPalette();
   const router = useRouter();
   const feedback = useFeedback();
   const [copied, setCopied] = useState(false);
-  const [active, setActive] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(
@@ -65,22 +64,19 @@ export function PublicProfileCard({ username }: { username: string | null }): Re
           {t("profile.publicProfile.title")}
         </Text>
         {username ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t("profile.publicProfile.copyA11y")}
+          <PillButton
+            label={t("profile.publicProfile.copyA11y")}
             onPress={() => void copy()}
-            onHoverIn={() => setActive(true)}
-            onHoverOut={() => setActive(false)}
-            onFocus={() => setActive(true)}
-            onBlur={() => setActive(false)}
-            style={[pf.railCardAction, active && pf.railCardActionActive]}
-          >
-            {copied ? (
-              <Check size={16} color={palette.accent} strokeWidth={2.2} />
-            ) : (
-              <Copy size={16} color={palette.muted} strokeWidth={1.9} />
-            )}
-          </Pressable>
+            variant="ghost"
+            iconOnly
+            renderIcon={({ color, size }) =>
+              copied ? (
+                <Check size={size} color={color} strokeWidth={2.2} />
+              ) : (
+                <Copy size={size} color={color} strokeWidth={1.9} />
+              )
+            }
+          />
         ) : null}
       </View>
 
@@ -94,21 +90,17 @@ export function PublicProfileCard({ username }: { username: string | null }): Re
       ) : (
         <>
           <Text style={pf.publicHint}>{t("profile.publicProfile.noUsername")}</Text>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t("profile.publicProfile.chooseUsername")}
-            onPress={() => router.push("/settings/username")}
-            onHoverIn={() => setActive(true)}
-            onHoverOut={() => setActive(false)}
-            onFocus={() => setActive(true)}
-            onBlur={() => setActive(false)}
-            style={[pf.quietLink, pf.publicCta]}
-          >
-            <Text style={[pf.quietLinkLabel, active && { color: palette.ink }]}>
-              {t("profile.publicProfile.chooseUsername")}
-            </Text>
-            <ArrowRight size={13} color={active ? palette.ink : palette.muted} strokeWidth={2.2} />
-          </Pressable>
+          <YStack marginTop={12}>
+            <PillButton
+              label={t("profile.publicProfile.chooseUsername")}
+              onPress={() => router.push("/settings/username")}
+              fullWidth
+              iconPosition="end"
+              renderIcon={({ color, size }) => (
+                <ArrowRight size={size} color={color} strokeWidth={2} />
+              )}
+            />
+          </YStack>
         </>
       )}
     </View>

@@ -59,6 +59,7 @@ export {
   type FrostedPillTabsProps,
 } from "./frosted-pill-tabs";
 export { IdentityAvatar, type IdentityAvatarProps } from "./identity-avatar";
+export { IdentityMasthead, type IdentityMastheadProps } from "./identity-masthead";
 export { InlineLink, type InlineLinkProps } from "./inline-link";
 export { editorialFadeInDown } from "./motion";
 export { OAuthButton, type OAuthButtonProps } from "./oauth-button";
@@ -66,6 +67,8 @@ export { OrDivider } from "./or-divider";
 export { PasswordInput, type PasswordInputProps } from "./password-input";
 export { PasswordStrengthMeter } from "./password-strength-meter";
 export { PatchLogo } from "./patch-logo";
+export { PillButton, type PillButtonProps } from "./pill-button";
+export { PillSwitch, type PillSwitchOption } from "./pill-switch";
 export { PrimaryAction, type PrimaryActionProps } from "./primary-action";
 export { PuzzleBanner, type PuzzleBannerProps } from "./puzzle-banner";
 export { type SegmentedTab, SegmentedTabs, type SegmentedTabsProps } from "./segmented-tabs";

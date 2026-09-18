@@ -29,6 +29,8 @@ export type PostedWithin = GetV1JobsExternalQueryParamsPostedWithinEnum;
 export type JobsScope = "all" | "saved" | "applications";
 
 export type JobsFilters = {
+  readonly search?: string;
+  readonly location?: string;
   /** Any-of work modes (Presencial/Híbrido/Remoto); empty means "any". */
   readonly workModes: readonly RemotePolicy[];
   /** Any-of employment types; empty means "any". */

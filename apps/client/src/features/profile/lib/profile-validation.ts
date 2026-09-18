@@ -30,6 +30,16 @@ export function validateProfileField(
   return validate(key, value, t);
 }
 
+/** Older profile editors saved BR national numbers without their +55 prefix. */
+export function normalizeProfilePhone(value: string): string {
+  const trimmed = value.trim();
+  const digits = phoneDigits(trimmed);
+  if (!digits) return "";
+  if (trimmed.startsWith("+")) return `+${digits}`;
+  if (digits.length === 10 || digits.length === 11) return `+55${digits}`;
+  return trimmed;
+}
+
 // ── Phone mask (BR) ──────────────────────────────────────────────────────
 
 const phoneDigits = (value: string): string => value.replace(/\D/g, "");

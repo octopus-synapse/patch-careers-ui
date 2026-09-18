@@ -11,8 +11,9 @@
  */
 
 import type { Locale } from "@patch-careers/i18n";
-import { type ReactElement, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { PillSwitch } from "@patch-careers/ui/editorial";
+import type { ReactElement } from "react";
+import { Text, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import type { LocaleTranslationStatus, TranslationProgress } from "../hooks/use-resume-translation";
 import { useRz } from "../lib/styles";
@@ -23,6 +24,7 @@ export function ContentLanguageSwitch({
   status,
   progress,
   align = "start",
+  showCaption = true,
 }: {
   value: Locale;
   onChange: (locale: Locale) => void;
@@ -32,47 +34,33 @@ export function ContentLanguageSwitch({
   progress?: TranslationProgress | null;
   /** "start" in a card or a row; "center" under the mobile masthead. */
   align?: "start" | "center" | "end";
+  /** Hide the generic explanation while keeping actionable translation status. */
+  showCaption?: boolean;
 }): ReactElement {
   const { t } = useI18n();
   const rz = useRz();
-  const [hovered, setHovered] = useState<Locale | null>(null);
-  const caption = captionFor(t, status ?? null, progress ?? null);
+  const caption = captionFor(t, status ?? null, progress ?? null, showCaption);
 
-  const options: Array<{ locale: Locale; label: string }> = [
-    { locale: "en", label: t("profile.language.en") },
-    { locale: "pt-BR", label: t("profile.language.pt") },
+  const options: Array<{ value: Locale; label: string; accessibilityLabel: string }> = [
+    {
+      value: "en",
+      label: t("profile.language.en"),
+      accessibilityLabel: t("profile.language.optionA11y", { label: t("profile.language.en") }),
+    },
+    {
+      value: "pt-BR",
+      label: t("profile.language.pt"),
+      accessibilityLabel: t("profile.language.optionA11y", { label: t("profile.language.pt") }),
+    },
   ];
   const alignItems = align === "center" ? "center" : align === "end" ? "flex-end" : "flex-start";
 
   return (
     <View style={{ alignItems }}>
-      <View style={rz.langPills}>
-        {options.map((option) => {
-          const on = option.locale === value;
-          return (
-            <Pressable
-              key={option.locale}
-              accessibilityRole="button"
-              // `aria-selected` reaches the DOM on web and maps to
-              // accessibilityState on native; `accessibilityState` alone
-              // never made it into the web tree.
-              aria-selected={on}
-              accessibilityLabel={t("profile.language.optionA11y", { label: option.label })}
-              onPress={() => onChange(option.locale)}
-              onHoverIn={() => setHovered(option.locale)}
-              onHoverOut={() => setHovered(null)}
-              style={[
-                rz.langPill,
-                on && rz.langPillActive,
-                !on && hovered === option.locale && rz.langPillHover,
-              ]}
-            >
-              <Text style={[rz.langPillLabel, on && rz.langPillLabelActive]}>{option.label}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
-      <Text style={[rz.langCaption, align === "center" && rz.langCaptionCenter]}>{caption}</Text>
+      <PillSwitch value={value} options={options} onChange={onChange} />
+      {caption ? (
+        <Text style={[rz.langCaption, align === "center" && rz.langCaptionCenter]}>{caption}</Text>
+      ) : null}
     </View>
   );
 }
@@ -86,7 +74,8 @@ function captionFor(
   t: ReturnType<typeof useI18n>["t"],
   status: LocaleTranslationStatus | null,
   progress: TranslationProgress | null,
-): string {
+  showCaption: boolean,
+): string | null {
   if (progress?.status === "running") {
     return t("profile.language.translating", { done: progress.done, total: progress.total });
   }
@@ -102,5 +91,5 @@ function captionFor(
       return t("profile.language.missing", { count: status.items.missing });
     if (status.items.stale > 0) return t("profile.language.stale", { count: status.items.stale });
   }
-  return t("profile.language.caption");
+  return showCaption ? t("profile.language.caption") : null;
 }

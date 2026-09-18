@@ -44,6 +44,8 @@ export interface PhoneInputProps {
   onCountryChange?: (iso: string) => void;
   placeholder?: string;
   error?: string | undefined;
+  autoFocus?: boolean;
+  disabled?: boolean;
 }
 
 export function PhoneInput({
@@ -54,6 +56,8 @@ export function PhoneInput({
   onCountryChange,
   placeholder,
   error,
+  autoFocus = false,
+  disabled = false,
 }: PhoneInputProps) {
   const [country, setCountry] = useState<PhoneCountry>(() => {
     const parsed = parseCanonicalPhone(value);
@@ -133,6 +137,9 @@ export function PhoneInput({
             setOpen(true);
           }}
           accessibilityRole="button"
+          accessibilityLabel={`${country.name} +${country.dialCode}`}
+          accessibilityState={{ disabled, expanded: open }}
+          disabled={disabled}
         >
           <XStack
             alignItems="center"
@@ -152,6 +159,9 @@ export function PhoneInput({
           value={formatNational(country, national)}
           onChangeText={onChangeNational}
           keyboardType="phone-pad"
+          accessibilityLabel={label}
+          autoFocus={autoFocus}
+          editable={!disabled}
           placeholder={placeholder ?? "(11) 97883-3101"}
           {...(error !== undefined ? { error } : {})}
         />

@@ -1,6 +1,6 @@
 /**
  * `useMeScores` — the master resume's unified job-independent scores
- * (Readiness + Quality + Style + Fit, each with its S/A/B/C/D/F rank),
+ * (Readiness + Quality + Style),
  * from `GET /v1/me/scores`. Thin wrapper over the generated query so the
  * Desempenho hub and the header Readiness band share one cache entry.
  */
@@ -14,14 +14,14 @@ export type UseMeScoresResult = {
   isPending: boolean;
   isError: boolean;
   refetch: () => void;
-  /** True once loaded and the user has no master resume + no fit yet. */
+  /** True once loaded and the user has no master resume yet. */
   isColdStart: boolean;
 };
 
 export function useMeScores(): UseMeScoresResult {
   const query = useGetV1MeScores();
   const scores = query.data;
-  const isColdStart = !!scores && scores.resumeId === null && scores.fit.status === "never";
+  const isColdStart = !!scores && scores.resumeId === null;
 
   return {
     scores,

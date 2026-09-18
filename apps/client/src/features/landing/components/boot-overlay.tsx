@@ -18,6 +18,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
+import { useLandingMotionContext } from "../hooks/use-landing-motion";
 import { landingSound } from "../lib/landing-sound";
 
 const PIECE_A =
@@ -30,6 +31,7 @@ const SNAP = Easing.bezier(0.36, 0.07, 0.19, 0.97);
 
 export function BootOverlay(): ReactElement | null {
   const palette = useEditorialPalette();
+  const reduced = useLandingMotionContext()?.reduced ?? false;
   // Same shared source as every other brandmark and the mascot — this
   // overlay is the first thing anyone sees, so it must not be the one
   // place the logo shows up in a different pair of colours.
@@ -40,6 +42,10 @@ export function BootOverlay(): ReactElement | null {
   const curtain = useSharedValue(1);
 
   useEffect(() => {
+    if (reduced) {
+      setGone(true);
+      return;
+    }
     // 0–25% hold, slide with overshoot to 70%/85%, settle at 100% (of 0.9s).
     slide.value = withDelay(
       225,
@@ -58,7 +64,7 @@ export function BootOverlay(): ReactElement | null {
       clearTimeout(pop);
       clearTimeout(remove);
     };
-  }, [slide, pieces, curtain]);
+  }, [slide, pieces, curtain, reduced]);
 
   const overlayStyle = useAnimatedStyle(() => ({ opacity: curtain.value }));
   const aStyle = useAnimatedStyle(() => ({
@@ -70,7 +76,7 @@ export function BootOverlay(): ReactElement | null {
     transform: [{ translateX: slide.value }],
   }));
 
-  if (gone) return null;
+  if (gone || reduced) return null;
 
   return (
     <Animated.View

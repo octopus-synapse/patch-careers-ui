@@ -35,7 +35,7 @@ export const ptBR: TranslationDict = {
   sections: sectionsPtBR,
   settings: settingsPtBR,
   tabs: {
-    jobs: "Vagas",
+    jobs: "Início",
     messages: "Mensagens",
     // "Candidaturas" is no longer a tab — it's a scope inside Vagas — but the
     // label is reused there (see jobs.scope.applications).
@@ -85,6 +85,9 @@ export const ptBR: TranslationDict = {
     dialogTitlePre: "Entrar",
     dialogTitleOr: "ou",
     dialogTitlePost: "criar conta.",
+    dialogHeroTitlePre: "Seu próximo capítulo",
+    dialogHeroTitleEmphasis: "começa aqui.",
+    dialogSubtitle: "Entre ou crie sua conta usando seu e-mail.",
     dialogContinue: "Continuar",
     dialogWelcomeBack: "Que bom te ver de novo.",
     dialogCreatePasswordTitle: "Prazer. Crie uma senha.",
@@ -100,6 +103,7 @@ export const ptBR: TranslationDict = {
     fullName: "Nome completo",
     fullNamePlaceholder: "Seu nome",
     email: "E-mail",
+    emailAddress: "Endereço de e-mail",
     emailPlaceholder: "voce@exemplo.com",
     password: "Senha",
     passwordPlaceholder: "Sua senha",
@@ -197,6 +201,7 @@ export const ptBR: TranslationDict = {
       close: "Fechar",
     },
     location: {
+      modalTitle: "Localização",
       titleHead: "Onde você",
       titleTail: "está",
       placeholder: "Selecione a localização",
@@ -297,10 +302,6 @@ export const ptBR: TranslationDict = {
       items: "{count} itens",
       itemsOne: "1 item",
     },
-    done: {
-      title: "Seu currículo está pronto.",
-      cta: "Começar",
-    },
     resumeStyle: {
       use: "Usar este modelo",
       preview: "Visualizar",
@@ -367,6 +368,10 @@ export const ptBR: TranslationDict = {
       placeholder: "Selecionar data",
       prevYear: "Ano anterior",
       nextYear: "Próximo ano",
+      year: "Ano",
+      yearHint: "Digite o ano ou use as setas",
+      yearRange: "Informe um ano entre {min} e {max}.",
+      clear: "Limpar data",
     },
     experience: {
       statusPrompt: "Qual a sua situação atual?",

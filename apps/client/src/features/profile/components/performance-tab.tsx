@@ -3,7 +3,7 @@
  * sheet (it used to be a Profile sub-tab): the master resume's scores in
  * full. A large Readiness gauge (number is the protagonist, letter grade
  * reinforces), a one-line editorial summary, a trend sparkline for momentum,
- * and the job-independent sub-scores (Quality · Style · Fit) as a bullet
+ * and the job-independent sub-scores (Quality · Style) as a bullet
  * grid. Cold-start shows an inviting "discover your strength" state instead
  * of empty rings. `onDismiss` closes the hosting sheet (the CTAs land the
  * user back on the profile page to act).
@@ -23,10 +23,14 @@ import {
   XStack,
   YStack,
 } from "@patch-careers/ui";
-import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
+import {
+  editorialFonts as fonts,
+  PillButton,
+  useEditorialPalette,
+} from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
 import { Info } from "lucide-react-native";
-import { type ReactElement, type ReactNode, useCallback, useState } from "react";
+import { type ReactElement, useCallback, useState } from "react";
 import { ActivityIndicator, Platform, Pressable } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -148,7 +152,6 @@ export function PerformanceTab({ onDismiss }: { onDismiss?: () => void }): React
             score={scores.style.score}
           />
         ) : null}
-        <FitRow status={scores.fit.status} />
       </YStack>
 
       <TargetRoleEditor />
@@ -171,11 +174,6 @@ export function PerformanceTab({ onDismiss }: { onDismiss?: () => void }): React
             label: t("profile.scores.explain.coverage"),
             body: t("profile.scores.explain.coverageBody"),
             trailing: factorText(readiness.factors.coverage),
-          },
-          {
-            label: t("profile.scores.explain.fit"),
-            body: t("profile.scores.explain.fitBody"),
-            trailing: factorText(readiness.factors.fit),
           },
         ]}
         footnote={t("profile.scores.explain.footnote")}
@@ -300,33 +298,6 @@ function ScoreBulletRow({
   );
 }
 
-/** Fit is a lifecycle, not a 0-100 number — render its status as a pill. */
-function FitRow({ status }: { status: MeScores["fit"]["status"] }): ReactElement {
-  const { t } = useI18n();
-  const palette = useEditorialPalette();
-  const map = {
-    responded: { text: t("profile.scores.breakdown.fitDone"), color: palette.success },
-    expired: { text: t("profile.scores.breakdown.fitExpired"), color: palette.warn },
-    never: { text: t("profile.scores.breakdown.fitNever"), color: palette.muted },
-  } as const;
-  const s = map[status];
-  return (
-    <XStack alignItems="center" gap={12} paddingVertical={4}>
-      <YStack flex={1} gap={1}>
-        <Text fontFamily={fonts.sans} fontSize={14} fontWeight="600" color={palette.ink}>
-          {t("profile.scores.breakdown.fit")}
-        </Text>
-        <Text fontFamily={fonts.sans} fontSize={12} lineHeight={16} color={palette.subtle}>
-          {t("profile.scores.breakdown.fitCaption")}
-        </Text>
-      </YStack>
-      <Text fontFamily={fonts.sans} fontSize={13} fontWeight="600" color={s.color}>
-        {s.text}
-      </Text>
-    </XStack>
-  );
-}
-
 /** Minimal editorial sparkline for the readiness trend. Hidden until there
  * are at least two points (a single dot isn't a trend). */
 function Trend({ points }: { points: MeScores["readiness"]["trend"] }): ReactElement | null {
@@ -404,29 +375,8 @@ function ColdStart({ onStart }: { onStart: () => void }): ReactElement {
   );
 }
 
-/** The editorial primary CTA — an ink-filled pill with paper text. Kept
- * local so this feature doesn't reach into another feature's internals. */
 function CtaButton({ onPress, label }: { onPress: () => void; label: string }): ReactElement {
-  const palette = useEditorialPalette();
-  return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label}>
-      {({ pressed }: { pressed: boolean }): ReactNode => (
-        <YStack
-          backgroundColor={palette.ink}
-          opacity={pressed ? 0.85 : 1}
-          paddingVertical={13}
-          paddingHorizontal={22}
-          borderRadius={999}
-          alignItems="center"
-          alignSelf="stretch"
-        >
-          <Text fontFamily={fonts.sans} fontSize={15} fontWeight="600" color={palette.bg}>
-            {label}
-          </Text>
-        </YStack>
-      )}
-    </Pressable>
-  );
+  return <PillButton label={label} onPress={onPress} fullWidth />;
 }
 
 /** A readiness factor sub-value for the explain sheet, or "—" when absent. */

@@ -14,15 +14,19 @@
  */
 import { signup } from "@patch-careers/api-client";
 import { login } from "@patch-careers/auth";
-import { Text, YStack } from "@patch-careers/ui";
+import { authDialogPalette } from "@patch-careers/tokens";
+import { Icon, Input, Text, XStack, YStack } from "@patch-careers/ui";
 import {
   type AuthMascotController,
   editorialFonts,
   PasswordStrengthMeter,
-  PrimaryAction,
   useEditorialPalette,
+  useThemeName,
 } from "@patch-careers/ui/editorial";
+import { ArrowUpRight, Eye, EyeOff } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
+import { Controller } from "react-hook-form";
+import { ActivityIndicator, Pressable } from "react-native";
 import { ConsentDialog } from "@/components/auth/consent-dialog";
 import { PRIVACY_VERSION, TOS_VERSION } from "@/components/auth/consent-versions";
 import { fieldErrorsSetter } from "@/components/auth/helpers/apply-field-errors";
@@ -35,8 +39,7 @@ import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { KeepSignedInRow } from "@/components/auth/keep-signed-in-row";
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
 import { validateSignup } from "@/components/auth/validation";
-import { FormPasswordField, useFieldErrorsForm } from "@/forms";
-import { EmailChip } from "./email-chip";
+import { useFieldErrorsForm } from "@/forms";
 
 type PasswordForm = { password: string };
 
@@ -54,10 +57,12 @@ export function CreateAccountStep({
 }): ReactElement {
   const { t, locale, toast } = useAuthScreen();
   const palette = useEditorialPalette();
+  const dialogPalette = authDialogPalette[useThemeName()];
   const { finishAuthentication } = useCompleteAuth();
   const { submitting, run } = useSubmit();
   const keep = useKeepSignedIn();
   const [consentOpen, setConsentOpen] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const form = useFieldErrorsForm<PasswordForm>(
     (values) => {
@@ -124,36 +129,126 @@ export function CreateAccountStep({
   }
 
   return (
-    <YStack gap={20} paddingVertical={22}>
+    <YStack gap={22} paddingTop={4} paddingBottom={8}>
       <Text
-        fontFamily={editorialFonts.serif}
-        fontSize={27}
-        lineHeight={32}
-        letterSpacing={-0.4}
-        textAlign="center"
-        color={palette.ink}
+        fontFamily={editorialFonts.sans}
+        fontSize={38}
+        lineHeight={41}
+        fontWeight="600"
+        letterSpacing={-1.7}
+        color={dialogPalette.brand}
       >
         {t("auth.dialogCreatePasswordTitle")}
       </Text>
 
-      <EmailChip
-        email={email}
-        changeLabel={t("auth.dialogChangeEmail")}
-        onChange={onChangeEmail}
-        testID="authDialog.changeEmailCreate"
-      />
+      <YStack gap={8}>
+        <Text
+          fontFamily={editorialFonts.sans}
+          fontSize={9}
+          fontWeight="600"
+          letterSpacing={1.3}
+          color={dialogPalette.muted}
+        >
+          {t("auth.email").toUpperCase()}
+        </Text>
+        <XStack
+          minHeight={51}
+          alignItems="center"
+          gap={12}
+          paddingHorizontal={15}
+          borderWidth={1}
+          borderRadius={7}
+          borderColor={dialogPalette.inputBorder}
+          backgroundColor={dialogPalette.input}
+        >
+          <Text
+            flex={1}
+            fontFamily={editorialFonts.mono}
+            fontSize={12}
+            color={dialogPalette.brand}
+            numberOfLines={1}
+          >
+            {email}
+          </Text>
+          <Text
+            onPress={onChangeEmail}
+            accessibilityRole="button"
+            cursor="pointer"
+            fontFamily={editorialFonts.sans}
+            fontSize={11}
+            fontWeight="600"
+            color={dialogPalette.brandMuted}
+            textDecorationLine="underline"
+            testID="authDialog.changeEmailCreate"
+          >
+            {t("auth.dialogChangeEmail")}
+          </Text>
+        </XStack>
+      </YStack>
 
-      <FormPasswordField
+      <Controller
         control={form.control}
         name="password"
-        testID="authDialog.newPassword"
-        returnKeyType="go"
-        isNew
-        onSubmitEditing={onSubmit}
-        {...bind.password("password")}
-      >
-        <PasswordStrengthMeter password={password} {...passwordMeterLabels(t)} />
-      </FormPasswordField>
+        render={({ field, fieldState }) => (
+          <YStack gap={8}>
+            <Text
+              fontFamily={editorialFonts.sans}
+              fontSize={9}
+              fontWeight="600"
+              letterSpacing={1.3}
+              color={dialogPalette.muted}
+            >
+              {t("auth.password").toUpperCase()}
+            </Text>
+            <XStack
+              minHeight={51}
+              alignItems="center"
+              borderWidth={1}
+              borderRadius={7}
+              borderColor={fieldState.error ? palette.danger : dialogPalette.inputBorder}
+              backgroundColor={dialogPalette.input}
+            >
+              <Input
+                flex={1}
+                height={49}
+                paddingHorizontal={15}
+                borderWidth={0}
+                backgroundColor="transparent"
+                color={dialogPalette.brand}
+                focusStyle={{
+                  borderColor: dialogPalette.focus,
+                  outlineColor: dialogPalette.focus,
+                }}
+                fontFamily={editorialFonts.sans}
+                fontSize={14}
+                secureTextEntry={!passwordVisible}
+                autoComplete="new-password"
+                returnKeyType="go"
+                onSubmitEditing={onSubmit}
+                value={String(field.value ?? "")}
+                onChangeText={field.onChange}
+                testID="authDialog.newPassword"
+                {...bind.password("password")}
+              />
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t(passwordVisible ? "auth.hidePassword" : "auth.showPassword")}
+                onPress={() => setPasswordVisible((visible) => !visible)}
+              >
+                <YStack width={48} height={49} alignItems="center" justifyContent="center">
+                  <Icon as={passwordVisible ? EyeOff : Eye} size={17} color={dialogPalette.muted} />
+                </YStack>
+              </Pressable>
+            </XStack>
+            {fieldState.error ? (
+              <Text fontSize={11} color={palette.danger}>
+                {fieldState.error.message}
+              </Text>
+            ) : null}
+            <PasswordStrengthMeter password={password} {...passwordMeterLabels(t)} />
+          </YStack>
+        )}
+      />
 
       {keep.enabled ? (
         <KeepSignedInRow
@@ -163,12 +258,37 @@ export function CreateAccountStep({
         />
       ) : null}
 
-      <PrimaryAction
-        label={t("auth.dialogContinue")}
-        loading={submitting}
-        onPress={onSubmit}
+      <XStack
+        onPress={submitting ? undefined : onSubmit}
+        accessibilityRole="button"
+        accessibilityLabel={t("auth.dialogContinue")}
+        accessibilityState={{ disabled: submitting, busy: submitting }}
+        minHeight={53}
+        alignItems="center"
+        justifyContent="space-between"
+        paddingHorizontal={19}
+        borderRadius={7}
+        backgroundColor={dialogPalette.primary}
+        opacity={submitting ? 0.55 : 1}
+        pressStyle={{ backgroundColor: dialogPalette.primaryPress }}
         testID="authDialog.createSubmit"
-      />
+      >
+        {submitting ? (
+          <ActivityIndicator size="small" color={palette.onPrimary} />
+        ) : (
+          <>
+            <Text
+              fontFamily={editorialFonts.sans}
+              fontSize={12}
+              fontWeight="600"
+              color={palette.onPrimary}
+            >
+              {t("auth.dialogContinue")}
+            </Text>
+            <Icon as={ArrowUpRight} size={18} color={palette.onPrimary} />
+          </>
+        )}
+      </XStack>
 
       <ConsentDialog
         open={consentOpen}

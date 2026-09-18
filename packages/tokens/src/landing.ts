@@ -5,10 +5,9 @@
  * (the heading's emphasised clause, the mascot's glow, the active rail dot).
  * `accent` is the saturated ink; `soft` is the wash the radial glow fades from.
  *
- * These are NOT the editorial palette's `accent`/`accentDeep`: the app's accent
- * is a UI blue (#2563EB) tuned for focus rings, while the landing's indigo is
- * the brand mark's own blue (#5766E8). Keeping them apart is deliberate — the
- * marketing page speaks in brand colour, the product speaks in UI colour.
+ * These are NOT the editorial palette's `accent`/`accentDeep`: chapter accents
+ * tell the landing's individual stories, while product focus and actions use
+ * the shared brand-green semantic palette.
  *
  * They live in `@patch-careers/tokens` (not in the feature) because
  * `apps/client/src` is scanned by `no-stylesheet-inline-styles`, which rejects
@@ -20,6 +19,7 @@
  * `landing.spec.ts`.
  */
 
+import { brandColors } from "./brand";
 import type { EditorialTheme } from "./editorial";
 
 /** One chapter tint: the saturated ink and the wash its glow fades from. */
@@ -53,6 +53,26 @@ export const landingAccentPalettes = {
   light: landingAccents,
   dark: landingAccentsDark,
 } as const satisfies Record<EditorialTheme, Record<LandingAccentKey, LandingAccent>>;
+
+/** Fixed palette for the scroll-led landing canvas and its evidence illustrations. */
+export const landingScrollPalette = {
+  canvas: "#F5F4EE",
+  accent: "#6B855D",
+  navInkLight: "#214E3D",
+  navInkDark: "#B8CDA8",
+  brandDot: "#7F9763",
+  statisticGreen: "#103629",
+  statisticPaper: "#F3F5E9",
+  statisticLime: "#E3EDAC",
+  statisticMuted: "#B7CBB9",
+  statisticInk: "#17251C",
+  chartSecondary: "#789B7A",
+  figureMuted: "#78907E",
+  glassStroke: "#9BB69D",
+  hourglassBase: "#64836B",
+  hourglassEdge: "#446B53",
+  robotShell: "#1B4333",
+} as const;
 
 /**
  * The robot that argues with the mascot in the "burro, não malvado" chapter.
@@ -140,8 +160,9 @@ export type LandingBrandFacePalette = {
  * (#111111/#F5F5F0 + #5766E8/#8C97FF). In dark the marks drifted to a warm
  * ivory and a washed-out periwinkle that no longer looked like the mascot.
  *
- * `indigo` never changes — it IS the brand colour. `plain` flips with the
- * scheme so the piece always reads against the page.
+ * The historic `indigo` field now carries the navbar logo's olive green; its
+ * name remains for API compatibility. `plain` flips with the scheme so the
+ * piece always reads against the page.
  */
 export type BrandPiecePalette = {
   plain: string;
@@ -150,12 +171,12 @@ export type BrandPiecePalette = {
 
 export const brandPieces = {
   plain: "#000000",
-  indigo: "#5766E8",
+  indigo: brandColors.olive,
 } as const satisfies BrandPiecePalette;
 
 export const brandPiecesDark = {
   plain: "#FFFFFF",
-  indigo: "#5766E8",
+  indigo: brandColors.olive,
 } as const satisfies BrandPiecePalette;
 
 export const brandPiecePalettes = {

@@ -13,5 +13,7 @@ export { BrandFace } from "@patch-careers/ui/editorial";
 export { LandingHead } from "./components/landing-head";
 export { LandingScreen } from "./components/landing-screen";
 export { landingSans } from "./lib/landing-fonts";
+export { navigateLandingChapter } from "./lib/landing-navigation";
 export { CHAPTERS } from "./model/chapters";
+export { LANDING_VARIANTS } from "./model/landing-variants";
 export type { ChapterKey, ChapterSpec } from "./types";

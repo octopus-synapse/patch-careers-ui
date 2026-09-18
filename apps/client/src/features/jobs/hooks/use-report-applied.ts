@@ -15,7 +15,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import type { ExternalJob } from "../types";
-import { SAVED_JOBS_BASE } from "./queries";
+import { EXTERNAL_JOBS_BASE, SAVED_JOBS_BASE } from "./queries";
 
 const APPLICATIONS_BASE = { url: "/api/v1/jobs/applications" } as const;
 
@@ -59,6 +59,8 @@ export function useReportApplied(): {
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: [SAVED_JOBS_BASE] }),
           queryClient.invalidateQueries({ queryKey: [APPLICATIONS_BASE] }),
+          queryClient.invalidateQueries({ queryKey: [EXTERNAL_JOBS_BASE] }),
+          queryClient.invalidateQueries({ queryKey: [{ url: "/api/v1/jobs/recommended" }] }),
         ]);
       } finally {
         setPending(false);

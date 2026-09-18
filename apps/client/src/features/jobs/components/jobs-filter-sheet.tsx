@@ -48,7 +48,7 @@ export function JobsFilterSheet({
   onApply: (filters: JobsFilters) => void;
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const workModeLabel = useEnumLabel("RemotePolicy");
   const employmentTypeLabel = useEnumLabel("JobType");
   const [pending, setPending] = useState<JobsFilters>(filters);

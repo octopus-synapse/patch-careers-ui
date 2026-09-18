@@ -30,6 +30,9 @@ export type AccountMenuVariant = "guest" | "onboarding" | "authed";
 
 export type AccountMenuProps = {
   readonly variant: AccountMenuVariant;
+  readonly open?: boolean;
+  readonly menuId?: string;
+  readonly anchorHeight?: number;
   /** The name (`authed`) or the e-mail (`onboarding`). Ignored for `guest`. */
   readonly identityLabel?: string | undefined;
   readonly photoURL?: string | undefined;
@@ -39,6 +42,9 @@ export type AccountMenuProps = {
 
 export function AccountMenu({
   variant,
+  open = true,
+  menuId,
+  anchorHeight,
   identityLabel,
   photoURL,
   onClose,
@@ -66,64 +72,64 @@ export function AccountMenu({
 
   return (
     <>
-      <NavMenuPanel
-        accessibilityLabel={t("app.header.openAccountMenu")}
-        identity={
-          variant === "guest"
-            ? { kind: "guest", label: t("app.menu.guest") }
-            : { kind: "person", label: identityLabel ?? t("app.header.you"), photoURL }
-        }
-      >
-        <NavMenuSeparator />
+      {open ? (
+        <NavMenuPanel
+          menuId={menuId}
+          anchorHeight={anchorHeight}
+          accessibilityLabel={t("app.header.openAccountMenu")}
+          identity={
+            variant === "guest"
+              ? { kind: "guest", label: t("app.menu.guest") }
+              : { kind: "person", label: identityLabel ?? t("app.header.you"), photoURL }
+          }
+        >
+          <NavMenuSeparator />
 
-        <NavMenuRow
-          icon={Globe}
-          label={t("landing.nav.langRegion")}
-          value={locale}
-          flourish={{ y: -1.5 }}
-          onPress={() => {
-            onClose();
-            onOpenPreferences("lang");
-          }}
-        />
-
-        <NavMenuRow
-          // The glyph shows the scheme you are IN, matching the prototype.
-          icon={resolved === "dark" ? Moon : Sun}
-          label={t("landing.nav.theme")}
-          value={t(`profile.menu.theme.${scheme}`)}
-          flourish={{ rotate: -8 }}
-          onPress={() => {
-            onClose();
-            onOpenPreferences("theme");
-          }}
-        />
-
-        {variant === "authed" ? (
           <NavMenuRow
-            icon={Settings}
-            label={t("profile.menu.settings")}
-            flourish={{ rotate: 60 }}
-            onPress={() => go("/settings")}
+            icon={Globe}
+            label={t("landing.nav.langRegion")}
+            value={locale}
+            onPress={() => {
+              onClose();
+              onOpenPreferences("lang");
+            }}
           />
-        ) : null}
 
-        {canSignOut ? (
-          <>
-            <NavMenuSeparator low />
+          <NavMenuRow
+            // The glyph shows the scheme you are IN, matching the prototype.
+            icon={resolved === "dark" ? Moon : Sun}
+            label={t("landing.nav.theme")}
+            value={t(`profile.menu.theme.${scheme}`)}
+            onPress={() => {
+              onClose();
+              onOpenPreferences("theme");
+            }}
+          />
+
+          {variant === "authed" ? (
             <NavMenuRow
-              icon={LogOut}
-              label={t("profile.menu.signOut")}
-              flourish={{ x: 2.5 }}
-              danger
-              onPress={() => {
-                onClose();
-                setConfirmOpen(true);
-              }}
+              icon={Settings}
+              label={t("profile.menu.settings")}
+              onPress={() => go("/settings")}
             />
-          </>
-        ) : null}
-      </NavMenuPanel>
+          ) : null}
+
+          {canSignOut ? (
+            <>
+              <NavMenuSeparator low />
+              <NavMenuRow
+                icon={LogOut}
+                label={t("profile.menu.signOut")}
+                danger
+                onPress={() => {
+                  onClose();
+                  setConfirmOpen(true);
+                }}
+              />
+            </>
+          ) : null}
+        </NavMenuPanel>
+      ) : null}
 
       <ConfirmDialog
         open={confirmOpen}

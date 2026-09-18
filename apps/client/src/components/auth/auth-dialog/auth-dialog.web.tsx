@@ -14,9 +14,15 @@
  */
 
 import { Ionicons } from "@expo/vector-icons";
-import { editorialOverlays } from "@patch-careers/tokens";
-import { YStack } from "@patch-careers/ui";
-import { AuthMascotCard, useAuthMascot, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { authDialogPalette } from "@patch-careers/tokens";
+import { Text, XStack, YStack } from "@patch-careers/ui";
+import {
+  AuthCard,
+  BrandMark,
+  editorialFonts,
+  useAuthMascot,
+  useEditorialPalette,
+} from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import { useResolvedScheme } from "@/providers/color-scheme";
@@ -29,7 +35,7 @@ import { SignInStep } from "./sign-in-step";
 import { VerifyStep } from "./verify-step";
 
 const OVERLAY_Z_INDEX = 300;
-const PANEL_WIDTH = 460;
+const PANEL_WIDTH = 550;
 
 type Step = "email" | "signIn" | "verifyEmail" | "createAccount" | "oauthOnly";
 
@@ -46,6 +52,7 @@ export function AuthDialog({ onClose }: { readonly onClose: () => void }): React
   const { t } = useI18n();
   const resolved = useResolvedScheme();
   const palette = useEditorialPalette();
+  const dialogPalette = authDialogPalette[resolved];
   const { width, height } = useWindowDimensions();
   const mascot = useAuthMascot();
 
@@ -79,7 +86,8 @@ export function AuthDialog({ onClose }: { readonly onClose: () => void }): React
         right: 0,
         bottom: 0,
         zIndex: OVERLAY_Z_INDEX,
-        backgroundColor: editorialOverlays[resolved].scrimModal,
+        backgroundColor: dialogPalette.scrim,
+        backdropFilter: "blur(9px)",
         alignItems: "center",
         justifyContent: "center",
       }}
@@ -92,14 +100,40 @@ export function AuthDialog({ onClose }: { readonly onClose: () => void }): React
         onResponderRelease={() => undefined}
         style={{ width: Math.min(PANEL_WIDTH, width * 0.92), maxHeight: height * 0.94 }}
       >
-        {/* AuthCard is 90%-of-parent by default, which is right on the auth
-            PAGES (90% of the viewport, capped at 460). Here the dialog already
-            sizes itself, so that rule constrained the card a second time and
-            it rendered at 414px instead of 460 — narrower than the 375px
-            mascot sitting on top of it. */}
-        <AuthMascotCard mascot={mascot} animateIn panelStyle={{ width: "100%" }}>
+        {/* AuthCard's 90%-of-parent / 460px cap is right on the auth pages.
+            This dialog owns its responsive clamp, so override both values and
+            let the paper panel use the full, slightly broader dialog frame. */}
+        <AuthCard
+          animateIn
+          panelStyle={{
+            width: "100%",
+            maxWidth: PANEL_WIDTH,
+            backgroundColor: dialogPalette.panel,
+            borderRadius: 17,
+            borderWidth: 1,
+            borderColor: dialogPalette.panelBorder,
+            paddingHorizontal: width < 600 ? 25 : 35,
+            paddingTop: width < 600 ? 25 : 30,
+            paddingBottom: 35,
+          }}
+        >
           <YStack position="relative">
-            <YStack position="absolute" top={-14} right={-6} zIndex={2}>
+            <XStack alignItems="center" gap={9} marginBottom={36}>
+              <BrandMark size={29} />
+              <Text
+                fontFamily={editorialFonts.sans}
+                fontSize={35}
+                lineHeight={37}
+                fontWeight="800"
+                letterSpacing={-2.2}
+                color={palette.ink}
+              >
+                patch
+                <Text color={dialogPalette.brandMuted}>.</Text>
+              </Text>
+            </XStack>
+
+            <YStack position="absolute" top={-7} right={-8} zIndex={2}>
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={t("landing.nav.close")}
@@ -112,9 +146,9 @@ export function AuthDialog({ onClose }: { readonly onClose: () => void }): React
                   borderRadius={999}
                   alignItems="center"
                   justifyContent="center"
-                  hoverStyle={{ backgroundColor: palette.surface }}
+                  hoverStyle={{ backgroundColor: palette.hairline }}
                 >
-                  <Ionicons name="close" size={17} color={palette.muted} />
+                  <Ionicons name="close" size={22} color={palette.muted} />
                 </YStack>
               </Pressable>
             </YStack>
@@ -154,7 +188,7 @@ export function AuthDialog({ onClose }: { readonly onClose: () => void }): React
               <OauthOnlyStep mascot={mascot} email={email} onChangeEmail={toEmailStep} />
             ) : null}
           </YStack>
-        </AuthMascotCard>
+        </AuthCard>
       </View>
     </View>
   );

@@ -14,7 +14,7 @@ import {
 import { YStack } from "@patch-careers/ui";
 import { SettingsCard, ToggleField, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 import { useNotifications } from "@/providers/notifications-provider";

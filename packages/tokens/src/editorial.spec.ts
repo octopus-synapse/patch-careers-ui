@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { brandColors } from "./brand";
 import {
   editorialGlass,
   editorialMenu,
@@ -8,7 +9,6 @@ import {
   editorialPalettes,
   navFilled,
 } from "./editorial";
-import { landingAccents } from "./landing";
 
 describe("editorialPalette", () => {
   const slots = [
@@ -49,14 +49,14 @@ describe("editorialPalette", () => {
     }
   });
 
-  it("keeps the warm paper bg and deep-ink primary", () => {
+  it("keeps the warm paper bg and brand-forest primary", () => {
     expect(editorialPalette.bg).toBe("#F2F1EC");
-    expect(editorialPalette.primary).toBe("#0F172A");
+    expect(editorialPalette.primary).toBe("#234D3B");
   });
 
-  it("dark keeps the warm dark paper bg and inverts the CTA", () => {
+  it("dark keeps the warm dark paper bg and inverts the CTA with brand lime", () => {
     expect(editorialPaletteDark.bg).toBe("#1A1916");
-    expect(editorialPaletteDark.primary).toBe("#F5F5F0");
+    expect(editorialPaletteDark.primary).toBe("#D8EAA4");
     expect(editorialPaletteDark.onPrimary).toBe("#1A1916");
   });
 
@@ -156,12 +156,9 @@ describe("navFilled", () => {
     }
   });
 
-  it("fills with the brand indigo, not the product's UI accent", () => {
-    // The light fill IS the brandmark's blue — the same one the landing and the
-    // onboarding progress bar speak in. If that ever drifts, the navbar stops
-    // agreeing with the logo sitting 900px to its left.
-    expect(navFilled.light.accent).toBe(landingAccents.indigo.accent);
-    expect(navFilled.light.accent).not.toBe(editorialPalette.accent);
+  it("fills with the brand green in both schemes", () => {
+    expect(navFilled.light.accent).toBe(brandColors.forest);
+    expect(navFilled.dark.accent).toBe(brandColors.focus);
   });
 
   it("lifts the dark fill off dark paper while keeping a white glyph", () => {
@@ -202,24 +199,9 @@ describe("editorialMenu", () => {
     expect(Object.keys(editorialMenu.dark).sort()).toEqual(Object.keys(editorialMenu.light).sort());
   });
 
-  it("keeps the panel's indigo colder than the brand accent", () => {
-    // "Colder" = a hue nearer cyan. Both blues sit in the 200-230° band; the
-    // brand accent leans violet, the menu's leans cyan, and that gap is the
-    // whole reason this set exists.
-    const hue = (hex: string): number => {
-      const [r, g, b] = [1, 3, 5].map((i) => Number.parseInt(hex.slice(i, i + 2), 16) / 255) as [
-        number,
-        number,
-        number,
-      ];
-      const max = Math.max(r, g, b);
-      const delta = max - Math.min(r, g, b);
-      // Every colour here is blue-dominant, so only the blue branch applies.
-      return (60 * (4 + (r - g) / delta) + 360) % 360;
-    };
-
-    expect(hue(editorialMenu.light.indigo)).toBeLessThan(hue(editorialPalette.accent));
-    expect(hue(editorialMenu.dark.indigo)).toBeLessThan(hue(editorialPaletteDark.accent));
+  it("uses the brand-green family across the menu", () => {
+    expect(editorialMenu.light.indigo).toBe(brandColors.forest);
+    expect(editorialMenu.dark.indigo).toBe(brandColors.leaf);
   });
 
   it("inverts the avatar disc against the panel in each scheme", () => {

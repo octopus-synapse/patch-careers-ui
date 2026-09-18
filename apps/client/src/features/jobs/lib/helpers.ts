@@ -286,7 +286,7 @@ export function groupJobsByPeriod(jobs: readonly ExternalJob[], now: number): Jo
  */
 export function normalizeSavedJob(item: SavedExternalJobItem): ExternalJob {
   return {
-    id: item.savedId,
+    id: item.listingId ?? item.savedId,
     externalId: item.externalId,
     title: item.title,
     company: item.company,

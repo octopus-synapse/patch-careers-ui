@@ -1,5 +1,5 @@
 /**
- * EditorialTextLink — the inline "$accentBlue underlined" link recipe used
+ * EditorialTextLink — the inline semantic accent link recipe used
  * inside body copy (consent terms/privacy) and wrapped by `InlineLink` for
  * the block-positioned variant.
  */
@@ -29,7 +29,7 @@ export function EditorialTextLink({
       accessibilityRole="link"
       cursor="pointer"
       fontFamily={editorialFonts.sans}
-      color="$accentBlue"
+      color="$accent"
       fontWeight="500"
       textDecorationLine="underline"
       textDecorationColor={editorialPalette.accent}

@@ -10,10 +10,10 @@
  * The settings gear used to sit up here; it is in the account menu, which is
  * one tap away on every screen, so the header no longer says it twice.
  */
-import { IdentityAvatar, PuzzleBanner, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { Camera, MapPin } from "lucide-react-native";
+import { IdentityMasthead, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { Camera } from "lucide-react-native";
 import type { ReactElement, ReactNode } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 import { usePf } from "../lib/styles";
@@ -23,11 +23,6 @@ const AVATAR_PX = 80;
 // Desktop header is a wide identity band; the avatar anchors it larger.
 const AVATAR_PX_WIDE = 112;
 const AVATAR_BEZEL = 5;
-/** Banner height, and how far the avatar rides up over it. */
-const COVER_PX = 132;
-const COVER_PX_WIDE = 196;
-const AVATAR_OVERLAP = 52;
-const AVATAR_OVERLAP_WIDE = 72;
 
 export type HeaderProfile = {
   name?: string | null;
@@ -78,40 +73,24 @@ export function ProfileHeader({
   // page's `bg` — otherwise the avatar wears a beige ring on a white card.
   const behind = variant === "card" ? palette.panel : palette.bg;
 
-  const avatarInner = (
-    <>
-      <IdentityAvatar
-        photoURL={profile?.photoURL ?? undefined}
-        name={name}
-        size={avatarPx}
-        bezel={AVATAR_BEZEL}
-        bezelColor={behind}
-      />
-      {uploading ? (
-        <View style={pf.avatarUploading}>
-          <ActivityIndicator color={palette.onPrimary} />
-        </View>
-      ) : null}
-    </>
-  );
-
-  // The banner is full-bleed: it cancels the scroll's page gutter so it runs
-  // edge to edge, the way the menu's does across its panel.
-  const cover = (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={t("profile.cover.changeA11y")}
-      accessibilityState={{ busy: coverUploading }}
-      disabled={coverUploading}
-      onPress={onChangeCover}
-      style={variant === "card" ? pf.coverWrapCard : pf.coverWrap}
-    >
-      <PuzzleBanner
-        height={isDesktopWeb ? COVER_PX_WIDE : COVER_PX}
-        fit="cover"
-        {...(coverURL === undefined ? {} : { coverURL })}
-        {...(coverURL === undefined ? {} : { accessibilityLabel: t("profile.cover.imageA11y") })}
-      >
+  return (
+    <IdentityMasthead
+      name={name}
+      headline={profile?.headline ?? null}
+      headlineFallback={t("profile.header.headlinePlaceholder")}
+      location={profile?.location ?? null}
+      photoURL={profile?.photoURL ?? null}
+      coverURL={coverURL}
+      wide={isDesktopWeb}
+      variant={variant}
+      trailing={trailing}
+      onCoverPress={onChangeCover}
+      onAvatarPress={onChangePhoto}
+      coverAccessibilityLabel={t("profile.cover.changeA11y")}
+      avatarAccessibilityLabel={t("profile.header.changePhotoA11y")}
+      coverBusy={coverUploading}
+      avatarBusy={uploading}
+      coverAccessory={
         <View style={[pf.coverBadge, { borderColor: behind }]}>
           {coverUploading ? (
             <ActivityIndicator color={palette.onPrimary} size="small" />
@@ -119,93 +98,41 @@ export function ProfileHeader({
             <Camera size={15} color={palette.onPrimary} strokeWidth={2} />
           )}
         </View>
-      </PuzzleBanner>
-    </Pressable>
-  );
-
-  const avatarPressable = (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={t("profile.header.changePhotoA11y")}
-      accessibilityState={{ busy: uploading }}
-      disabled={uploading}
-      onPress={onChangePhoto}
-      style={[pf.avatarWrap, { marginTop: -(isDesktopWeb ? AVATAR_OVERLAP_WIDE : AVATAR_OVERLAP) }]}
-    >
-      {pct !== null ? (
-        <CompletenessRing percent={pct} size={avatarPx + AVATAR_BEZEL * 2}>
-          {avatarInner}
-        </CompletenessRing>
-      ) : (
-        avatarInner
-      )}
-      {pct !== null ? (
-        <View
-          style={pf.completenessBadge}
-          accessibilityLabel={t("profile.header.completenessA11y", { percent: pct })}
-        >
-          <Text style={pf.completenessText}>{pct}%</Text>
-        </View>
-      ) : null}
-      <View style={[pf.avatarBadge, { borderColor: behind }]}>
-        <Camera size={15} color={palette.onPrimary} strokeWidth={2} />
-      </View>
-    </Pressable>
-  );
-
-  const identityText = (
-    <>
-      <Text style={[pf.name, isDesktopWeb && pf.nameWide]} accessibilityRole="header">
-        {name}
-      </Text>
-      {profile?.headline ? (
-        <Text style={[pf.headline, isDesktopWeb && pf.headlineWide]}>{profile.headline}</Text>
-      ) : (
-        <Text style={[pf.headline, isDesktopWeb && pf.headlineWide, pf.headlinePlaceholder]}>
-          {t("profile.header.headlinePlaceholder")}
-        </Text>
-      )}
-      {profile?.location ? (
-        <View style={pf.locationRow}>
-          <MapPin size={13} color={palette.subtle} strokeWidth={1.75} />
-          <Text style={pf.location}>{profile.location}</Text>
-        </View>
-      ) : null}
-    </>
-  );
-
-  if (variant === "card") {
-    return (
-      <View style={pf.headerCardWide}>
-        {cover}
-        <View style={pf.headerCardBodyWide}>
-          <View style={pf.headerWideRow}>
-            {avatarPressable}
-            <View style={pf.headerWideBody}>{identityText}</View>
+      }
+      renderAvatar={(avatar) => {
+        const content = (
+          <>
+            {avatar}
+            {uploading ? (
+              <View style={pf.avatarUploading}>
+                <ActivityIndicator color={palette.onPrimary} />
+              </View>
+            ) : null}
+          </>
+        );
+        return pct !== null ? (
+          <CompletenessRing percent={pct} size={avatarPx + AVATAR_BEZEL * 2}>
+            {content}
+          </CompletenessRing>
+        ) : (
+          content
+        );
+      }}
+      avatarAccessory={
+        <>
+          {pct !== null ? (
+            <View
+              style={pf.completenessBadge}
+              accessibilityLabel={t("profile.header.completenessA11y", { percent: pct })}
+            >
+              <Text style={pf.completenessText}>{pct}%</Text>
+            </View>
+          ) : null}
+          <View style={[pf.avatarBadge, { borderColor: behind }]}>
+            <Camera size={15} color={palette.onPrimary} strokeWidth={2} />
           </View>
-        </View>
-      </View>
-    );
-  }
-
-  if (isDesktopWeb) {
-    return (
-      <View style={pf.headerWide}>
-        {cover}
-        <View style={pf.headerWideRow}>
-          {avatarPressable}
-          <View style={pf.headerWideBody}>{identityText}</View>
-        </View>
-      </View>
-    );
-  }
-
-  return (
-    <View style={pf.header}>
-      {cover}
-      {avatarPressable}
-      {identityText}
-      {trailing}
-    </View>
+        </>
+      }
+    />
   );
 }

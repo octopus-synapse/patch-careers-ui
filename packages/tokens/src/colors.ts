@@ -14,6 +14,7 @@
  * A Tamagui wrapper (PR #6) maps these to `createTamagui()`.
  */
 
+import { brandColors } from "./brand";
 import { editorialPaletteDark } from "./editorial";
 
 export type ColorRamp = {
@@ -135,25 +136,23 @@ export const intent: Record<IntentName, IntentVariant> = {
   },
   accent: {
     light: {
-      bg: palette.blue[600],
-      fg: palette.gray[50],
-      border: palette.blue[700],
-      hoverBg: palette.blue[700],
-      pressBg: palette.blue[800],
-      subtleBg: palette.blue[50],
-      subtleFg: palette.blue[700],
+      bg: brandColors.forest,
+      fg: brandColors.ivory,
+      border: brandColors.forestDeep,
+      hoverBg: brandColors.forestPressed,
+      pressBg: brandColors.forestDeep,
+      subtleBg: brandColors.sage,
+      subtleFg: brandColors.forest,
     },
-    // Filled accent inverts like the editorial CTA: light-blue fill, dark ink
-    // content. `subtleBg` is the one deliberately blue-tinted dark wash
-    // (matches the chat own-bubble tone) — never used for neutral chrome.
+    // Filled accent inverts like the editorial CTA: light green fill, dark ink.
     dark: {
       bg: editorialPaletteDark.accent,
       fg: editorialPaletteDark.bg,
       border: editorialPaletteDark.accent,
-      hoverBg: palette.blue[300],
-      pressBg: palette.blue[200],
-      subtleBg: "#22324A",
-      subtleFg: palette.blue[300],
+      hoverBg: brandColors.lime,
+      pressBg: brandColors.leaf,
+      subtleBg: "#1D2E28",
+      subtleFg: brandColors.leaf,
     },
   },
   // `warn` mirrors the editorial ring/gauge "fair" band (amber) so a

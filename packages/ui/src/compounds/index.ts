@@ -28,6 +28,7 @@ export {
 } from "./long-press-menu";
 export { MatchScoreChip, type MatchScoreChipProps } from "./match-score-chip";
 export { Modal, type ModalProps } from "./modal";
+export { ModalHeader, type ModalHeaderProps } from "./modal-header";
 export { OTPInput, type OTPInputProps } from "./otp-input";
 export { PasswordStrengthBar, type PasswordStrengthBarProps } from "./password-strength-bar";
 export { PhoneInput, type PhoneInputProps } from "./phone-input";

@@ -227,7 +227,7 @@ function EditItemModal({
     <>
       <SectionItemModal
         visible={!review}
-        title={t("onboarding.editItem")}
+        title={editing.section.title}
         fields={fields}
         control={form.control}
         readOnlyKeys={derivedKeys}

@@ -12,8 +12,15 @@ import type { LandingAccentKey } from "@patch-careers/tokens";
 /** The 12 chapters, in page order. `ChapterKey` doubles as the URL hash. */
 export type ChapterKey =
   | "hero"
+  | "manifesto"
+  | "versions"
+  | "connection"
   | "dor"
+  | "interviews"
+  | "silence"
   | "robo"
+  | "filter"
+  | "qualified"
   | "cena"
   | "vivo"
   | "vivo2"
@@ -31,6 +38,9 @@ export type ChapterKey =
 export type MascotPoseKey = "talk" | "oops" | "covered" | "sealed" | "happy" | "snap";
 
 export interface ChapterSpec {
+  /** Full-screen visual interlude, with a scroll-controlled hold in viewports. */
+  readonly spectacle?: boolean;
+  readonly hold?: number;
   readonly key: ChapterKey;
   /** Tint for the emphasised clause, the glow and the active rail dot. */
   readonly accent: LandingAccentKey;

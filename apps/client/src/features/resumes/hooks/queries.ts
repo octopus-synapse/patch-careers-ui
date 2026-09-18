@@ -61,7 +61,7 @@ export function useResumeSlots(): {
 }
 
 /** The user's master resume (`isPrimary` from the backend, first as fallback). */
-export function useMasterResumeId(): {
+export function useMasterResumeId({ requirePrimary = false }: { requirePrimary?: boolean } = {}): {
   resumeId: string | undefined;
   language: string | undefined;
   /** Master `updatedAt` — drives the quality panel's stale/recompute polling. */
@@ -73,7 +73,7 @@ export function useMasterResumeId(): {
 } {
   const query = useGetV1Resumes();
   const items = query.data?.items ?? [];
-  const master = items.find((item) => item.isPrimary) ?? items[0];
+  const master = items.find((item) => item.isPrimary) ?? (requirePrimary ? undefined : items[0]);
   return {
     resumeId: master?.id,
     language: master?.language,

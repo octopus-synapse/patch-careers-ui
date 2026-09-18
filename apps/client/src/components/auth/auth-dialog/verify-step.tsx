@@ -15,11 +15,13 @@ import {
   startPreSignupVerification,
 } from "@patch-careers/api-client";
 import { cooldownSecondsRemaining, maskEmail } from "@patch-careers/auth";
+import { authDialogPalette } from "@patch-careers/tokens";
 import { Text, YStack } from "@patch-careers/ui";
 import {
   type AuthMascotController,
   editorialFonts,
   useEditorialPalette,
+  useThemeName,
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { EditorialOtp, type EditorialOtpState } from "@/components/auth/editorial-otp";
@@ -47,6 +49,7 @@ export function VerifyStep({
 }): ReactElement {
   const { t } = useAuthScreen();
   const palette = useEditorialPalette();
+  const dialogPalette = authDialogPalette[useThemeName()];
   const { run } = useSubmit();
 
   const [code, setCode] = useState("");
@@ -164,23 +167,31 @@ export function VerifyStep({
   return (
     <YStack gap={16} paddingVertical={22}>
       <Text
-        fontFamily={editorialFonts.serif}
-        fontSize={27}
-        lineHeight={32}
-        letterSpacing={-0.4}
+        fontFamily={editorialFonts.sans}
+        fontSize={34}
+        lineHeight={38}
+        fontWeight="600"
+        letterSpacing={-1.4}
         textAlign="center"
-        color={palette.ink}
+        color={dialogPalette.brand}
       >
         {t("auth.verifyTitle")}
       </Text>
-      <Text fontSize={12.5} lineHeight={18} textAlign="center" color={palette.muted}>
+      <Text
+        fontFamily={editorialFonts.sans}
+        fontSize={13}
+        lineHeight={19}
+        textAlign="center"
+        color={dialogPalette.muted}
+      >
         {t("auth.verifyIntroShort")}
       </Text>
       <Text
         fontFamily={editorialFonts.mono}
-        fontSize={11.5}
+        fontSize={11}
+        fontWeight="500"
         textAlign="center"
-        color={palette.body}
+        color={dialogPalette.brand}
       >
         {maskEmail(email)}
       </Text>
@@ -203,7 +214,8 @@ export function VerifyStep({
         {statusMessage ? (
           <Text
             fontSize={12.5}
-            color={status === "error" ? palette.danger : palette.muted}
+            fontFamily={editorialFonts.sans}
+            color={status === "error" ? palette.danger : dialogPalette.muted}
             accessibilityLiveRegion="polite"
           >
             {statusMessage}
@@ -217,17 +229,18 @@ export function VerifyStep({
             onPress={() => void requestCode(true)}
             accessibilityRole="button"
             cursor="pointer"
+            fontFamily={editorialFonts.sans}
             fontSize={13}
             fontWeight="600"
-            color={palette.accent}
+            color={dialogPalette.brandMuted}
             testID="authDialog.resend"
           >
             {t("auth.verifyResend")}
           </Text>
         ) : (
-          <Text fontSize={13} color={palette.muted}>
+          <Text fontFamily={editorialFonts.sans} fontSize={13} color={dialogPalette.muted}>
             {t("auth.verifyResendPrefix")}{" "}
-            <Text fontFamily={editorialFonts.mono} fontSize={12.5} color={palette.subtle}>
+            <Text fontFamily={editorialFonts.mono} fontSize={12.5} color={dialogPalette.brand}>
               {mmss(remaining)}
             </Text>
           </Text>
@@ -235,7 +248,13 @@ export function VerifyStep({
       </YStack>
 
       {testCode ? (
-        <Text fontSize={12} textAlign="center" color={palette.muted} testID="authDialog.testCode">
+        <Text
+          fontFamily={editorialFonts.sans}
+          fontSize={12}
+          textAlign="center"
+          color={dialogPalette.muted}
+          testID="authDialog.testCode"
+        >
           {t("app.verifyEmail.testCodeSent", { code: testCode })}
         </Text>
       ) : null}

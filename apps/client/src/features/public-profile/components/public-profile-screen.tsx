@@ -17,12 +17,13 @@
  */
 
 import type { Locale } from "@patch-careers/i18n";
-import { Divider, EmptyState } from "@patch-careers/ui";
-import { IdentityAvatar, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { MapPin, SearchX, TriangleAlert } from "lucide-react-native";
+import { EmptyState } from "@patch-careers/ui";
+import { IdentityMasthead, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { SearchX, TriangleAlert } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { NAV_BAR_HEIGHT_PUBLIC, NavBar } from "@/components/nav-bar/nav-bar";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
@@ -32,8 +33,6 @@ import { usePp } from "../lib/styles";
 import type { PublicProfileLink } from "../types";
 import { PublicProfileHead } from "./public-profile-head";
 import { PublicProfileLanguageLinks } from "./public-profile-language-links";
-
-const AVATAR_PX = 96;
 
 function LinkRow({ link, isLast }: { link: PublicProfileLink; isLast: boolean }): ReactElement {
   const pp = usePp();
@@ -69,6 +68,7 @@ export function PublicProfileScreen({
   const pp = usePp();
   const palette = useEditorialPalette();
   const { isAuthenticated } = useAuthState();
+  const isDesktopWeb = useIsDesktopWeb();
   const appInset = useNavBarInset();
   const { profile, isLoading, isNotFound, isError, refetch } = usePublicProfile(username, locale);
 
@@ -123,11 +123,41 @@ export function PublicProfileScreen({
 
   const { user, resume } = profile;
   const links = publicProfileLinks(user, t);
-  const name = user.name ?? user.username;
+  const name = user.name ?? resume?.fullName ?? user.username;
   // The resume's job title is the closest thing the contract has to a headline;
   // the user record carries no `headline` on the public read.
-  const headline = resume?.jobTitle ?? null;
+  const headline = resume?.jobTitle ?? resume?.title ?? null;
   const summary = user.bio ?? resume?.summary ?? null;
+  const location = user.location ?? resume?.location ?? null;
+  const handle = <Text style={pp.handle}>{`@${user.username}`}</Text>;
+  const masthead = (
+    <IdentityMasthead
+      name={name}
+      headline={headline}
+      location={location}
+      photoURL={user.photoURL}
+      wide={isDesktopWeb}
+      variant={isDesktopWeb ? "card" : "page"}
+      details={handle}
+    />
+  );
+  const about = summary ? (
+    <View style={[pp.card, pp.contentCard]}>
+      <Text style={pp.sectionTitle}>{t("profile.publicProfile.about")}</Text>
+      <Text style={pp.bio}>{summary}</Text>
+    </View>
+  ) : null;
+  const linkCard =
+    links.length > 0 ? (
+      <View style={[pp.card, pp.railCard]}>
+        <Text style={pp.sectionTitle}>{t("profile.publicProfile.links")}</Text>
+        <View style={pp.linkList}>
+          {links.map((link, index) => (
+            <LinkRow key={link.key} link={link} isLast={index === links.length - 1} />
+          ))}
+        </View>
+      </View>
+    ) : null;
 
   return (
     <View style={pp.root}>
@@ -142,51 +172,28 @@ export function PublicProfileScreen({
         showsVerticalScrollIndicator={false}
       >
         <View style={pp.column}>
-          <PublicProfileLanguageLinks username={user.username} current={locale} />
-          <View style={pp.card}>
-            <View style={pp.head}>
-              <IdentityAvatar
-                photoURL={user.photoURL ?? undefined}
-                name={name}
-                size={AVATAR_PX}
-                bezel={0}
-              />
-              <View style={pp.headBody}>
-                <Text style={pp.name} accessibilityRole="header">
-                  {name}
-                </Text>
-                {headline ? <Text style={pp.headline}>{headline}</Text> : null}
-                {user.location ? (
-                  <View style={pp.metaRow}>
-                    <MapPin size={13} color={palette.subtle} strokeWidth={1.75} />
-                    <Text style={pp.meta}>{user.location}</Text>
-                  </View>
-                ) : null}
-                <Text style={pp.handle}>{`@${user.username}`}</Text>
+          {isDesktopWeb ? (
+            <View style={pp.bodyWide}>
+              <View style={pp.mainWide}>
+                {masthead}
+                {about}
+              </View>
+              <View style={pp.railWide}>
+                <View style={[pp.card, pp.languageCard]}>
+                  <Text style={pp.sectionTitle}>{t("profile.publicProfile.languageTitle")}</Text>
+                  <PublicProfileLanguageLinks username={user.username} current={locale} />
+                </View>
+                {linkCard}
               </View>
             </View>
-
-            {summary ? (
-              <>
-                <Divider color={palette.hairline} />
-                <Text style={pp.bio}>{summary}</Text>
-              </>
-            ) : null}
-
-            {links.length > 0 ? (
-              <>
-                <Divider color={palette.hairline} />
-                <View>
-                  <Text style={pp.smallcaps}>{t("profile.publicProfile.links")}</Text>
-                  <View style={pp.linkList}>
-                    {links.map((link, index) => (
-                      <LinkRow key={link.key} link={link} isLast={index === links.length - 1} />
-                    ))}
-                  </View>
-                </View>
-              </>
-            ) : null}
-          </View>
+          ) : (
+            <>
+              <PublicProfileLanguageLinks username={user.username} current={locale} />
+              {masthead}
+              {about}
+              {linkCard}
+            </>
+          )}
         </View>
       </ScrollView>
     </View>

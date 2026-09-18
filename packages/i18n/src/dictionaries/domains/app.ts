@@ -9,6 +9,8 @@ export const appPtBR: TranslationDict = {
   header: {
     you: "Você",
     openAccountMenu: "Abrir menu da conta",
+    account: "Conta",
+    mainNavigation: "Navegação principal",
     messages: "Mensagens",
     messagesUnread: "Mensagens, {count} não lidas",
     notifications: "Notificações",
@@ -36,6 +38,8 @@ export const appEn: TranslationDict = {
   header: {
     you: "You",
     openAccountMenu: "Open account menu",
+    account: "Account",
+    mainNavigation: "Main navigation",
     messages: "Messages",
     messagesUnread: "Messages, {count} unread",
     notifications: "Notifications",

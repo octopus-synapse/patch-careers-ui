@@ -102,7 +102,7 @@ export default function SignInScreen(): ReactElement {
       fontFamily={editorialFonts.sans}
       fontSize={isWeb ? 14 : 13}
       fontWeight="500"
-      color="$accentBlue"
+      color="$accent"
       paddingVertical={6}
       hoverStyle={{ opacity: 0.8 }}
       testID="auth.forgotLink"

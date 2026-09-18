@@ -11,8 +11,15 @@
  * no recruiter-driven status — they always read as "in review".
  */
 
-import { getV1JobsApplications, getV1JobsExternalSaved } from "@patch-careers/api-client";
+import {
+  getV1JobsApplications,
+  getV1JobsApplicationsTracker,
+  getV1JobsExternalSaved,
+} from "@patch-careers/api-client";
 import { useQuery } from "@tanstack/react-query";
+import { useAuthState } from "@/providers/auth-provider";
+import { normalizeSavedJob } from "../lib/helpers";
+import type { ExternalJob } from "../types";
 
 export type ApplicationStatusBucket = "review" | "response" | "closed";
 
@@ -32,6 +39,7 @@ export interface ApplicationRow {
   readonly jobRouteId: string | null;
   /** Match Score frozen at apply time (internal applies only); null otherwise. */
   readonly matchScore: number | null;
+  readonly job?: ExternalJob;
 }
 
 export interface ApplicationSection {
@@ -67,12 +75,18 @@ function groupByStatus(rows: readonly ApplicationRow[]): ApplicationSection[] {
   return sections;
 }
 
-/**
- * Fetches both sources in one query (a single page each — applications lists
- * are small) and merges them. Kept off `useInfiniteQuery` on purpose: blending
- * two independently-paginated sources into one endless scroll is not worth the
- * complexity for the 15%-of-traffic Candidaturas scope.
- */
+async function collectPages<T>(
+  fetch: (page: number) => Promise<{ items: T[]; hasNext: boolean }>,
+): Promise<T[]> {
+  const items: T[] = [];
+  for (let page = 1; ; page++) {
+    const result = await fetch(page);
+    items.push(...result.items);
+    if (!result.hasNext || !result.items.length) return items;
+  }
+}
+
+/** Fetch all pages of both sources so an older application cannot disappear from the board. */
 export function useApplications(enabled: boolean): {
   sections: ApplicationSection[];
   total: number;
@@ -81,16 +95,17 @@ export function useApplications(enabled: boolean): {
   isRefetching: boolean;
   refetch: () => void;
 } {
+  const { currentUser } = useAuthState();
   const query = useQuery({
     enabled,
-    queryKey: APPLICATIONS_KEY,
+    queryKey: [...APPLICATIONS_KEY, currentUser?.userId],
     queryFn: async ({ signal }): Promise<ApplicationRow[]> => {
       const [internal, saved] = await Promise.all([
-        getV1JobsApplications({ limit: PAGE_LIMIT, page: 1 }, { signal }),
-        getV1JobsExternalSaved({ limit: PAGE_LIMIT, page: 1 }, { signal }),
+        collectPages((page) => getV1JobsApplications({ limit: PAGE_LIMIT, page }, { signal })),
+        collectPages((page) => getV1JobsExternalSaved({ limit: PAGE_LIMIT, page }, { signal })),
       ]);
 
-      const internalRows: ApplicationRow[] = internal.items.map((app) => ({
+      const internalRows: ApplicationRow[] = internal.map((app) => ({
         id: `internal-${app.id}`,
         source: "internal",
         title: app.job.title,
@@ -104,7 +119,7 @@ export function useApplications(enabled: boolean): {
         matchScore: app.matchScoreSnapshot ?? null,
       }));
 
-      const externalRows: ApplicationRow[] = saved.items
+      const externalRows: ApplicationRow[] = saved
         .filter((row) => row.hasApplied === true)
         .map((row) => ({
           id: `external-${row.savedId}`,
@@ -117,6 +132,7 @@ export function useApplications(enabled: boolean): {
           appliedAtIso: row.appliedAt ?? row.savedAt,
           status: "review",
           jobRouteId: row.savedId,
+          job: normalizeSavedJob(row),
           // Compatibility recorded by the apply flow, when the user went
           // through it; older self-reports have none.
           matchScore: row.appliedMatchScore ?? null,
@@ -138,4 +154,13 @@ export function useApplications(enabled: boolean): {
     isRefetching: query.isRefetching,
     refetch: () => void query.refetch(),
   };
+}
+
+export function useApplicationTimeline() {
+  const { currentUser } = useAuthState();
+  return useQuery({
+    queryKey: ["jobs-application-timeline", currentUser?.userId],
+    queryFn: ({ signal }) => getV1JobsApplicationsTracker(undefined, { signal }),
+    staleTime: 60_000,
+  });
 }

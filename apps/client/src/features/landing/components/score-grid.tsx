@@ -16,6 +16,8 @@ import { useLandingScoreRamp } from "../hooks/use-landing-palettes";
 import { landingSans } from "../lib/landing-fonts";
 import { landingGrid } from "../lib/layout";
 import { DEMO_SCORES, type DemoScore, type DemoSubScore } from "../model/demo-data";
+import { ChapterLayer } from "./chapter-frame";
+import { DepthSurface } from "./depth-surface";
 
 const SEGMENTS = 20;
 const GRID_GAP = 12;
@@ -34,10 +36,30 @@ export function ScoreGrid({ width }: ScoreGridProps): ReactElement {
   return (
     <XStack gap={GRID_GAP} flexWrap="wrap" alignItems="flex-start">
       <YStack width={columnWidth} gap={GRID_GAP}>
-        {style ? <ScoreCard score={style} /> : null}
-        {quality ? <ScoreCard score={quality} /> : null}
+        {style ? (
+          <ChapterLayer depth={2} order={0}>
+            <DepthSurface>
+              <ScoreCard score={style} />
+            </DepthSurface>
+          </ChapterLayer>
+        ) : null}
+        {quality ? (
+          <ChapterLayer depth={2} order={1}>
+            <DepthSurface>
+              <ScoreCard score={quality} />
+            </DepthSurface>
+          </ChapterLayer>
+        ) : null}
       </YStack>
-      <YStack width={columnWidth}>{match ? <ScoreCard score={match} /> : null}</YStack>
+      <YStack width={columnWidth}>
+        {match ? (
+          <ChapterLayer depth={2} order={2}>
+            <DepthSurface>
+              <ScoreCard score={match} />
+            </DepthSurface>
+          </ChapterLayer>
+        ) : null}
+      </YStack>
     </XStack>
   );
 }

@@ -1,12 +1,13 @@
 /**
  * Editorial count badge — a small accent pill carrying an unread/notification
- * count, meant to overlay an icon. Renders nothing when the count is zero (or
- * negative) and clamps to `"{max}+"` above the cap. Positioning is left to the
- * caller: wrap the icon in a `position: "relative"` container and let this
+ * count, meant to overlay an icon. Hides zero by default (`showZero` opts in)
+ * and negative counts, and clamps to `"{max}+"` above the cap. Positioning is
+ * left to the caller: wrap the icon in a `position: "relative"` container and let this
  * absolutely-positioned pill sit at its top-right corner. Shared by the global
  * header (messages) and the bottom tab bar (notifications).
  */
 import {
+  appNavControl,
   type EditorialPalette,
   editorialPalette,
   editorialPaletteDark,
@@ -26,20 +27,40 @@ export type CountBadgeProps = {
    * pill on an accent fill is a smudge, so the badge inverts to stay a badge.
    */
   inverted?: boolean;
+  /** Opt-in: the desktop navbar displays zero unread items explicitly. */
+  showZero?: boolean;
+  /** Navbar geometry and brand colors; inverted uses white with a blue count. */
+  appearance?: "default" | "navbar";
 };
 
 export function CountBadge({
   count,
   max = 99,
   inverted = false,
+  showZero = false,
+  appearance = "default",
 }: CountBadgeProps): ReactElement | null {
   const styles = stylesByTheme[useThemeName()];
-  if (count <= 0) return null;
+  if (count < 0 || (count === 0 && !showZero)) return null;
   const label = count > max ? `${max}+` : String(count);
+  const navbar = appearance === "navbar";
 
   return (
-    <View style={inverted ? styles.badgeInverted : styles.badge} pointerEvents="none">
-      <Text style={inverted ? styles.labelInverted : styles.label} numberOfLines={1}>
+    <View
+      style={[
+        navbar ? styles.badgeNavbar : styles.badge,
+        inverted && (navbar ? styles.badgeNavbarInverted : styles.badgeInverted),
+      ]}
+      pointerEvents="none"
+      aria-hidden={navbar || undefined}
+    >
+      <Text
+        style={[
+          styles.label,
+          inverted && (navbar ? styles.labelNavbarInverted : styles.labelInverted),
+        ]}
+        numberOfLines={1}
+      >
         {label}
       </Text>
     </View>
@@ -71,6 +92,19 @@ const stylesFor = (p: EditorialPalette) => {
     badge,
     label,
     badgeInverted: { ...badge, backgroundColor: p.surface },
+    badgeNavbar: {
+      ...badge,
+      top: -8,
+      right: -9,
+      minWidth: 18,
+      height: 18,
+      borderRadius: 9,
+      borderWidth: 2,
+      borderColor: appNavControl.onFill,
+      backgroundColor: appNavControl.fill,
+    },
+    badgeNavbarInverted: { backgroundColor: appNavControl.onFill },
+    labelNavbarInverted: { color: appNavControl.fill },
     labelInverted: { ...label, color: p.ink },
   });
 };

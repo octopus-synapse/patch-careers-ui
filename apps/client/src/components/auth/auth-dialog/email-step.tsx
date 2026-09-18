@@ -1,27 +1,19 @@
-/**
- * Step 1 of the unified auth dialog — identifier-first: one e-mail field
- * decides between sign-in and sign-up via `POST /v1/auth/identify`, so
- * the visitor never has to know whether they have an account. Social
- * sign-in sits under an "or" divider, Airbnb-style (same chips as the
- * sign-in screen; on web they leave via full-page OAuth redirect).
- */
+/** Identifier-first entry matching the public landing auth modal. */
 import { identify } from "@patch-careers/api-client";
-import { Text, YStack } from "@patch-careers/ui";
+import { authDialogPalette, brandPieces } from "@patch-careers/tokens";
+import { Icon, Input, Text, XStack, YStack } from "@patch-careers/ui";
 import type { AuthMascotController } from "@patch-careers/ui/editorial";
-import {
-  editorialFonts,
-  OrDivider,
-  PrimaryAction,
-  useEditorialPalette,
-} from "@patch-careers/ui/editorial";
+import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
+import { ArrowUpRight } from "lucide-react-native";
 import type { ReactElement } from "react";
+import { Controller } from "react-hook-form";
+import { ActivityIndicator } from "react-native";
 import { fieldErrorsSetter } from "@/components/auth/helpers/apply-field-errors";
 import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-error";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useMascotForm } from "@/components/auth/hooks/use-mascot-form";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
-import { OAuthProviderRow } from "@/components/auth/oauth-provider-row";
-import { FormEmailField, useFieldErrorsForm } from "@/forms";
+import { useFieldErrorsForm } from "@/forms";
 import { messageOf, validateEmail } from "@/lib/validation";
 import { type AuthBranch, branchForIdentity } from "./branch-for-identity";
 
@@ -38,8 +30,8 @@ export function EmailStep({
 }): ReactElement {
   const { t, locale, toast } = useAuthScreen();
   const palette = useEditorialPalette();
+  const dialogPalette = authDialogPalette[useThemeName()];
   const { submitting, run } = useSubmit();
-
   const form = useFieldErrorsForm<EmailForm>(
     (values) => {
       const email = messageOf(validateEmail(values.email.trim()), t);
@@ -73,48 +65,110 @@ export function EmailStep({
   );
 
   return (
-    <YStack gap={24} paddingVertical={22}>
+    <YStack>
       <Text
         fontFamily={editorialFonts.serif}
-        fontSize={27}
-        lineHeight={32}
-        letterSpacing={-0.4}
-        textAlign="center"
-        color={palette.ink}
+        fontSize={40}
+        lineHeight={43}
+        letterSpacing={-1.2}
+        fontWeight="400"
+        color={brandPieces.plain}
       >
-        {t("auth.dialogTitlePre")}{" "}
+        {t("auth.dialogHeroTitlePre")}
+        {"\n"}
         <Text
           fontFamily={editorialFonts.serif}
-          fontSize={27}
-          fontStyle="italic"
-          color={palette.accent}
+          fontSize={40}
+          lineHeight={43}
+          fontWeight="400"
+          color={brandPieces.plain}
         >
-          {t("auth.dialogTitleOr")}
-        </Text>{" "}
-        {t("auth.dialogTitlePost")}
+          {t("auth.dialogHeroTitleEmphasis")}
+        </Text>
+      </Text>
+      <Text
+        fontFamily={editorialFonts.sans}
+        fontSize={12}
+        lineHeight={21.6}
+        color={dialogPalette.muted}
+        marginTop={16}
+        marginBottom={28}
+      >
+        {t("auth.dialogSubtitle")}
       </Text>
 
-      <FormEmailField
+      <Controller
         control={form.control}
         name="email"
-        testID="authDialog.email"
-        onSubmitEditing={onSubmit}
-        {...bind.text("email", "email")}
+        render={({ field, fieldState }) => (
+          <YStack>
+            <Input
+              value={field.value}
+              onChangeText={field.onChange}
+              placeholder={t("auth.emailPlaceholder")}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect={false}
+              returnKeyType="next"
+              onSubmitEditing={onSubmit}
+              minHeight={51}
+              paddingHorizontal={15}
+              borderWidth={1}
+              borderRadius={7}
+              backgroundColor={dialogPalette.input}
+              borderColor={fieldState.error ? palette.danger : dialogPalette.inputBorder}
+              color={dialogPalette.brand}
+              fontFamily={editorialFonts.sans}
+              fontSize={14}
+              focusStyle={{
+                borderColor: dialogPalette.focus,
+                outlineColor: dialogPalette.focus,
+              }}
+              testID="authDialog.email"
+              {...bind.text("email", "email")}
+            />
+            {fieldState.error ? (
+              <Text fontSize={11} color={palette.danger} marginTop={7}>
+                {fieldState.error.message}
+              </Text>
+            ) : null}
+          </YStack>
+        )}
       />
 
-      <PrimaryAction
-        label={t("auth.dialogContinue")}
-        loading={submitting}
-        onPress={onSubmit}
+      <XStack
+        onPress={submitting ? undefined : onSubmit}
+        accessibilityRole="button"
+        accessibilityLabel={t("auth.dialogContinue")}
+        accessibilityState={{ disabled: submitting, busy: submitting }}
+        alignItems="center"
+        justifyContent="space-between"
+        minHeight={51}
+        marginTop={22}
+        paddingHorizontal={19}
+        borderRadius={7}
+        backgroundColor={dialogPalette.primary}
+        opacity={submitting ? 0.55 : 1}
+        pressStyle={{ backgroundColor: dialogPalette.primaryPress }}
         testID="authDialog.continue"
-      />
-
-      <YStack marginVertical={-16}>
-        <OrDivider text={t("auth.orDivider")} />
-      </YStack>
-      <YStack marginVertical={-22}>
-        <OAuthProviderRow testIDPrefix="authDialog.oauth" />
-      </YStack>
+      >
+        {submitting ? (
+          <ActivityIndicator size="small" color={palette.onPrimary} />
+        ) : (
+          <>
+            <Text
+              fontFamily={editorialFonts.sans}
+              fontSize={12}
+              fontWeight="500"
+              color={palette.onPrimary}
+            >
+              {t("auth.dialogContinue")}
+            </Text>
+            <Icon as={ArrowUpRight} size={18} color={palette.onPrimary} />
+          </>
+        )}
+      </XStack>
     </YStack>
   );
 }

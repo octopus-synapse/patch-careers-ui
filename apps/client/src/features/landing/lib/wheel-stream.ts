@@ -9,9 +9,9 @@
  */
 
 /** A pause longer than this starts a new gesture. */
-const STREAM_GAP_MS = 140;
-/** Accumulated delta needed before a stream counts as a step. */
-const THRESHOLD = 40;
+const STREAM_GAP_MS = 220;
+/** Ignore subpixel noise, but accept even a one-pixel mouse notch. */
+const THRESHOLD = 1;
 
 export interface WheelStream {
   /** Accumulated delta for the current stream. */

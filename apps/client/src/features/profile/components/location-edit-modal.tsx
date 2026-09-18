@@ -58,8 +58,8 @@ export function LocationEditModal({
       onOpenChange={(next) => {
         if (!next) onClose();
       }}
-      titleHead={t("onboarding.location.titleHead")}
-      titleTail={t("onboarding.location.titleTail")}
+      title={t("profile.edit.locationLabel")}
+      closeLabel={t("app.confirmDialog.close")}
       searchPlaceholder={t("onboarding.location.searchPlaceholder")}
       searchText={text}
       onSearchTextChange={setText}

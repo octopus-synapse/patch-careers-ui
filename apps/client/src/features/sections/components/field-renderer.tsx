@@ -17,7 +17,7 @@ import {
   useEditorialPalette,
   useThemeName,
 } from "@patch-careers/ui/editorial";
-import { Calendar, ChevronLeft, ChevronRight } from "lucide-react-native";
+import { Calendar } from "lucide-react-native";
 import { type ReactElement, type Ref, useCallback, useEffect, useState } from "react";
 import { Pressable, type ReturnKeyTypeOptions, Text, TextInput, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
@@ -27,11 +27,14 @@ import type { SectionField } from "../types";
 import { CompanyPicker, type PickedCompany } from "./company-picker";
 import { CoursePicker, type PickedCourse } from "./course-picker";
 import { InstitutionPicker } from "./institution-picker";
-import { FieldLabel, FieldShell, OptionPill, OverlayModal } from "./primitives";
+import { MonthYearPicker } from "./month-year-picker";
+import { FieldLabel, FieldShell, OptionPill } from "./primitives";
 import { RolePicker } from "./role-picker";
 
 function DateField({
   allowEmpty,
+  clearLabel,
+  emptyLabel,
   error,
   futureYears,
   label,
@@ -39,6 +42,8 @@ function DateField({
   value,
 }: {
   allowEmpty: boolean;
+  clearLabel: string;
+  emptyLabel?: string | undefined;
   error?: string | undefined;
   /** How many years past the current one the picker can navigate to. */
   futureYears: number;
@@ -53,9 +58,7 @@ function DateField({
   const parsed = parseYearMonth(value);
   const display = parsed
     ? monthLabel(parsed.year, parsed.month, locale, { month: "short", year: "numeric" })
-    : allowEmpty
-      ? t("onboarding.date.present")
-      : t("onboarding.date.placeholder");
+    : (emptyLabel ?? t("onboarding.date.placeholder"));
   return (
     <>
       <FieldShell label={label} error={error}>
@@ -74,6 +77,7 @@ function DateField({
         value={value}
         title={label}
         allowEmpty={allowEmpty}
+        clearLabel={clearLabel}
         futureYears={futureYears}
         onClose={() => setOpen(false)}
         onChange={(next) => {
@@ -82,95 +86,6 @@ function DateField({
         }}
       />
     </>
-  );
-}
-
-function MonthYearPicker({
-  allowEmpty,
-  futureYears,
-  onChange,
-  onClose,
-  title,
-  value,
-  visible,
-}: {
-  allowEmpty: boolean;
-  futureYears: number;
-  onChange: (value: string) => void;
-  onClose: () => void;
-  title: string;
-  value: string;
-  visible: boolean;
-}): ReactElement {
-  const ed = useEd();
-  const authTokens = useEditorialPalette();
-  const { locale, t } = useI18n();
-  const selected = parseYearMonth(value);
-  const thisYear = new Date().getFullYear();
-  const [year, setYear] = useState(selected?.year ?? thisYear);
-  // Re-seed the visible year each time the sheet opens.
-  useEffect(() => {
-    if (visible) setYear(parseYearMonth(value)?.year ?? thisYear);
-  }, [visible, value, thisYear]);
-  const months = Array.from({ length: 12 }, (_, i) =>
-    monthLabel(2020, i + 1, locale, { month: "short" }),
-  );
-  return (
-    <OverlayModal visible={visible} onRequestClose={onClose}>
-      <Pressable style={ed.pickerOverlay} onPress={onClose}>
-        {/* Absorb taps inside the card so they don't dismiss it. */}
-        <Pressable style={ed.pickerCard} onPress={() => undefined}>
-          <Text style={ed.pickerTitle}>{title}</Text>
-          <View style={ed.pickerYearRow}>
-            <Pressable
-              hitSlop={12}
-              accessibilityRole="button"
-              accessibilityLabel={t("onboarding.date.prevYear")}
-              onPress={() => setYear((y) => Math.max(1950, y - 1))}
-            >
-              <ChevronLeft size={22} color={authTokens.ink} />
-            </Pressable>
-            <Text style={ed.pickerYear}>{year}</Text>
-            <Pressable
-              hitSlop={12}
-              accessibilityRole="button"
-              accessibilityLabel={t("onboarding.date.nextYear")}
-              onPress={() => setYear((y) => Math.min(thisYear + futureYears, y + 1))}
-            >
-              <ChevronRight size={22} color={authTokens.ink} />
-            </Pressable>
-          </View>
-          <View style={ed.pickerGrid}>
-            {months.map((monthName, i) => {
-              const month = i + 1;
-              const isSel = selected?.month === month && selected?.year === year;
-              return (
-                <Pressable
-                  key={monthName}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: isSel }}
-                  onPress={() => onChange(`${year}-${String(month).padStart(2, "0")}-01`)}
-                  style={[ed.pickerMonth, isSel ? ed.pickerMonthSelected : null]}
-                >
-                  <Text style={[ed.pickerMonthText, isSel ? ed.pickerMonthTextSelected : null]}>
-                    {monthName}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-          {allowEmpty ? (
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => onChange("")}
-              style={ed.pickerClear}
-            >
-              <Text style={ed.pickerClearText}>{t("onboarding.date.present")}</Text>
-            </Pressable>
-          ) : null}
-        </Pressable>
-      </Pressable>
-    </OverlayModal>
   );
 }
 
@@ -356,9 +271,12 @@ export function FieldRenderer({
         error={error}
         // An empty end date means "present"; start dates are required.
         allowEmpty={field.key === "endDate" || !field.required}
-        // End dates reach far enough for a degree starting today (e.g. 10
-        // semesters of medicine); other dates only need next year.
-        futureYears={field.key === "endDate" ? 8 : 1}
+        emptyLabel={field.key === "endDate" ? t("onboarding.date.present") : undefined}
+        clearLabel={t(
+          field.key === "endDate" ? "onboarding.date.present" : "onboarding.date.clear",
+        )}
+        // Preserve projected graduation dates; starts and other past events stop today.
+        futureYears={field.key === "endDate" ? 8 : 0}
       />
     );
   }

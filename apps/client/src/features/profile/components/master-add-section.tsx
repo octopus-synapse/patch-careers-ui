@@ -1,8 +1,7 @@
 /**
  * The Profile "Perfil" sub-tab's single add entry point, self-contained so it
- * can be pinned as a floating CTA over the scroll (which is what gives the
- * button's backdrop blur something to actually frost). Renders the black
- * frosted "add" slab + the catalog picker modal, and owns the create mutation.
+ * can be pinned as a floating CTA over the scroll. Renders the shared black
+ * action pill and the catalog picker modal, and owns the create mutation.
  */
 
 import { type ReactElement, useState } from "react";
@@ -17,12 +16,7 @@ import {
 import { useI18n } from "@/providers/i18n-provider";
 import { AddSectionButton } from "./add-section-button";
 
-export function MasterAddSection({
-  variant = "frosted",
-}: {
-  /** Passed through to the button: "frosted" when floating, "ink" inline. */
-  variant?: "frosted" | "ink";
-}): ReactElement {
+export function MasterAddSection(): ReactElement {
   const { t, locale: uiLocale } = useI18n();
   const { resumeId, language } = useMasterResumeId();
   const contentLocale = useContentLocale(resumeId, language);
@@ -47,7 +41,6 @@ export function MasterAddSection({
         label={t("sections.addToResume")}
         onPress={() => setAddOpen(true)}
         disabled={!resumeId}
-        variant={variant}
       />
       <AddSectionFlowModal
         visible={addOpen}

@@ -1,9 +1,4 @@
-import {
-  AuthMascotCard,
-  FieldError,
-  PrimaryAction,
-  useAuthMascot,
-} from "@patch-careers/ui/editorial";
+import { AuthCard, FieldError, PrimaryAction } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, View } from "react-native";
 import { NAV_BAR_HEIGHT_PUBLIC, NavBar } from "@/components/nav-bar/nav-bar";
@@ -29,7 +24,6 @@ import {
   StepTransition,
 } from "./wizard-chrome";
 import {
-  CompletionScreen,
   LanguageStep,
   LinksEditor,
   ResumeStylePicker,
@@ -43,8 +37,7 @@ import {
 /**
  * The wizard card is deliberately fatter than the auth card's 460: its steps
  * are working surfaces (section lists, editors, autocompletes), and at 460
- * the panel read as a thin strip on a desktop viewport. The mascot (375 wide)
- * still fits comfortably on the wider top edge.
+ * the panel read as a thin strip on a desktop viewport.
  */
 const WIZARD_CARD_MAX_WIDTH = 640;
 
@@ -101,34 +94,13 @@ function OnboardingWizardInner(): ReactElement {
     retrySave,
     commitSave,
     markWelcomeSeenAndAdvance,
-    completed,
-    finishOnboarding,
   } = useOnboardingFlow();
 
   const scheme = useColorSchemeStore((s) => s.scheme);
   const setScheme = useColorSchemeStore((s) => s.setScheme);
 
-  // The mascot that watched the sign-up keeps watching here — same
-  // AuthMascotCard as the auth dialog, so onboarding reads as the next
-  // page of the same scene rather than a new app.
-  const mascot = useAuthMascot();
   const total = countedTotal();
   const stepNumber = editStep ? total : countedIndexOf(flowStepId) + 1;
-  // His eyes travel with the progress: step 1 looks left, the review looks
-  // right — the same 0..1 → pupil mapping the OTP cells use.
-  useEffect(() => {
-    mascot.lookAt(total > 1 ? (stepNumber - 1) / (total - 1) : 0.5, 6);
-  }, [mascot, stepNumber, total]);
-  const hasInlineErrors = Object.keys(errors).length > 0 || Boolean(saveError);
-  useEffect(() => {
-    // `pose` patches only the grimace flag — `reset()` would also zero the
-    // gaze, undoing the progress-tracking eyes above.
-    mascot.pose({ oops: hasInlineErrors });
-  }, [mascot, hasInlineErrors]);
-  const atReview = !editStep && flowStep?.kind === "review";
-  useEffect(() => {
-    if (atReview) mascot.celebrate({ settle: true });
-  }, [mascot, atReview]);
 
   // Body scroll metrics for the editorial scrollbar (BodyScrollBar): the body
   // is a fixed-height box, so overflow is invisible without an indicator.
@@ -179,19 +151,6 @@ function OnboardingWizardInner(): ReactElement {
     setLocale,
     setScheme,
   });
-
-  // Post-complete payoff: shown before the auth flag flips (bootstrap runs on
-  // the CTA), so the route guard doesn't unmount the wizard mid-moment.
-  if (completed) {
-    return (
-      <CompletionScreen
-        locale={locale}
-        styleId={session?.resumeStyleId}
-        t={t}
-        onDone={finishOnboarding}
-      />
-    );
-  }
 
   if (sessionQuery.isLoading && !fallbackSession) {
     return <CenteredState label={t("common.loading")} />;
@@ -270,10 +229,9 @@ function OnboardingWizardInner(): ReactElement {
   // The body gets one fixed height for ALL steps so the masthead and footer
   // never shift between steps — short steps just center their content in it,
   // taller steps scroll within it. Scaled to the viewport, clamped for sanity.
-  // Chrome above/below the body once the mascot card is in: navbar (76) +
-  // the mascot's headroom (200) + card padding, heading and footer. The
-  // remainder is the body; steps taller than it scroll inside (BodyScrollBar).
-  const bodyHeight = height > 0 ? Math.max(240, Math.min(400, height - 620)) : 340;
+  // Reserve room for navbar + card padding, heading and footer. With the
+  // mascot removed, the reclaimed headroom lets the form breathe on desktop.
+  const bodyHeight = height > 0 ? Math.max(240, Math.min(400, height - 420)) : 340;
 
   return (
     <SafeAreaView style={ed.root}>
@@ -316,13 +274,7 @@ function OnboardingWizardInner(): ReactElement {
           ]}
         >
           <View style={[ed.column, { maxWidth: columnMaxWidth }]}>
-            {/* Same card + peeking mascot as the auth dialog — onboarding is
-                the next page of that scene, not a new app. `width: "100%"`
-                because AuthCard's own 90% is meant for viewport-relative
-                pages; inside this already-sized column it would shrink the
-                panel a second time (the dialog had the same bug). */}
-            <AuthMascotCard
-              mascot={mascot}
+            <AuthCard
               // AuthCard's own 90%/460 sizing is meant for viewport-relative
               // auth pages; inside this already-sized column both rules would
               // shrink the panel again (the dialog had the same 90% bug).
@@ -463,13 +415,7 @@ function OnboardingWizardInner(): ReactElement {
                   />
                 ) : (
                   <PrimaryAction
-                    label={
-                      editStep
-                        ? t("common.save")
-                        : showSkipCta
-                          ? t("onboarding.skipCta")
-                          : t("onboarding.next")
-                    }
+                    label={showSkipCta ? t("onboarding.skipCta") : t("onboarding.next")}
                     loading={nextStep.isPending || gotoStep.isPending}
                     disabled={isPending}
                     onPress={goNext}
@@ -489,7 +435,7 @@ function OnboardingWizardInner(): ReactElement {
                   <FieldError text={completeError} />
                 </View>
               ) : null}
-            </AuthMascotCard>
+            </AuthCard>
           </View>
         </View>
       </KeyboardAvoidingView>

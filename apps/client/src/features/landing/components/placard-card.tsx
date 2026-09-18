@@ -19,6 +19,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { useLandingMotionContext } from "../hooks/use-landing-motion";
 import { landingSans } from "../lib/landing-fonts";
 
 /** The beat the card waits before showing the new line. */
@@ -32,28 +33,33 @@ export interface PlacardTextProps {
 
 export function PlacardText({ text, source }: PlacardTextProps): ReactElement {
   const palette = useEditorialPalette();
+  const reduced = useLandingMotionContext()?.reduced ?? false;
   const [shown, setShown] = useState({ text, source });
   const fade = useSharedValue(1);
 
   useEffect(() => {
-    if (shown.text === text) return;
+    if (reduced || (shown.text === text && shown.source === source)) return;
     fade.value = withSequence(
       withTiming(0, { duration: FADE_MS, easing: Easing.out(Easing.quad) }),
-      withDelay(40, withTiming(1, { duration: FADE_MS + 80, easing: Easing.out(Easing.quad) })),
+      withDelay(
+        SWAP_DELAY_MS - FADE_MS,
+        withTiming(1, { duration: FADE_MS + 80, easing: Easing.out(Easing.quad) }),
+      ),
     );
     const swap = setTimeout(() => setShown({ text, source }), SWAP_DELAY_MS);
     return () => clearTimeout(swap);
-  }, [fade, shown.text, source, text]);
+  }, [fade, reduced, shown.text, shown.source, source, text]);
 
-  const style = useAnimatedStyle(() => ({ opacity: fade.value }));
+  const style = useAnimatedStyle(() => ({ opacity: reduced ? 1 : fade.value }));
+  const visible = reduced ? { text, source } : shown;
 
   return (
     <Animated.View style={style}>
       <YStack>
         <Text fontFamily={landingSans} fontSize={17} lineHeight={23} color={palette.ink}>
-          {shown.text}
+          {visible.text}
         </Text>
-        {shown.source ? (
+        {visible.source ? (
           <Text
             fontFamily={editorialFonts.mono}
             fontSize={11}
@@ -61,7 +67,7 @@ export function PlacardText({ text, source }: PlacardTextProps): ReactElement {
             color={palette.subtle}
             marginTop={12}
           >
-            {shown.source}
+            {visible.source}
           </Text>
         ) : null}
       </YStack>

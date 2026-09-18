@@ -66,6 +66,8 @@ export default function TabsLayout(): ReactElement | null {
 
   return (
     <Tabs
+      // Desktop browser history must retain repeated visits to a tab.
+      backBehavior={isDesktopWeb ? "fullHistory" : "firstRoute"}
       tabBar={isDesktopWeb ? () => null : (props) => <EditorialTabBar {...props} />}
       screenOptions={{
         // Global top app bar: avatar (left) · brand (center) · messages (right).
