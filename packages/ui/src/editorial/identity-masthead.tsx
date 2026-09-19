@@ -6,7 +6,7 @@
  */
 import type { EditorialPalette } from "@patch-careers/tokens";
 import { MapPin } from "lucide-react-native";
-import type { ReactElement, ReactNode } from "react";
+import { type ReactElement, type ReactNode, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { editorialFonts as fonts } from "./fonts";
@@ -24,8 +24,8 @@ export interface IdentityMastheadProps {
   readonly variant?: "page" | "card";
   readonly trailing?: ReactNode;
   readonly details?: ReactNode;
-  readonly coverAccessory?: ReactNode;
-  readonly avatarAccessory?: ReactNode;
+  readonly coverAccessory?: Accessory;
+  readonly avatarAccessory?: Accessory;
   readonly renderAvatar?: ((avatar: ReactElement) => ReactNode) | undefined;
   readonly onCoverPress?: (() => void) | undefined;
   readonly onAvatarPress?: (() => void) | undefined;
@@ -34,6 +34,12 @@ export interface IdentityMastheadProps {
   readonly coverBusy?: boolean;
   readonly avatarBusy?: boolean;
 }
+
+export type IdentityMastheadAccessoryState = {
+  readonly hovered: boolean;
+};
+
+type Accessory = ReactNode | ((state: IdentityMastheadAccessoryState) => ReactNode);
 
 const AVATAR = 80;
 const AVATAR_WIDE = 112;
@@ -66,6 +72,8 @@ export function IdentityMasthead({
 }: IdentityMastheadProps): ReactElement {
   const palette = useEditorialPalette();
   const styles = mastheadStyles(palette);
+  const [coverHovered, setCoverHovered] = useState(false);
+  const [avatarHovered, setAvatarHovered] = useState(false);
   const avatarSize = wide ? AVATAR_WIDE : AVATAR;
   const behind = variant === "card" ? palette.panel : palette.bg;
 
@@ -78,7 +86,9 @@ export function IdentityMasthead({
         ? {}
         : { accessibilityLabel: coverAccessibilityLabel })}
     >
-      {coverAccessory}
+      {typeof coverAccessory === "function"
+        ? coverAccessory({ hovered: coverHovered })
+        : coverAccessory}
     </PuzzleBanner>
   );
   const avatar = (
@@ -99,6 +109,8 @@ export function IdentityMasthead({
       accessibilityState={{ busy: coverBusy }}
       disabled={coverBusy}
       onPress={onCoverPress}
+      onHoverIn={() => setCoverHovered(true)}
+      onHoverOut={() => setCoverHovered(false)}
       style={variant === "card" ? styles.coverCard : styles.coverPage}
     >
       {cover}
@@ -115,15 +127,21 @@ export function IdentityMasthead({
       accessibilityState={{ busy: avatarBusy }}
       disabled={avatarBusy}
       onPress={onAvatarPress}
+      onHoverIn={() => setAvatarHovered(true)}
+      onHoverOut={() => setAvatarHovered(false)}
       style={avatarStyle}
     >
       {renderedAvatar}
-      {avatarAccessory}
+      {typeof avatarAccessory === "function"
+        ? avatarAccessory({ hovered: avatarHovered })
+        : avatarAccessory}
     </Pressable>
   ) : (
     <View style={avatarStyle}>
       {renderedAvatar}
-      {avatarAccessory}
+      {typeof avatarAccessory === "function"
+        ? avatarAccessory({ hovered: false })
+        : avatarAccessory}
     </View>
   );
 

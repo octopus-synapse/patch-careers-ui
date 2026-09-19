@@ -23,7 +23,7 @@ import {
   useAuthMascot,
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
-import { type ReactElement, useEffect, useState } from "react";
+import { type CSSProperties, type ReactElement, useEffect, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import { useResolvedScheme } from "@/providers/color-scheme";
 import { useI18n } from "@/providers/i18n-provider";
@@ -36,6 +36,10 @@ import { VerifyStep } from "./verify-step";
 
 const OVERLAY_Z_INDEX = 300;
 const PANEL_WIDTH = 550;
+const WEB_BACKDROP_STYLE = {
+  backdropFilter: "blur(9px)",
+  WebkitBackdropFilter: "blur(9px)",
+} satisfies Pick<CSSProperties, "backdropFilter" | "WebkitBackdropFilter">;
 
 type Step = "email" | "signIn" | "verifyEmail" | "createAccount" | "oauthOnly";
 
@@ -87,7 +91,7 @@ export function AuthDialog({ onClose }: { readonly onClose: () => void }): React
         bottom: 0,
         zIndex: OVERLAY_Z_INDEX,
         backgroundColor: dialogPalette.scrim,
-        backdropFilter: "blur(9px)",
+        ...WEB_BACKDROP_STYLE,
         alignItems: "center",
         justifyContent: "center",
       }}

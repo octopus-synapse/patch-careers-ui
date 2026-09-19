@@ -10,10 +10,11 @@
  * The settings gear used to sit up here; it is in the account menu, which is
  * one tap away on every screen, so the header no longer says it twice.
  */
+import { identityMediaControl } from "@patch-careers/tokens";
 import { IdentityMasthead, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Camera } from "lucide-react-native";
 import type { ReactElement, ReactNode } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Platform, Text, View, type ViewStyle } from "react-native";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 import { usePf } from "../lib/styles";
@@ -23,6 +24,9 @@ const AVATAR_PX = 80;
 // Desktop header is a wide identity band; the avatar anchors it larger.
 const AVATAR_PX_WIDE = 112;
 const AVATAR_BEZEL = 5;
+type WebTransitionStyle = ViewStyle & { transition?: string };
+const mediaControlTransition: WebTransitionStyle | undefined =
+  Platform.OS === "web" ? { transition: "background-color 180ms ease-out" } : undefined;
 
 export type HeaderProfile = {
   name?: string | null;
@@ -68,11 +72,6 @@ export function ProfileHeader({
   const avatarPx = isDesktopWeb ? AVATAR_PX_WIDE : AVATAR_PX;
   const name = profile?.name ?? t("profile.header.defaultName");
   const pct = completeness === null ? null : Math.max(0, Math.min(100, Math.round(completeness)));
-  // The bezel and the camera chips are painted in whatever sits behind them so
-  // they cut a clean hole in the banner. Inside a card that is `panel`, not the
-  // page's `bg` — otherwise the avatar wears a beige ring on a white card.
-  const behind = variant === "card" ? palette.panel : palette.bg;
-
   return (
     <IdentityMasthead
       name={name}
@@ -90,15 +89,23 @@ export function ProfileHeader({
       avatarAccessibilityLabel={t("profile.header.changePhotoA11y")}
       coverBusy={coverUploading}
       avatarBusy={uploading}
-      coverAccessory={
-        <View style={[pf.coverBadge, { borderColor: behind }]}>
+      coverAccessory={({ hovered }) => (
+        <View
+          style={[
+            pf.coverBadge,
+            mediaControlTransition,
+            {
+              backgroundColor: hovered ? identityMediaControl.hover : identityMediaControl.rest,
+            },
+          ]}
+        >
           {coverUploading ? (
-            <ActivityIndicator color={palette.onPrimary} size="small" />
+            <ActivityIndicator color={identityMediaControl.ink} size="small" />
           ) : (
-            <Camera size={15} color={palette.onPrimary} strokeWidth={2} />
+            <Camera size={15} color={identityMediaControl.ink} strokeWidth={2} />
           )}
         </View>
-      }
+      )}
       renderAvatar={(avatar) => {
         const content = (
           <>
@@ -118,7 +125,7 @@ export function ProfileHeader({
           content
         );
       }}
-      avatarAccessory={
+      avatarAccessory={({ hovered }) => (
         <>
           {pct !== null ? (
             <View
@@ -128,11 +135,19 @@ export function ProfileHeader({
               <Text style={pf.completenessText}>{pct}%</Text>
             </View>
           ) : null}
-          <View style={[pf.avatarBadge, { borderColor: behind }]}>
-            <Camera size={15} color={palette.onPrimary} strokeWidth={2} />
+          <View
+            style={[
+              pf.avatarBadge,
+              mediaControlTransition,
+              {
+                backgroundColor: hovered ? identityMediaControl.hover : identityMediaControl.rest,
+              },
+            ]}
+          >
+            <Camera size={15} color={identityMediaControl.ink} strokeWidth={2} />
           </View>
         </>
-      }
+      )}
     />
   );
 }

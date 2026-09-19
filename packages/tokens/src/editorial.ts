@@ -196,6 +196,16 @@ export const editorialOverlays = {
 export const navControlRest = { bg: "#FFFFFF", ink: editorialPalette.ink } as const;
 
 /**
+ * Camera controls over profile media stay high-contrast regardless of theme:
+ * black at rest, brand green on pointer hover, and a white glyph throughout.
+ */
+export const identityMediaControl = {
+  rest: "#0A0A0A",
+  hover: brandColors.forest,
+  ink: "#FFFFFF",
+} as const;
+
+/**
  * Focused sign-in dialog treatment used over the public landing page. The
  * warmer paper and olive action deliberately echo the landing wordmark while
  * leaving the broader product/editorial palette unchanged.

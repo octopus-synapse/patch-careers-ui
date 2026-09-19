@@ -5,6 +5,7 @@ import {
   editorialOverlays,
   editorialPalette,
   editorialPaletteDark,
+  identityMediaControl,
 } from "@patch-careers/tokens";
 import { editorialFonts as fonts, useThemeName } from "@patch-careers/ui/editorial";
 import { StyleSheet } from "react-native";
@@ -267,11 +268,9 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       width: 32,
       height: 32,
       borderRadius: 16,
-      backgroundColor: p.primary,
+      backgroundColor: identityMediaControl.rest,
       alignItems: "center",
       justifyContent: "center",
-      borderWidth: 2,
-      borderColor: p.bg,
     },
     avatarWrap: { position: "relative" },
     avatarUploading: {
@@ -294,11 +293,9 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       width: 30,
       height: 30,
       borderRadius: 15,
-      backgroundColor: p.primary,
+      backgroundColor: identityMediaControl.rest,
       alignItems: "center",
       justifyContent: "center",
-      borderWidth: 2,
-      borderColor: p.bg,
     },
     completenessBadge: {
       position: "absolute",
