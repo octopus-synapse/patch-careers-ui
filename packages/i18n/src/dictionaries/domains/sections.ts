@@ -14,6 +14,7 @@ export const sectionsPtBR: TranslationDict = {
   present: "Presente",
   item: {
     editA11y: "Editar {title}",
+    deleteA11y: "Excluir {title}",
     handWritten: "escrito por você",
     stale: "desatualizado",
     untranslated: "no idioma original",
@@ -62,6 +63,7 @@ export const sectionsEn: TranslationDict = {
   present: "Present",
   item: {
     editA11y: "Edit {title}",
+    deleteA11y: "Delete {title}",
     handWritten: "written by you",
     stale: "out of date",
     untranslated: "in the original language",

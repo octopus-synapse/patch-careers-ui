@@ -6,10 +6,8 @@
  * consent gate, verify cells), so the standalone `(auth)` routes and this
  * dialog stay behaviourally identical.
  *
- * The mascot perches on the card throughout (`AuthMascotCard`) — it
- * lives only here while the dialog is open, and steps drive it exactly
- * like their screen counterparts. Same overlay construction as the
- * nav bar's PreferencesModal: fixed scrim above everything, Escape and
+ * The dialog uses the same paper panel as the standalone auth routes. Same
+ * overlay construction as the nav bar's PreferencesModal: fixed scrim above everything, Escape and
  * scrim-click dismiss, panel clicks don't propagate.
  */
 
@@ -102,7 +100,10 @@ export function AuthDialog({ onClose }: { readonly onClose: () => void }): React
       <View
         onStartShouldSetResponder={() => true}
         onResponderRelease={() => undefined}
-        style={{ width: Math.min(PANEL_WIDTH, width * 0.92), maxHeight: height * 0.94 }}
+        style={{
+          width: Math.min(PANEL_WIDTH, width * 0.92),
+          maxHeight: height * 0.94,
+        }}
       >
         {/* AuthCard's 90%-of-parent / 460px cap is right on the auth pages.
             This dialog owns its responsive clamp, so override both values and

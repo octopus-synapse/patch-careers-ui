@@ -28,7 +28,7 @@ export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElemen
   const { t } = useI18n();
   const palette = useEditorialPalette();
   const router = useRouter();
-  const { resumeId } = useDefaultMatchResume();
+  const { resumeId, isLoading: resumeLoading } = useDefaultMatchResume();
   const match = useMatch(resumeId, job.id);
   const [explainOpen, setExplainOpen] = useState(false);
 
@@ -45,6 +45,17 @@ export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElemen
     </Text>
   );
 
+  if (resumeLoading || match.isLoading) {
+    return (
+      <YStack gap={14}>
+        {heading}
+        <YStack paddingVertical={16} alignItems="center">
+          <ActivityIndicator color={palette.ink} />
+        </YStack>
+      </YStack>
+    );
+  }
+
   if (!resumeId) {
     return (
       <YStack gap={10}>
@@ -52,17 +63,6 @@ export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElemen
         <Text fontFamily={fonts.sans} fontSize={14} color={palette.muted}>
           {t("match.breakdown.noResume")}
         </Text>
-      </YStack>
-    );
-  }
-
-  if (match.isLoading) {
-    return (
-      <YStack gap={14}>
-        {heading}
-        <YStack paddingVertical={16} alignItems="center">
-          <ActivityIndicator color={palette.ink} />
-        </YStack>
       </YStack>
     );
   }
@@ -84,7 +84,12 @@ export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElemen
   }
 
   const b = match.breakdown;
-  const gaps = b.subScores.keyword.detail?.missing ?? [];
+  const gaps = [
+    ...new Set([
+      ...(b.subScores.keyword.detail?.missing ?? []),
+      ...(b.subScores.requirements.detail?.missingSlots ?? []),
+    ]),
+  ];
 
   return (
     <>
@@ -92,6 +97,7 @@ export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElemen
         labelPlacement="header"
         label={t("match.breakdown.heading")}
         score={b.overallScore}
+        accessibilityLabel={t("match.breakdown.a11y", { score: `${b.overallScore}%` })}
         grade
         action={
           <Pressable
@@ -117,34 +123,38 @@ export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElemen
           );
         })}
       >
-        {gaps.length > 0 ? (
-          <YStack gap={10}>
-            <Text
-              fontFamily={fonts.sans}
-              fontSize={10}
-              fontWeight="600"
-              letterSpacing={1.8}
-              textTransform="uppercase"
-              color={palette.muted}
-            >
-              {t("match.breakdown.gapsTitle")}
-            </Text>
+        <YStack gap={10}>
+          <Text
+            fontFamily={fonts.sans}
+            fontSize={10}
+            fontWeight="600"
+            letterSpacing={1.8}
+            textTransform="uppercase"
+            color={palette.muted}
+          >
+            {t("match.breakdown.gapsTitle")}
+          </Text>
+          {gaps.length > 0 ? (
             <XStack flexWrap="wrap" gap={8}>
               {gaps.map((g) => (
                 <Chip key={g} label={g} />
               ))}
             </XStack>
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => router.push({ pathname: "/resume/[id]", params: { id: resumeId } })}
-              hitSlop={8}
-            >
-              <Text fontFamily={fonts.sans} fontSize={14} fontWeight="600" color={palette.accent}>
-                {t("match.breakdown.improveCta")}
-              </Text>
-            </Pressable>
-          </YStack>
-        ) : null}
+          ) : (
+            <Text fontFamily={fonts.sans} fontSize={13} lineHeight={20} color={palette.body}>
+              {t("match.breakdown.noGaps")}
+            </Text>
+          )}
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push({ pathname: "/resume/[id]", params: { id: resumeId } })}
+            hitSlop={8}
+          >
+            <Text fontFamily={fonts.sans} fontSize={14} fontWeight="600" color={palette.accent}>
+              {t("match.breakdown.improveCta")}
+            </Text>
+          </Pressable>
+        </YStack>
       </ScorePanel>
 
       <ScoreExplainSheet

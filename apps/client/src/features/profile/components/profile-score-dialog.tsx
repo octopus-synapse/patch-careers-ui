@@ -27,6 +27,7 @@ import {
   ScoreRing,
   Sheet,
   scoreInk,
+  scoreTone,
   useThemeName,
 } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
@@ -40,12 +41,24 @@ import { usePf } from "../lib/styles";
 
 const RING_SIZE = 104;
 
+function profileScoreInk(value: number, patchGreen: string, themeName: "light" | "dark"): string {
+  return scoreTone(value) === "excellent" ? patchGreen : scoreInk(value, themeName);
+}
+
 /** The number in its band colour, or an em dash when it was never computed. */
 function ScoreValue({ value, style }: { value: number | null; style: object }): ReactElement {
   const palette = useEditorialPalette();
   const themeName = useThemeName();
   return (
-    <Text style={[style, { color: value === null ? palette.subtle : scoreInk(value, themeName) }]}>
+    <Text
+      style={[
+        style,
+        {
+          color:
+            value === null ? palette.subtle : profileScoreInk(value, palette.primary, themeName),
+        },
+      ]}
+    >
       {value === null ? "—" : String(Math.round(value))}
     </Text>
   );
@@ -97,7 +110,15 @@ export function ProfileScoreDialog({
                 </View>
                 <Text style={pf.scoreBlockWhat}>{t("profile.scores.breakdown.styleCaption")}</Text>
                 <View style={pf.scoreBlockBar}>
-                  <ScoreBar score={parts.style} height={9} />
+                  <ScoreBar
+                    score={parts.style}
+                    height={9}
+                    color={
+                      parts.style !== null && scoreTone(parts.style) === "excellent"
+                        ? palette.primary
+                        : undefined
+                    }
+                  />
                 </View>
               </View>
             </View>
@@ -112,7 +133,15 @@ export function ProfileScoreDialog({
                   {t("profile.scores.breakdown.qualityCaption")}
                 </Text>
                 <View style={pf.scoreBlockBar}>
-                  <ScoreBar score={parts.quality} height={9} />
+                  <ScoreBar
+                    score={parts.quality}
+                    height={9}
+                    color={
+                      parts.quality !== null && scoreTone(parts.quality) === "excellent"
+                        ? palette.primary
+                        : undefined
+                    }
+                  />
                 </View>
               </View>
 
@@ -122,7 +151,15 @@ export function ProfileScoreDialog({
                   <ScoreValue value={parts.content} style={pf.scoreSubValue} />
                 </View>
                 <View style={pf.scoreSubBar}>
-                  <ScoreBar score={parts.content} height={6} />
+                  <ScoreBar
+                    score={parts.content}
+                    height={6}
+                    color={
+                      parts.content !== null && scoreTone(parts.content) === "excellent"
+                        ? palette.primary
+                        : undefined
+                    }
+                  />
                 </View>
               </View>
 
@@ -132,7 +169,15 @@ export function ProfileScoreDialog({
                   <ScoreValue value={parts.completeness} style={pf.scoreSubValue} />
                 </View>
                 <View style={pf.scoreSubBar}>
-                  <ScoreBar score={parts.completeness} height={6} />
+                  <ScoreBar
+                    score={parts.completeness}
+                    height={6}
+                    color={
+                      parts.completeness !== null && scoreTone(parts.completeness) === "excellent"
+                        ? palette.primary
+                        : undefined
+                    }
+                  />
                 </View>
               </View>
             </View>
@@ -169,7 +214,13 @@ export function ProfileScoreDialog({
                 <Text style={pf.scoreEmpty}>{t("profile.score.empty")}</Text>
               ) : (
                 <>
-                  <ScoreRing score={average} size={RING_SIZE} strokeWidth={10} animate={false} />
+                  <ScoreRing
+                    score={average}
+                    size={RING_SIZE}
+                    strokeWidth={10}
+                    color={scoreTone(average) === "excellent" ? palette.primary : undefined}
+                    animate={false}
+                  />
                   <Text style={pf.dialogRingCaption}>{t("profile.score.average")}</Text>
                 </>
               )}

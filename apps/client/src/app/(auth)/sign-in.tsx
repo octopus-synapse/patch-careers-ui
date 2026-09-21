@@ -1,24 +1,18 @@
 /**
- * Sign-in screen — "Editorial Calm", on a standalone card with the mascot.
+ * Sign-in screen — "Editorial Calm", on a standalone card.
  *
  * Shares its whole surface with sign-up through `CredentialsCard` (shell,
- * mascot, title, provider chips, dev-fill); what is specific here is the
+ * title, provider chips, dev-fill); what is specific here is the
  * two fields, the "keep me signed in / forgot password" row and the flow:
  *   1. `login()` from `@patch-careers/auth`
  *   2. `twoFactorRequired` → push `/2fa-verify` with userId
  *   3. `sessionExchangeId` → `exchangeSessionForTokens()`
  *   4. `bootstrap()` then redirect to the post-auth home
- * The mascot only "clicks" on a real success; a rejected login grimaces.
  */
 
 import { type LoginResult, login } from "@patch-careers/auth";
 import { Text, YStack } from "@patch-careers/ui";
-import {
-  editorialFonts,
-  FooterPrompt,
-  PrimaryAction,
-  useAuthMascot,
-} from "@patch-careers/ui/editorial";
+import { editorialFonts, FooterPrompt, PrimaryAction } from "@patch-careers/ui/editorial";
 import { type ReactElement, useRef } from "react";
 import { Platform, type TextInput } from "react-native";
 import { CredentialsCard } from "@/components/auth/credentials-card";
@@ -27,7 +21,6 @@ import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-er
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
 import { useKeepSignedIn } from "@/components/auth/hooks/use-keep-signed-in";
-import { useMascotForm } from "@/components/auth/hooks/use-mascot-form";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { KeepSignedInRow } from "@/components/auth/keep-signed-in-row";
 import { validateLogin } from "@/components/auth/validation";
@@ -45,13 +38,11 @@ export default function SignInScreen(): ReactElement {
   const keep = useKeepSignedIn();
   const isWeb = Platform.OS === "web";
   const passwordRef = useRef<TextInput>(null);
-  const mascot = useAuthMascot();
 
   const form = useFieldErrorsForm<LoginForm>(
     (values) => validateLogin({ email: values.email.trim(), password: values.password }, t),
     { defaultValues: { email: "", password: "" } },
   );
-  const bind = useMascotForm(mascot, form);
 
   // DEV-only: drop the seeded account into the form so signing in is one tap.
   function fillSignInTest(): void {
@@ -61,7 +52,6 @@ export default function SignInScreen(): ReactElement {
   }
 
   const onSubmit = form.handleSubmit(async ({ email, password }) => {
-    mascot.reset();
     const trimmedEmail = email.trim();
     await run(async () => {
       try {
@@ -70,11 +60,13 @@ export default function SignInScreen(): ReactElement {
           password,
           keep.enabled ? { keepSignedIn: keep.keepSignedIn } : undefined,
         );
-        mascot.celebrate();
         if (result.twoFactorRequired) {
           router.replace({
             pathname: "/(auth)/2fa-verify",
-            params: { userId: result.userId, keepSignedIn: keep.keepSignedIn ? "1" : "0" },
+            params: {
+              userId: result.userId,
+              keepSignedIn: keep.keepSignedIn ? "1" : "0",
+            },
           });
           return;
         }
@@ -82,7 +74,6 @@ export default function SignInScreen(): ReactElement {
           result.sessionExchangeId ? { sessionExchangeId: result.sessionExchangeId } : undefined,
         );
       } catch (err) {
-        mascot.grimace();
         handleAuthApiError(err, {
           locale,
           t,
@@ -112,19 +103,13 @@ export default function SignInScreen(): ReactElement {
   );
 
   return (
-    <CredentialsCard
-      title={t("auth.signIn")}
-      mascot={mascot}
-      testIDPrefix="auth"
-      onDevFill={fillSignInTest}
-    >
+    <CredentialsCard title={t("auth.signIn")} testIDPrefix="auth" onDevFill={fillSignInTest}>
       <YStack gap={24}>
         <FormEmailField
           control={form.control}
           name="email"
           testID="auth.email"
           onSubmitEditing={() => passwordRef.current?.focus()}
-          {...bind.text("email", "email")}
         />
         <FormPasswordField
           control={form.control}
@@ -133,7 +118,6 @@ export default function SignInScreen(): ReactElement {
           testID="auth.password"
           returnKeyType="go"
           onSubmitEditing={onSubmit}
-          {...bind.password("password")}
         />
       </YStack>
 

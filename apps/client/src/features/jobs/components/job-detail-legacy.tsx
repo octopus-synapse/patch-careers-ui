@@ -21,7 +21,7 @@ import { editorialFonts, PrimaryAction, useEditorialPalette } from "@patch-caree
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { Bookmark, ChevronLeft, FileQuestion } from "lucide-react-native";
+import { Bookmark, ChevronLeft, FileQuestion, FileText, Mail } from "lucide-react-native";
 import { type ReactElement, useMemo, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -33,7 +33,7 @@ import { findExternalJob } from "../hooks/queries";
 import { type AppliedCv, useReportApplied } from "../hooks/use-report-applied";
 import { useToggleSaveJob } from "../hooks/use-save-job";
 import { DESKTOP_JOBS_COLUMN, jobMetaLine, postedAgo, toTitleCase } from "../lib/helpers";
-import { ApplyFlow } from "./apply-flow";
+import { ApplyFlow, type ApplyFlowIntent } from "./apply-flow";
 import { DidYouApplySheet } from "./did-you-apply-sheet";
 
 export function JobDetailScreen({ id }: { id: string }): ReactElement {
@@ -56,6 +56,7 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
   const [saved, setSaved] = useState(job?.isSaved ?? false);
   const savePending = job !== null && pendingId === job.externalId;
   const [applyOpen, setApplyOpen] = useState(false);
+  const [applyIntent, setApplyIntent] = useState<ApplyFlowIntent>("apply");
   const [didApplyOpen, setDidApplyOpen] = useState(false);
   // The CV chosen in the apply flow — threaded into the did-apply report so
   // the application records which resume/variant + compatibility backed it.
@@ -98,6 +99,11 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
   function goBack(): void {
     if (router.canGoBack()) router.back();
     else router.replace("/jobs");
+  }
+
+  function openApplyFlow(intent: ApplyFlowIntent): void {
+    setApplyIntent(intent);
+    setApplyOpen(true);
   }
 
   return (
@@ -225,15 +231,31 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
 
           <YStack
             paddingHorizontal={24}
-            paddingTop={12}
+            paddingTop={14}
             paddingBottom={insets.bottom + 12}
             backgroundColor={editorialPalette.bg}
             borderTopWidth={1}
             borderTopColor={editorialPalette.hairline}
           >
-            {/* The hairline bleeds across the scene; the CTA stays on the column. */}
-            <YStack gap={8} {...columnProps}>
-              <PrimaryAction label={t("jobs.detail.apply")} onPress={() => setApplyOpen(true)} />
+            {/* Fixed action dock: preparation stays available without competing
+                with the primary application path's visual weight. */}
+            <YStack gap={10} {...columnProps}>
+              <XStack gap={8}>
+                <PreparationDockAction
+                  label={t("jobs.desktop.resume")}
+                  icon="resume"
+                  onPress={() => openApplyFlow("resume")}
+                />
+                <PreparationDockAction
+                  label={t("jobs.desktop.letter")}
+                  icon="letter"
+                  onPress={() => openApplyFlow("letter")}
+                />
+              </XStack>
+              <PrimaryAction
+                label={t("jobs.detail.apply")}
+                onPress={() => openApplyFlow("apply")}
+              />
               <Text
                 preset="caption"
                 fontSize={12}
@@ -253,6 +275,7 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
         <ApplyFlow
           job={job}
           open={applyOpen}
+          initialIntent={applyIntent}
           onOpenChange={setApplyOpen}
           onOpenJobSite={(cv) => void onOpenJobSite(cv)}
         />
@@ -265,5 +288,51 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
         pending={reportPending}
       />
     </View>
+  );
+}
+
+function PreparationDockAction({
+  label,
+  icon,
+  onPress,
+}: {
+  label: string;
+  icon: "resume" | "letter";
+  onPress: () => void;
+}): ReactElement {
+  const palette = useEditorialPalette();
+  const Glyph = icon === "resume" ? FileText : Mail;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      style={({ pressed }) => ({ flex: 1, opacity: pressed ? 0.72 : 1 })}
+    >
+      <XStack
+        minHeight={48}
+        paddingHorizontal={12}
+        gap={8}
+        alignItems="center"
+        justifyContent="center"
+        borderWidth={1}
+        borderColor={palette.hairlineStrong}
+        borderRadius={8}
+        backgroundColor={palette.surface}
+      >
+        <Glyph size={15} color={palette.ink} strokeWidth={1.8} />
+        <Text
+          fontFamily={editorialFonts.sans}
+          fontSize={12}
+          lineHeight={16}
+          fontWeight="600"
+          color={palette.ink}
+          textAlign="center"
+          numberOfLines={2}
+        >
+          {label}
+        </Text>
+      </XStack>
+    </Pressable>
   );
 }

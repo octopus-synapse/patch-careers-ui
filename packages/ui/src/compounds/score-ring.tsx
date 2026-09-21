@@ -37,6 +37,8 @@ export type ScoreRingProps = {
   score: number;
   size?: number;
   strokeWidth?: number;
+  /** Overrides the ramp ink for a surface with its own semantic accent. */
+  color?: string | undefined;
   /** Show the letter grade under the number ("82" + "A"). */
   grade?: boolean;
   /** Optional content rendered under the number (e.g. a tiny label). */
@@ -51,6 +53,7 @@ export function ScoreRing({
   score,
   size = 64,
   strokeWidth = 5,
+  color: colorOverride,
   grade = false,
   label,
   animate = true,
@@ -59,7 +62,7 @@ export function ScoreRing({
   const palette = useEditorialPalette();
   const themeName = useThemeName();
   const target = clampScore(score);
-  const color = scoreInk(score, themeName);
+  const color = colorOverride ?? scoreInk(score, themeName);
 
   const { center, r, circumference } = scoreArcGeometry(size, strokeWidth);
 

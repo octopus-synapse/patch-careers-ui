@@ -152,6 +152,7 @@ export function AddSectionFlowModal({
             <YStack flex={1}>
               <ModalHeader
                 title={picked ? picked.title : t("sections.addToResume")}
+                compactOnMobile
                 closeLabel={t("common.cancel")}
                 onClose={close}
                 leadingAction={

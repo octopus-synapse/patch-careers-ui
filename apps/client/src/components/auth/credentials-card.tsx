@@ -1,7 +1,6 @@
 /**
- * CredentialsCard — the surface sign-in and sign-up share: the card shell
- * with the mascot on top, the title block, the provider chip row and the
- * DEV test-fill link. Screens only add their fields, row and CTA as
+ * CredentialsCard — the surface sign-in and sign-up share: the card shell,
+ * title block and DEV test-fill link. Screens only add their fields, row and CTA as
  * children; `outside` mounts siblings of the card (dialogs) in the shell.
  *
  * `transit` (sign-up only) drives the "account created" stage: `fade` hides
@@ -10,12 +9,7 @@
  * see `created-stage.tsx` for the choreography.
  */
 import { Text } from "@patch-careers/ui";
-import {
-  AuthMascotCard,
-  type AuthMascotController,
-  AuthShell,
-  editorialFonts,
-} from "@patch-careers/ui/editorial";
+import { AuthCard, AuthShell, editorialFonts } from "@patch-careers/ui/editorial";
 import type { ReactElement, ReactNode } from "react";
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from "react-native";
 import Animated, {
@@ -23,13 +17,8 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
-import {
-  AUTH_TITLE_FONT_SIZE,
-  AUTH_TITLE_LINE_HEIGHT,
-  CreatedStageTitle,
-} from "@/components/auth/created-stage";
+import { CreatedStageTitle } from "@/components/auth/created-stage";
 import { DevFillLink } from "@/components/auth/dev-fill-link";
-import { OAuthProviderRow } from "@/components/auth/oauth-provider-row";
 
 export interface CredentialsTransit {
   /** 0 = form, 1 = only the title is left. */
@@ -42,7 +31,6 @@ export interface CredentialsTransit {
 
 export function CredentialsCard({
   title,
-  mascot,
   testIDPrefix,
   onDevFill,
   children,
@@ -51,7 +39,6 @@ export function CredentialsCard({
   onContentLayout,
 }: {
   title: string;
-  mascot: AuthMascotController;
   /** `auth` on sign-in, `signup` on sign-up — keeps the existing E2E ids. */
   testIDPrefix: string;
   onDevFill: () => void;
@@ -73,27 +60,29 @@ export function CredentialsCard({
   const idleSwap = useSharedValue(0);
   const fade = transit?.fade ?? idleFade;
   const titleSwap = transit?.titleSwap ?? idleSwap;
-  const screenTitleStyle = useAnimatedStyle(() => ({ opacity: 1 - titleSwap.value }));
-  const stageTitleStyle = useAnimatedStyle(() => ({ opacity: titleSwap.value }));
+  const screenTitleStyle = useAnimatedStyle(() => ({
+    opacity: 1 - titleSwap.value,
+  }));
+  const stageTitleStyle = useAnimatedStyle(() => ({
+    opacity: titleSwap.value,
+  }));
   const bodyStyle = useAnimatedStyle(() => ({ opacity: 1 - fade.value }));
 
   return (
     <AuthShell variant="card">
-      <AuthMascotCard
-        mascot={mascot}
+      <AuthCard
         {...(transit ? { panelStyle: transit.panelStyle } : {})}
         {...(onContentLayout ? { onContentLayout } : {})}
       >
         <Animated.View>
           <Animated.View style={screenTitleStyle}>
             <Text
-              textAlign="center"
               fontFamily={editorialFonts.sans}
-              fontSize={AUTH_TITLE_FONT_SIZE}
-              lineHeight={AUTH_TITLE_LINE_HEIGHT}
+              fontSize={38}
+              lineHeight={41}
               fontWeight="600"
-              letterSpacing={-0.4}
-              color="$ink"
+              letterSpacing={-1.7}
+              color="$accent"
             >
               {title}
             </Text>
@@ -101,11 +90,10 @@ export function CredentialsCard({
           {transit ? <CreatedStageTitle title={transit.title} style={stageTitleStyle} /> : null}
         </Animated.View>
         <Animated.View style={bodyStyle}>
-          <OAuthProviderRow testIDPrefix={testIDPrefix} />
           <DevFillLink onPress={onDevFill} testID={`${testIDPrefix}.devFill`} />
           {children}
         </Animated.View>
-      </AuthMascotCard>
+      </AuthCard>
       {outside}
     </AuthShell>
   );

@@ -1,7 +1,7 @@
 import { authDialogPalette } from "@patch-careers/tokens";
 import { X } from "lucide-react-native";
 import type { ReactNode } from "react";
-import { Pressable } from "react-native";
+import { Pressable, useWindowDimensions } from "react-native";
 import { editorialFonts } from "../editorial/fonts";
 import { TText, TXStack } from "../internal/tamagui-shim";
 import { useThemeName } from "../internal/use-theme-name";
@@ -11,6 +11,8 @@ export type ModalHeaderProps = {
   closeLabel: string;
   onClose: () => void;
   closeDisabled?: boolean;
+  /** Use tighter title metrics on narrow screens while preserving desktop scale. */
+  compactOnMobile?: boolean;
   /** Optional back control; occupies the same space as the close control. */
   leadingAction?: ReactNode;
 };
@@ -21,9 +23,12 @@ export function ModalHeader({
   closeLabel,
   onClose,
   closeDisabled = false,
+  compactOnMobile = false,
   leadingAction,
 }: ModalHeaderProps) {
   const dialogPalette = authDialogPalette[useThemeName()];
+  const { width } = useWindowDimensions();
+  const compact = compactOnMobile && width < 600;
 
   return (
     <TXStack position="relative" justifyContent="center" paddingHorizontal={34}>
@@ -37,9 +42,9 @@ export function ModalHeader({
         flex={1}
         textAlign="center"
         fontFamily={editorialFonts.sans}
-        fontSize={28}
-        lineHeight={34}
-        letterSpacing={-1}
+        fontSize={compact ? 23 : 28}
+        lineHeight={compact ? 28 : 34}
+        letterSpacing={compact ? -0.6 : -1}
         fontWeight="600"
         fontStyle="normal"
         color={dialogPalette.brand}

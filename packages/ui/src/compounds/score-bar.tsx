@@ -25,7 +25,7 @@ export type ScoreBarProps = {
   /** Bar thickness. 9 reads as a headline score, 6 as a nested one, 4 in a rail. */
   height?: number;
   /** Overrides the ramp fill. Only for bars that aren't a score (e.g. progress). */
-  color?: string;
+  color?: string | undefined;
   trackColor?: string;
   accessibilityLabel?: string;
 };

@@ -14,7 +14,7 @@
  * to read impossible.
  */
 
-import { ScoreBar, ScoreRing, scoreInk, useThemeName } from "@patch-careers/ui";
+import { ScoreBar, ScoreRing, scoreInk, scoreTone, useThemeName } from "@patch-careers/ui";
 import { PillButton, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { ChevronRight } from "lucide-react-native";
 import type { ReactElement } from "react";
@@ -39,23 +39,28 @@ function ScoreLine({
   const pf = usePf();
   const palette = useEditorialPalette();
   const themeName = useThemeName();
+  const color =
+    value === null
+      ? palette.subtle
+      : scoreTone(value) === "excellent"
+        ? palette.primary
+        : scoreInk(value, themeName);
   return (
     <View style={split ? pf.scoreLineSplit : null}>
       <View style={pf.scoreLineHead}>
         <Text style={pf.scoreLineLabel} numberOfLines={1}>
           {label}
         </Text>
-        <Text
-          style={[
-            pf.scoreLineValue,
-            { color: value === null ? palette.subtle : scoreInk(value, themeName) },
-          ]}
-        >
+        <Text style={[pf.scoreLineValue, { color }]}>
           {value === null ? "—" : String(Math.round(value))}
         </Text>
       </View>
       <View style={pf.scoreLineBar}>
-        <ScoreBar score={value} height={4} />
+        <ScoreBar
+          score={value}
+          height={4}
+          color={value !== null && scoreTone(value) === "excellent" ? palette.primary : undefined}
+        />
       </View>
     </View>
   );
@@ -64,6 +69,7 @@ function ScoreLine({
 export function ProfileScoreCard({ onOpen }: { onOpen: () => void }): ReactElement | null {
   const { t } = useI18n();
   const pf = usePf();
+  const palette = useEditorialPalette();
   const { scores, isColdStart } = useMeScores();
 
   // Same gate the hero uses: nothing to show before the first score lands, and
@@ -96,7 +102,13 @@ export function ProfileScoreCard({ onOpen }: { onOpen: () => void }): ReactEleme
         <View style={pf.scoreRow}>
           {/* Static on web: the ring is in the rail from first paint, and a
               count-up on a number nobody navigated to is decoration. */}
-          <ScoreRing score={average} size={RING_SIZE} strokeWidth={10} animate={false} />
+          <ScoreRing
+            score={average}
+            size={RING_SIZE}
+            strokeWidth={10}
+            color={scoreTone(average) === "excellent" ? palette.primary : undefined}
+            animate={false}
+          />
           <View style={pf.scoreLines}>
             <ScoreLine label={t("profile.score.styleShort")} value={parts.style} split={false} />
             <ScoreLine label={t("profile.score.qualityShort")} value={parts.quality} split />

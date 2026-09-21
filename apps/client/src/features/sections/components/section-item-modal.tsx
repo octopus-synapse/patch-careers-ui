@@ -67,6 +67,7 @@ export function SectionItemModal({
   const header = (
     <ModalHeader
       title={title}
+      compactOnMobile
       closeLabel={t("app.confirmDialog.close")}
       closeDisabled={disabled}
       onClose={requestClose}

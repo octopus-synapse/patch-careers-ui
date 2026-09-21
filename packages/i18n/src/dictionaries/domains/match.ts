@@ -19,12 +19,14 @@ export const matchPtBR: TranslationDict = {
   },
   breakdown: {
     heading: "Compatibilidade com esta vaga",
+    a11y: "{score} de compatibilidade do seu perfil com esta vaga",
     sub: {
       keyword: "Palavras-chave",
       requirements: "Requisitos",
       semantic: "Semântica",
     },
     gapsTitle: "O que falta no seu currículo",
+    noGaps: "Seu currículo já cobre os principais sinais identificados nesta vaga.",
     improveCta: "Melhorar meu currículo",
     noResume: "Crie um currículo para ver sua compatibilidade.",
     error: "Não foi possível calcular a compatibilidade.",
@@ -33,9 +35,9 @@ export const matchPtBR: TranslationDict = {
   explain: {
     a11y: "Como calculamos",
     title: "Como calculamos a compatibilidade",
-    keyword: "Palavras-chave — habilidades da vaga presentes no seu currículo.",
-    requirements: "Requisitos — anos, idiomas e certificações pedidos vs. os seus.",
-    semantic: "Semântica — proximidade de sentido entre seu currículo e a descrição.",
+    keyword: "Habilidades da vaga presentes no seu currículo.",
+    requirements: "Anos, idiomas e certificações pedidos vs. os seus.",
+    semantic: "Proximidade de sentido entre seu currículo e a descrição.",
     footnote: "Sinais sem dados suficientes são ignorados e os pesos se reequilibram.",
   },
 };
@@ -54,12 +56,14 @@ export const matchEn: TranslationDict = {
   },
   breakdown: {
     heading: "Compatibility with this job",
+    a11y: "{score} compatibility between your profile and this job",
     sub: {
       keyword: "Keywords",
       requirements: "Requirements",
       semantic: "Semantic",
     },
     gapsTitle: "Missing from your resume",
+    noGaps: "Your resume already covers the main signals identified in this job.",
     improveCta: "Improve my resume",
     noResume: "Create a resume to see your compatibility.",
     error: "Couldn't compute the compatibility.",
@@ -68,9 +72,9 @@ export const matchEn: TranslationDict = {
   explain: {
     a11y: "How we calculate it",
     title: "How we calculate compatibility",
-    keyword: "Keywords — the job's skills found in your resume.",
-    requirements: "Requirements — years, languages and certifications asked vs. yours.",
-    semantic: "Semantic — meaning-level closeness between your resume and the description.",
+    keyword: "The job's skills found in your resume.",
+    requirements: "Years, languages and certifications asked vs. yours.",
+    semantic: "Meaning-level closeness between your resume and the description.",
     footnote: "Signals without enough data are skipped and the weights rebalance.",
   },
 };

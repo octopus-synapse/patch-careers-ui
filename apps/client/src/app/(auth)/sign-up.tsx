@@ -1,7 +1,7 @@
 /**
  * Sign-up screen (D95-D98) — the sign-in screen's twin.
  *
- * Same `CredentialsCard` surface (shell, mascot, title, chips, dev-fill);
+ * Same `CredentialsCard` surface (shell, title, chips, dev-fill);
  * sign-up only adds the name field, the strength meter and the consent
  * gate: "Create account" validates the fields, then opens <ConsentDialog>;
  * accepting there is what actually submits.
@@ -21,7 +21,6 @@ import {
   FooterPrompt,
   PasswordStrengthMeter,
   PrimaryAction,
-  useAuthMascot,
 } from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
@@ -35,7 +34,6 @@ import { fieldErrorsSetter } from "@/components/auth/helpers/apply-field-errors"
 import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-error";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useKeepSignedIn } from "@/components/auth/hooks/use-keep-signed-in";
-import { useMascotForm } from "@/components/auth/hooks/use-mascot-form";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { KeepSignedInRow } from "@/components/auth/keep-signed-in-row";
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
@@ -59,7 +57,6 @@ export default function SignUpScreen(): ReactElement {
   const [phase, setPhase] = useState<Phase>("form");
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
-  const mascot = useAuthMascot();
 
   // "Account created" stage (see created-stage.tsx).
   const fade = useSharedValue(0);
@@ -74,7 +71,9 @@ export default function SignUpScreen(): ReactElement {
   const schedule = useCallback((fn: () => void, at: number) => {
     timersRef.current.push(setTimeout(fn, at));
   }, []);
-  const panelStyle = useAnimatedStyle(() => ({ maxHeight: panelMaxHeight.value }));
+  const panelStyle = useAnimatedStyle(() => ({
+    maxHeight: panelMaxHeight.value,
+  }));
   const onContentLayout = useCallback((e: LayoutChangeEvent) => {
     contentHeightRef.current = e.nativeEvent.layout.height;
   }, []);
@@ -85,12 +84,17 @@ export default function SignUpScreen(): ReactElement {
       setConsentOpen(false);
       setPhase("created");
       schedule(() => {
-        mascot.celebrate({ settle: true });
-        fade.value = withTiming(1, { duration: 320, easing: Easing.out(Easing.cubic) });
+        fade.value = withTiming(1, {
+          duration: 320,
+          easing: Easing.out(Easing.cubic),
+        });
       }, CREATED_TIMELINE.snapAt);
       schedule(() => {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        titleSwap.value = withTiming(1, { duration: 380, easing: Easing.out(Easing.cubic) });
+        titleSwap.value = withTiming(1, {
+          duration: 380,
+          easing: Easing.out(Easing.cubic),
+        });
       }, CREATED_TIMELINE.titleAt);
       schedule(() => {
         // A max-height tween only shows once it dips under the natural
@@ -103,7 +107,7 @@ export default function SignUpScreen(): ReactElement {
       }, CREATED_TIMELINE.collapseAt);
       schedule(onDone, CREATED_TIMELINE.navigateAt);
     },
-    [schedule, mascot, fade, titleSwap, panelMaxHeight],
+    [schedule, fade, titleSwap, panelMaxHeight],
   );
 
   const transit: CredentialsTransit | undefined =
@@ -114,28 +118,30 @@ export default function SignUpScreen(): ReactElement {
   const form = useFieldErrorsForm<SignUpForm>(
     (values) =>
       validateSignup(
-        { name: values.name.trim(), email: values.email.trim(), password: values.password },
+        {
+          name: values.name.trim(),
+          email: values.email.trim(),
+          password: values.password,
+        },
         t,
       ),
     { defaultValues: { name: "", email: "", password: "" } },
   );
-  const bind = useMascotForm(mascot, form);
   const password = form.watch("password");
 
   // DEV-only: a unique e-mail + a valid password, so sign-up testing is one
   // tap. Stays on the screen (the user taps Sign up, then accepts).
   function fillSignupTest(): void {
     form.setValue("name", "Test User", { shouldValidate: true });
-    form.setValue("email", `testuser${Date.now()}@example.com`, { shouldValidate: true });
+    form.setValue("email", `testuser${Date.now()}@example.com`, {
+      shouldValidate: true,
+    });
     form.setValue("password", "TestPass123!", { shouldValidate: true });
   }
 
   // "Create account" only validates the fields and raises the consent gate;
   // the request is sent from `acceptAndSignup` once the user has accepted.
-  const onSubmit = form.handleSubmit(
-    () => setConsentOpen(true),
-    () => mascot.grimace(),
-  );
+  const onSubmit = form.handleSubmit(() => setConsentOpen(true));
 
   async function acceptAndSignup(): Promise<void> {
     const { name, email, password: pw } = form.getValues();
@@ -178,7 +184,6 @@ export default function SignUpScreen(): ReactElement {
       } catch (err) {
         // Back to the form so field errors (e.g. e-mail taken) are visible.
         setConsentOpen(false);
-        mascot.grimace();
         handleAuthApiError(err, {
           locale,
           t,
@@ -193,7 +198,6 @@ export default function SignUpScreen(): ReactElement {
   return (
     <CredentialsCard
       title={t("auth.signUp")}
-      mascot={mascot}
       testIDPrefix="signup"
       onDevFill={fillSignupTest}
       onContentLayout={onContentLayout}
@@ -214,7 +218,6 @@ export default function SignUpScreen(): ReactElement {
           name="name"
           testID="signup.name"
           onSubmitEditing={() => emailRef.current?.focus()}
-          {...bind.text("name", "name")}
         />
         <FormEmailField
           control={form.control}
@@ -222,7 +225,6 @@ export default function SignUpScreen(): ReactElement {
           testID="signup.email"
           inputRef={emailRef}
           onSubmitEditing={() => passwordRef.current?.focus()}
-          {...bind.text("email", "email")}
         />
         <FormPasswordField
           control={form.control}
@@ -231,7 +233,6 @@ export default function SignUpScreen(): ReactElement {
           testID="signup.password"
           returnKeyType="next"
           isNew
-          {...bind.password("password")}
         >
           <PasswordStrengthMeter password={password} {...passwordMeterLabels(t)} />
         </FormPasswordField>

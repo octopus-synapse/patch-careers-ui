@@ -32,7 +32,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { type Href, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { Check, Download, FileText, Sparkles } from "lucide-react-native";
+import { Check, Download, FileText, Mail, Sparkles } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView } from "react-native";
 import { useDefaultMatchResume } from "@/features/match";
@@ -43,6 +43,7 @@ import type { ExternalJob } from "../types";
 
 /** Which CV the user is applying with — threaded into the did-apply report. */
 export type ApplyCv = AppliedCv;
+export type ApplyFlowIntent = "apply" | "resume" | "letter";
 
 type Step = "choice" | "tailoring" | "review" | "ready";
 
@@ -54,11 +55,13 @@ const NARRATION_STEP_MS = 900;
 export function ApplyFlow({
   job,
   open,
+  initialIntent = "apply",
   onOpenChange,
   onOpenJobSite,
 }: {
   job: ExternalJob;
   open: boolean;
+  initialIntent?: ApplyFlowIntent;
   onOpenChange: (open: boolean) => void;
   onOpenJobSite: (cv: ApplyCv) => void;
 }): ReactElement {
@@ -137,7 +140,11 @@ export function ApplyFlow({
       ? t("jobs.applyFlow.reviewTitle")
       : step === "ready"
         ? t("jobs.applyFlow.readyTitle")
-        : t("jobs.applyFlow.title");
+        : initialIntent === "resume"
+          ? t("jobs.applyFlow.prepareResumeTitle")
+          : initialIntent === "letter"
+            ? t("jobs.applyFlow.prepareLetterTitle")
+            : t("jobs.applyFlow.title");
 
   return (
     <Sheet
@@ -153,6 +160,7 @@ export function ApplyFlow({
           matchBefore={matchBefore}
           tailorLocked={tailorLocked}
           canTailor={Boolean(resumeId)}
+          intent={initialIntent}
           onTailor={startTailor}
           onMaster={chooseMaster}
         />
@@ -189,6 +197,7 @@ function ChoiceStep({
   matchBefore,
   tailorLocked,
   canTailor,
+  intent,
   onTailor,
   onMaster,
 }: {
@@ -196,6 +205,7 @@ function ChoiceStep({
   matchBefore: number | null;
   tailorLocked: boolean;
   canTailor: boolean;
+  intent: ApplyFlowIntent;
   onTailor: () => void;
   onMaster: () => void;
 }): ReactElement {
@@ -213,9 +223,27 @@ function ChoiceStep({
       </Text>
 
       <OptionCard
-        icon={<Sparkles size={16} color={palette.ink} strokeWidth={1.75} />}
-        title={t("jobs.applyFlow.chooseTailor")}
-        body={t("jobs.applyFlow.chooseTailorBody")}
+        icon={
+          intent === "letter" ? (
+            <Mail size={16} color={palette.ink} strokeWidth={1.75} />
+          ) : (
+            <Sparkles size={16} color={palette.ink} strokeWidth={1.75} />
+          )
+        }
+        title={
+          intent === "resume"
+            ? t("jobs.applyFlow.prepareResumeAction")
+            : intent === "letter"
+              ? t("jobs.applyFlow.prepareLetterAction")
+              : t("jobs.applyFlow.chooseTailor")
+        }
+        body={
+          intent === "resume"
+            ? t("jobs.applyFlow.prepareResumeBody")
+            : intent === "letter"
+              ? t("jobs.applyFlow.prepareLetterBody")
+              : t("jobs.applyFlow.chooseTailorBody")
+        }
         meta={t("jobs.applyFlow.chooseTailorMeta")}
         disabled={!canTailor || tailorLocked}
         onPress={onTailor}
@@ -226,14 +254,16 @@ function ChoiceStep({
         </Text>
       ) : null}
 
-      <OptionCard
-        icon={<FileText size={16} color={palette.body} strokeWidth={1.75} />}
-        title={t("jobs.applyFlow.chooseMaster")}
-        body={t("jobs.applyFlow.chooseMasterBody")}
-        meta={masterMeta}
-        disabled={!canTailor}
-        onPress={onMaster}
-      />
+      {intent === "apply" ? (
+        <OptionCard
+          icon={<FileText size={16} color={palette.body} strokeWidth={1.75} />}
+          title={t("jobs.applyFlow.chooseMaster")}
+          body={t("jobs.applyFlow.chooseMasterBody")}
+          meta={masterMeta}
+          disabled={!canTailor}
+          onPress={onMaster}
+        />
+      ) : null}
 
       <Text
         fontFamily={fonts.sans}

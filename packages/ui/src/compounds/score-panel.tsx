@@ -24,6 +24,8 @@ import { ScoreRing } from "./score-ring";
 export type ScorePanelProps = {
   label: string;
   score: number;
+  /** Concise screen-reader summary for the complete score panel. */
+  accessibilityLabel?: string;
   grade?: boolean;
   ringSize?: number;
   animate?: boolean;
@@ -59,6 +61,7 @@ function SectionLabel({ text }: { text: string }): ReactNode {
 export function ScorePanel({
   label,
   score,
+  accessibilityLabel,
   grade = false,
   ringSize,
   animate,
@@ -81,7 +84,7 @@ export function ScorePanel({
 
   if (labelPlacement === "summary") {
     return (
-      <TStack flexDirection="column" gap={18}>
+      <TStack accessibilityLabel={accessibilityLabel} flexDirection="column" gap={18}>
         {above}
         <TStack flexDirection="row" alignItems="center" gap={16}>
           {ring}
@@ -97,7 +100,7 @@ export function ScorePanel({
   }
 
   return (
-    <TStack flexDirection="column" gap={16}>
+    <TStack accessibilityLabel={accessibilityLabel} flexDirection="column" gap={16}>
       <TStack flexDirection="row" alignItems="center" justifyContent="space-between">
         <SectionLabel text={label} />
         {action}

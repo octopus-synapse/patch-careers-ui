@@ -9,6 +9,7 @@ import { jobsDesktopEn, jobsDesktopPtBR } from "./jobs-desktop";
 
 export const jobsPtBR: TranslationDict = {
   desktop: jobsDesktopPtBR,
+  documentTitle: "Vagas",
   title: "Vagas",
   loading: "Carregando vagas",
   home: {
@@ -101,6 +102,12 @@ export const jobsPtBR: TranslationDict = {
   // Apply flow: choose master × tailored → AI progress → review → ready.
   applyFlow: {
     title: "Candidatar-se",
+    prepareResumeTitle: "Currículo para esta vaga",
+    prepareResumeAction: "Criar currículo personalizado",
+    prepareResumeBody: "Adapte seu currículo master aos requisitos desta vaga.",
+    prepareLetterTitle: "Carta para esta vaga",
+    prepareLetterAction: "Criar carta de apresentação",
+    prepareLetterBody: "Prepare uma carta alinhada à vaga usando seu currículo master.",
     chooseTailor: "Personalizar pra esta vaga",
     chooseTailorBody:
       "Título, resumo e bullets reescritos pro escopo da vaga. Você revisa tudo antes.",
@@ -193,6 +200,7 @@ export const jobsPtBR: TranslationDict = {
 
 export const jobsEn: TranslationDict = {
   desktop: jobsDesktopEn,
+  documentTitle: "Jobs",
   title: "Jobs",
   loading: "Loading jobs",
   home: {
@@ -285,6 +293,12 @@ export const jobsEn: TranslationDict = {
   // Apply flow: choose master × tailored → AI progress → review → ready.
   applyFlow: {
     title: "Apply",
+    prepareResumeTitle: "Resume for this job",
+    prepareResumeAction: "Create tailored resume",
+    prepareResumeBody: "Adapt your master resume to this job's requirements.",
+    prepareLetterTitle: "Letter for this job",
+    prepareLetterAction: "Create cover letter",
+    prepareLetterBody: "Prepare a job-specific letter using your master resume.",
     chooseTailor: "Tailor for this job",
     chooseTailorBody:
       "Title, summary and bullets rewritten for the job's scope. You review everything first.",

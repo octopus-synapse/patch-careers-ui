@@ -18,4 +18,10 @@ describe("twinPath", () => {
     expect(twinPath("/en/sign-in", "en", "")).toBe("/en/sign-in");
     expect(twinPath("/sign-in", "pt-BR", "")).toBe("/sign-in");
   });
+
+  it("keeps authenticated app routes unprefixed in every language", () => {
+    expect(twinPath("/jobs", "en", "?scope=applications")).toBe("/jobs?scope=applications");
+    expect(twinPath("/en/settings", "en", "")).toBe("/settings");
+    expect(twinPath("/en/jobs", "pt-BR", "")).toBe("/jobs");
+  });
 });

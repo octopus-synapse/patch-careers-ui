@@ -82,7 +82,8 @@ export default function TabsLayout(): ReactElement | null {
       <Tabs.Screen
         name="jobs"
         options={{
-          title: t("tabs.jobs"),
+          title: `${t("jobs.documentTitle")} | Patch Careers`,
+          tabBarLabel: t("tabs.jobs"),
           tabBarIcon: tabIcon("briefcase-outline", "briefcase"),
         }}
       />
@@ -90,14 +91,16 @@ export default function TabsLayout(): ReactElement | null {
         name="messages"
         options={{
           ...headerlessTab,
-          title: t("tabs.messages"),
+          title: `${t("tabs.messages")} | Patch Careers`,
+          tabBarLabel: t("tabs.messages"),
           tabBarIcon: tabIcon("chatbubble-ellipses-outline", "chatbubble-ellipses"),
         }}
       />
       <Tabs.Screen
         name="curriculos"
         options={{
-          title: t("tabs.resumes"),
+          title: `${t("tabs.resumes")} | Patch Careers`,
+          tabBarLabel: t("tabs.resumes"),
           tabBarIcon: tabIcon("documents-outline", "documents"),
         }}
       />
@@ -105,7 +108,8 @@ export default function TabsLayout(): ReactElement | null {
         name="profile"
         options={{
           ...headerlessTab,
-          title: t("tabs.profile"),
+          title: `${t("tabs.profile")} | Patch Careers`,
+          tabBarLabel: t("tabs.profile"),
           tabBarIcon: ({ focused, size }) => <ProfileTabIcon focused={focused} size={size} />,
         }}
       />

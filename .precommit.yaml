@@ -5,7 +5,7 @@ checks:
   - name: lint
     cmd: pnpm exec biome check .
   - name: typecheck
-    cmd: pnpm exec nx run-many -t typecheck --output-style=static
+    cmd: NX_ISOLATE_PLUGINS=false pnpm exec nx run-many -t typecheck --output-style=static
   - name: arch
     # Architectural boundary specs (feature graph + DS adoption + Tamagui-first).
     # The style/i18n migration specs stay out of the gate until green (ADR-0007).

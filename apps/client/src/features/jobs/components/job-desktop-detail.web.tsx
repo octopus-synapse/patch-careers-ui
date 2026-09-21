@@ -1,14 +1,15 @@
+import { editorialPalette } from "@patch-careers/tokens";
 import { Sheet, Text, useEditorialPalette, useToast, XStack, YStack } from "@patch-careers/ui";
-import { PillButton } from "@patch-careers/ui/editorial";
+import { editorialFonts, PillButton } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { Bookmark, ChevronLeft, ExternalLink, FileText, Mail } from "lucide-react-native";
-import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, ScrollView } from "react-native";
+import { type ReactElement, useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Pressable, ScrollView } from "react-native";
+import { MatchBreakdown } from "@/features/match";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useI18n } from "@/providers/i18n-provider";
 import { useJobOpportunity } from "../hooks/use-job-opportunity";
 import { useJobsWorkspace } from "../hooks/use-jobs-workspace";
-import { useMasterJobScores } from "../hooks/use-master-job-scores";
 import { useReportApplied } from "../hooks/use-report-applied";
 import { useToggleSaveJob } from "../hooks/use-save-job";
 import { type PreparationDocument, safeJobUrl } from "../lib/discovery";
@@ -16,7 +17,6 @@ import { jobMetaLine, toTitleCase } from "../lib/helpers";
 import { DidYouApplySheet } from "./did-you-apply-sheet";
 import { JobComposer } from "./job-composer.web";
 import { JobLogo } from "./job-logo.web";
-import { JobScore } from "./job-score";
 import { JobsEmpty } from "./job-shelf.web";
 
 export function JobDesktopDetail({ id }: { id: string }) {
@@ -29,9 +29,6 @@ export function JobDesktopDetail({ id }: { id: string }) {
   const detail = useJobOpportunity(id, workspace.entries, workspace.isLoading);
   const job = detail.job;
   const applicationUrl = job ? safeJobUrl(job.applyUrl) : null;
-  const { scores } = useMasterJobScores(
-    job && job.source !== "imported" && job.id !== job.savedId ? [job.id] : [],
-  );
   const save = useToggleSaveJob();
   const report = useReportApplied();
   const entry = workspace.entries.find((item) => item.job.externalId === job?.externalId);
@@ -141,6 +138,7 @@ export function JobDesktopDetail({ id }: { id: string }) {
                 <YStack maxWidth={900} gap={14}>
                   <Text
                     accessibilityRole="header"
+                    fontFamily={editorialFonts.serif}
                     fontWeight="600"
                     fontSize={48}
                     lineHeight={56}
@@ -169,10 +167,8 @@ export function JobDesktopDetail({ id }: { id: string }) {
                   />
                 ) : null}
                 {job.source !== "imported" ? (
-                  <PillButton
-                    variant="soft"
+                  <DesktopSecondaryAction
                     minHeight={46}
-                    borderRadius={12}
                     label={t(job.isSaved ? "jobs.save.remove" : "jobs.save.add")}
                     disabled={save.pendingId === job.externalId}
                     onPress={() => save.toggle(job)}
@@ -182,7 +178,7 @@ export function JobDesktopDetail({ id }: { id: string }) {
                   />
                 ) : null}
               </XStack>
-              <XStack gap={72} alignItems="flex-start" paddingTop={40}>
+              <XStack gap={64} alignItems="flex-start" paddingTop={40}>
                 <YStack flex={1} minWidth={0} maxWidth={720} gap={22}>
                   <Text
                     accessibilityRole="header"
@@ -198,44 +194,58 @@ export function JobDesktopDetail({ id }: { id: string }) {
                     {job.description ?? t("jobs.detail.noDescription")}
                   </Text>
                 </YStack>
-                <YStack width={320} flexShrink={0} gap={10}>
+                <YStack width={360} flexShrink={0} gap={18}>
                   <YStack
-                    width={280}
-                    minHeight={350}
-                    padding={18}
-                    alignSelf="center"
-                    alignItems="center"
-                    gap={10}
+                    width="100%"
+                    padding={24}
+                    gap={20}
                     borderWidth={1}
                     borderColor={palette.hairlineStrong}
-                    borderRadius={18}
+                    borderRadius={16}
                     backgroundColor={palette.panel}
                   >
+                    <MatchBreakdown
+                      job={{
+                        id: job.id,
+                        title: job.title,
+                        company: job.company,
+                        description: job.description,
+                      }}
+                    />
+                  </YStack>
+                  <YStack
+                    width="100%"
+                    padding={24}
+                    gap={16}
+                    borderWidth={1}
+                    borderColor={palette.hairline}
+                    borderRadius={16}
+                    backgroundColor={palette.surface}
+                  >
                     <Text
-                      fontSize={13}
-                      lineHeight={18}
+                      fontFamily={editorialFonts.sans}
+                      fontSize={10}
+                      lineHeight={16}
                       fontWeight="600"
-                      color={palette.ink}
-                      textAlign="center"
+                      letterSpacing={1.8}
+                      textTransform="uppercase"
+                      color={palette.muted}
                     >
-                      {t("jobs.desktop.compatibilityHeading")}
+                      {t("jobs.desktop.prepare")}
                     </Text>
-                    <JobScore score={scores[job.id]} large />
-                    <YStack width="100%" gap={8} marginTop={4}>
-                      <PillButton
-                        variant="soft"
+                    <YStack width="100%" gap={10}>
+                      <DesktopSecondaryAction
+                        appearance="dark"
                         fullWidth
-                        minHeight={40}
-                        borderRadius={10}
+                        minHeight={42}
                         label={t("jobs.desktop.resume")}
                         onPress={() => prepare("resume")}
                         renderIcon={({ color }) => <FileText size={15} color={color} />}
                       />
-                      <PillButton
-                        variant="soft"
+                      <DesktopSecondaryAction
+                        appearance="dark"
                         fullWidth
-                        minHeight={40}
-                        borderRadius={10}
+                        minHeight={42}
                         label={t("jobs.desktop.letter")}
                         onPress={() => prepare("letter")}
                         renderIcon={({ color }) => <Mail size={15} color={color} />}
@@ -244,12 +254,21 @@ export function JobDesktopDetail({ id }: { id: string }) {
                   </YStack>
                   {entry?.documents.length ? (
                     <YStack
-                      gap={10}
-                      borderTopWidth={1}
-                      borderTopColor={palette.hairline}
-                      paddingTop={18}
+                      gap={12}
+                      padding={20}
+                      borderWidth={1}
+                      borderColor={palette.hairline}
+                      borderRadius={16}
+                      backgroundColor={palette.surface}
                     >
-                      <Text fontSize={12} fontWeight="600" color={palette.ink}>
+                      <Text
+                        fontFamily={editorialFonts.sans}
+                        fontSize={10}
+                        fontWeight="600"
+                        letterSpacing={1.8}
+                        textTransform="uppercase"
+                        color={palette.muted}
+                      >
                         {t("jobs.desktop.documents")}
                       </Text>
                       {entry.documents.map((document) => (
@@ -302,5 +321,65 @@ export function JobDesktopDetail({ id }: { id: string }) {
         pending={report.pending || workspace.pending}
       />
     </ScrollView>
+  );
+}
+
+function DesktopSecondaryAction({
+  label,
+  onPress,
+  renderIcon,
+  disabled = false,
+  fullWidth = false,
+  minHeight = 42,
+  appearance = "neutral",
+}: {
+  label: string;
+  onPress: () => void;
+  renderIcon: (args: { color: string }) => ReactElement;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  minHeight?: number;
+  appearance?: "neutral" | "dark";
+}): ReactElement {
+  const palette = useEditorialPalette();
+  const dark = appearance === "dark";
+  const foreground = dark ? editorialPalette.onPrimary : palette.ink;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled }}
+      disabled={disabled}
+      onPress={onPress}
+      style={({ pressed }) => ({
+        alignSelf: fullWidth ? "stretch" : "flex-start",
+        opacity: disabled ? 0.45 : pressed ? 0.72 : 1,
+      })}
+    >
+      <XStack
+        minHeight={minHeight}
+        paddingHorizontal={16}
+        gap={8}
+        alignItems="center"
+        justifyContent="center"
+        borderWidth={1}
+        borderColor={dark ? editorialPalette.ink : palette.hairlineStrong}
+        borderRadius={8}
+        backgroundColor={dark ? editorialPalette.ink : palette.surface}
+        hoverStyle={{ backgroundColor: dark ? editorialPalette.body : palette.panel }}
+      >
+        {renderIcon({ color: foreground })}
+        <Text
+          fontFamily={editorialFonts.sans}
+          fontSize={13.5}
+          lineHeight={20}
+          fontWeight="600"
+          color={foreground}
+          textAlign="center"
+        >
+          {label}
+        </Text>
+      </XStack>
+    </Pressable>
   );
 }

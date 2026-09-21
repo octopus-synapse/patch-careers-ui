@@ -179,6 +179,26 @@ exports.mockJobsBackend = async (
     } else if (path.endsWith("/jobs/applications/tracker")) data = { applications: [] };
     else if (path.endsWith("/jobs/applications"))
       data = { items: [], total: 0, page: 1, hasNext: false };
+    else if (/\/match\/[^/]+\/[^/]+$/.test(path))
+      data = {
+        overallScore: 96,
+        rank: "A",
+        subScores: {
+          keyword: {
+            score: 94,
+            detail: { matched: ["typescript", "react"], missing: ["node.js"] },
+          },
+          requirements: {
+            score: 100,
+            detail: { matchedSlots: ["experience"], missingSlots: [] },
+          },
+          semantic: { score: 95 },
+          fit: { score: null },
+        },
+        effectiveWeights: { keyword: 0.4, requirements: 0.35, semantic: 0.25, fit: 0 },
+        rulesVersion: "e2e",
+        computedAt: now,
+      };
     else if (path.endsWith("/match/batch"))
       data = {
         scores: body.jobIds.map((jobId) => ({

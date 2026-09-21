@@ -1,5 +1,5 @@
 /**
- * `LandingHead` — hreflang alternates for the landing routes.
+ * `LandingHead` — document metadata for the landing routes.
  *
  * The landing exists at `/` (pt-BR, the primary market) and `/en`
  * (English). These tags tell crawlers the two are the same page in
@@ -15,6 +15,7 @@ const ORIGIN = "https://patchcareers.org";
 export function LandingHead(): ReactElement {
   return (
     <Head>
+      <title>Patch Careers</title>
       <link rel="alternate" hrefLang="pt-BR" href={`${ORIGIN}/`} />
       <link rel="alternate" hrefLang="en" href={`${ORIGIN}/en`} />
       <link rel="alternate" hrefLang="x-default" href={`${ORIGIN}/`} />

@@ -336,6 +336,9 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
   if (variant === "landing" && width >= 1024) {
     const green =
       theme === "dark" ? landingScrollPalette.navInkDark : landingScrollPalette.navInkLight;
+    // This follows the section-aware CTA color: deep green on paper and lime
+    // on the green chapters. Inactive labels follow the section ink instead.
+    const landingSelection = "var(--landing-nav-button, #214e3d)";
     const landingChapters = LANDING_NAV_CHAPTERS;
     const showChapterNames = width >= 1180;
     return (
@@ -365,7 +368,7 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
             tag="nav"
             aria-label={t("app.header.mainNavigation")}
             alignItems="center"
-            gap={showChapterNames ? 7 : 3}
+            gap={showChapterNames ? 16 : 8}
           >
             {landingChapters.map((chapter, index) => {
               const title = t(
@@ -383,18 +386,20 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
                     setLandingActiveChapter(chapter);
                     navigateLandingChapter(chapter);
                   }}
-                  backgroundColor={activeChapter ? `${green}18` : "transparent"}
+                  backgroundColor="transparent"
                   borderWidth={0}
-                  borderBottomWidth={activeChapter ? 2 : 0}
-                  borderBottomColor={green}
-                  paddingHorizontal={showChapterNames ? 3 : 5}
-                  height={36}
+                  paddingHorizontal={showChapterNames ? 2 : 6}
+                  height={42}
                   fontFamily={landingSans}
-                  fontSize={showChapterNames ? 9 : 10}
+                  fontSize={11}
                   fontWeight={activeChapter ? "700" : "500"}
-                  color={activeChapter ? green : (landingInk ?? palette.muted)}
-                  hoverStyle={{ color: green, backgroundColor: "transparent" }}
-                  focusVisibleStyle={{ outlineColor: green, outlineWidth: 2, outlineOffset: 4 }}
+                  color={activeChapter ? landingSelection : (landingInk ?? palette.ink)}
+                  hoverStyle={{ color: landingSelection, backgroundColor: "transparent" }}
+                  focusVisibleStyle={{
+                    outlineColor: landingSelection,
+                    outlineWidth: 2,
+                    outlineOffset: 4,
+                  }}
                 >
                   {showChapterNames ? `${number} ${title}` : number}
                 </Button>

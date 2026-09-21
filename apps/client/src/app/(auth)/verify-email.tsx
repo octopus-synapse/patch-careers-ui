@@ -15,12 +15,9 @@
  * composition re-stacks (icon above the words) and after a 2.5s hold the app
  * routes on by itself via `finishAuthentication()`.
  *
- * The mascot perches on the card throughout, settled in its `sealed` rest:
- * its pupils follow the cells as digits land, it grimaces on a bad code and
- * beams (^ ^) as the seal stamps. Arriving from sign-up (`created=1`) the
- * screen opens on sign-up's final frame — card clamped to the stage height
- * under "Account created." — then grows the card and reveals the verify
- * content, so the character never appears to move (see `created-stage.tsx`).
+ * Arriving from sign-up (`created=1`) the screen opens on sign-up's final
+ * frame — card clamped to the stage height under "Account created." — then
+ * grows the card and reveals the verify content.
  */
 
 import { postV1AuthEmailVerificationSend, verify as verifyApi } from "@patch-careers/api-client";
@@ -28,7 +25,7 @@ import { cooldownSecondsRemaining, maskEmail } from "@patch-careers/auth";
 import { Text, useEditorialPalette } from "@patch-careers/ui";
 import {
   AUTH_CARD_PADDING_Y,
-  AuthMascotCard,
+  AuthCard,
   AuthShell,
   editorialFonts,
   useAuthMascot,
@@ -93,7 +90,11 @@ export default function VerifyEmailScreen(): ReactElement {
   const { run } = useSubmit();
   const router = useRouter();
   const palette = useEditorialPalette();
-  const params = useLocalSearchParams<{ email?: string; token?: string; created?: string }>();
+  const params = useLocalSearchParams<{
+    email?: string;
+    token?: string;
+    created?: string;
+  }>();
   const mascot = useAuthMascot();
 
   const email = params.email ?? "";
@@ -321,9 +322,15 @@ export default function VerifyEmailScreen(): ReactElement {
   const codeGlideStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: codeDy.value * composeProgress.value }],
   }));
-  const panelStyle = useAnimatedStyle(() => ({ maxHeight: panelMaxHeight.value }));
-  const contentStyle = useAnimatedStyle(() => ({ opacity: contentOpacity.value }));
-  const stageTitleStyle = useAnimatedStyle(() => ({ opacity: stageTitleOpacity.value }));
+  const panelStyle = useAnimatedStyle(() => ({
+    maxHeight: panelMaxHeight.value,
+  }));
+  const contentStyle = useAnimatedStyle(() => ({
+    opacity: contentOpacity.value,
+  }));
+  const stageTitleStyle = useAnimatedStyle(() => ({
+    opacity: stageTitleOpacity.value,
+  }));
 
   const otpState: EditorialOtpState =
     phase !== "input"
@@ -399,119 +406,127 @@ export default function VerifyEmailScreen(): ReactElement {
     <AuthShell
       variant="card"
       {...(isWeb && phase === "input" && !arriving
-        ? { corner: <BackToSignInLink variant="corner" testID="verify.backToSignIn" /> }
+        ? {
+            corner: <BackToSignInLink variant="corner" testID="verify.backToSignIn" />,
+          }
         : {})}
     >
-      <AuthMascotCard
-        mascot={mascot}
-        animateIn={!arrivedRef.current}
-        panelStyle={panelStyle}
-        onContentLayout={(e) => {
-          contentHeightRef.current = e.nativeEvent.layout.height;
-        }}
-        below={
-          isWeb ? undefined : (
-            <Animated.View
-              style={[styles.backRow, auxStyle, contentStyle]}
-              pointerEvents={phase === "input" && !arriving ? "auto" : "none"}
-            >
-              <BackToSignInLink testID="verify.backToSignIn" />
-            </Animated.View>
-          )
-        }
-      >
-        {arriving ? (
-          <CreatedStageTitle title={t("auth.accountCreatedTitle")} style={stageTitleStyle} />
-        ) : null}
-        <Animated.View
-          style={[styles.column, contentStyle]}
-          pointerEvents={phase === "input" && !arriving ? "auto" : "none"}
-          onLayout={(e) => {
-            layoutsRef.current.column = e.nativeEvent.layout.height;
+      <View style={styles.cardWrap}>
+        <AuthCard
+          animateIn={!arrivedRef.current}
+          panelStyle={panelStyle}
+          onContentLayout={(e) => {
+            contentHeightRef.current = e.nativeEvent.layout.height;
           }}
         >
-          {titleBlock}
-          <Animated.View style={auxStyle}>
-            <RNText style={[styles.subtitle, { color: palette.muted }]}>
-              {t("auth.verifyIntroShort")}
-            </RNText>
-          </Animated.View>
-          <Animated.View style={auxStyle}>
-            <Pressable
-              onPress={() => router.back()}
-              disabled={phase !== "input"}
-              accessibilityRole="button"
-              accessibilityLabel={t("auth.verifyChangeEmail")}
-              style={[
-                styles.mailChip,
-                { borderColor: palette.hairline, backgroundColor: palette.surface },
-              ]}
-              testID="verify.changeEmail"
-            >
-              <RNText style={[styles.mailChipText, { color: palette.body }]}>
-                {email ? maskEmail(email) : ""}
+          {arriving ? (
+            <CreatedStageTitle title={t("auth.accountCreatedTitle")} style={stageTitleStyle} />
+          ) : null}
+          <Animated.View
+            style={[styles.column, contentStyle]}
+            pointerEvents={phase === "input" && !arriving ? "auto" : "none"}
+            onLayout={(e) => {
+              layoutsRef.current.column = e.nativeEvent.layout.height;
+            }}
+          >
+            {titleBlock}
+            <Animated.View style={auxStyle}>
+              <RNText style={[styles.subtitle, { color: palette.muted }]}>
+                {t("auth.verifyIntroShort")}
               </RNText>
-              <Pencil size={11} color={palette.muted} />
-            </Pressable>
-          </Animated.View>
-          {codeSlot}
-          <Animated.View style={[styles.statusRow, auxStyle]}>
-            {status === "loading" ? <ActivityIndicator size="small" color={palette.muted} /> : null}
-            {statusMessage ? (
-              <RNText
+            </Animated.View>
+            <Animated.View style={auxStyle}>
+              <Pressable
+                onPress={() => router.back()}
+                disabled={phase !== "input"}
+                accessibilityRole="button"
+                accessibilityLabel={t("auth.verifyChangeEmail")}
                 style={[
-                  styles.statusText,
-                  { color: status === "error" ? palette.danger : palette.muted },
+                  styles.mailChip,
+                  {
+                    borderColor: palette.hairline,
+                    backgroundColor: palette.surface,
+                  },
                 ]}
-                accessibilityLiveRegion="polite"
+                testID="verify.changeEmail"
               >
-                {statusMessage}
-              </RNText>
+                <RNText style={[styles.mailChipText, { color: palette.body }]}>
+                  {email ? maskEmail(email) : ""}
+                </RNText>
+                <Pencil size={11} color={palette.muted} />
+              </Pressable>
+            </Animated.View>
+            {codeSlot}
+            <Animated.View style={[styles.statusRow, auxStyle]}>
+              {status === "loading" ? (
+                <ActivityIndicator size="small" color={palette.muted} />
+              ) : null}
+              {statusMessage ? (
+                <RNText
+                  style={[
+                    styles.statusText,
+                    {
+                      color: status === "error" ? palette.danger : palette.muted,
+                    },
+                  ]}
+                  accessibilityLiveRegion="polite"
+                >
+                  {statusMessage}
+                </RNText>
+              ) : null}
+            </Animated.View>
+            <Animated.View style={[styles.resendRow, auxStyle]}>
+              {canResend ? (
+                <>
+                  <RNText style={[styles.resendPrefix, { color: palette.muted }]}>
+                    {t("auth.verifyNotReceived")}
+                  </RNText>
+                  <Pressable
+                    onPress={() => void requestVerificationCode(true)}
+                    disabled={phase !== "input"}
+                    accessibilityRole="button"
+                    testID="verify.resend"
+                  >
+                    <RNText style={[styles.resendLink, { color: palette.accent }]}>
+                      {t("auth.verifyResend")}
+                    </RNText>
+                  </Pressable>
+                </>
+              ) : (
+                <>
+                  <CountdownRing
+                    remaining={remaining}
+                    total={RESEND_COOLDOWN_S}
+                    trackColor={palette.hairline}
+                    headColor={palette.subtle}
+                  />
+                  <RNText style={[styles.resendPrefix, { color: palette.muted }]}>
+                    {t("auth.verifyResendPrefix")}
+                  </RNText>
+                  <RNText style={[styles.resendClock, { color: palette.subtle }]}>
+                    {mmss(remaining)}
+                  </RNText>
+                </>
+              )}
+            </Animated.View>
+            {testCode ? (
+              <Animated.View style={auxStyle}>
+                <Text preset="caption" color="$gray10" textAlign="center" testID="verify.testCode">
+                  {t("app.verifyEmail.testCodeSent", { code: testCode })}
+                </Text>
+              </Animated.View>
             ) : null}
           </Animated.View>
-          <Animated.View style={[styles.resendRow, auxStyle]}>
-            {canResend ? (
-              <>
-                <RNText style={[styles.resendPrefix, { color: palette.muted }]}>
-                  {t("auth.verifyNotReceived")}
-                </RNText>
-                <Pressable
-                  onPress={() => void requestVerificationCode(true)}
-                  disabled={phase !== "input"}
-                  accessibilityRole="button"
-                  testID="verify.resend"
-                >
-                  <RNText style={[styles.resendLink, { color: palette.accent }]}>
-                    {t("auth.verifyResend")}
-                  </RNText>
-                </Pressable>
-              </>
-            ) : (
-              <>
-                <CountdownRing
-                  remaining={remaining}
-                  total={RESEND_COOLDOWN_S}
-                  trackColor={palette.hairline}
-                  headColor={palette.subtle}
-                />
-                <RNText style={[styles.resendPrefix, { color: palette.muted }]}>
-                  {t("auth.verifyResendPrefix")}
-                </RNText>
-                <RNText style={[styles.resendClock, { color: palette.subtle }]}>
-                  {mmss(remaining)}
-                </RNText>
-              </>
-            )}
+        </AuthCard>
+        {!isWeb ? (
+          <Animated.View
+            style={[styles.backRow, auxStyle, contentStyle]}
+            pointerEvents={phase === "input" && !arriving ? "auto" : "none"}
+          >
+            <BackToSignInLink testID="verify.backToSignIn" />
           </Animated.View>
-          {testCode ? (
-            <Animated.View style={auxStyle}>
-              <Text preset="caption" color="$gray10" textAlign="center" testID="verify.testCode">
-                {t("app.verifyEmail.testCodeSent", { code: testCode })}
-              </Text>
-            </Animated.View>
-          ) : null}
-        </Animated.View>
-      </AuthMascotCard>
+        ) : null}
+      </View>
     </AuthShell>
   );
 }
@@ -630,7 +645,14 @@ const styles = StyleSheet.create({
   ring: {
     transform: [{ rotate: "-90deg" }],
   },
+  cardWrap: {
+    position: "relative",
+  },
   backRow: {
+    position: "absolute",
+    top: "100%",
+    left: 0,
+    right: 0,
     marginTop: 18,
     alignItems: "center",
   },

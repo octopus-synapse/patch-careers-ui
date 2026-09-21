@@ -418,6 +418,7 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
     const createItem = async (section: MergedSection, item: SectionItem): Promise<void> => {
       await persistFor(section.key)({ kind: "create", item, index: section.items.length });
       setAddOpen(false);
+      setAddingSection(null);
     };
 
     const editItem = (section: MergedSection, item: SectionItem, index: number): void =>
@@ -471,6 +472,7 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
                     item={item}
                     fields={section.descriptor.fields ?? undefined}
                     onEdit={() => editItem(section, item, index)}
+                    onDelete={() => deleteItem(section, item, index)}
                     isFirst={index === 0}
                     isLast={index === section.items.length - 1}
                   />
@@ -532,17 +534,28 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
       <YStack gap={26}>
         {variant === "grouped" ? (
           <>
-            {standalone.map((section) => (
-              <SectionCard key={section.key} title={section.title}>
+            {standalone.map((section) =>
+              onlySection ? (
                 <SectionGroup
+                  key={section.key}
                   section={section}
                   showLabel={false}
                   onEditItem={(item, index) => editItem(section, item, index)}
                   onDeleteItem={(item, index) => deleteItem(section, item, index)}
                   deleteLabel={removeLabel}
                 />
-              </SectionCard>
-            ))}
+              ) : (
+                <SectionCard key={section.key} title={section.title}>
+                  <SectionGroup
+                    section={section}
+                    showLabel={false}
+                    onEditItem={(item, index) => editItem(section, item, index)}
+                    onDeleteItem={(item, index) => deleteItem(section, item, index)}
+                    deleteLabel={removeLabel}
+                  />
+                </SectionCard>
+              ),
+            )}
 
             {linksSection ? (
               <SectionCard
@@ -577,7 +590,13 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t("sections.addToResume")}
-            onPress={() => setAddOpen(true)}
+            onPress={() => {
+              const scopedSection = onlySection
+                ? (standalone[0] ?? linksSection ?? addCatalog[0])
+                : undefined;
+              if (scopedSection) openAddFor(scopedSection);
+              else setAddOpen(true);
+            }}
             style={ed.addSection}
           >
             <Plus size={15} color={authTokens.ink} strokeWidth={2} />
@@ -611,9 +630,11 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
         ) : null}
 
         <AddSectionFlowModal
+          key={addingSection?.key ?? "catalog"}
           visible={addOpen}
-          onClose={() => setAddOpen(false)}
+          onClose={closeAdd}
           catalog={addCatalog}
+          initialPick={addingSection ?? undefined}
           onCreate={createItem}
           isPending={isPending}
           t={t}
