@@ -28,6 +28,15 @@ export type RewriteProposal = {
 };
 
 export function useSectionItemMutations(resumeId: string | undefined): {
+  createFor: (
+    sectionTypeKey: string,
+    item: { content?: Record<string, unknown> },
+    translation?: {
+      locale: "en" | "pt-BR";
+      data: Record<string, string | string[]>;
+      origin: "manual" | "diverged";
+    },
+  ) => Promise<string>;
   persistFor: (sectionTypeKey: string) => (action: SectionPersistAction) => Promise<void>;
   /** What the other language's copy would say after this edit — nothing is written. */
   proposeRewrite: (input: {
@@ -90,6 +99,24 @@ export function useSectionItemMutations(resumeId: string | undefined): {
     await invalidate();
   };
 
+  const createFor: ReturnType<typeof useSectionItemMutations>["createFor"] = async (
+    sectionTypeKey,
+    item,
+    translation,
+  ) => {
+    if (!resumeId) throw new Error(t("sections.errors.noResume"));
+    const result = await create.mutateAsync({
+      resumeId,
+      sectionTypeKey,
+      data: {
+        content: item.content ?? {},
+        ...(translation ? { initialTranslation: translation } : {}),
+      },
+    });
+    await invalidate();
+    return result.item.id;
+  };
+
   const proposeRewrite: ReturnType<typeof useSectionItemMutations>["proposeRewrite"] = async (
     input,
   ) => {
@@ -118,6 +145,7 @@ export function useSectionItemMutations(resumeId: string | undefined): {
   };
 
   return {
+    createFor,
     persistFor,
     proposeRewrite,
     writeTranslation,

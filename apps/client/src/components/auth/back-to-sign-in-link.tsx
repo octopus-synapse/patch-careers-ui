@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * "Back to sign-in" — the link forgot-password, verify-email and 2fa-verify
  * share. Two shapes: the inline editorial caption inside the column
@@ -13,7 +14,7 @@
 import { logout } from "@patch-careers/auth";
 import { Text, XStack } from "@patch-careers/ui";
 import { editorialFonts, InlineLink, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { ArrowLeft } from "lucide-react-native";
 import { type ReactElement, useRef, useState } from "react";
 import { Pressable } from "react-native";
@@ -28,7 +29,7 @@ export function BackToSignInLink({
   variant?: "inline" | "corner";
 }): ReactElement {
   const t = useTranslator();
-  const router = useRouter();
+  const router = useAppRouter();
   const localized = useLocalizedHref();
   const palette = useEditorialPalette();
   const leaving = useRef(false);
@@ -42,7 +43,7 @@ export function BackToSignInLink({
     // network call fails, which is exactly what lets sign-in render.
     void logout().finally(() => {
       leaving.current = false;
-      router.replace(localized("/(auth)/sign-in"));
+      router.replace(localized("/(auth)/auth"));
     });
   };
 

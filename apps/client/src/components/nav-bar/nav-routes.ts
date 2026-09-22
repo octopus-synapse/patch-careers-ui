@@ -7,20 +7,24 @@
  * are pure, which is the whole reason they are not inline in the component.
  */
 
-export type NavKey = "jobs" | "messages" | "curriculos" | "notifications" | "profile";
+export type NavKey =
+  | "jobs"
+  | "applications"
+  | "messages"
+  | "curriculos"
+  | "notifications"
+  | "profile";
 
 /**
  * Screens that own the full window keep the app bar off; everything else in the
  * signed-in app shows it, tab roots and stacked details alike.
  */
 const CHROMELESS_PREFIXES = [
-  "/sign-in",
-  "/sign-up",
+  "/auth",
   "/forgot-password",
   "/verify-email",
   "/2fa-verify",
   "/reset-password",
-  "/oauth-callback",
   "/onboarding",
   "/legal-webview",
 ] as const;
@@ -48,6 +52,7 @@ export function isChromePath(pathname: string): boolean {
 export function activeNavKey(pathname: string): NavKey | null {
   const path = withoutLocale(pathname);
   if (path.startsWith("/jobs") || path.startsWith("/job/")) return "jobs";
+  if (path.startsWith("/applications")) return "applications";
   if (path.startsWith("/messages") || path.startsWith("/conversation")) return "messages";
   if (path.startsWith("/curriculos") || path.startsWith("/resume")) return "curriculos";
   if (path.startsWith("/notifications")) return "notifications";

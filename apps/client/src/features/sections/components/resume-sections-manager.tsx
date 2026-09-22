@@ -23,6 +23,7 @@ import { YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Link as LinkIcon, Plus, Trash2 } from "lucide-react-native";
 import {
+  type ComponentProps,
   forwardRef,
   type ReactElement,
   useCallback,
@@ -340,7 +341,7 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
     // locale, which on the document is the document's — not the app's.
     const t = translatorFor(locales.chrome);
     const { visible, catalog, groups, isLoading, isError } = useResumeSections(resumeId, locales);
-    const { persistFor, proposeRewrite, writeTranslation, isPending } =
+    const { persistFor, createFor, proposeRewrite, writeTranslation, isPending } =
       useSectionItemMutations(resumeId);
 
     const [editing, setEditing] = useState<EditingState | null>(null);
@@ -415,10 +416,15 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
       setConfirm(null);
     };
 
-    const createItem = async (section: MergedSection, item: SectionItem): Promise<void> => {
-      await persistFor(section.key)({ kind: "create", item, index: section.items.length });
+    const createItem: ComponentProps<typeof AddSectionFlowModal>["onCreate"] = async (
+      section,
+      item,
+      translation,
+    ) => {
+      const id = await createFor(section.key, item, translation);
       setAddOpen(false);
       setAddingSection(null);
+      return id;
     };
 
     const editItem = (section: MergedSection, item: SectionItem, index: number): void =>
@@ -505,6 +511,8 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
           ) : null}
 
           <AddSectionFlowModal
+            resumeId={resumeId}
+            locales={locales}
             key={addingSection?.key ?? "catalog"}
             visible={addOpen}
             onClose={closeAdd}
@@ -630,6 +638,8 @@ const ResumeSectionsManagerBody = forwardRef<SectionsManagerHandle, ResumeSectio
         ) : null}
 
         <AddSectionFlowModal
+          resumeId={resumeId}
+          locales={locales}
           key={addingSection?.key ?? "catalog"}
           visible={addOpen}
           onClose={closeAdd}

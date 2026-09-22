@@ -120,7 +120,7 @@ jobs:
           }
           # Production bundle: __DEV__=false makes the app resolve
           # https://backend.patchcareers.org (see src/config/api.ts).
-          pnpm exec expo export --platform web
+          pnpm export:web
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4

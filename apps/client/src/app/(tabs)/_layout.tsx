@@ -1,3 +1,4 @@
+import { AppRedirect } from "@/navigation/app-redirect";
 import type { ReactElement } from "react";
 
 /**
@@ -23,13 +24,13 @@ import type { ReactElement } from "react";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useEditorialPalette } from "@patch-careers/ui";
-import { Redirect, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppHeader } from "@/components/app-header";
 import { EditorialTabBar } from "@/components/editorial-tab-bar";
 import { ProfileTabIcon } from "@/components/profile-tab-icon";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
-import { AUTH_SIGN_IN_ROUTE, VERIFY_EMAIL_ROUTE } from "@/navigation/auth-redirect";
+import { AUTH_ROUTE, VERIFY_EMAIL_ROUTE } from "@/navigation/auth-redirect";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 
@@ -61,8 +62,8 @@ export default function TabsLayout(): ReactElement | null {
   } as const;
 
   if (!hasBootstrapped) return null;
-  if (!isAuthenticated) return <Redirect href={AUTH_SIGN_IN_ROUTE} />;
-  if (currentUser?.needsEmailVerification) return <Redirect href={VERIFY_EMAIL_ROUTE} />;
+  if (!isAuthenticated) return <AppRedirect href={AUTH_ROUTE} />;
+  if (currentUser?.needsEmailVerification) return <AppRedirect href={VERIFY_EMAIL_ROUTE} />;
 
   return (
     <Tabs

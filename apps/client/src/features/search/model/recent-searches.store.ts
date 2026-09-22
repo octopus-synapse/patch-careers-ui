@@ -5,7 +5,6 @@
  * the persisted-store scaffold from `@patch-careers/state`.
  */
 
-import { groupsTypeEnum } from "@patch-careers/api-client";
 import { createPersistedStore } from "@patch-careers/state";
 import { mundane } from "@patch-careers/storage";
 import type { RecentSearchItem } from "../types";
@@ -25,7 +24,7 @@ interface RecentSearchesActions {
   clear: () => void;
 }
 
-const GROUP_TYPES = new Set<string>(Object.values(groupsTypeEnum));
+const GROUP_TYPES = new Set<string>(["users", "jobs"]);
 
 function isRecentSearchItem(value: unknown): value is RecentSearchItem {
   if (value === null || typeof value !== "object") return false;
@@ -50,10 +49,15 @@ export const useRecentSearchesStore = createPersistedStore<
   storage: mundane,
   initialData: { items: [] },
   createActions: (set, get) => ({
-    add: (item) =>
+    add: (item) => {
+      if (!GROUP_TYPES.has(item.type)) return;
       set({
-        items: [item, ...get().items.filter((i) => i.href !== item.href)].slice(0, MAX_RECENTS),
-      }),
+        items: [
+          item,
+          ...get().items.filter((i) => i.href !== item.href && GROUP_TYPES.has(i.type)),
+        ].slice(0, MAX_RECENTS),
+      });
+    },
     remove: (href) => set({ items: get().items.filter((i) => i.href !== href) }),
     clear: () => set({ items: [] }),
   }),

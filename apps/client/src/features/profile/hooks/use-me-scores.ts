@@ -6,6 +6,7 @@
  */
 
 import { type GetV1MeScoresQueryResponse, useGetV1MeScores } from "@patch-careers/api-client";
+import { usePatchPlan } from "@/features/billing/use-patch-plan";
 
 export type MeScores = GetV1MeScoresQueryResponse;
 
@@ -19,14 +20,16 @@ export type UseMeScoresResult = {
 };
 
 export function useMeScores(): UseMeScoresResult {
-  const query = useGetV1MeScores();
-  const scores = query.data;
+  const billing = usePatchPlan();
+  const { canUsePaid } = billing;
+  const query = useGetV1MeScores({ query: { enabled: canUsePaid } });
+  const scores = canUsePaid ? query.data : undefined;
   const isColdStart = !!scores && scores.resumeId === null;
 
   return {
     scores,
-    isPending: query.isPending,
-    isError: query.isError,
+    isPending: (billing.isPending && !billing.data) || (canUsePaid && query.isPending),
+    isError: billing.isError || query.isError,
     refetch: () => void query.refetch(),
     isColdStart,
   };

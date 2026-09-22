@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * SearchModal — the command-palette global search (DocSearch style): a
  * floating card over a soft scrim,
@@ -20,7 +21,7 @@ import { editorialOverlays } from "@patch-careers/tokens";
 import { Icon, Input, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
-import { type Href, useRouter } from "expo-router";
+import { type Href } from "expo-router";
 import { Search, X } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import {
@@ -85,7 +86,7 @@ export function SearchModal({
   const insets = useSafeAreaInsets();
   const { width: screenW, height: screenH } = useWindowDimensions();
   const keyboardHeight = useKeyboardHeight();
-  const router = useRouter();
+  const router = useAppRouter();
   const inputRef = useRef<TextInput | null>(null);
   const [term, setTerm] = useState("");
   const { groups, isLoading, enabled, debounced } = useGlobalSearch(term);

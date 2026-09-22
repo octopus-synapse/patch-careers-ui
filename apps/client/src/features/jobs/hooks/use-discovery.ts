@@ -1,6 +1,7 @@
 import { getV1JobsRecommended } from "@patch-careers/api-client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { usePatchPlan } from "@/features/billing/use-patch-plan";
 import { useAuthState } from "@/providers/auth-provider";
 import {
   matchesDiscoveryFilters,
@@ -15,15 +16,17 @@ import { useExternalJobs } from "./queries";
 /** Filters refine all three groups. Each list can page further without capping the catalog. */
 export function useDiscovery(filters: JobsFilters, entries: WorkspaceEntry[]) {
   const { currentUser } = useAuthState();
-  const catalog = useExternalJobs(filters, "all");
+  const { canUsePaid } = usePatchPlan();
+  const catalog = useExternalJobs(filters, "all", 12);
   const saved = useExternalJobs(EMPTY_JOBS_FILTERS, "saved");
   const recommendedQuery = useInfiniteQuery({
     queryKey: [{ url: "/api/v1/jobs/recommended" }, currentUser?.userId],
     queryFn: ({ signal, pageParam }) =>
-      getV1JobsRecommended({ limit: 50, page: pageParam }, { signal }),
+      getV1JobsRecommended({ limit: 12, page: pageParam }, { signal }),
     initialPageParam: 1,
     getNextPageParam: (last) => (last.hasNext ? last.page + 1 : undefined),
     staleTime: 5 * 60_000,
+    enabled: canUsePaid,
   });
   const recommendedData = useMemo(
     () =>
@@ -82,6 +85,6 @@ export function useDiscovery(filters: JobsFilters, entries: WorkspaceEntry[]) {
     catalog,
     saved,
     recommended,
-    isLoading: catalog.isLoading || saved.isLoading || recommended.isLoading,
+    isLoading: catalog.isLoading || saved.isLoading || (canUsePaid && recommended.isLoading),
   };
 }

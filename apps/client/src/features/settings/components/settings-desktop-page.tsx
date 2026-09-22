@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * `SettingsDesktopPage` — every setting on one page, with the rail as a marker.
  *
@@ -19,7 +20,7 @@
 
 import { XStack, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useEffect, useRef } from "react";
 import { type LayoutChangeEvent, ScrollView } from "react-native";
 import { RAIL_GAP, SettingsRail } from "@/components/settings-rail";
@@ -48,7 +49,7 @@ const BODIES: Record<SettingsSectionId, () => ReactElement> = {
 export function SettingsDesktopPage(): ReactElement {
   const palette = useEditorialPalette();
   const navInset = useNavBarInset();
-  const router = useRouter();
+  const router = useAppRouter();
   const { t } = useI18n();
   const { section } = useLocalSearchParams<{ section?: string }>();
   const spy = useSectionSpy<SettingsSectionId>(SECTION_IDS);

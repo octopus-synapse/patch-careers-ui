@@ -1,3 +1,4 @@
+import { AppRedirect } from "@/navigation/app-redirect";
 /**
  * Notifications — per career-type channels. Frame only; the body is
  * `NotificationsSection` (see `account.tsx` for why).
@@ -10,7 +11,7 @@
  */
 
 import { SettingsCard, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { Redirect } from "expo-router";
+
 import type { ReactElement } from "react";
 import { Pressable, Text, View } from "react-native";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
@@ -32,7 +33,7 @@ export default function NotificationsScreen(): ReactElement {
   const { t } = useI18n();
   const isDesktopWeb = useIsDesktopWeb();
 
-  if (isDesktopWeb) return <Redirect href={settingsSectionHref("notifications")} />;
+  if (isDesktopWeb) return <AppRedirect href={settingsSectionHref("notifications")} />;
 
   return (
     <SettingsScreenShell

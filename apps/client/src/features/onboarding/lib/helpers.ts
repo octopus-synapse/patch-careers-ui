@@ -5,7 +5,6 @@ import type {
   OnboardingField,
   OnboardingSession,
   OnboardingStep,
-  ResumeStyleOption,
   ReviewSection,
   SectionItem,
 } from "../types";
@@ -18,10 +17,6 @@ import {
 } from "./profile-validation";
 
 export const ACTIVATED_EXTRA_STEP_IDS = ["section:project_v1", "section:certification_v1"];
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
 
 function stringifyValue(value: unknown): string {
   if (value === null || value === undefined) return "";
@@ -107,6 +102,7 @@ export function flowStepForBackendStep(
   backendStepId: string | null | undefined,
 ): FlowStep | undefined {
   if (!session || !backendStepId) return undefined;
+  if (backendStepId === "resume-style") return FLOW_PLAN.find((flow) => flow.id === "review");
   return FLOW_PLAN.find((flow) => backendStepForFlow(session, flow)?.id === backendStepId);
 }
 
@@ -214,23 +210,6 @@ export function buildSkipPayload() {
   return { noData: true };
 }
 
-export function parseResumeStyles(step: OnboardingStep | undefined): ResumeStyleOption[] {
-  const raw = step?.data;
-  if (!Array.isArray(raw)) return [];
-  return raw
-    .filter(isRecord)
-    .map((item) => ({
-      id: stringifyValue(item.id),
-      name: stringifyValue(item.name) || stringifyValue(item.label) || "Style",
-      description: stringifyValue(item.description) || null,
-      category: stringifyValue(item.category),
-      tags: Array.isArray(item.tags) ? item.tags.map(stringifyValue).filter(Boolean) : [],
-      atsScore: typeof item.atsScore === "number" ? item.atsScore : null,
-      thumbnailUrl: stringifyValue(item.thumbnailUrl) || null,
-    }))
-    .filter((item) => item.id.length > 0);
-}
-
 export function itemSummary(item: SectionItem): string {
   if (!item.content) return "---";
   const values = Object.values(item.content).map(stringifyValue).filter(Boolean);
@@ -280,20 +259,6 @@ export function buildReviewSections(
       stepId: step.id,
       entries: section.items.map((item) => ({ label: "", value: itemSummary(item) })),
       count: section.items.length,
-    });
-  }
-
-  const styleStep = steps.find((step) => isResumeStyleStep(step));
-  const selectedStyle = parseResumeStyles(styleStep).find(
-    (style) => style.id === session.resumeStyleId,
-  );
-  if (styleStep && session.resumeStyleId) {
-    result.push({
-      label: styleStep.label,
-      stepId: styleStep.id,
-      entries: [],
-      styleName: selectedStyle?.name ?? session.resumeStyleId,
-      stylePreviewUrl: selectedStyle?.thumbnailUrl ?? null,
     });
   }
 

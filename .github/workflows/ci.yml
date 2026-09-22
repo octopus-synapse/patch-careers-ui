@@ -137,6 +137,7 @@ jobs:
       # Android and iOS bundles locally, no account required.
       - name: Bundle (affected on PR, all on push)
         run: |
+          pnpm --filter client routes:sync
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             pnpm exec nx affected -t export --parallel=3
           else

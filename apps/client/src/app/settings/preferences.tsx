@@ -1,9 +1,10 @@
+import { AppRedirect } from "@/navigation/app-redirect";
 /**
  * Preferences — theme + language. Frame only; the body is `PreferencesSection`
  * (see `account.tsx` for why).
  */
 
-import { Redirect } from "expo-router";
+
 import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { PreferencesSection, settingsSectionHref } from "@/features/settings";
@@ -14,7 +15,7 @@ export default function PreferencesScreen(): ReactElement {
   const { t } = useI18n();
   const isDesktopWeb = useIsDesktopWeb();
 
-  if (isDesktopWeb) return <Redirect href={settingsSectionHref("preferences")} />;
+  if (isDesktopWeb) return <AppRedirect href={settingsSectionHref("preferences")} />;
 
   return (
     <SettingsScreenShell title={t("settings.preferences.title")}>

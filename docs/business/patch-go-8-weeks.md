@@ -1,5 +1,7 @@
 # Patch Go — plano de receita e validação (14 set. 2026)
 
+> Histórico. A oferta e os limites vigentes estão em [pricing-current.md](./pricing-current.md). Este documento registra o piloto anterior e não deve orientar a configuração da cobrança.
+
 Roteiro de entrevistas, convite e painel semanal prontos para uso: [kit do piloto](./pilot-kit.md).
 
 ## Decisão e hipótese

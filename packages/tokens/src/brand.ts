@@ -7,7 +7,7 @@
  * importing these raw values directly.
  */
 export const brandColors = {
-  forest: "#234D3B",
+  forest: "#2E644A",
   forestDeep: "#153E2B",
   forestPressed: "#315D40",
   olive: "#6E9053",

@@ -30,13 +30,15 @@ import {
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
-import { type Href, useRouter } from "expo-router";
+import type { Href } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { Check, Download, FileText, Mail, Sparkles } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView } from "react-native";
+import { usePatchPlan } from "@/features/billing/use-patch-plan";
 import { useDefaultMatchResume } from "@/features/match";
 import { copyToClipboard } from "@/lib/clipboard";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import type { AppliedCv } from "../hooks/use-report-applied";
 import type { ExternalJob } from "../types";
@@ -67,14 +69,16 @@ export function ApplyFlow({
 }): ReactElement {
   const { t } = useI18n();
   const toast = useToast();
-  const router = useRouter();
+  const router = useAppRouter();
   const queryClient = useQueryClient();
 
   const [step, setStep] = useState<Step>("choice");
   const [result, setResult] = useState<PostV1ResumesResumeIdTailor200 | null>(null);
   const [cv, setCv] = useState<ApplyCv | null>(null);
+  const [targetLocale, setTargetLocale] = useState<"auto" | "pt-BR" | "en">("auto");
 
   const { resumeId, quality } = useDefaultMatchResume();
+  const { canUsePaid } = usePatchPlan();
   // Mirrors the backend's minimum resume quality gate;
   // null quality = unknown → allow, server decides.
   const tailorLocked = quality !== null && quality < 50;
@@ -82,7 +86,7 @@ export function ApplyFlow({
   // Current compatibility — shares the cache with the MatchBreakdown below
   // this sheet; unavailable without a resume degrades the copy only.
   const match = useGetV1MatchResumeIdJobId(resumeId ?? "", job.id, {
-    query: { enabled: open && Boolean(resumeId) },
+    query: { enabled: canUsePaid && open && Boolean(resumeId) },
   });
   const matchBefore = match.data?.overallScore ?? null;
 
@@ -94,14 +98,20 @@ export function ApplyFlow({
       setStep("choice");
       setResult(null);
       setCv(null);
+      setTargetLocale("auto");
     }
   }, [open]);
 
   const startTailor = (): void => {
+    if (!canUsePaid) {
+      onOpenChange(false);
+      router.push("/go" as Href);
+      return;
+    }
     if (!resumeId || tailorLocked || tailor.isPending) return;
     setStep("tailoring");
     tailor.mutate(
-      { resumeId, data: { jobId: job.id } },
+      { resumeId, data: { jobId: job.id, ...(targetLocale === "auto" ? {} : { targetLocale }) } },
       {
         onSuccess: (data) => {
           setResult(data);
@@ -161,6 +171,8 @@ export function ApplyFlow({
           tailorLocked={tailorLocked}
           canTailor={Boolean(resumeId)}
           intent={initialIntent}
+          targetLocale={targetLocale}
+          onTargetLocaleChange={setTargetLocale}
           onTailor={startTailor}
           onMaster={chooseMaster}
         />
@@ -182,6 +194,7 @@ export function ApplyFlow({
           job={job}
           cv={cv}
           tailoredLabel={result?.label ?? null}
+          targetLocale={cv.tailoredVersionId ? (result?.targetLocale ?? null) : null}
           coverLetter={cv.tailoredVersionId ? (result?.coverLetter ?? null) : null}
           onOpenJobSite={() => onOpenJobSite(cv)}
         />
@@ -198,6 +211,8 @@ function ChoiceStep({
   tailorLocked,
   canTailor,
   intent,
+  targetLocale,
+  onTargetLocaleChange,
   onTailor,
   onMaster,
 }: {
@@ -206,6 +221,8 @@ function ChoiceStep({
   tailorLocked: boolean;
   canTailor: boolean;
   intent: ApplyFlowIntent;
+  targetLocale: "auto" | "pt-BR" | "en";
+  onTargetLocaleChange: (value: "auto" | "pt-BR" | "en") => void;
   onTailor: () => void;
   onMaster: () => void;
 }): ReactElement {
@@ -221,6 +238,36 @@ function ChoiceStep({
       <Text fontFamily={fonts.sans} fontSize={12.5} color={palette.muted}>
         {job.title} · {job.company}
       </Text>
+      <Text fontFamily={fonts.sans} fontSize={12} color={palette.body}>
+        {t("jobs.applyFlow.tailorLanguage")}
+      </Text>
+      <XStack gap={8} flexWrap="wrap">
+        {(["auto", "pt-BR", "en"] as const).map((value) => (
+          <Pressable
+            key={value}
+            onPress={() => onTargetLocaleChange(value)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: targetLocale === value }}
+            style={{
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              borderRadius: 12,
+              borderWidth: 1,
+              borderColor: targetLocale === value ? palette.accent : palette.hairline,
+            }}
+          >
+            <Text fontFamily={fonts.sans} fontSize={12} color={palette.ink}>
+              {t(
+                value === "auto"
+                  ? "jobs.applyFlow.tailorLanguageAuto"
+                  : value === "en"
+                    ? "jobs.applyFlow.tailorLanguageEn"
+                    : "jobs.applyFlow.tailorLanguagePt",
+              )}
+            </Text>
+          </Pressable>
+        ))}
+      </XStack>
 
       <OptionCard
         icon={
@@ -574,12 +621,14 @@ function ReadyStep({
   job,
   cv,
   tailoredLabel,
+  targetLocale,
   coverLetter,
   onOpenJobSite,
 }: {
   job: ExternalJob;
   cv: ApplyCv;
   tailoredLabel: string | null;
+  targetLocale: "pt-BR" | "en" | null;
   coverLetter: string | null;
   onOpenJobSite: () => void;
 }): ReactElement {
@@ -592,6 +641,7 @@ function ReadyStep({
     {
       resumeId: cv.resumeId,
       ...(cv.tailoredVersionId ? { versionId: cv.tailoredVersionId } : {}),
+      ...(targetLocale ? { lang: targetLocale } : {}),
     },
     { query: { enabled: false } },
   );

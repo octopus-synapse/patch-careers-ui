@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Wires the notification service into the running app. Mounted inside
  * AuthProvider (so it sees auth + the React Query client + useToast + router):
@@ -21,7 +22,7 @@
 
 import { useToast } from "@patch-careers/ui";
 import { type QueryClient, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+
 import {
   createContext,
   type ReactElement,
@@ -66,14 +67,14 @@ const NotificationsContext = createContext<NotificationsContextValue>({
 });
 
 type ToastApi = ReturnType<typeof useToast>;
-type RouterApi = ReturnType<typeof useRouter>;
+type RouterApi = ReturnType<typeof useAppRouter>;
 type Translator = ReturnType<typeof useI18n>["t"];
 
 export function NotificationsProvider({ children }: { children: ReactNode }): ReactElement {
   const { isAuthenticated } = useAuthState();
   const { hasBootstrapped } = useAuthBootstrap();
   const toast = useToast();
-  const router = useRouter();
+  const router = useAppRouter();
   const qc = useQueryClient();
   const { t } = useI18n();
   const { markOne } = useMarkRead();

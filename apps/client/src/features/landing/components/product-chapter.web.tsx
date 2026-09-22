@@ -1,6 +1,6 @@
-import { useRouter } from "expo-router";
 import type { ReactElement } from "react";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import { isStatisticChapter } from "../lib/statistic-theme";
 import { DEMO_SCORES } from "../model/demo-data";
@@ -21,11 +21,11 @@ function scoreTone(value: number): "red" | "orange" | "yellow" | "light-green" |
 /** Product demonstrations remain fully readable while the chapter camera follows the scroll. */
 export function ProductChapter(props: ChapterContentProps): ReactElement | null {
   const { chapter } = props;
-  const { t } = useI18n();
-  const router = useRouter();
+  const { t, locale } = useI18n();
+  const router = useAppRouter();
   const localized = useLocalizedHref();
   const copy = (key: string) => t(`landing.scroll.${key}`);
-  const signUp = () => router.push(localized("/(auth)/sign-up"));
+  const signUp = () => router.push(localized("/(auth)/auth"));
   if (isStatisticChapter(chapter.key)) return <StatisticChapter {...props} />;
   switch (chapter.key) {
     case "hero":
@@ -163,6 +163,13 @@ export function ProductChapter(props: ChapterContentProps): ReactElement | null 
                     onClick={signUp}
                   >
                     {t("landing.chapters.cta.button")} <span aria-hidden="true">↗</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="lp-note lp-link"
+                    onClick={() => router.push(localized("/go"))}
+                  >
+                    {t("go.title")} · {t(locale === "pt-BR" ? "go.brlPrice" : "go.usdPrice")}
                   </button>
                   <p className="lp-note">{t("landing.chapters.cta.noCard")}</p>
                 </div>

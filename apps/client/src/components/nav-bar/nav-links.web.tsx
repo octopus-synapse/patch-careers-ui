@@ -8,8 +8,8 @@
 import { appNavPalette, editorialMenu } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, IdentityAvatar, useThemeName } from "@patch-careers/ui/editorial";
-import { Link } from "expo-router";
 import { type ReactElement, useState } from "react";
+import { AppLink } from "@/navigation/app-link";
 import { useI18n } from "@/providers/i18n-provider";
 import { NAV_APP_TABS_WIDTH, NAV_APP_TABS_WIDTH_TIGHT } from "./nav-bar.contract";
 import { NavGlyph } from "./nav-glyph.web";
@@ -18,6 +18,7 @@ import { useNavMedia } from "./use-nav-media.web";
 
 const DESTINATIONS = [
   { key: "jobs", href: "/jobs", labelKey: "tabs.jobs" },
+  { key: "applications", href: "/applications", labelKey: "tabs.applications" },
   { key: "curriculos", href: "/curriculos", labelKey: "tabs.resumes" },
   { key: "profile", href: "/profile", labelKey: "tabs.me" },
 ] as const;
@@ -81,7 +82,7 @@ function NavDestination({
   const transition = reduced ? "none" : "color 140ms ease, background-color 140ms ease";
 
   return (
-    <Link href={item.href} push asChild>
+    <AppLink href={item.href} push asChild>
       <YStack
         tag="a"
         data-nav-key={item.key}
@@ -156,6 +157,6 @@ function NavDestination({
           />
         ) : null}
       </YStack>
-    </Link>
+    </AppLink>
   );
 }

@@ -11,18 +11,15 @@ import {
 } from "./flow-plan";
 
 describe("flowPlan", () => {
-  it("opens with the language pick, then the welcome intro, and ends at review", () => {
+  it("opens with the language pick, continues to location, and ends at review", () => {
     expect(FLOW_PLAN[0]?.id).toBe("language");
-    expect(FLOW_PLAN[1]?.id).toBe("welcome");
+    expect(FLOW_PLAN[1]?.id).toBe("location");
     expect(FLOW_PLAN[FLOW_PLAN.length - 1]?.id).toBe("review");
   });
 
-  it("counts steps excluding the intro", () => {
-    expect(FLOW_PLAN[1]?.intro).toBe(true);
-    expect(countedFlowSteps().some((step) => step.intro)).toBe(false);
-    expect(countedTotal()).toBe(FLOW_PLAN.length - 1);
+  it("counts every step", () => {
+    expect(countedTotal()).toBe(FLOW_PLAN.length);
     expect(countedFlowSteps()[0]?.id).toBe("language");
-    expect(countedIndexOf("welcome")).toBe(-1);
     expect(countedIndexOf("language")).toBe(0);
   });
 
@@ -50,10 +47,8 @@ describe("flowPlan", () => {
   });
 
   it("navigates next/prev correctly", () => {
-    expect(nextFlowStep("language")?.id).toBe("welcome");
-    expect(nextFlowStep("welcome")?.id).toBe("location");
-    expect(prevFlowStep("welcome")?.id).toBe("language");
-    expect(prevFlowStep("location")?.id).toBe("welcome");
+    expect(nextFlowStep("language")?.id).toBe("location");
+    expect(prevFlowStep("location")?.id).toBe("language");
     expect(prevFlowStep("language")).toBeUndefined();
     expect(nextFlowStep("review")).toBeUndefined();
   });

@@ -12,6 +12,7 @@
 
 import { Bell, LockKeyhole, Palette, UserRound } from "lucide-react-native";
 import type { ComponentType } from "react";
+import { withoutLocale } from "@/navigation/route-locale";
 
 export type SettingsSectionId = "account" | "privacy" | "notifications" | "preferences";
 
@@ -38,7 +39,6 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
       "/settings/change-password",
       "/settings/two-factor",
       "/settings/username",
-      "/settings/connected-accounts",
       "/settings/verify-code",
     ],
   },
@@ -83,6 +83,7 @@ export function settingsSectionHref(
  * the route mounting and the redirect landing.
  */
 export function settingsSectionForPath(pathname: string): SettingsSectionId | null {
+  pathname = withoutLocale(pathname);
   for (const section of SETTINGS_SECTIONS) {
     if (pathname === `/settings/${section.id}`) return section.id;
     if (section.children.some((child) => pathname.startsWith(child))) return section.id;

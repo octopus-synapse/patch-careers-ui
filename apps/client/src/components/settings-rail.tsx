@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * `SettingsRail` — the left column of desktop settings: serif masthead, the
  * four sections, a hairline, and sign-out.
@@ -24,7 +25,7 @@ import { logout } from "@patch-careers/auth";
 import { navFilled } from "@patch-careers/tokens";
 import { Divider, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { LogOut } from "lucide-react-native";
 import type { ComponentType, ReactElement } from "react";
 import { useState } from "react";
@@ -36,7 +37,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SETTINGS_SECTIONS, type SettingsSectionId } from "@/features/settings";
-import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
+import { AUTH_ROUTE } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 
 // Rail geometry from the approved desktop settings design: 232px column, one
@@ -66,12 +67,12 @@ export function SettingsRail({
   readonly onSelect: (id: SettingsSectionId) => void;
 }): ReactElement {
   const palette = useEditorialPalette();
-  const router = useRouter();
+  const router = useAppRouter();
   const { t } = useI18n();
 
   async function signOut(): Promise<void> {
     await logout();
-    router.replace(AUTH_SIGN_IN_ROUTE);
+    router.replace(AUTH_ROUTE);
   }
 
   return (

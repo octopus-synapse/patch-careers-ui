@@ -4,6 +4,8 @@
  * plus the pushed detail screen. Import only from "@/features/jobs";
  * internal paths are private.
  */
+
+export { ApplicationsHomeScreen } from "./components/applications-home";
 export { JobDetailScreen } from "./components/job-detail-screen";
 export { JobsHomeScreen } from "./components/jobs-home";
 export { JobsScreen } from "./components/jobs-screen";

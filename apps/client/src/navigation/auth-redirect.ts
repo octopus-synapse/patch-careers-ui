@@ -1,7 +1,7 @@
 import { type User, useAuthStore } from "@patch-careers/auth";
 import type { Href } from "expo-router";
 
-export const AUTH_SIGN_IN_ROUTE = "/(auth)/sign-in" as const;
+export const AUTH_ROUTE = "/(auth)/auth" as const;
 export const VERIFY_EMAIL_ROUTE = "/(auth)/verify-email" as const;
 export const COMPLETED_ONBOARDING_ROUTE = "/(tabs)/profile" as const;
 export const DEFAULT_APP_ROUTE = "/(tabs)/jobs" as const;

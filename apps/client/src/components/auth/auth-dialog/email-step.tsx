@@ -1,6 +1,6 @@
 /** Identifier-first entry matching the public landing auth modal. */
 import { identify } from "@patch-careers/api-client";
-import { authDialogPalette, brandPieces } from "@patch-careers/tokens";
+import { authDialogPalette } from "@patch-careers/tokens";
 import { Icon, Input, Text, XStack, YStack } from "@patch-careers/ui";
 import type { AuthMascotController } from "@patch-careers/ui/editorial";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
@@ -15,6 +15,7 @@ import { useMascotForm } from "@/components/auth/hooks/use-mascot-form";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { useFieldErrorsForm } from "@/forms";
 import { messageOf, validateEmail } from "@/lib/validation";
+import { AuthStepTitle } from "./auth-step-title";
 import { type AuthBranch, branchForIdentity } from "./branch-for-identity";
 
 type EmailForm = { email: string };
@@ -23,14 +24,18 @@ export function EmailStep({
   mascot,
   initialEmail,
   onBranch,
+  isPage = false,
 }: {
   readonly mascot: AuthMascotController;
   readonly initialEmail: string;
   readonly onBranch: (branch: AuthBranch, email: string) => void;
+  readonly isPage?: boolean;
 }): ReactElement {
   const { t, locale, toast } = useAuthScreen();
   const palette = useEditorialPalette();
   const dialogPalette = authDialogPalette[useThemeName()];
+  const inputHeight = isPage ? 56 : 51;
+  const actionGap = isPage ? 26 : 22;
   const { submitting, run } = useSubmit();
   const form = useFieldErrorsForm<EmailForm>(
     (values) => {
@@ -39,6 +44,7 @@ export function EmailStep({
     },
     { defaultValues: { email: initialEmail } },
   );
+  const canContinue = !submitting && validateEmail(form.watch("email")) === null;
   const bind = useMascotForm(mascot, form);
 
   const onSubmit = form.handleSubmit(
@@ -66,33 +72,18 @@ export function EmailStep({
 
   return (
     <YStack>
-      <Text
-        fontFamily={editorialFonts.serif}
-        fontSize={40}
-        lineHeight={43}
-        letterSpacing={-1.2}
-        fontWeight="400"
-        color={brandPieces.plain}
-      >
+      <AuthStepTitle variant="hero" isPage={isPage}>
         {t("auth.dialogHeroTitlePre")}
         {"\n"}
-        <Text
-          fontFamily={editorialFonts.serif}
-          fontSize={40}
-          lineHeight={43}
-          fontWeight="400"
-          color={brandPieces.plain}
-        >
-          {t("auth.dialogHeroTitleEmphasis")}
-        </Text>
-      </Text>
+        {t("auth.dialogHeroTitleEmphasis")}
+      </AuthStepTitle>
       <Text
         fontFamily={editorialFonts.sans}
-        fontSize={12}
-        lineHeight={21.6}
+        fontSize={isPage ? 15 : 12}
+        lineHeight={isPage ? 23 : 21.6}
         color={dialogPalette.muted}
-        marginTop={16}
-        marginBottom={28}
+        marginTop={isPage ? 20 : 16}
+        marginBottom={isPage ? 32 : 28}
       >
         {t("auth.dialogSubtitle")}
       </Text>
@@ -101,7 +92,7 @@ export function EmailStep({
         control={form.control}
         name="email"
         render={({ field, fieldState }) => (
-          <YStack>
+          <YStack minHeight={inputHeight}>
             <Input
               value={field.value}
               onChangeText={field.onChange}
@@ -111,16 +102,16 @@ export function EmailStep({
               autoComplete="email"
               autoCorrect={false}
               returnKeyType="next"
-              onSubmitEditing={onSubmit}
-              minHeight={51}
-              paddingHorizontal={15}
+              onSubmitEditing={canContinue ? onSubmit : undefined}
+              height={inputHeight}
+              paddingHorizontal={isPage ? 17 : 15}
               borderWidth={1}
               borderRadius={7}
               backgroundColor={dialogPalette.input}
               borderColor={fieldState.error ? palette.danger : dialogPalette.inputBorder}
               color={dialogPalette.brand}
               fontFamily={editorialFonts.sans}
-              fontSize={14}
+              fontSize={isPage ? 15 : 14}
               focusStyle={{
                 borderColor: dialogPalette.focus,
                 outlineColor: dialogPalette.focus,
@@ -138,18 +129,18 @@ export function EmailStep({
       />
 
       <XStack
-        onPress={submitting ? undefined : onSubmit}
+        onPress={canContinue ? onSubmit : undefined}
         accessibilityRole="button"
         accessibilityLabel={t("auth.dialogContinue")}
-        accessibilityState={{ disabled: submitting, busy: submitting }}
+        accessibilityState={{ disabled: !canContinue, busy: submitting }}
         alignItems="center"
         justifyContent="space-between"
-        minHeight={51}
-        marginTop={22}
-        paddingHorizontal={19}
+        minHeight={isPage ? 57 : 51}
+        marginTop={actionGap}
+        paddingHorizontal={isPage ? 21 : 19}
         borderRadius={7}
         backgroundColor={dialogPalette.primary}
-        opacity={submitting ? 0.55 : 1}
+        opacity={canContinue ? 1 : 0.45}
         pressStyle={{ backgroundColor: dialogPalette.primaryPress }}
         testID="authDialog.continue"
       >
@@ -159,7 +150,7 @@ export function EmailStep({
           <>
             <Text
               fontFamily={editorialFonts.sans}
-              fontSize={12}
+              fontSize={isPage ? 14 : 12}
               fontWeight="500"
               color={palette.onPrimary}
             >

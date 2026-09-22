@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Verify-email screen (D101) — "Editorial Calm" DS, ported from the approved
  * `docs/design/verify-code-demo.html`: a standalone panel holding a centred serif
@@ -31,7 +32,7 @@ import {
   useAuthMascot,
 } from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Pencil } from "lucide-react-native";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import type { LayoutChangeEvent, TextInput } from "react-native";
@@ -88,7 +89,7 @@ export default function VerifyEmailScreen(): ReactElement {
   const { t } = useAuthScreen();
   const { finishAuthentication } = useCompleteAuth();
   const { run } = useSubmit();
-  const router = useRouter();
+  const router = useAppRouter();
   const palette = useEditorialPalette();
   const params = useLocalSearchParams<{
     email?: string;

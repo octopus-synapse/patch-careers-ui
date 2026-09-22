@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Notifications — a stacked screen reached from the AppHeader bell (the tab
  * slot it used to occupy now belongs to Currículos). A grouped, polled inbox
@@ -11,7 +12,7 @@
 
 import { mundane } from "@patch-careers/storage";
 import { XStack, YStack } from "@patch-careers/ui";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { type ReactElement, useCallback, useState } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import {
@@ -35,7 +36,7 @@ const PREPROMPT_SEEN_KEY = "push.prepromptSeen";
 
 export default function NotificationsScreen(): ReactElement {
   const { t } = useI18n();
-  const router = useRouter();
+  const router = useAppRouter();
   const inbox = useNotificationInbox();
   const unread = useUnreadCount();
   const { markAll, markOne } = useMarkRead();

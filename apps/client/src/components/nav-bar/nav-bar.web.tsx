@@ -1,3 +1,6 @@
+import { withoutLocale } from "@/navigation/route-locale";
+import { useAppRouter } from "@/navigation/use-app-router";
+
 /**
  * Persistent web navigation. The app variant follows navbar v12 and mounts
  * above the router Stack; public/auth/onboarding screens own their variants.
@@ -12,8 +15,9 @@ import {
 import { appNavPalette, authDialogPalette, landingScrollPalette } from "@patch-careers/tokens";
 import { Button, Text, XStack, YStack } from "@patch-careers/ui";
 import { useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
-import { usePathname, useRouter } from "expo-router";
-import { ArrowUpRight, createLucideIcon } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { usePathname } from "expo-router";
+import { ArrowUpRight, UserRound } from "lucide-react-native";
 import {
   type ReactElement,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -28,11 +32,15 @@ import { landingSans, navigateLandingChapter } from "@/features/landing";
 import { SearchModal, SearchTrigger } from "@/features/search";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useDismissOnOutside } from "@/hooks/use-dismiss-on-outside";
+import { requestAuthFlowReset } from "@/navigation/auth-flow-reset";
+import { AUTH_ROUTE } from "@/navigation/auth-redirect";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 import { AccountMenu, type AccountMenuVariant } from "./account-menu";
 import { AccountTrigger } from "./account-trigger.web";
+import { AuthMenuTrigger } from "./auth-menu-trigger.web";
+import { AUTH_MENU_ICON_COLOR, AUTH_MENU_SIZE, AUTH_NAV_SIDE_INSET } from "./auth-nav-style";
 import { GlassCircleButton } from "./glass-circle-button";
 import {
   NAV_APP_MAX_WIDTH,
@@ -50,6 +58,7 @@ import { NavGlyph } from "./nav-glyph.web";
 import { NavLinks } from "./nav-links.web";
 import { activeNavKey, isChromePath, type NavKey } from "./nav-routes";
 import { PreferencesModal, type PreferencesTab } from "./preferences-modal";
+import { StaggeredMenu } from "./staggered-menu";
 import { useNavMedia } from "./use-nav-media.web";
 
 export {
@@ -72,14 +81,8 @@ const PUBLIC_Z_INDEX = 40;
 const PUBLIC_Z_INDEX_OPEN = 60;
 const BRAND_HEIGHT = 50;
 const BRAND_HEIGHT_COMPACT = 40;
+const FULLSCREEN_MENU_BLEND = 30;
 const LANDING_NAV_CHAPTERS = ["hero", "dor", "vivo", "notas", "cta"] as const;
-
-/** Three staggered strokes matching the menu reference. */
-const StaggeredMenu = createLucideIcon("StaggeredMenu", [
-  ["path", { d: "M7 6h13", key: "top" }],
-  ["path", { d: "M3 12h18", key: "middle" }],
-  ["path", { d: "M7 18h9", key: "bottom" }],
-]);
 
 export type NavBarProps = {
   readonly variant: NavBarVariant;
@@ -90,7 +93,7 @@ export type NavBarProps = {
 export function NavBar({ variant, progress, account }: NavBarProps): ReactElement | null {
   const isDesktopWeb = useIsDesktopWeb();
   const pathname = usePathname();
-  const router = useRouter();
+  const router = useAppRouter();
   const localized = useLocalizedHref();
   const { t } = useI18n();
   const palette = useEditorialPalette();
@@ -145,6 +148,20 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
 
   useDismissOnOutside(menuAnchor, menuOpen, () => setMenuOpen(false));
 
+  useEffect(() => {
+    if (!menuOpen || !compact || typeof document === "undefined") return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("keydown", onEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onEscape);
+    };
+  }, [menuOpen, compact]);
+
   // The shortcut remains available even though v12 no longer displays the hint.
   useEffect(() => {
     if (!isApp || !show || typeof document === "undefined") return;
@@ -180,9 +197,16 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
 
   const menuVariant: AccountMenuVariant =
     variant === "app" ? "authed" : variant === "onboarding" ? "onboarding" : "guest";
+  const fullscreenMenuOpen = menuOpen && compact && !isApp;
+  // Auth and onboarding share the same compact shell: menu on the left,
+  // centred mark, and account glyph on the right. Keeping this composition
+  // while the fullscreen menu is open prevents the onboarding header from
+  // losing its mark and right-hand anchor.
+  const compactAccountNav = (variant === "auth" || variant === "onboarding") && compact;
 
   function goTo(key: NavKey, href: "/jobs" | "/messages" | "/curriculos" | "/profile"): void {
-    if (active === key && (pathname === href || pathname.startsWith(`${href}/`))) return;
+    const bare = withoutLocale(pathname);
+    if (active === key && (bare === href || bare.startsWith(`${href}/`))) return;
     router.push(href);
   }
 
@@ -238,17 +262,26 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
           />
         </>
       ) : null}
-      <YStack ref={menuAnchor} onKeyDown={onMenuKeyDown}>
-        {isApp ? (
+      <YStack ref={fullscreenMenuOpen ? undefined : menuAnchor} onKeyDown={onMenuKeyDown}>
+        {fullscreenMenuOpen && compactAccountNav ? (
+          <AuthMenuTrigger open menuId={menuId} onPress={() => setMenuOpen(false)} />
+        ) : fullscreenMenuOpen ? null : isApp ? (
           <AccountTrigger
             name={accountName}
             open={menuOpen}
             menuId={menuId}
             onPress={() => setMenuOpen((open) => !open)}
           />
+        ) : compactAccountNav ? (
+          <AuthMenuTrigger
+            open={menuOpen}
+            menuId={menuId}
+            onPress={() => setMenuOpen((open) => !open)}
+          />
         ) : (
           <GlassCircleButton
-            accessibilityLabel={t("landing.nav.openMenu")}
+            accessibilityLabel={t(menuOpen ? "landing.nav.close" : "landing.nav.openMenu")}
+            filledAtRest
             expanded={menuOpen}
             onPress={() => setMenuOpen((open) => !open)}
             renderIcon={({ color }) => <StaggeredMenu size={20} color={color} strokeWidth={1.8} />}
@@ -259,7 +292,9 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
           open={menuOpen}
           menuId={menuId}
           anchorHeight={isApp ? NAV_CONTROL_SIZE_APP : NAV_CONTROL_SIZE}
+          fullscreen={!isApp && compact}
           variant={menuVariant}
+          showAuthLinks={variant === "auth" || variant === "onboarding"}
           identityLabel={name}
           photoURL={photoURL}
           onClose={() => setMenuOpen(false)}
@@ -333,14 +368,13 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
     );
   }
 
-  if (variant === "landing" && width >= 1024) {
+  if (variant === "landing" && width >= 1180) {
     const green =
       theme === "dark" ? landingScrollPalette.navInkDark : landingScrollPalette.navInkLight;
     // This follows the section-aware CTA color: deep green on paper and lime
     // on the green chapters. Inactive labels follow the section ink instead.
     const landingSelection = "var(--landing-nav-button, #214e3d)";
     const landingChapters = LANDING_NAV_CHAPTERS;
-    const showChapterNames = width >= 1180;
     return (
       <>
         <XStack
@@ -368,19 +402,18 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
             tag="nav"
             aria-label={t("app.header.mainNavigation")}
             alignItems="center"
-            gap={showChapterNames ? 16 : 8}
+            gap={28}
           >
             {landingChapters.map((chapter, index) => {
               const title = t(
                 `landing.nav.${["intro", "context", "how", "scores", "start"][index]}`,
               );
-              const number = String(index + 1).padStart(2, "0");
               const activeChapter = landingActiveChapter === chapter;
               return (
                 <Button
                   key={chapter}
                   data-testid="landing-nav-chapter"
-                  aria-label={`${number} · ${title}`}
+                  aria-label={title}
                   aria-current={landingActiveChapter === chapter ? "step" : undefined}
                   onPress={() => {
                     setLandingActiveChapter(chapter);
@@ -388,10 +421,10 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
                   }}
                   backgroundColor="transparent"
                   borderWidth={0}
-                  paddingHorizontal={showChapterNames ? 2 : 6}
+                  paddingHorizontal={2}
                   height={42}
                   fontFamily={landingSans}
-                  fontSize={11}
+                  fontSize={14}
                   fontWeight={activeChapter ? "700" : "500"}
                   color={activeChapter ? landingSelection : (landingInk ?? palette.ink)}
                   hoverStyle={{ color: landingSelection, backgroundColor: "transparent" }}
@@ -401,7 +434,7 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
                     outlineOffset: 4,
                   }}
                 >
-                  {showChapterNames ? `${number} ${title}` : number}
+                  {title}
                 </Button>
               );
             })}
@@ -452,6 +485,7 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
   return (
     <>
       <XStack
+        ref={fullscreenMenuOpen ? menuAnchor : undefined}
         position="absolute"
         top={0}
         left={0}
@@ -459,10 +493,44 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
         height={NAV_BAR_HEIGHT_PUBLIC}
         alignItems="center"
         justifyContent="space-between"
-        paddingHorizontal={compact ? 16 : 28}
+        paddingHorizontal={compact ? (variant === "auth" ? AUTH_NAV_SIDE_INSET : 16) : 28}
         zIndex={menuOpen ? PUBLIC_Z_INDEX_OPEN : PUBLIC_Z_INDEX}
+        backgroundColor={compactAccountNav ? authDialogPalette[theme].panel : "transparent"}
       >
-        {variant === "onboarding" ? (
+        {fullscreenMenuOpen ? (
+          <LinearGradient
+            pointerEvents="none"
+            colors={[
+              authDialogPalette[theme].panel,
+              authDialogPalette[theme].panel,
+              `${authDialogPalette[theme].panel}A6`,
+              `${authDialogPalette[theme].panel}4D`,
+              `${authDialogPalette[theme].panel}00`,
+            ]}
+            locations={[
+              0,
+              NAV_BAR_HEIGHT_PUBLIC / (NAV_BAR_HEIGHT_PUBLIC + FULLSCREEN_MENU_BLEND),
+              (NAV_BAR_HEIGHT_PUBLIC + 9) / (NAV_BAR_HEIGHT_PUBLIC + FULLSCREEN_MENU_BLEND),
+              (NAV_BAR_HEIGHT_PUBLIC + 21) / (NAV_BAR_HEIGHT_PUBLIC + FULLSCREEN_MENU_BLEND),
+              1,
+            ]}
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              left: 0,
+              height: NAV_BAR_HEIGHT_PUBLIC + FULLSCREEN_MENU_BLEND,
+            }}
+          />
+        ) : null}
+
+        {compactAccountNav ? (
+          <XStack flex={1} justifyContent="flex-start">
+            {controls}
+          </XStack>
+        ) : fullscreenMenuOpen ? (
+          <AuthMenuTrigger open menuId={menuId} onPress={() => setMenuOpen(false)} />
+        ) : variant === "onboarding" ? (
           // Not a link mid-flow: clicking the mark would drop the visitor out
           // of onboarding onto the landing page.
           brand
@@ -472,7 +540,15 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
           </Pressable>
         )}
 
-        {progress ? (
+        {compactAccountNav ? (
+          variant === "onboarding" ? (
+            brand
+          ) : (
+            <Pressable accessibilityRole="link" onPress={() => router.push(localized("/"))}>
+              {brand}
+            </Pressable>
+          )
+        ) : progress && !(variant === "onboarding" && compact) ? (
           // Takes the empty middle the CTA leaves behind, so the bar keeps the
           // landing's shape — mark hard left, hamburger hard right — and the
           // wizard's progress reads as the thing between them.
@@ -499,27 +575,84 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
           </XStack>
         ) : null}
 
-        <XStack alignItems="center" gap={compact ? 6 : 10}>
-          {variant === "landing" && !compact ? (
-            <Pressable accessibilityRole="button" onPress={() => setAuthOpen(true)}>
-              {/* Bare text, not a pill: the dialog it opens carries the
-                  emphasis. */}
-              <XStack paddingHorizontal={12} paddingVertical={10} hoverStyle={{ opacity: 0.7 }}>
-                <Text
-                  fontFamily={landingSans}
-                  fontSize={15}
-                  fontWeight="600"
-                  color={landingInk ?? palette.ink}
-                >
-                  {t("auth.dialogMenuEntry")}
-                </Text>
-              </XStack>
+        {compactAccountNav ? (
+          <XStack flex={1} justifyContent="flex-end">
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={
+                variant === "onboarding"
+                  ? t("app.header.openAccountMenu")
+                  : t("auth.dialogMenuEntry")
+              }
+              onPress={() => {
+                if (variant === "onboarding") {
+                  setMenuOpen((open) => !open);
+                } else {
+                  setMenuOpen(false);
+                  router.replace(AUTH_ROUTE);
+                  requestAuthFlowReset();
+                }
+              }}
+              style={{
+                width: AUTH_MENU_SIZE,
+                height: AUTH_MENU_SIZE,
+                borderRadius: 999,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <UserRound size={24} color={AUTH_MENU_ICON_COLOR[theme]} strokeWidth={2.3} />
             </Pressable>
-          ) : null}
+          </XStack>
+        ) : (
+          <XStack alignItems="center" gap={compact ? 6 : 10}>
+            {variant === "landing" && !compact ? (
+              <Pressable accessibilityRole="button" onPress={() => setAuthOpen(true)}>
+                {/* Bare text, not a pill: the dialog it opens carries the
+                  emphasis. */}
+                <XStack paddingHorizontal={12} paddingVertical={10} hoverStyle={{ opacity: 0.7 }}>
+                  <Text
+                    fontFamily={landingSans}
+                    fontSize={15}
+                    fontWeight="600"
+                    color={landingInk ?? palette.ink}
+                  >
+                    {t("auth.dialogMenuEntry")}
+                  </Text>
+                </XStack>
+              </Pressable>
+            ) : null}
 
-          {controls}
-        </XStack>
+            {controls}
+          </XStack>
+        )}
       </XStack>
+
+      {variant === "onboarding" && compact && progress && !menuOpen ? (
+        <YStack
+          position="absolute"
+          top={NAV_BAR_HEIGHT_PUBLIC}
+          left={0}
+          right={0}
+          height={2}
+          zIndex={PUBLIC_Z_INDEX}
+          backgroundColor={palette.hairline}
+          overflow="hidden"
+          accessibilityRole="progressbar"
+          accessibilityLabel={progress.label}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progress.pct}
+          aria-valuetext={progress.label}
+          data-testid="onboarding-progress"
+        >
+          <YStack
+            height="100%"
+            width={`${Math.max(0, Math.min(100, progress.pct))}%`}
+            backgroundColor={authDialogPalette[theme].brand}
+          />
+        </YStack>
+      ) : null}
 
       {overlays}
     </>

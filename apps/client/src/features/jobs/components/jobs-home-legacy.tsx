@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Jobs home — the tab is a menu, not a list (the approved "editorial index"
  * direction). A centered masthead (briefcase glyph sized to the serif title)
@@ -17,7 +18,7 @@
 import { Divider, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useRouter } from "expo-router";
+
 import { BriefcaseBusiness } from "lucide-react-native";
 import type { ReactElement, ReactNode } from "react";
 import { useState } from "react";
@@ -40,7 +41,7 @@ export function JobsHomeScreen(): ReactElement {
   // The desktop navbar floats over the scene; content starts clear of it.
   const navInset = useNavBarInset();
   const isDesktopWeb = useIsDesktopWeb();
-  const router = useRouter();
+  const router = useAppRouter();
   const { t } = useI18n();
   const [now] = useState(() => Date.now());
 

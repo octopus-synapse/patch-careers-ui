@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Jobs tab — external listings from the daily JSearch batch.
  *
@@ -18,7 +19,7 @@ import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial
 import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
 import { useQueryClient } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { Bookmark, BriefcaseBusiness, SearchX, Send, SlidersHorizontal } from "lucide-react-native";
 import {
   type ComponentType,
@@ -101,7 +102,7 @@ export function JobsScreen({
   // Desktop web reads left-to-right like a page: title + scope tabs align
   // left with the count line instead of the mobile centered stack.
   const isDesktopWeb = useIsDesktopWeb();
-  const router = useRouter();
+  const router = useAppRouter();
   const queryClient = useQueryClient();
   const { t } = useI18n();
   const [scope, setScope] = useState<JobsScope>(initialScope);

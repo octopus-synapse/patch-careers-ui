@@ -1,8 +1,8 @@
 import { labelFor } from "@patch-careers/api-client";
 import { Text, useEditorialPalette, XStack, YStack } from "@patch-careers/ui";
-import { Link } from "expo-router";
 import { Bookmark } from "lucide-react-native";
 import { Pressable } from "react-native";
+import { AppLink } from "@/navigation/app-link";
 import { useI18n } from "@/providers/i18n-provider";
 import type { Opportunity } from "../lib/discovery";
 import { toTitleCase } from "../lib/helpers";
@@ -15,20 +15,22 @@ export function OpportunityCard({
   onSave,
   pending = false,
   onVisit,
+  list = false,
 }: {
   job: Opportunity;
   score?: number | undefined;
   onSave?: ((job: Opportunity) => void) | undefined;
   pending?: boolean;
   onVisit?: (job: Opportunity) => void;
+  list?: boolean;
 }) {
   const palette = useEditorialPalette();
   const { t, locale } = useI18n();
   return (
     <YStack
       testID={`opportunity-${job.id}`}
-      minHeight={221}
-      height="100%"
+      minHeight={list ? 140 : 221}
+      height={list ? undefined : "100%"}
       gap={0}
       borderRadius={20}
       borderWidth={1}
@@ -36,7 +38,7 @@ export function OpportunityCard({
       backgroundColor={palette.panel}
       hoverStyle={{ borderColor: palette.accent, backgroundColor: palette.surface }}
     >
-      <Link href={{ pathname: "/job/[id]", params: { id: job.id } }} asChild>
+      <AppLink href={{ pathname: "/job/[id]", params: { id: job.id } }} asChild>
         <Pressable
           accessibilityRole="link"
           accessibilityLabel={t("jobs.row.a11y", { title: job.title, company: job.company })}
@@ -51,10 +53,10 @@ export function OpportunityCard({
                 {job.company}
               </Text>
             </XStack>
-            <YStack marginTop={20} marginBottom={9} minHeight={45}>
+            <YStack marginTop={list ? 8 : 20} marginBottom={list ? 4 : 9} minHeight={list ? 0 : 45}>
               <Text
-                fontSize={15}
-                lineHeight={22.5}
+                fontSize={list ? 20 : 15}
+                lineHeight={list ? 27 : 22.5}
                 fontWeight="600"
                 color={palette.ink}
                 numberOfLines={2}
@@ -71,8 +73,8 @@ export function OpportunityCard({
                 .join(" · ")}
             </Text>
             <XStack
-              marginTop="auto"
-              paddingTop={17}
+              marginTop={list ? 12 : "auto"}
+              paddingTop={list ? 0 : 17}
               alignItems="center"
               justifyContent="space-between"
               gap={10}
@@ -80,11 +82,11 @@ export function OpportunityCard({
               <Text fontSize={10} color={palette.muted}>
                 {job.employmentType ? labelFor("JobType", job.employmentType, locale) : ""}
               </Text>
-              <JobScore score={score} />
+              <JobScore score={score} ring={list} />
             </XStack>
           </YStack>
         </Pressable>
-      </Link>
+      </AppLink>
       {onSave ? (
         <YStack position="absolute" top={17} right={14}>
           <Pressable

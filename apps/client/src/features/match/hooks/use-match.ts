@@ -7,6 +7,7 @@ import {
   type GetV1MatchResumeIdJobId200,
   useGetV1MatchResumeIdJobId,
 } from "@patch-careers/api-client";
+import { usePatchPlan } from "@/features/billing/use-patch-plan";
 
 export function useMatch(
   resumeId: string | undefined,
@@ -17,12 +18,13 @@ export function useMatch(
   isError: boolean;
   refetch: () => void;
 } {
-  const enabled = Boolean(resumeId);
+  const { canUsePaid } = usePatchPlan();
+  const enabled = canUsePaid && Boolean(resumeId);
   const query = useGetV1MatchResumeIdJobId(resumeId ?? "", jobId, {
     query: { enabled, retry: false },
   });
   return {
-    breakdown: query.data,
+    breakdown: canUsePaid ? query.data : undefined,
     isLoading: enabled && query.isLoading,
     isError: query.isError,
     refetch: () => void query.refetch(),

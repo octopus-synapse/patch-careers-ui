@@ -51,7 +51,7 @@ describe("editorialPalette", () => {
 
   it("keeps the warm paper bg and brand-forest primary", () => {
     expect(editorialPalette.bg).toBe("#F2F1EC");
-    expect(editorialPalette.primary).toBe("#234D3B");
+    expect(editorialPalette.primary).toBe("#2E644A");
   });
 
   it("dark keeps the warm dark paper bg and inverts the CTA with brand lime", () => {

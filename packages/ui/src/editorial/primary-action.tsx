@@ -24,6 +24,8 @@ export type PrimaryActionProps = {
   loading?: boolean;
   disabled?: boolean;
   testID?: string;
+  /** Stretch across its parent and place the label/arrow at opposite edges. */
+  fullWidth?: boolean;
 };
 
 export function PrimaryAction({
@@ -32,6 +34,7 @@ export function PrimaryAction({
   loading = false,
   disabled = false,
   testID,
+  fullWidth = false,
 }: PrimaryActionProps): ReactElement {
   const scale = useSharedValue(1);
   const arrowX = useSharedValue(0);
@@ -48,7 +51,10 @@ export function PrimaryAction({
   }));
 
   return (
-    <Animated.View entering={editorialFadeInDown(450, 600)}>
+    <Animated.View
+      entering={editorialFadeInDown(450, 600)}
+      style={fullWidth ? layoutStyles.fullWidth : undefined}
+    >
       <PressableAnimated
         accessibilityRole="button"
         accessibilityLabel={label}
@@ -65,6 +71,7 @@ export function PrimaryAction({
         }}
         style={[
           primaryStyles.button,
+          fullWidth ? primaryStyles.buttonFullWidth : null,
           inactive ? primaryStyles.buttonInactive : null,
           containerStyle,
         ]}
@@ -113,8 +120,11 @@ const stylesFor = (shadow: string, primary: string) =>
       shadowRadius: 16,
       elevation: 3,
     },
+    buttonFullWidth: { width: "100%", justifyContent: "space-between" },
     buttonInactive: { opacity: 0.55 },
   });
+
+const layoutStyles = StyleSheet.create({ fullWidth: { width: "100%" } });
 
 const stylesByTheme = {
   light: stylesFor(authDialogPalette.light.brand, authDialogPalette.light.brand),

@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * <MatchBreakdown> — the compatibility panel on a job detail. Shows the
  * overall score ring + available sub-scores and skill gaps (deep-linking
@@ -6,7 +7,7 @@
  */
 import { ScoreExplainSheet, ScorePanel, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { Info } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
@@ -27,7 +28,7 @@ const SUB_KEYS = ["keyword", "requirements", "semantic"] as const;
 export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElement | null {
   const { t } = useI18n();
   const palette = useEditorialPalette();
-  const router = useRouter();
+  const router = useAppRouter();
   const { resumeId, isLoading: resumeLoading } = useDefaultMatchResume();
   const match = useMatch(resumeId, job.id);
   const [explainOpen, setExplainOpen] = useState(false);

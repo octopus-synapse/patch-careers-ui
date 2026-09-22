@@ -4,7 +4,6 @@ import type { FormData, OnboardingSession, SectionItem } from "../types";
 const SNAPSHOT_KEY = "onboarding:session-snapshot";
 const DRAFT_PREFIX = "onboarding:draft:";
 const PHONE_COUNTRY_KEY = "onboarding:phone-country";
-const WELCOME_SEEN_KEY = "onboarding:welcome-seen";
 const MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 type SnapshotPayload = {
@@ -37,24 +36,6 @@ async function readFresh<T extends { savedAt: number }>(key: string): Promise<T 
     return null;
   }
 }
-
-/** A one-shot boolean flag (`"1"`/absent) persisted in `mundane`. */
-function makeFlag(key: string) {
-  return {
-    async mark(): Promise<void> {
-      await mundane.setItem(key, "1").catch(() => undefined);
-    },
-    async read(): Promise<boolean> {
-      const raw = await mundane.getItem(key).catch(() => null);
-      return raw === "1";
-    },
-    async clear(): Promise<void> {
-      await mundane.removeItem(key).catch(() => undefined);
-    },
-  };
-}
-
-const welcomeSeenFlag = makeFlag(WELCOME_SEEN_KEY);
 
 export async function saveSessionSnapshot(session: OnboardingSession): Promise<void> {
   const payload: SnapshotPayload = { savedAt: Date.now(), session };
@@ -100,8 +81,3 @@ export async function savePhoneCountry(iso: string): Promise<void> {
 export async function readPhoneCountry(): Promise<string | null> {
   return mundane.getItem(PHONE_COUNTRY_KEY).catch(() => null);
 }
-
-/** One-shot flag so the welcome intro shows once per device, not on every
- *  reload of an unstarted session. */
-export const markWelcomeSeen = welcomeSeenFlag.mark;
-export const readWelcomeSeen = welcomeSeenFlag.read;

@@ -1,3 +1,4 @@
+import { Redo } from "lucide-react-native";
 import type { ReactNode } from "react";
 import { useI18n } from "@/providers/i18n-provider";
 
@@ -50,15 +51,7 @@ export function HeroResumeComparison() {
           </article>
         </div>
         <div className="resume-arrow" aria-hidden="true">
-          <svg viewBox="0 0 72 48" fill="none" aria-hidden="true">
-            <path
-              d="M8 24H61M45 8L62 24L45 40"
-              stroke="currentColor"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <Redo size={120} color="currentColor" strokeWidth={2.6} />
         </div>
         <div className="resume-paper-wrap" data-testid="hero-adapted-paper">
           <article className="resume-paper resume-paper-after">

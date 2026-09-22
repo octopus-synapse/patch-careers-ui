@@ -5,10 +5,6 @@
  *     mobileSecure adapter; web cookies via webSecure)
  *   - kicks `bootstrap()` once on mount and tracks the resulting hydrated
  *     auth state so route gates can react synchronously
- *   - installs the native OAuth launcher (`expo-auth-session/web-browser`)
- *     so `signInWithProviderNative` works
- *   - subscribes to `Linking` so the OAuth deep-link callback hits
- *     `completeOAuth()` and re-hydrates the store
  *
  * `useAuthBootstrap()` lets layouts wait for the first bootstrap before
  * rendering route content (avoids redirect flicker).
@@ -16,20 +12,14 @@
 
 import {
   bootstrap,
-  completeOAuth,
   configureAuthClient,
-  configureOAuthLauncher,
-  type OAuthLauncher,
   selectCurrentUser,
   selectIsAuthenticated,
   selectIsLoading,
-  type TokenPair,
   type User,
   useAuthStore,
 } from "@patch-careers/auth";
 import { mundane, secure } from "@patch-careers/storage";
-import * as Linking from "expo-linking";
-import * as WebBrowser from "expo-web-browser";
 import {
   createContext,
   type ReactElement,
@@ -40,9 +30,7 @@ import {
   useState,
 } from "react";
 import { Platform } from "react-native";
-import { OAUTH_CALLBACK_PATH, resolveApiBaseURL } from "@/config/api";
-
-void WebBrowser.maybeCompleteAuthSession();
+import { resolveApiBaseURL } from "@/config/api";
 
 interface AuthBootstrapState {
   readonly hasBootstrapped: boolean;
@@ -71,42 +59,11 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
       preferTokens: Platform.OS !== "web",
     });
 
-    // OAuth launcher: opens the system browser tab (or in-app Custom Tabs
-    // on Android) and waits for the deep-link callback. The auth helper
-    // expects a `{ type, url }` result and uses the URL to extract the
-    // accessToken / refreshToken pair the backend appended.
-    const launcher: OAuthLauncher = async (authUrl, returnUrl) => {
-      const result = await WebBrowser.openAuthSessionAsync(authUrl, returnUrl, {
-        showInRecents: false,
-      });
-      if (result.type === "success" && "url" in result) {
-        return { type: "success", url: (result as { url: string }).url };
-      }
-      if (result.type === "cancel") return { type: "cancel" };
-      return { type: "dismiss" };
-    };
-    configureOAuthLauncher(launcher);
-
     void bootstrap()
       .catch(() => undefined)
       .finally(() => {
         if (!cancelled) setHasBootstrapped(true);
       });
-
-    // Universal deep-link subscription. The backend's OAuth callback
-    // bounces back to `patchcareers://auth/callback?accessToken=...`;
-    // when that URL arrives we forward to completeOAuth() and let it
-    // persist the pair + re-hydrate the api-client headers.
-    const sub = Linking.addEventListener("url", (event) => {
-      if (!event.url) return;
-      if (event.url.includes(OAUTH_CALLBACK_PATH)) {
-        void completeOAuth(event.url, secure, apiBaseURL)
-          .then(async (pair: TokenPair | null) => {
-            if (pair) await bootstrap().catch(() => undefined);
-          })
-          .catch(() => undefined);
-      }
-    });
 
     // Touch `mundane` so the import isn't stripped — it'll be needed by
     // later PRs that persist non-secret preferences (theme, locale).
@@ -114,7 +71,6 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
 
     return () => {
       cancelled = true;
-      sub.remove();
     };
   }, [apiBaseURL]);
 

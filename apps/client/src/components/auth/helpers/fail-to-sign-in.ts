@@ -1,12 +1,12 @@
 import type { Translator } from "@patch-careers/i18n";
-import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
+import { AUTH_ROUTE } from "@/navigation/auth-redirect";
 
 type ToastLike = { show: (options: { title: string; intent: "danger" }) => void };
-type RouterLike = { replace: (href: typeof AUTH_SIGN_IN_ROUTE) => void };
+type RouterLike = { replace: (href: typeof AUTH_ROUTE) => void };
 
 /**
  * "Show a danger toast, then bounce to sign-in" — the failure recovery
- * 2fa-verify and oauth-callback were each repeating.
+ * auth screens were each repeating.
  */
 export function failToSignIn(options: {
   toast: ToastLike;
@@ -15,5 +15,5 @@ export function failToSignIn(options: {
   titleKey: string;
 }): void {
   options.toast.show({ title: options.t(options.titleKey), intent: "danger" });
-  options.router.replace(AUTH_SIGN_IN_ROUTE);
+  options.router.replace(AUTH_ROUTE);
 }

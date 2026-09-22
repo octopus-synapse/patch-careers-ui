@@ -11,43 +11,43 @@ test.use({
 async function openJobs(page: Page) {
   await page.goto("/jobs");
   await expect(page.getByTestId("jobs-desktop")).toBeVisible();
-  await expect(page.locator("#carousel-recommended")).toBeVisible();
+  await expect(page.getByTestId("recommended-jobs-list")).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
 }
 
-test("desktop shelves, filters, view-all, saved state and direct detail navigation", async ({
+test("desktop recommendations, filters, saved state and direct detail navigation", async ({
   page,
 }) => {
   const fixture = await mockJobsBackend(page);
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await openJobs(page);
-  await expect(page.getByRole("link", { name: "Início", exact: true })).toBeVisible();
-  for (const width of [1280, 1440, 1920]) {
-    await page.setViewportSize({ width, height: 1100 });
-    const dimensions = await page.locator("#carousel-recommended").evaluate((node) => {
-      const rect = node.getBoundingClientRect();
-      const cards = [...node.querySelectorAll('[data-testid^="opportunity-"]')].map((card) =>
-        card.getBoundingClientRect(),
-      );
-      return {
-        visible: cards.filter((card) => card.left >= rect.left - 1 && card.right <= rect.right + 1)
-          .length,
-        width: rect.width,
-      };
-    });
-    expect(dimensions.visible).toBe(4);
-    expect(dimensions.width).toBeLessThanOrEqual(1204);
-  }
-  await page.getByRole("button", { name: "Próximas vagas — Recomendadas para você" }).click();
-  await expect
-    .poll(() => page.locator("#carousel-recommended").evaluate((node) => node.scrollLeft))
-    .toBeGreaterThan(100);
-  await page.locator("#carousel-recommended").focus();
-  await page.keyboard.press("Home");
-  await expect
-    .poll(() => page.locator("#carousel-recommended").evaluate((node) => node.scrollLeft))
-    .toBeLessThanOrEqual(3);
+  await expect(page.getByRole("link", { name: "Vagas", exact: true })).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Oportunidades", exact: true })).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Candidaturas", exact: true })).toHaveCount(0);
+  await expect(
+    page.getByTestId("recommended-jobs-list").locator('[data-testid^="opportunity-"]'),
+  ).toHaveCount(12);
+  await expect(page.getByText("Vagas semelhantes às suas salvas")).toHaveCount(0);
+  await expect(page.getByText("Continue de onde parou")).toHaveCount(0);
+  await page.getByRole("button", { name: "Ver em grade" }).click();
+  const gridPositions = await page.getByTestId("recommended-jobs-list").evaluate((node) =>
+    [...node.querySelectorAll('[data-testid^="opportunity-"]')].slice(0, 5).map((card) => ({
+      left: card.getBoundingClientRect().left,
+      top: card.getBoundingClientRect().top,
+    })),
+  );
+  expect(gridPositions[0]?.top).toBe(gridPositions[3]?.top);
+  expect(gridPositions[4]?.top).toBeGreaterThan(gridPositions[0]?.top ?? 0);
+  await page.getByRole("button", { name: "Ver em lista" }).click();
+  const listPositions = await page.getByTestId("recommended-jobs-list").evaluate((node) =>
+    [...node.querySelectorAll('[data-testid^="opportunity-"]')].slice(0, 2).map((card) => ({
+      left: card.getBoundingClientRect().left,
+      top: card.getBoundingClientRect().top,
+    })),
+  );
+  expect(listPositions[0]?.left).toBe(listPositions[1]?.left);
+  expect(listPositions[1]?.top).toBeGreaterThan(listPositions[0]?.top ?? 0);
 
   await page.getByRole("button", { name: "Filtros", exact: true }).click();
   await page.getByRole("textbox", { name: "Localização", exact: true }).fill("São Paulo");
@@ -58,11 +58,9 @@ test("desktop shelves, filters, view-all, saved state and direct detail navigati
   await page.getByRole("textbox", { name: "Localização", exact: true }).fill("São Paulo");
   await page.getByRole("button", { name: "Aplicar filtros", exact: true }).click();
   await expect(page).toHaveURL(/location=/);
-  await expect(page.locator("#carousel-recommended")).not.toContainText("Global");
-  await page.getByRole("button", { name: "Ver tudo em Recomendadas para você" }).click();
-  await expect(page).toHaveURL(/group=recommended/);
+  await expect(page.getByTestId("recommended-jobs-list")).not.toContainText("Global");
   await expect(page).toHaveURL(/location=/);
-  await page.getByRole("button", { name: "Limpar tudo", exact: true }).click();
+  await page.getByRole("button", { name: "Limpar tudo", exact: true }).first().click();
   await expect.poll(() => new URL(page.url()).searchParams.get("location")).toBe("");
   const card = page.getByTestId(`opportunity-${fixture.id(1)}`);
   await card.getByRole("button", { name: "Salvar vaga", exact: true }).click();
@@ -75,11 +73,6 @@ test("desktop shelves, filters, view-all, saved state and direct detail navigati
     .click();
   await expect(page).toHaveURL(new RegExp(`/job/${fixture.id(1)}`));
   await expect(page.getByRole("heading", { name: "Sobre a vaga" })).toBeVisible();
-  await expect(
-    page
-      .getByTestId("job-desktop-detail")
-      .getByLabel("96% de compatibilidade do seu perfil com esta vaga"),
-  ).toBeVisible();
   await page.getByRole("button", { name: "Carta de apresentação", exact: true }).click();
   await expect(page.getByTestId("job-composer").last()).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Seu contexto para a carta" })).toBeVisible();
@@ -107,10 +100,7 @@ test("desktop shelves, filters, view-all, saved state and direct detail navigati
   await page.getByRole("button", { name: "Remover dos salvos", exact: true }).click();
   await expect(page.getByRole("button", { name: "Salvar vaga", exact: true })).toBeVisible();
   await page.goto("/jobs");
-  await expect(page.locator("#carousel-recent")).toContainText("Senior Frontend Engineer");
-  await expect(
-    page.locator("#carousel-recent").getByRole("button", { name: "Salvar vaga", exact: true }),
-  ).toBeVisible();
+  await expect(page.locator("#carousel-recent")).toHaveCount(0);
   expect(errors).toEqual([]);
 });
 
@@ -160,7 +150,11 @@ test("guided import, minimum context, real version references, edited letter and
           .length,
     )
     .toBe(1);
-  await page.getByRole("tab", { name: "Candidaturas", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "Navegação principal" })
+    .getByRole("link", { name: "Candidaturas", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/applications$/);
   await expect(
     page.getByRole("combobox", { name: "Alterar etapa — Frontend Engineer" }),
   ).toHaveValue("ready");
@@ -198,7 +192,9 @@ test("failed bookmarks roll back and typed descriptions survive reload without i
     route.fulfill({ status: 503, json: { message: "Temporary failure" } }),
   );
   await openJobs(page);
-  const card = page.locator("#carousel-recommended").getByTestId(`opportunity-${fixture.id(1)}`);
+  const card = page
+    .getByTestId("recommended-jobs-list")
+    .getByTestId(`opportunity-${fixture.id(1)}`);
   await card.getByRole("button", { name: "Salvar vaga", exact: true }).click();
   await expect(
     page.getByText("Não foi possível salvar. Tente novamente.", { exact: true }).first(),
@@ -222,24 +218,102 @@ test("failed bookmarks roll back and typed descriptions survive reload without i
   ).toHaveLength(0);
 });
 
+test("recommended jobs show complete rows and leave only the final page incomplete", async ({
+  page,
+}) => {
+  const fixture = await mockJobsBackend(page, { recommended: false });
+  const jobs = Array.from({ length: 65 }, (_, index) => ({
+    ...fixture.jobs[index % fixture.jobs.length],
+    id: fixture.id(index + 1),
+    externalId: `ext-${index + 1}`,
+    title: `Engineer ${index + 1}`,
+    matchScore: 100 - index,
+  }));
+  await page.route(/\/api\/v1\/jobs\/external\?/, (route) => {
+    const url = new URL(route.request().url());
+    const pageNumber = Number(url.searchParams.get("page") || 1);
+    const limit = Number(url.searchParams.get("limit") || 12);
+    return route.fulfill({
+      json: {
+        items: jobs.slice((pageNumber - 1) * limit, pageNumber * limit),
+        total: jobs.length,
+        page: pageNumber,
+        hasNext: pageNumber * limit < jobs.length,
+      },
+    });
+  });
+  await openJobs(page);
+  const list = page.getByTestId("recommended-jobs-list");
+  await expect(list.locator('[data-testid^="opportunity-"]')).toHaveCount(12);
+  for (let pageNumber = 1; pageNumber <= 6; pageNumber++) {
+    await expect(
+      page.getByRole("button", { name: `Página ${pageNumber}`, exact: true }),
+    ).toBeVisible();
+  }
+  await expect(list.getByTestId(`opportunity-${fixture.id(1)}`)).toBeVisible();
+  const scrollPosition = () =>
+    page.evaluate(() =>
+      Math.max(
+        window.scrollY,
+        document.documentElement.scrollTop,
+        document.querySelector('[data-testid="jobs-desktop"]')?.scrollTop ?? 0,
+      ),
+    );
+  await page.getByRole("button", { name: "Próxima", exact: true }).scrollIntoViewIfNeeded();
+  expect(await scrollPosition()).toBeGreaterThan(0);
+  await page.getByRole("button", { name: "Próxima", exact: true }).click();
+  await expect
+    .poll(() => list.evaluate((node) => node.getBoundingClientRect().top))
+    .toBeLessThan(150);
+  expect(await list.evaluate((node) => node.getBoundingClientRect().top)).toBeGreaterThan(0);
+  expect(await scrollPosition()).toBeGreaterThan(0);
+  await expect(list.locator('[data-testid^="opportunity-"]')).toHaveCount(12);
+  await expect(list.getByTestId(`opportunity-${fixture.id(13)}`)).toBeVisible();
+  await page.getByRole("button", { name: "Página 6", exact: true }).click();
+  await expect(list.locator('[data-testid^="opportunity-"]')).toHaveCount(5);
+  await expect(list.getByTestId(`opportunity-${fixture.id(65)}`)).toBeVisible();
+  await page.getByRole("button", { name: "Anterior", exact: true }).click();
+  await expect(list.getByTestId(`opportunity-${fixture.id(49)}`)).toBeVisible();
+});
+
 test("catalog fallback paginates and saved jobs remain available with discovery filters", async ({
   page,
 }) => {
   await mockJobsBackend(page, { recommended: false });
   await openJobs(page);
-  await page.getByRole("button", { name: "Ver tudo em Recomendadas para você" }).click();
-  await expect(page.locator('[data-testid^="opportunity-"]')).toHaveCount(20);
-  await page.getByRole("button", { name: "Carregar mais vagas", exact: true }).click();
-  await expect(page.locator('[data-testid^="opportunity-"]')).toHaveCount(25);
-  await expect(page.getByRole("button", { name: "Carregar mais vagas", exact: true })).toHaveCount(
-    0,
-  );
+  await expect(
+    page.getByTestId("recommended-jobs-list").locator('[data-testid^="opportunity-"]'),
+  ).toHaveCount(12);
+  await page.getByRole("button", { name: "Próxima", exact: true }).click();
+  await expect(
+    page.getByTestId("recommended-jobs-list").locator('[data-testid^="opportunity-"]'),
+  ).toHaveCount(12);
   await page.getByRole("button", { name: "Filtros", exact: true }).click();
   await page.getByRole("textbox", { name: "Cargo, empresa ou competência" }).fill("No such job");
   await page.getByRole("button", { name: "Aplicar filtros", exact: true }).click();
-  await expect(page.getByText("Nenhuma vaga com esses filtros.", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Nenhuma vaga com esses filtros.", { exact: true }).first(),
+  ).toBeVisible();
   await page.getByRole("tab", { name: /Salvas/ }).click();
   await expect(page.locator('[data-testid^="opportunity-"]')).toHaveCount(2);
+});
+
+test("English Applications page returns to Jobs without changing its heading", async ({ page }) => {
+  await mockJobsBackend(page, { locale: "en" });
+  await page.goto("/en/applications");
+  await expect(page.getByTestId("applications-desktop")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Applications", exact: true })).toBeVisible();
+  const nav = page.getByRole("navigation", { name: "Main navigation" });
+  await expect(nav.getByRole("link", { name: "Applications" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  await nav.getByRole("link", { name: "Jobs", exact: true }).click();
+  await expect(page).toHaveURL(/\/en\/jobs$/);
+  await expect(page.getByRole("heading", { name: "Jobs", exact: true })).toBeVisible();
+  await expect(page.getByText("Find your place. Build your future.")).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Opportunities", exact: true })).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Saved", exact: true })).toBeVisible();
 });
 
 test("English and dark theme do not substitute another resume when the master is missing", async ({
@@ -248,8 +322,10 @@ test("English and dark theme do not substitute another resume when the master is
   const fixture = await mockJobsBackend(page, { master: false, locale: "en" });
   await page.emulateMedia({ colorScheme: "dark" });
   await openJobs(page);
-  await expect(page.getByRole("link", { name: "Home", exact: true })).toBeVisible();
-  await expect(page.locator("#carousel-recommended")).not.toContainText("%");
+  await expect(page.getByRole("link", { name: "Jobs", exact: true })).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Opportunities", exact: true })).toBeVisible();
+  await expect(page.getByText("Find your place. Build your future.")).toBeVisible();
+  await expect(page.getByTestId("recommended-jobs-list")).not.toContainText("%");
   await page
     .getByRole("textbox", { name: "Job link or description" })
     .fill(

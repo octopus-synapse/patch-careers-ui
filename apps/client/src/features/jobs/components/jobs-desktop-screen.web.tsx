@@ -1,44 +1,58 @@
-import { Text, useEditorialPalette, useToast, XStack, YStack } from "@patch-careers/ui";
+import { Text, useEditorialPalette, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, PillButton } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import Head from "expo-router/head";
-import { ChevronLeft, SlidersHorizontal, X } from "lucide-react-native";
-import { useMemo, useRef, useState } from "react";
+import { ChevronLeft, LayoutGrid, List, SlidersHorizontal, X } from "lucide-react-native";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView } from "react-native";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import { seedExternalJob } from "../hooks/queries";
 import { useDiscovery } from "../hooks/use-discovery";
 import { useJobsWorkspace } from "../hooks/use-jobs-workspace";
 import { useMasterJobScores } from "../hooks/use-master-job-scores";
 import { useToggleSaveJob } from "../hooks/use-save-job";
-import { DISCOVERY_GROUPS, type DiscoveryGroup, type Opportunity } from "../lib/discovery";
+import { balancedPages } from "../lib/balanced-pages";
+import type { DiscoveryGroup, Opportunity } from "../lib/discovery";
 import { discoveryParams, readDiscoveryRoute } from "../lib/discovery-route";
 import { activeFilterChips } from "../lib/helpers";
 import { EMPTY_JOBS_FILTERS, type JobsFilters, type JobsScope } from "../types";
-import { ApplicationsBoard } from "./applications-board.web";
 import { DiscoveryFilters } from "./discovery-filters";
 import { JobComposer } from "./job-composer.web";
 import { JobGrid, JobShelf, JobsEmpty } from "./job-shelf.web";
 import { OpportunityCard } from "./opportunity-card.web";
 
 export function JobsDesktopScreen() {
+  const PAGE_SIZE = 12;
   const palette = useEditorialPalette();
   const inset = useNavBarInset();
   const { t, locale } = useI18n();
-  const router = useRouter();
+  const router = useAppRouter();
   const client = useQueryClient();
-  const toast = useToast();
   const params = useLocalSearchParams<Record<string, string | string[]>>();
   const routeKey = JSON.stringify(params);
   const { scope, group, filters } = useMemo(
     () => readDiscoveryRoute(JSON.parse(routeKey)),
     [routeKey],
   );
+  useEffect(() => {
+    if (scope === "applications") router.replace("/applications");
+  }, [scope, router]);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [recommendedPage, setRecommendedPage] = useState(1);
+  const [fixedRecommendedPageSizes, setFixedRecommendedPageSizes] = useState<number[]>([]);
+  const [recommendedLayout, setRecommendedLayout] = useState<"list" | "grid">("list");
+  const recommendedListRef = useRef<HTMLDivElement>(null);
   const workspace = useJobsWorkspace();
   const data = useDiscovery(filters, workspace.entries);
+  const filterKey = JSON.stringify(filters);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Reset pagination only when the serialized filter values change.
+  useEffect(() => {
+    setRecommendedPage(1);
+    setFixedRecommendedPageSizes([]);
+  }, [filterKey]);
   const save = useToggleSaveJob();
   const visited = (job: Opportunity) => seedExternalJob(client, job);
   const allVisible: Opportunity[] = [
@@ -52,10 +66,12 @@ export function JobsDesktopScreen() {
       .filter((job) => job.source !== "imported" && job.id !== job.savedId)
       .map((job) => job.id),
   );
+  const recommendedJobs = data.recommended.data?.items.length
+    ? data.groups.recommended
+    : [...data.groups.recommended].sort((a, b) => (scores[b.id] ?? -1) - (scores[a.id] ?? -1));
   const tabRefs = useRef<Array<HTMLElement | null>>([]);
   const tabs: { key: JobsScope; label: string; count?: number }[] = [
-    { key: "all", label: t("jobs.title") },
-    { key: "applications", label: t("jobs.scope.applications") },
+    { key: "all", label: t("jobs.desktop.opportunitiesTab") },
     { key: "saved", label: t("jobs.scope.saved"), count: data.saved.total },
   ];
   const pageTitle = t(scope === "all" ? "jobs.documentTitle" : `jobs.scope.${scope}`);
@@ -160,6 +176,149 @@ export function JobsDesktopScreen() {
       </JobShelf>
     );
   };
+  const recommendedSource = data.recommended.data?.items.length ? data.recommended : data.catalog;
+  const recommendedHasNext = recommendedSource.hasNextPage;
+  const recommendedTotal = data.recommended.data?.items.length
+    ? data.recommended.data.total
+    : data.catalog.total;
+  const recommendedPages = balancedPages(
+    recommendedJobs,
+    PAGE_SIZE,
+    recommendedHasNext,
+    fixedRecommendedPageSizes,
+  );
+  const recommendedPageCount = recommendedHasNext
+    ? Math.max(recommendedPages.length, Math.ceil(recommendedTotal / PAGE_SIZE))
+    : recommendedPages.length;
+  const visibleRecommendedPage = Math.min(recommendedPage, Math.max(1, recommendedPages.length));
+  const waitingForRecommendedPage = recommendedPage > recommendedPages.length;
+  useEffect(() => {
+    if (!waitingForRecommendedPage) return;
+    if (!recommendedHasNext) {
+      setRecommendedPage(Math.max(1, recommendedPages.length));
+    } else if (!recommendedSource.isFetchingNextPage && !recommendedSource.isError) {
+      void recommendedSource.fetchNextPage();
+    }
+  }, [waitingForRecommendedPage, recommendedHasNext, recommendedPages.length, recommendedSource]);
+  const changeRecommendedPage = (nextPage: number) => {
+    if (nextPage < 1 || nextPage > recommendedPageCount || nextPage === recommendedPage) return;
+    if (nextPage > recommendedPage)
+      setFixedRecommendedPageSizes(recommendedPages.map((page) => page.length));
+    setRecommendedPage(nextPage);
+    recommendedListRef.current?.scrollIntoView({ behavior: "instant", block: "start" });
+  };
+  const recommendedContent = (
+    <YStack gap={17}>
+      <Text
+        accessibilityRole="header"
+        fontFamily={editorialFonts.serif}
+        fontSize={22}
+        color={palette.ink}
+      >
+        {t("jobs.desktop.recommended")}
+      </Text>
+      {data.isLoading ? (
+        <YStack minHeight={160} justifyContent="center" alignItems="center">
+          <ActivityIndicator accessibilityLabel={t("jobs.loading")} color={palette.accent} />
+        </YStack>
+      ) : data.catalog.isError && data.recommended.isError ? (
+        <JobsEmpty
+          title={t("jobs.desktop.loadError")}
+          action={<PillButton label={t("common.retry")} onPress={retry} />}
+        />
+      ) : recommendedJobs.length ? (
+        <>
+          <div
+            ref={recommendedListRef}
+            data-testid="recommended-jobs-list"
+            // @style-allow inline: The desktop view alternates between one and four columns.
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${recommendedLayout === "list" ? 1 : 4}, minmax(0, 1fr))`,
+              gap: 12,
+              scrollMarginTop: inset + 8,
+            }}
+          >
+            {(recommendedPages[visibleRecommendedPage - 1] ?? []).map((job) => (
+              <OpportunityCard
+                key={job.id}
+                job={job}
+                score={scores[job.id]}
+                onVisit={visited}
+                onSave={job.source === "imported" ? undefined : save.toggle}
+                pending={save.pendingId === job.externalId}
+                list={recommendedLayout === "list"}
+              />
+            ))}
+          </div>
+          {recommendedPageCount > 1 ? (
+            <XStack justifyContent="center" alignItems="center" gap={8} marginTop={12}>
+              <PillButton
+                variant="ghost"
+                label={t("jobs.desktop.pagePrevious")}
+                disabled={visibleRecommendedPage === 1 || waitingForRecommendedPage}
+                onPress={() => changeRecommendedPage(visibleRecommendedPage - 1)}
+              />
+              {Array.from({ length: recommendedPageCount }, (_, index) => index + 1).map((page) => (
+                <Pressable
+                  key={page}
+                  accessibilityRole="button"
+                  accessibilityLabel={t("jobs.desktop.pageNumber", { page })}
+                  accessibilityState={{ selected: page === visibleRecommendedPage }}
+                  onPress={() => changeRecommendedPage(page)}
+                >
+                  <YStack
+                    width={36}
+                    height={36}
+                    borderRadius={18}
+                    alignItems="center"
+                    justifyContent="center"
+                    backgroundColor={
+                      page === visibleRecommendedPage ? palette.primary : palette.surface
+                    }
+                  >
+                    <Text
+                      color={page === visibleRecommendedPage ? palette.onPrimary : palette.body}
+                      fontSize={12}
+                    >
+                      {page}
+                    </Text>
+                  </YStack>
+                </Pressable>
+              ))}
+              <PillButton
+                variant="ghost"
+                label={t("jobs.desktop.pageNext")}
+                disabled={
+                  waitingForRecommendedPage ||
+                  visibleRecommendedPage >= recommendedPageCount ||
+                  recommendedSource.isFetchingNextPage ||
+                  recommendedSource.isError
+                }
+                onPress={() => changeRecommendedPage(visibleRecommendedPage + 1)}
+              />
+            </XStack>
+          ) : null}
+        </>
+      ) : (
+        <JobsEmpty
+          title={t(chips.length ? "jobs.desktop.noResults" : "jobs.desktop.empty.recommended")}
+          description={t(
+            chips.length ? "jobs.desktop.noResultsHelp" : "jobs.desktop.emptyHelp.recommended",
+          )}
+          action={
+            chips.length ? (
+              <PillButton
+                variant="ghost"
+                label={t("jobs.filters.clearAll")}
+                onPress={() => applyFilters(EMPTY_JOBS_FILTERS)}
+              />
+            ) : undefined
+          }
+        />
+      )}
+    </YStack>
+  );
   return (
     <>
       <Head>
@@ -268,7 +427,7 @@ export function JobsDesktopScreen() {
             </YStack>
             {scope === "all" ? (
               <YStack>
-                {group ? (
+                {group && group !== "recommended" ? (
                   <YStack marginBottom={24}>
                     <PillButton
                       variant="ghost"
@@ -285,13 +444,63 @@ export function JobsDesktopScreen() {
                   borderBottomColor={palette.hairline}
                   marginBottom={29}
                 >
-                  <PillButton
-                    label={t("jobs.desktop.filters")}
-                    minHeight={42}
-                    borderRadius={10}
-                    onPress={() => setFilterOpen(true)}
-                    renderIcon={({ color }) => <SlidersHorizontal size={15} color={color} />}
-                  />
+                  <XStack alignItems="center" justifyContent="space-between">
+                    <PillButton
+                      label={t("jobs.desktop.filters")}
+                      minHeight={42}
+                      borderRadius={10}
+                      onPress={() => setFilterOpen(true)}
+                      renderIcon={({ color }) => <SlidersHorizontal size={15} color={color} />}
+                    />
+                    {group === null || group === "recommended" ? (
+                      <XStack alignItems="center" gap={6}>
+                        {(["list", "grid"] as const).map((layout) => (
+                          <Pressable
+                            key={layout}
+                            accessibilityRole="button"
+                            accessibilityLabel={t(
+                              layout === "list" ? "jobs.desktop.viewList" : "jobs.desktop.viewGrid",
+                            )}
+                            accessibilityState={{ selected: recommendedLayout === layout }}
+                            onPress={() => setRecommendedLayout(layout)}
+                          >
+                            <XStack
+                              width={36}
+                              height={36}
+                              alignItems="center"
+                              justifyContent="center"
+                              borderRadius={6}
+                              backgroundColor={
+                                recommendedLayout === layout ? `${palette.accent}20` : "transparent"
+                              }
+                              hoverStyle={{
+                                backgroundColor:
+                                  recommendedLayout === layout
+                                    ? `${palette.accent}20`
+                                    : palette.surface,
+                              }}
+                            >
+                              {layout === "list" ? (
+                                <List
+                                  size={17}
+                                  color={
+                                    recommendedLayout === layout ? palette.accentDeep : palette.ink
+                                  }
+                                />
+                              ) : (
+                                <LayoutGrid
+                                  size={17}
+                                  color={
+                                    recommendedLayout === layout ? palette.accentDeep : palette.ink
+                                  }
+                                />
+                              )}
+                            </XStack>
+                          </Pressable>
+                        ))}
+                      </XStack>
+                    ) : null}
+                  </XStack>
                   {chips.length ? (
                     <XStack gap={8} flexWrap="wrap">
                       {chips.map((chip) => (
@@ -327,7 +536,7 @@ export function JobsDesktopScreen() {
                     </XStack>
                   ) : null}
                 </YStack>
-                {group ? (
+                {group && group !== "recommended" ? (
                   <YStack gap={20}>
                     <Text
                       accessibilityRole="header"
@@ -338,15 +547,7 @@ export function JobsDesktopScreen() {
                       {t(`jobs.desktop.${group}`)}
                     </Text>
                     {groupContent(group, true)}
-                    {group === "recommended" && data.recommended.data?.items.length ? (
-                      data.recommended.hasNextPage ? (
-                        <PillButton
-                          label={t("jobs.desktop.loadMore")}
-                          disabled={data.recommended.isFetchingNextPage}
-                          onPress={() => void data.recommended.fetchNextPage()}
-                        />
-                      ) : null
-                    ) : group !== "recent" && data.catalog.hasNextPage ? (
+                    {group !== "recent" && data.catalog.hasNextPage ? (
                       <PillButton
                         label={t("jobs.desktop.loadMore")}
                         disabled={data.catalog.isFetchingNextPage}
@@ -355,11 +556,7 @@ export function JobsDesktopScreen() {
                     ) : null}
                   </YStack>
                 ) : (
-                  <YStack gap={36}>
-                    {DISCOVERY_GROUPS.map((section) => (
-                      <YStack key={section}>{groupContent(section)}</YStack>
-                    ))}
-                  </YStack>
+                  recommendedContent
                 )}
               </YStack>
             ) : scope === "saved" ? (
@@ -390,19 +587,7 @@ export function JobsDesktopScreen() {
                   />
                 ) : null}
               </YStack>
-            ) : (
-              <ApplicationsBoard
-                entries={workspace.entries}
-                workspaceLoading={workspace.isLoading}
-                onChange={async (job, stage) => {
-                  try {
-                    await workspace.update(job, (entry) => ({ ...entry, job, stage }));
-                  } catch {
-                    toast.show({ title: t("jobs.desktop.saveError"), intent: "danger" });
-                  }
-                }}
-              />
-            )}
+            ) : null}
           </YStack>
           <XStack
             marginTop={56}

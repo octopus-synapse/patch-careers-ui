@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Confirm code (step 2) for change-email / change-password. Both flows
  * invalidate sessions on success, so the user is signed out and sent to login.
@@ -11,17 +12,17 @@ import {
 import { logout } from "@patch-careers/auth";
 import { OTPInput, Text } from "@patch-careers/ui";
 import { FieldError } from "@patch-careers/ui/editorial";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { useSet, type VerifyFlow } from "@/features/settings";
-import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
+import { AUTH_ROUTE } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 
 export default function VerifyCodeScreen(): ReactElement {
   const { t } = useI18n();
   const styles = useSet();
-  const router = useRouter();
+  const router = useAppRouter();
   const params = useLocalSearchParams<{ flow?: string; email?: string }>();
   const flow: VerifyFlow =
     params.flow === "password" ? "password" : params.flow === "delete" ? "delete" : "email";
@@ -37,7 +38,7 @@ export default function VerifyCodeScreen(): ReactElement {
     // erases the account), so on success we sign out and return to login.
     const onSuccess = async (): Promise<void> => {
       await logout();
-      router.replace(AUTH_SIGN_IN_ROUTE);
+      router.replace(AUTH_ROUTE);
     };
     const onError = (): void => setError(t("settings.account.verifyCode.invalid"));
     const confirm =

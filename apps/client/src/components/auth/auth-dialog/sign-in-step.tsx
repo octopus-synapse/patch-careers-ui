@@ -29,7 +29,7 @@ import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { KeepSignedInRow } from "@/components/auth/keep-signed-in-row";
 import { validateLogin } from "@/components/auth/validation";
 import { useFieldErrorsForm } from "@/forms";
-import { useLocalizedHref } from "@/navigation/locale-prefix";
+import { AuthStepTitle } from "./auth-step-title";
 
 type PasswordForm = { password: string };
 
@@ -37,13 +37,14 @@ export function SignInStep({
   mascot,
   email,
   onChangeEmail,
+  onForgotPassword,
 }: {
   readonly mascot: AuthMascotController;
   readonly email: string;
   readonly onChangeEmail: () => void;
+  readonly onForgotPassword: () => void;
 }): ReactElement {
   const { t, locale, router, toast } = useAuthScreen();
-  const localized = useLocalizedHref();
   const palette = useEditorialPalette();
   const dialogPalette = authDialogPalette[useThemeName()];
   const { finishAuthentication } = useCompleteAuth();
@@ -95,7 +96,7 @@ export function SignInStep({
 
   const forgotLink = (
     <Text
-      onPress={() => router.push(localized("/(auth)/forgot-password"))}
+      onPress={onForgotPassword}
       accessibilityRole="link"
       cursor="pointer"
       fontFamily={editorialFonts.sans}
@@ -112,16 +113,7 @@ export function SignInStep({
 
   return (
     <YStack gap={22} paddingTop={4} paddingBottom={8}>
-      <Text
-        fontFamily={editorialFonts.sans}
-        fontSize={38}
-        lineHeight={41}
-        fontWeight="600"
-        letterSpacing={-1.7}
-        color={dialogPalette.brand}
-      >
-        {t("auth.dialogWelcomeBack")}
-      </Text>
+      <AuthStepTitle variant="plan">{t("auth.dialogWelcomeBack")}</AuthStepTitle>
 
       <YStack gap={8}>
         <Text

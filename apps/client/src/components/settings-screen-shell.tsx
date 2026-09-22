@@ -1,3 +1,5 @@
+import { useAppRouter } from "@/navigation/use-app-router";
+import { withoutLocale } from "@/navigation/route-locale";
 /**
  * `SettingsScreenShell` — standalone screen frame (slim back bar + centered
  * serif title + scroll body) shared by the settings routes and the Profile tab.
@@ -18,7 +20,7 @@
  */
 import { Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { type Href, usePathname, useRouter } from "expo-router";
+import { type Href, usePathname } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 import type { ReactElement, ReactNode } from "react";
 import { Pressable, ScrollView } from "react-native";
@@ -49,7 +51,7 @@ export function SettingsScreenShell({
   const palette = useEditorialPalette();
   const insets = useSafeAreaInsets();
   const navInset = useNavBarInset();
-  const router = useRouter();
+  const router = useAppRouter();
   const pathname = usePathname();
   const isDesktopWeb = useIsDesktopWeb();
   const { t } = useI18n();
@@ -59,7 +61,7 @@ export function SettingsScreenShell({
     else router.replace("/jobs");
   };
 
-  if (isDesktopWeb && pathname.startsWith("/settings")) {
+  if (isDesktopWeb && withoutLocale(pathname).startsWith("/settings")) {
     return (
       <DesktopSettingsFrame
         title={title}
@@ -138,7 +140,7 @@ function DesktopSettingsFrame({
 }): ReactElement {
   const palette = useEditorialPalette();
   const navInset = useNavBarInset();
-  const router = useRouter();
+  const router = useAppRouter();
   const { t } = useI18n();
 
   const paneHeader = (

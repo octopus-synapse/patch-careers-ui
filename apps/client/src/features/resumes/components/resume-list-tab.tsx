@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * "Currículos" sub-tab body: slots header ("2 de 4"), the resume cards
  * (master first), and the single dashed create box — disabled when the slots
@@ -6,7 +7,7 @@
  */
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
+
 import { Plus, Trash2, Upload } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
@@ -29,7 +30,7 @@ export function ResumeListTab(): ReactElement {
   const { t } = useI18n();
   const rz = useRz();
   const palette = useEditorialPalette();
-  const router = useRouter();
+  const router = useAppRouter();
   const { resumes, isLoading, isError } = useResumeList();
   const slots = useResumeSlots();
   const { resumeId: masterResumeId, language: masterLanguage } = useMasterResumeId();

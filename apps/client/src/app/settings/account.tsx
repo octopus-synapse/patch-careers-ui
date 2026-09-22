@@ -1,3 +1,4 @@
+import { AppRedirect } from "@/navigation/app-redirect";
 /**
  * Account — e-mail, password, 2FA, username, connected accounts, plus the
  * account actions (export / deactivate / delete).
@@ -8,7 +9,7 @@
  * still exists for mobile and for deep links, which desktop forwards inward.
  */
 
-import { Redirect } from "expo-router";
+
 import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { AccountSection, settingsSectionHref } from "@/features/settings";
@@ -19,7 +20,7 @@ export default function AccountScreen(): ReactElement {
   const { t } = useI18n();
   const isDesktopWeb = useIsDesktopWeb();
 
-  if (isDesktopWeb) return <Redirect href={settingsSectionHref("account")} />;
+  if (isDesktopWeb) return <AppRedirect href={settingsSectionHref("account")} />;
 
   return (
     <SettingsScreenShell

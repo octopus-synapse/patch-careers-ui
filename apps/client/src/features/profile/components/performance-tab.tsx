@@ -39,8 +39,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Polyline } from "react-native-svg";
+import { usePatchPlan } from "@/features/billing/use-patch-plan";
 import { useMasterResumeId, useResumeMutations } from "@/features/resumes";
 import { RolePicker } from "@/features/sections";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import { type MeScores, useMeScores } from "../hooks/use-me-scores";
 import { useReadinessPulse } from "../hooks/use-readiness-pulse";
@@ -50,8 +52,21 @@ const HERO_SIZE = 132;
 export function PerformanceTab({ onDismiss }: { onDismiss?: () => void }): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
+  const billing = usePatchPlan();
+  const router = useAppRouter();
   const { scores, isPending, isError, refetch, isColdStart } = useMeScores();
   const [explainOpen, setExplainOpen] = useState(false);
+
+  if (billing.data?.enabled && !billing.canUsePaid) {
+    return (
+      <YStack paddingVertical={40} paddingHorizontal={20} alignItems="center" gap={14}>
+        <Text fontFamily={fonts.sans} fontSize={14} color={palette.body} textAlign="center">
+          {t("go.paidBody")}
+        </Text>
+        <CtaButton onPress={() => router.push("/go")} label={t("go.paidTitle")} />
+      </YStack>
+    );
+  }
 
   if (isPending) {
     return (

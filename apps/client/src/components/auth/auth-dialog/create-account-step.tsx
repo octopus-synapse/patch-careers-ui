@@ -1,18 +1,16 @@
 /**
- * Sign-up step of the unified auth dialog — the e-mail is already known,
+ * Password step of the unified auth flow — the e-mail is already known,
  * so this asks only for a password (with the strength meter) and then
  * raises the same `<ConsentDialog>` gate the sign-up screen uses;
  * accepting there is what actually submits. Name is intentionally not
  * collected here — it moves to the first onboarding step (backend
  * defaults it from the e-mail handle meanwhile).
  *
- * The e-mail was ALREADY verified one step earlier (identifier-first:
- * e-mail → code → password), so the signup carries the registration
- * token, the account is born verified, and success goes straight through
- * `finishAuthentication()` to onboarding — no post-signup verify step.
- * Session recipe is sign-up.tsx's (signup → login → token exchange).
+ * The e-mail was verified one step earlier. New accounts use signup;
+ * pending accounts are completed in place. Both then log in, respecting
+ * any 2FA requirement, before normal post-auth routing.
  */
-import { signup } from "@patch-careers/api-client";
+import { completeUnverifiedAccount, signup } from "@patch-careers/api-client";
 import { login } from "@patch-careers/auth";
 import { authDialogPalette } from "@patch-careers/tokens";
 import { Icon, Input, Text, XStack, YStack } from "@patch-careers/ui";
@@ -38,8 +36,10 @@ import { useMascotForm } from "@/components/auth/hooks/use-mascot-form";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { KeepSignedInRow } from "@/components/auth/keep-signed-in-row";
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
-import { validateSignup } from "@/components/auth/validation";
+import { extractApiErrorMessages, validateSignup } from "@/components/auth/validation";
 import { useFieldErrorsForm } from "@/forms";
+import { AuthStepTitle } from "./auth-step-title";
+import type { SignupPlan } from "./choose-plan-step";
 
 type PasswordForm = { password: string };
 
@@ -47,15 +47,25 @@ export function CreateAccountStep({
   mascot,
   email,
   registrationToken,
+  signupPlan,
+  billingCountry,
+  choosePlanInOnboarding,
   onChangeEmail,
+  onRequireSignIn,
+  mode,
 }: {
   readonly mascot: AuthMascotController;
   readonly email: string;
   /** Proof from the verify step that this e-mail is already confirmed. */
   readonly registrationToken: string;
+  readonly signupPlan: SignupPlan;
+  readonly billingCountry: string;
+  readonly choosePlanInOnboarding?: boolean;
   readonly onChangeEmail: () => void;
+  readonly onRequireSignIn: () => void;
+  readonly mode: "new" | "resume";
 }): ReactElement {
-  const { t, locale, toast } = useAuthScreen();
+  const { t, locale, router, toast } = useAuthScreen();
   const palette = useEditorialPalette();
   const dialogPalette = authDialogPalette[useThemeName()];
   const { finishAuthentication } = useCompleteAuth();
@@ -86,14 +96,21 @@ export function CreateAccountStep({
   async function acceptAndSignup(): Promise<void> {
     const { password: pw } = form.getValues();
     await run(async () => {
+      let accountCompleted = false;
       try {
-        await signup({
+        const payload = {
           email,
           password: pw,
           acceptedTosVersion: TOS_VERSION,
           acceptedPrivacyVersion: PRIVACY_VERSION,
           emailVerificationToken: registrationToken,
-        });
+        };
+        if (mode === "resume") {
+          await completeUnverifiedAccount(payload);
+        } else {
+          await signup(payload);
+        }
+        accountCompleted = true;
         // Same recipe as sign-up.tsx: signup only sets an httpOnly cookie;
         // log in for a real Bearer session. The account is born verified,
         // so finishAuthentication routes straight to onboarding. A login
@@ -101,22 +118,58 @@ export function CreateAccountStep({
         // finish with whatever session the cookie carries (worst case the
         // redirect lands on sign-in and the user logs in manually).
         let sessionExchangeId: string | undefined;
+        let loginFailed = false;
         try {
           const result = await login(
             email,
             pw,
             keep.enabled ? { keepSignedIn: keep.keepSignedIn } : undefined,
           );
+          if (result.twoFactorRequired) {
+            setConsentOpen(false);
+            router.replace({
+              pathname: "/(auth)/2fa-verify",
+              params: { userId: result.userId, keepSignedIn: keep.keepSignedIn ? "1" : "0" },
+            });
+            return;
+          }
           sessionExchangeId = result.sessionExchangeId ?? undefined;
         } catch {
-          // Fall through — see above.
+          loginFailed = true;
         }
         setConsentOpen(false);
+        if (loginFailed) {
+          onRequireSignIn();
+          return;
+        }
         mascot.celebrate({ settle: true });
-        await finishAuthentication(sessionExchangeId ? { sessionExchangeId } : undefined);
+        await finishAuthentication({
+          ...(sessionExchangeId ? { sessionExchangeId } : {}),
+          ...(choosePlanInOnboarding
+            ? { destination: { pathname: "/onboarding", params: { choosePlan: "1" } } as const }
+            : signupPlan === "free"
+              ? {}
+              : {
+                  destination: {
+                    pathname: "/go",
+                    params: { startCheckout: signupPlan, billingCountry },
+                  },
+                }),
+        });
       } catch (err) {
         setConsentOpen(false);
         mascot.grimace();
+        if (accountCompleted) {
+          onRequireSignIn();
+          return;
+        }
+        const emailError = extractApiErrorMessages(err, locale, t, "auth.signupFailed").fields
+          .email;
+        if (emailError) {
+          onChangeEmail();
+          toast.show({ title: emailError, intent: "danger" });
+          return;
+        }
         handleAuthApiError(err, {
           locale,
           t,
@@ -130,16 +183,7 @@ export function CreateAccountStep({
 
   return (
     <YStack gap={22} paddingTop={4} paddingBottom={8}>
-      <Text
-        fontFamily={editorialFonts.sans}
-        fontSize={38}
-        lineHeight={41}
-        fontWeight="600"
-        letterSpacing={-1.7}
-        color={dialogPalette.brand}
-      >
-        {t("auth.dialogCreatePasswordTitle")}
-      </Text>
+      <AuthStepTitle variant="plan">{t("auth.dialogCreatePasswordTitle")}</AuthStepTitle>
 
       <YStack gap={8}>
         <Text
@@ -294,6 +338,7 @@ export function CreateAccountStep({
         open={consentOpen}
         onOpenChange={setConsentOpen}
         loading={submitting}
+        acceptLabel={mode === "resume" ? t("auth.consentAcceptContinue") : undefined}
         onAccept={() => void acceptAndSignup()}
         testID="authDialog.consent"
       />

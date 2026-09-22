@@ -4,12 +4,10 @@
  * action pill and the catalog picker modal, and owns the create mutation.
  */
 
-import { type ReactElement, useState } from "react";
+import { type ComponentProps, type ReactElement, useState } from "react";
 import { useContentLocale, useMasterResumeId } from "@/features/resumes";
 import {
   AddSectionFlowModal,
-  type MergedSection,
-  type SectionItem,
   useResumeSections,
   useSectionItemMutations,
 } from "@/features/sections";
@@ -25,14 +23,19 @@ export function MasterAddSection(): ReactElement {
     content: contentLocale.content,
     canonical: contentLocale.canonical,
   });
-  const { persistFor, isPending } = useSectionItemMutations(resumeId);
+  const { createFor, isPending } = useSectionItemMutations(resumeId);
   const [addOpen, setAddOpen] = useState(false);
 
   // Persist a new item for the picked type (the section row is created
   // implicitly by the keyed items POST).
-  const createItem = async (section: MergedSection, item: SectionItem): Promise<void> => {
-    await persistFor(section.key)({ kind: "create", item, index: section.items.length });
+  const createItem: ComponentProps<typeof AddSectionFlowModal>["onCreate"] = async (
+    section,
+    item,
+    translation,
+  ) => {
+    const id = await createFor(section.key, item, translation);
     setAddOpen(false);
+    return id;
   };
 
   return (
@@ -43,6 +46,12 @@ export function MasterAddSection(): ReactElement {
         disabled={!resumeId}
       />
       <AddSectionFlowModal
+        resumeId={resumeId}
+        locales={{
+          chrome: uiLocale,
+          content: contentLocale.content,
+          canonical: contentLocale.canonical,
+        }}
         visible={addOpen}
         onClose={() => setAddOpen(false)}
         catalog={catalog}

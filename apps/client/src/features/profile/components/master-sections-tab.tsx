@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * "Perfil" sub-tab body — a settings-style list of supersections (Identidade,
  * then each master-resume section the user has actually filled: Experiência,
@@ -7,7 +8,7 @@
  * Below the list sit the resume quality panel and the CV preview banner.
  */
 import { SettingsCard, SettingsRow, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import {
   Award,
   BadgeCheck,
@@ -62,7 +63,7 @@ export function MasterSectionsTab({
   const { t, locale: uiLocale } = useI18n();
   const palette = useEditorialPalette();
   const pf = usePf();
-  const router = useRouter();
+  const router = useAppRouter();
   const { resumeId, language, updatedAt, isLoading } = useMasterResumeId();
   const contentLocale = useContentLocale(resumeId, language);
   const { visible } = useResumeSections(resumeId, {

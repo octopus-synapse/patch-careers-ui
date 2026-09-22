@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * In-app legal viewer (D98). Renders the Terms of Service or Privacy
  * Policy in a WebView so users never need to leave the app during
@@ -12,7 +13,7 @@
 import { YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import Constants from "expo-constants";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { type ReactElement, useMemo } from "react";
 import { ActivityIndicator, Platform } from "react-native";
 import WebView from "react-native-webview";
@@ -31,7 +32,7 @@ function resolveLegalUrl(kind: Kind): string {
 
 export default function LegalWebViewScreen(): ReactElement {
   const t = useTranslator();
-  const router = useRouter();
+  const router = useAppRouter();
   const palette = useEditorialPalette();
   const params = useLocalSearchParams<{ kind?: string; title?: string; url?: string }>();
   const kind: Kind = params.kind === "privacy" ? "privacy" : "terms";

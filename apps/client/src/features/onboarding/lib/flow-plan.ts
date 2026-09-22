@@ -14,7 +14,6 @@
  */
 
 export type FlowStepId =
-  | "welcome"
   | "language"
   | "theme"
   | "location"
@@ -24,10 +23,9 @@ export type FlowStepId =
   | "headline"
   | "links"
   | "education"
-  | "resume-style"
   | "review";
 
-export type FlowStepKind = "local" | "form" | "section" | "style" | "review";
+export type FlowStepKind = "local" | "form" | "section" | "review";
 
 export interface FlowStep {
   readonly id: FlowStepId;
@@ -44,9 +42,6 @@ export interface FlowStep {
   readonly optional: boolean;
   /** i18n key for the step title. */
   readonly titleKey: string;
-  /** Intro screens (welcome) sit outside the counted progress — they don't
-   *  show the masthead and aren't part of the "NN / NN" total or time estimate. */
-  readonly intro?: boolean;
   /** Hides the masthead (progress bar + phase label + time estimate) while
    *  keeping the step counted. Used by the language pick, which reads as
    *  pre-flow preferences rather than profile-building progress. */
@@ -66,15 +61,6 @@ export const FLOW_PLAN: readonly FlowStep[] = [
     optional: false,
     hideMasthead: true,
     titleKey: "onboarding.flow.language.title",
-  },
-  {
-    // Shown AFTER the language pick so the value-prop reads in the chosen
-    // language; an intro screen (no masthead, not part of the NN/NN count).
-    id: "welcome",
-    kind: "local",
-    optional: false,
-    intro: true,
-    titleKey: "onboarding.flow.welcome.title",
   },
   {
     id: "location",
@@ -135,14 +121,6 @@ export const FLOW_PLAN: readonly FlowStep[] = [
     titleKey: "onboarding.flow.education.title",
   },
   {
-    id: "resume-style",
-    kind: "style",
-    serverStepId: "resume-style",
-    fieldKeys: ["resumeStyleId"],
-    optional: false,
-    titleKey: "onboarding.flow.resumeStyle.title",
-  },
-  {
     id: "review",
     kind: "review",
     optional: false,
@@ -154,12 +132,12 @@ export function flowIndexOf(id: FlowStepId): number {
   return FLOW_PLAN.findIndex((step) => step.id === id);
 }
 
-/** The counted steps (everything except intro screens), in order. */
+/** The counted steps, in order. */
 export function countedFlowSteps(): FlowStep[] {
-  return FLOW_PLAN.filter((step) => !step.intro);
+  return [...FLOW_PLAN];
 }
 
-/** 0-based index of a step within the counted steps, or -1 for intro steps. */
+/** 0-based index of a step within the counted steps. */
 export function countedIndexOf(id: FlowStepId): number {
   return countedFlowSteps().findIndex((step) => step.id === id);
 }

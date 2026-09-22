@@ -4,7 +4,7 @@
  *
  *   1. checklist of the master's sections/items to include (sections with
  *      zero items have nothing to copy and aren't listed);
- *   2. optional title (defaults to "Resume #N") + language + visual style.
+ *   2. optional title (defaults to "Resume #N") + language.
  *
  * On success the caller receives the new resume id (it pushes the detail).
  */
@@ -23,7 +23,6 @@ import {
 import { Check, ChevronLeft, Minus, X } from "lucide-react-native";
 import { type ReactElement, useMemo, useState } from "react";
 import {
-  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -32,7 +31,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { StyleScoreBadge } from "@/components/style-score-badge";
+import { CLASSIC_RESUME_STYLE_ID } from "@/config/classic-resume-style";
 import {
   itemCardParts,
   type MergedSection,
@@ -42,7 +41,7 @@ import {
   useResumeSections,
 } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
-import { useResumeList, useResumeMutations, useResumeStyles } from "../hooks/queries";
+import { useResumeList, useResumeMutations } from "../hooks/queries";
 import { resumeLanguageToLocale } from "../lib/helpers";
 import { useRz } from "../lib/styles";
 
@@ -90,13 +89,10 @@ export function CreateResumeWizard({
     content: resumeLanguageToLocale(sourceLanguage) ?? locale,
     canonical: resumeLanguageToLocale(sourceLanguage) ?? locale,
   });
-  const stylesQuery = useResumeStyles();
   const { duplicateResume, isPending } = useResumeMutations();
   // Fallback name when the user leaves the title empty ("Currículo #N").
   const { resumes } = useResumeList();
   const defaultTitle = t("resumes.wizard.defaultName", { n: resumes.length + 1 });
-  // Only the two system styles are user-pickable (fixtures/custom rows are not).
-  const pickableStyles = (stylesQuery.data?.items ?? []).filter((style) => style.isSystem);
 
   const copyable = useMemo(
     () => masterSections.filter((section) => section.items.length > 0),
@@ -111,7 +107,6 @@ export function CreateResumeWizard({
   const [language, setLanguage] = useState<string>(
     () => resumeLanguageToLocale(sourceLanguage) ?? locale,
   );
-  const [styleId, setStyleId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Seed the checklist with everything selected once the data arrives.
@@ -147,7 +142,6 @@ export function CreateResumeWizard({
     setSelection(null);
     setTitle("");
     setLanguage(resumeLanguageToLocale(sourceLanguage) ?? locale);
-    setStyleId(null);
     setError(null);
   };
 
@@ -167,7 +161,7 @@ export function CreateResumeWizard({
       const id = await duplicateResume(sourceResumeId, {
         title: finalTitle,
         language,
-        ...(styleId ? { styleId } : {}),
+        styleId: CLASSIC_RESUME_STYLE_ID,
         include,
       });
       reset();
@@ -322,39 +316,6 @@ export function CreateResumeWizard({
                       />
                     ))}
                   </View>
-                </View>
-                <View style={styles.fieldBlock}>
-                  <Text style={rz.sectionLabel}>{t("resumes.wizard.styleLabel")}</Text>
-                  <View style={ed.styleStack}>
-                    {pickableStyles.map((style) => {
-                      const selected = styleId === style.id;
-                      return (
-                        <Pressable
-                          key={style.id}
-                          accessibilityRole="button"
-                          accessibilityState={{ selected }}
-                          onPress={() => setStyleId(selected ? null : style.id)}
-                          style={[ed.styleCard, selected && ed.styleCardSelected]}
-                        >
-                          {style.thumbnailUrl ? (
-                            <Image source={{ uri: style.thumbnailUrl }} style={ed.styleImage} />
-                          ) : (
-                            <View style={ed.styleImage} />
-                          )}
-                          <View style={ed.styleBody}>
-                            <Text style={ed.styleName}>{style.name}</Text>
-                            {style.description ? (
-                              <Text style={ed.styleDesc} numberOfLines={2}>
-                                {style.description}
-                              </Text>
-                            ) : null}
-                            <StyleScoreBadge styleId={style.id} styleScore={style.styleScore} />
-                          </View>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-                  <Text style={rz.wizardHint}>{t("resumes.wizard.styleHint")}</Text>
                 </View>
                 {error ? <Text style={styles.error}>{error}</Text> : null}
               </View>

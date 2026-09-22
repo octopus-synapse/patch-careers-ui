@@ -1,9 +1,10 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /** Change password (step 1) — current + new + confirm → emailed code. */
 
 import { usePostV1MePasswordChangeRequest } from "@patch-careers/api-client";
 import { YStack } from "@patch-careers/ui";
 import { FieldError, PrimaryAction, UnderlineInput } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { type ReactElement, useState } from "react";
 import { Text, View } from "react-native";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
@@ -14,7 +15,7 @@ import { useI18n } from "@/providers/i18n-provider";
 export default function ChangePasswordScreen(): ReactElement {
   const { t } = useI18n();
   const styles = useSet();
-  const router = useRouter();
+  const router = useAppRouter();
   const req = usePostV1MePasswordChangeRequest();
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");

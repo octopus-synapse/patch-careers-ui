@@ -1,9 +1,10 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /** Change email (step 1) — current password + new email → emailed code. */
 
 import { usePostV1MeEmailChangeRequest } from "@patch-careers/api-client";
 import { YStack } from "@patch-careers/ui";
 import { FieldError, PrimaryAction, UnderlineInput } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { type ReactElement, useState } from "react";
 import { Text, View } from "react-native";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
@@ -14,7 +15,7 @@ import { useI18n } from "@/providers/i18n-provider";
 export default function ChangeEmailScreen(): ReactElement {
   const { t } = useI18n();
   const styles = useSet();
-  const router = useRouter();
+  const router = useAppRouter();
   const req = usePostV1MeEmailChangeRequest();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newEmail, setNewEmail] = useState("");

@@ -26,7 +26,6 @@ export {
 } from "./lib/sections";
 export { useSet } from "./lib/styles";
 export type {
-  ConnectedProvider,
   MessagePrivacy,
   ProfileVisibility,
   VerifyFlow,

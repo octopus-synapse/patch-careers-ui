@@ -12,13 +12,15 @@ import { MonitorSmartphone, Moon, Sun } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { View } from "react-native";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
+import { useLocaleSwitch } from "@/navigation/use-locale-switch";
 import { useColorSchemeStore } from "@/providers/color-scheme";
 import { useI18n } from "@/providers/i18n-provider";
 import { useSet } from "../lib/styles";
 import { PillSelect, SectionHeader, SettingSelectRow } from "./settings-ui";
 
 export function PreferencesSection(): ReactElement {
-  const { t, locale, setLocale } = useI18n();
+  const { t, locale } = useI18n();
+  const switchLocale = useLocaleSwitch();
   const styles = useSet();
   const isDesktopWeb = useIsDesktopWeb();
   const scheme = useColorSchemeStore((s) => s.scheme);
@@ -52,7 +54,7 @@ export function PreferencesSection(): ReactElement {
           description={t("settings.preferences.languageDescription")}
           options={languageOptions}
           value={locale}
-          onChange={(next) => setLocale(next)}
+          onChange={(next) => void switchLocale(next)}
         />
       </SettingsCard>
     );
@@ -77,7 +79,7 @@ export function PreferencesSection(): ReactElement {
           <PillSelect<Locale>
             options={languageOptions}
             value={locale}
-            onChange={(next) => setLocale(next)}
+            onChange={(next) => void switchLocale(next)}
           />
         </View>
       </SettingsCard>

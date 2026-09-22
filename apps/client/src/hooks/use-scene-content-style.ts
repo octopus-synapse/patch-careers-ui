@@ -8,7 +8,9 @@
  */
 
 import { useEditorialPalette } from "@patch-careers/ui";
+import { usePathname } from "expo-router";
 import { useMemo } from "react";
+import { withoutLocale } from "@/navigation/route-locale";
 import { DESKTOP_CONTENT_MAX_WIDTH, useIsDesktopWeb } from "./use-desktop-web";
 
 interface SceneContentStyle {
@@ -21,16 +23,19 @@ interface SceneContentStyle {
 export function useSceneContentStyle(): SceneContentStyle {
   const palette = useEditorialPalette();
   const isDesktopWeb = useIsDesktopWeb();
+  const bare = withoutLocale(usePathname());
+  const isAuthPage = bare === "/auth" || bare === "/reset-password";
+  const isJobsPage = bare === "/jobs" || bare.startsWith("/job/");
   return useMemo(
     () =>
-      isDesktopWeb
+      isDesktopWeb && !isAuthPage
         ? {
             backgroundColor: palette.bg,
             width: "100%" as const,
-            maxWidth: DESKTOP_CONTENT_MAX_WIDTH,
+            maxWidth: isJobsPage ? 1280 : DESKTOP_CONTENT_MAX_WIDTH,
             alignSelf: "center" as const,
           }
         : { backgroundColor: palette.bg },
-    [isDesktopWeb, palette],
+    [isAuthPage, isDesktopWeb, isJobsPage, palette],
   );
 }

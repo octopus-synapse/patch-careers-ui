@@ -1,7 +1,8 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 import { FetcherError } from "@patch-careers/api-client";
 import { Input, Text, useEditorialPalette, useToast, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, PillButton } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { ArrowRight, ChevronLeft, FileText, Link as LinkIcon, Mail } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -29,7 +30,7 @@ export function JobComposer({
   const palette = useEditorialPalette();
   const { t } = useI18n();
   const toast = useToast();
-  const router = useRouter();
+  const router = useAppRouter();
   const workspace = useJobsWorkspace();
   const preparation = useJobPreparation();
   const form = useForm({

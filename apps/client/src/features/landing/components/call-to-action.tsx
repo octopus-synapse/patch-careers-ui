@@ -1,10 +1,11 @@
 import { Button, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { Link, useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { ArrowUpRight } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { useWindowDimensions } from "react-native";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import type { ChapterContentProps } from "./chapter-content";
 import { ChapterLayer } from "./chapter-frame";
@@ -13,7 +14,7 @@ import { ChapterLayer } from "./chapter-frame";
 export function CallToAction({ accent, width }: ChapterContentProps): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
-  const router = useRouter();
+  const router = useAppRouter();
   const localized = useLocalizedHref();
   const { height } = useWindowDimensions();
   const desktop = width >= 1024;
@@ -89,7 +90,7 @@ export function CallToAction({ accent, width }: ChapterContentProps): ReactEleme
                 <YStack gap={12}>
                   <Button
                     testID="landing-cta-sign-up"
-                    onPress={() => router.push(localized("/(auth)/sign-up"))}
+                    onPress={() => router.push(localized("/(auth)/auth"))}
                     accessibilityLabel={t("landing.chapters.cta.button")}
                     backgroundColor={palette.primary}
                     color={palette.onPrimary}
@@ -111,6 +112,20 @@ export function CallToAction({ accent, width }: ChapterContentProps): ReactEleme
                   >
                     {t("landing.chapters.cta.button")}
                     <ArrowUpRight size={21} color={palette.onPrimary} aria-hidden />
+                  </Button>
+                  <Button
+                    onPress={() => router.push(localized("/go"))}
+                    accessibilityLabel={t("go.title")}
+                    backgroundColor="transparent"
+                    color={palette.ink}
+                    borderWidth={1}
+                    borderColor={palette.hairline}
+                    borderRadius={12}
+                    height={48}
+                    fontFamily={editorialFonts.sans}
+                    fontSize={14}
+                  >
+                    {t("go.title")}
                   </Button>
                   <Text
                     fontFamily={editorialFonts.sans}

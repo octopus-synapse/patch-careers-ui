@@ -1,7 +1,8 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 import { editorialPalette } from "@patch-careers/tokens";
 import { Sheet, Text, useEditorialPalette, useToast, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, PillButton } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { Bookmark, ChevronLeft, ExternalLink, FileText, Mail } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView } from "react-native";
@@ -23,7 +24,7 @@ export function JobDesktopDetail({ id }: { id: string }) {
   const palette = useEditorialPalette();
   const { t, locale } = useI18n();
   const inset = useNavBarInset();
-  const router = useRouter();
+  const router = useAppRouter();
   const toast = useToast();
   const workspace = useJobsWorkspace();
   const detail = useJobOpportunity(id, workspace.entries, workspace.isLoading);

@@ -112,6 +112,10 @@ export const jobsPtBR: TranslationDict = {
     chooseTailorBody:
       "Título, resumo e bullets reescritos pro escopo da vaga. Você revisa tudo antes.",
     chooseTailorMeta: "≈ 10s · compatibilidade estimada recalculada",
+    tailorLanguage: "Idioma do currículo preparado",
+    tailorLanguageAuto: "Idioma da vaga",
+    tailorLanguagePt: "Português",
+    tailorLanguageEn: "Inglês",
     chooseTailorLocked: "Melhore seu currículo (mín. 50 de qualidade) para personalizá-lo.",
     chooseMaster: "Usar o currículo master",
     chooseMasterBody: "Seu currículo como está, sem alterações.",
@@ -303,6 +307,10 @@ export const jobsEn: TranslationDict = {
     chooseTailorBody:
       "Title, summary and bullets rewritten for the job's scope. You review everything first.",
     chooseTailorMeta: "≈ 10s · estimated compatibility recalculated",
+    tailorLanguage: "Prepared resume language",
+    tailorLanguageAuto: "Job language",
+    tailorLanguagePt: "Portuguese",
+    tailorLanguageEn: "English",
     chooseTailorLocked: "Improve your resume (min. 50 quality) to tailor it.",
     chooseMaster: "Use the master resume",
     chooseMasterBody: "Your resume as it is, unchanged.",

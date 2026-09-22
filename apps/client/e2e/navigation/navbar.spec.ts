@@ -124,8 +124,14 @@ test("real routes, interrupted motion, history and reduced motion", async ({ pag
   await page.setViewportSize({ width: 1440, height: 950 });
   await openApp(page);
   const nav = page.getByRole("navigation", { name: "Navegação principal" });
-  await nav.getByRole("link", { name: "Início", exact: true }).click();
+  await nav.getByRole("link", { name: "Vagas", exact: true }).click();
   await expect(page).toHaveURL(/\/jobs$/);
+  await nav.getByRole("link", { name: "Candidaturas", exact: true }).click();
+  await expect(page).toHaveURL(/\/applications$/);
+  await expect(nav.getByRole("link", { name: "Candidaturas" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
   await nav.getByRole("link", { name: /Eu/ }).click();
   await expect(page).toHaveURL(/\/profile$/);
   await nav.getByRole("link", { name: "Currículos", exact: true }).click();
@@ -139,7 +145,7 @@ test("real routes, interrupted motion, history and reduced motion", async ({ pag
     "aria-current",
     "page",
   );
-  await nav.getByRole("link", { name: "Início" }).click();
+  await nav.getByRole("link", { name: "Vagas" }).click();
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expectActiveLineAligned(page);
   await expect
@@ -175,13 +181,13 @@ test("search, account keyboard navigation, and sign-out confirmation", async ({
   const box = await trigger.boundingBox();
   expect(box?.width).toBeLessThanOrEqual(180);
   await page.keyboard.press("Control+k");
-  await expect(page.getByPlaceholder("Buscar…")).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Buscar pessoas ou vagas…" })).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page.getByPlaceholder("Buscar…")).not.toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Buscar pessoas ou vagas…" })).not.toBeVisible();
   await page.keyboard.press("Meta+k");
-  await expect(page.getByPlaceholder("Buscar…")).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Buscar pessoas ou vagas…" })).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page.getByPlaceholder("Buscar…")).not.toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Buscar pessoas ou vagas…" })).not.toBeVisible();
 
   await trigger.focus();
   await expect(trigger).toBeFocused();

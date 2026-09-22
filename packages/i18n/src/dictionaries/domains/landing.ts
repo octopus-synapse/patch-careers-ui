@@ -162,6 +162,9 @@ export const landingPtBR: TranslationDict = {
     close: "Fechar",
     langRegion: "Idioma e região",
     theme: "Tema",
+    help: "Ajuda",
+    privacy: "Privacidade",
+    termsOfUse: "Termos de uso",
     translateTitle: "Tradução",
     translateSub: "O Patch fala a sua língua — currículos saem no idioma da vaga.",
     seeDemo: "Ver o demo",
@@ -172,6 +175,10 @@ export const landingPtBR: TranslationDict = {
     langEn: "English",
     langEnRegion: "United States",
     systemHint: "Segue o dispositivo",
+  },
+  languageConfirm: {
+    title: "Qual idioma você prefere?",
+    confirm: "Continuar neste idioma",
   },
 
   // Títulos curtos do trilho lateral de capítulos.
@@ -688,6 +695,9 @@ export const landingEn: TranslationDict = {
     close: "Close",
     langRegion: "Language & region",
     theme: "Theme",
+    help: "Help",
+    privacy: "Privacy",
+    termsOfUse: "Terms of use",
     translateTitle: "Translation",
     translateSub: "Patch speaks your language — resumes ship in the job's language.",
     seeDemo: "See the demo",
@@ -698,6 +708,10 @@ export const landingEn: TranslationDict = {
     langEn: "English",
     langEnRegion: "United States",
     systemHint: "Follows your device",
+  },
+  languageConfirm: {
+    title: "Which language do you prefer?",
+    confirm: "Continue in this language",
   },
 
   rail: {

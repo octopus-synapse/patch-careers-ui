@@ -4,10 +4,11 @@ import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, View } from "
 import { NAV_BAR_HEIGHT_PUBLIC, NavBar } from "@/components/nav-bar/nav-bar";
 import { isDevTestFillEnabled } from "@/config/dev-flags";
 import { GhostButton, SectionItemEditor, useEd } from "@/features/sections";
+import { useLocaleSwitch } from "@/navigation/use-locale-switch";
 import { useAuthState } from "@/providers/auth-provider";
 import { useColorSchemeStore } from "@/providers/color-scheme";
 import { countedIndexOf, countedTotal, prevFlowStep } from "../lib/flow-plan";
-import { getSavedItemsForStep, isResumeStyleStep, isSectionStep } from "../lib/helpers";
+import { getSavedItemsForStep, isSectionStep } from "../lib/helpers";
 import { isProfileFieldRequired } from "../lib/profile-validation";
 import { suggestHeadlinesFromExperience } from "../lib/suggestions";
 import { useOnboardingFlow } from "../model/use-onboarding-flow";
@@ -26,12 +27,10 @@ import {
 import {
   LanguageStep,
   LinksEditor,
-  ResumeStylePicker,
   ReviewSummary,
   StepContext,
   StepForm,
   ThemeStep,
-  WelcomeScreen,
 } from "./wizard-steps";
 
 /**
@@ -40,6 +39,8 @@ import {
  * the panel read as a thin strip on a desktop viewport.
  */
 const WIZARD_CARD_MAX_WIDTH = 640;
+const MOBILE_WIZARD_BREAKPOINT = 600;
+const MOBILE_LANGUAGE_BODY_HEIGHT = 172;
 
 export function OnboardingWizard(): ReactElement {
   // Scope the draft store to one wizard mount; it is discarded on exit.
@@ -52,6 +53,7 @@ export function OnboardingWizard(): ReactElement {
 
 function OnboardingWizardInner(): ReactElement {
   const ed = useEd();
+  const switchLocale = useLocaleSwitch();
   const { currentUser } = useAuthState();
   const {
     locale,
@@ -75,7 +77,6 @@ function OnboardingWizardInner(): ReactElement {
     items,
     setItems,
     errors,
-    setErrors,
     phoneCountryIso,
     setPhoneCountry,
     saveError,
@@ -93,7 +94,6 @@ function OnboardingWizardInner(): ReactElement {
     handleAddSection,
     retrySave,
     commitSave,
-    markWelcomeSeenAndAdvance,
   } = useOnboardingFlow();
 
   const scheme = useColorSchemeStore((s) => s.scheme);
@@ -124,8 +124,9 @@ function OnboardingWizardInner(): ReactElement {
     handleBack();
   };
 
-  // Single-choice steps (language/theme) auto-advance shortly after a tap —
-  // a short beat lets the selection land visibly before the flow moves on.
+  // Instant-choice local steps (currently theme) auto-advance shortly after a
+  // tap. Language is intentionally different: it waits for the explicit
+  // Continue action in the footer.
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(
     () => () => {
@@ -166,20 +167,10 @@ function OnboardingWizardInner(): ReactElement {
     );
   }
 
-  // Welcome intro: its own centered layout, outside the counted progress.
-  if (!editStep && flowStep.intro) {
-    return (
-      <WelcomeScreen
-        t={t}
-        onStart={markWelcomeSeenAndAdvance}
-        onBack={prevFlowStep(flowStepId) ? goBack : undefined}
-      />
-    );
-  }
-
   const isLocal = !editStep && flowStep.kind === "local";
   const isReview = !editStep && flowStep.kind === "review";
   const showComplete = isReview;
+  const showLocalContinue = isLocal && flowStepId === "language";
   const isOptionalFlow = !showComplete && !isLocal && !editStep && flowStep.optional;
   const showBack = Boolean(editStep) || Boolean(prevFlowStep(flowStepId));
   // Requiredness: a field is required when the contract's complete-time schema
@@ -216,6 +207,8 @@ function OnboardingWizardInner(): ReactElement {
     : t(flowStep.titleKey.replace(".title", ".subtitle"));
   // A subtitle key that isn't translated falls back to the raw key path — hide it.
   const subtitleText = stepSubtitle.startsWith("onboarding.flow.") ? "" : stepSubtitle;
+  const isMobileLayout = width > 0 && width < MOBILE_WIZARD_BREAKPOINT;
+  const isCompactMobileLanguage = isMobileLayout && flowStepId === "language" && !editStep;
 
   // Tighten gutters on small phones; cap the column to the available width.
   const horizontalPadding = width > 0 && width < 375 ? 20 : 28;
@@ -231,14 +224,17 @@ function OnboardingWizardInner(): ReactElement {
   // taller steps scroll within it. Scaled to the viewport, clamped for sanity.
   // Reserve room for navbar + card padding, heading and footer. With the
   // mascot removed, the reclaimed headroom lets the form breathe on desktop.
-  const bodyHeight = height > 0 ? Math.max(240, Math.min(400, height - 420)) : 340;
+  const bodyHeight = isCompactMobileLanguage
+    ? MOBILE_LANGUAGE_BODY_HEIGHT
+    : height > 0
+      ? Math.max(240, Math.min(400, height - 420))
+      : 340;
 
   return (
     <SafeAreaView style={ed.root}>
-      {/* The landing's chrome, in its signed-in variant. The step counter and
-          progress ride inside it (see NavProgress) instead of the
-          Masthead they used to draw — two stacked horizontal bands before the
-          content read as heavy on a flow whose body is already fixed-height. */}
+      {/* The landing's chrome, in its signed-in variant. On compact web the
+          progress becomes a quiet 2px rule directly below the navbar, leaving
+          the navbar itself identical to the auth shell. */}
       <NavBar
         variant="onboarding"
         {...(editStep || !flowStep.hideMasthead
@@ -278,20 +274,29 @@ function OnboardingWizardInner(): ReactElement {
               // AuthCard's own 90%/460 sizing is meant for viewport-relative
               // auth pages; inside this already-sized column both rules would
               // shrink the panel again (the dialog had the same 90% bug).
-              panelStyle={{ width: "100%", maxWidth: WIZARD_CARD_MAX_WIDTH }}
+              panelStyle={[
+                { width: "100%", maxWidth: WIZARD_CARD_MAX_WIDTH },
+                // On phones the wizard belongs directly to the page rather than
+                // looking like a second surface nested inside it.
+                isMobileLayout
+                  ? { backgroundColor: "transparent", borderWidth: 0, borderRadius: 0 }
+                  : null,
+              ]}
             >
               <StepTransition key={headingKey} direction={directionRef.current}>
                 {isDevTestFillEnabled() && !editStep ? (
                   <TestFillBar
                     flowStepId={flowStepId}
-                    onFillStep={() => testFill.fillStep(flowStepId, currentStep)}
+                    onFillStep={() => testFill.fillStep(flowStepId)}
                     onFillAll={() => void testFill.fillAll()}
                     disabled={isPending || testFill.isRunning}
+                    roomy={isCompactMobileLanguage}
                   />
                 ) : null}
                 <StepHeading
                   title={stepTitle}
                   subtitle={subtitleText}
+                  variant={flowStepId === "language" && !editStep ? "display" : "default"}
                   {...(isOptionalFlow ? { tag: t("onboarding.step.optional") } : {})}
                 />
               </StepTransition>
@@ -299,7 +304,13 @@ function OnboardingWizardInner(): ReactElement {
               {/* Fixed-height body: same on every step. Content centers inside it;
                 if a step is taller than the box, it scrolls within the box —
                 with the editorial scrollbar signalling the overflow. */}
-              <View style={[ed.body, { height: bodyHeight }]}>
+              <View
+                style={[
+                  ed.body,
+                  isCompactMobileLanguage ? ed.mobileLanguageBody : null,
+                  { height: bodyHeight },
+                ]}
+              >
                 <ScrollView
                   key={`scroll:${headingKey}`}
                   style={ed.flex}
@@ -324,7 +335,10 @@ function OnboardingWizardInner(): ReactElement {
                       ) : (
                         <LanguageStep
                           locale={locale}
-                          onSelect={(next) => selectAndAdvance(() => setLocale(next))}
+                          onSelect={(next) => {
+                            void switchLocale(next);
+                          }}
+                          roomy={isCompactMobileLanguage}
                           t={t}
                         />
                       )
@@ -337,20 +351,7 @@ function OnboardingWizardInner(): ReactElement {
                         addPending={extras.isPending || gotoStep.isPending}
                         t={t}
                       />
-                    ) : !currentStep ? null : isResumeStyleStep(currentStep) ? (
-                      <>
-                        <ResumeStylePicker
-                          step={currentStep}
-                          selectedId={formData.resumeStyleId ?? session.resumeStyleId ?? ""}
-                          t={t}
-                          onSelect={(resumeStyleId) => {
-                            setFormData({ resumeStyleId });
-                            setErrors({});
-                          }}
-                        />
-                        {errors.resumeStyleId ? <FieldError text={errors.resumeStyleId} /> : null}
-                      </>
-                    ) : isSectionStep(currentStep) ? (
+                    ) : !currentStep ? null : isSectionStep(currentStep) ? (
                       <SectionItemEditor
                         step={currentStep}
                         items={items}
@@ -396,16 +397,16 @@ function OnboardingWizardInner(): ReactElement {
                 />
               </View>
 
-              <View style={ed.footer}>
+              <View style={[ed.footer, isCompactMobileLanguage ? ed.mobileLanguageFooter : null]}>
                 {showBack ? (
                   <GhostButton label={t("onboarding.back")} onPress={goBack} disabled={isPending} />
-                ) : (
+                ) : showLocalContinue ? null : (
                   <View />
                 )}
-                {/* Local single-choice steps auto-advance on tap — no CTA. The
-                  CTA is otherwise always pressable (never a dead button):
-                  pressing it validates and surfaces inline errors. */}
-                {isLocal ? null : showComplete ? (
+                {/* Language requires explicit confirmation; other local
+                  single-choice steps auto-advance. The CTA is otherwise always
+                  pressable: pressing it validates and surfaces inline errors. */}
+                {isLocal && !showLocalContinue ? null : showComplete ? (
                   <PrimaryAction
                     label={t("onboarding.complete")}
                     loading={complete.isPending}
@@ -420,6 +421,7 @@ function OnboardingWizardInner(): ReactElement {
                     disabled={isPending}
                     onPress={goNext}
                     testID="onboarding.next"
+                    fullWidth={showLocalContinue}
                   />
                 )}
               </View>
@@ -443,5 +445,5 @@ function OnboardingWizardInner(): ReactElement {
   );
 }
 
-// Chrome, step renderers and the resume-style cluster live in
+// Chrome and step renderers live in
 // ./wizard-chrome and ./wizard-steps.

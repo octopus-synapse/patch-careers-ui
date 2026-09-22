@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Full-list Jobs screen, pushed from a home shelf's "Ver tudo". Renders the
  * previous Jobs tab experience (scope pills, filters, recommendations,
@@ -7,7 +8,7 @@
 
 import { Icon, XStack, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Pressable, View } from "react-native";
@@ -20,7 +21,7 @@ const SCOPES: ReadonlySet<string> = new Set(["all", "saved", "applications"]);
 export default function JobListScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
-  const router = useRouter();
+  const router = useAppRouter();
   const { t } = useI18n();
   const params = useLocalSearchParams<{ scope: string }>();
   const raw = Array.isArray(params.scope) ? params.scope[0] : params.scope;

@@ -19,6 +19,7 @@ const themeBootstrap = `
 (function () {
   try {
     var path = window.location.pathname.replace(/[/]+$/, "") || "/";
+    document.documentElement.lang = path === "/en" || path.indexOf("/en/") === 0 ? "en" : "pt-BR";
     if (path === "/" || path === "/en") {
       document.documentElement.style.colorScheme = "light";
       document.documentElement.style.backgroundColor = "#F2F1EC";
@@ -31,11 +32,15 @@ const themeBootstrap = `
       var stored = parsed && parsed.state && parsed.state.scheme;
       if (stored === "light" || stored === "dark" || stored === "system") scheme = stored;
     }
+    var authPage = path === "/auth" || path === "/en/auth" ||
+      path === "/reset-password" || path === "/en/reset-password";
     var dark = scheme === "dark" ||
-      (scheme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      (scheme === "system" && !authPage && window.matchMedia("(prefers-color-scheme: dark)").matches);
     var root = document.documentElement;
     root.style.colorScheme = dark ? "dark" : "light";
-    root.style.backgroundColor = dark ? "#1A1916" : "#F2F1EC";
+    root.style.backgroundColor = dark
+      ? (authPage ? "#232720" : "#1A1916")
+      : (authPage ? "#F7F7ED" : "#F2F1EC");
   } catch (e) {}
 })();
 `;

@@ -255,6 +255,12 @@ export const authDialogPalette = {
   },
 } as const satisfies Record<EditorialTheme, AuthDialogColors>;
 
+/** Neutral menu glyph on the compact auth header. */
+export const authMenuIconPalette = {
+  light: "#73736D",
+  dark: "#C2C2BC",
+} as const satisfies Record<EditorialTheme, string>;
+
 /** Desktop app navigation (navbar v12); public navigation keeps its own palette. */
 export const appNavPalette = {
   light: {

@@ -17,9 +17,10 @@
 import { getV1GeoLocations } from "@patch-careers/api-client";
 import type { Locale } from "@patch-careers/i18n";
 import { useState } from "react";
+import { CLASSIC_RESUME_STYLE_ID } from "@/config/classic-resume-style";
 import type { ColorScheme } from "@/providers/color-scheme";
 import { FLOW_PLAN, type FlowStep, type FlowStepId } from "../lib/flow-plan";
-import { backendStepForFlow, parseResumeStyles } from "../lib/helpers";
+import { backendStepForFlow } from "../lib/helpers";
 import {
   EDUCATION_ITEMS,
   EXPERIENCE_ITEMS,
@@ -30,7 +31,7 @@ import {
   TEST_LOCATION_FALLBACK_LABEL,
   TEST_LOCATION_QUERY,
 } from "../lib/test-fixtures";
-import type { FormData, OnboardingSession, OnboardingStep, SectionItem } from "../types";
+import type { FormData, OnboardingSession, SectionItem } from "../types";
 
 const DEFAULT_THEME: ColorScheme = "dark";
 
@@ -64,7 +65,7 @@ export function useTestFill(deps: TestFillDeps) {
   const [isRunning, setIsRunning] = useState(false);
 
   /** Per-step: fill the current step's data and stay on it. */
-  function fillStep(flowStepId: FlowStepId, currentStep: OnboardingStep | undefined): void {
+  function fillStep(flowStepId: FlowStepId): void {
     const items = fixtureItemsFor(flowStepId);
     if (items) {
       setItems(items);
@@ -76,11 +77,6 @@ export function useTestFill(deps: TestFillDeps) {
     }
     if (flowStepId === "theme") {
       setScheme(DEFAULT_THEME);
-      return;
-    }
-    if (flowStepId === "resume-style") {
-      const first = parseResumeStyles(currentStep)[0]?.id;
-      if (first) setFormData((prev) => ({ ...prev, resumeStyleId: first }));
       return;
     }
     const form = fixtureFormFor(flowStepId);
@@ -127,10 +123,7 @@ export function useTestFill(deps: TestFillDeps) {
       const eduStepId = backendStepIdFor("education");
       if (eduStepId && !(await saveStep(eduStepId, { items: EDUCATION_ITEMS }))) return;
 
-      // resume-style: auto-pick the first available style.
-      const styleStep = backendStepForFlow(session, flowById("resume-style"));
-      const styleId = parseResumeStyles(styleStep)[0]?.id;
-      if (styleId && !(await saveStep("resume-style", { resumeStyleId: styleId }))) return;
+      if (!(await saveStep("resume-style", { resumeStyleId: CLASSIC_RESUME_STYLE_ID }))) return;
 
       // Land on the review hub.
       setFlowStepId("review");

@@ -12,15 +12,21 @@ describe("branchForIdentity", () => {
     );
   });
 
-  it("routes an unverified password account to sign-in (post-login routing resumes verification)", () => {
+  it("routes an unverified password account to verification", () => {
     expect(branchForIdentity({ exists: true, emailVerified: false, hasPassword: true })).toBe(
-      "signIn",
+      "resumeUnverified",
     );
   });
 
-  it("routes an OAuth-only account to the social notice", () => {
+  it("routes an unverified social account to verification before setting a password", () => {
+    expect(branchForIdentity({ exists: true, emailVerified: false, hasPassword: false })).toBe(
+      "resumeUnverified",
+    );
+  });
+
+  it("routes an account without a password to a neutral notice", () => {
     expect(branchForIdentity({ exists: true, emailVerified: true, hasPassword: false })).toBe(
-      "oauthOnly",
+      "unavailable",
     );
   });
 

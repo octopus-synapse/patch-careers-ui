@@ -1,0 +1,1 @@
+{"type":"object","properties":{"userId":{"type":"string"},"email":{"type":"string"}},"required":["userId","email"],"x-readme-ref-name":"CompleteUnverifiedAccountResponse"}

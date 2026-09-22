@@ -1,5 +1,6 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { motion } from "framer-motion";
 import { type ReactElement, useState } from "react";
 import { useWindowDimensions } from "react-native";
@@ -13,7 +14,7 @@ export function HeroInput(): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
   const accents = useLandingAccents();
-  const router = useRouter();
+  const router = useAppRouter();
   const localized = useLocalizedHref();
   const { width } = useWindowDimensions();
   const compact = width < 640;
@@ -24,7 +25,7 @@ export function HeroInput(): ReactElement {
     <motion.form
       onSubmit={(event) => {
         event.preventDefault();
-        router.push(localized("/(auth)/sign-up"));
+        router.push(localized("/(auth)/auth"));
       }}
       onFocusCapture={() => setFocused(true)}
       onBlurCapture={(event) => {

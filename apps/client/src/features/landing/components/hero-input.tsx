@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * `HeroInput` — the hero's "paste a job" box: input + dark pill CTA, in one
  * rounded white bar, exactly the prototype's arrangement. Both roads lead to
@@ -8,7 +9,7 @@
 import { shadows } from "@patch-careers/tokens";
 import { Text, XStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { type ReactElement, useState } from "react";
 import { Pressable, TextInput } from "react-native";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
@@ -18,12 +19,12 @@ import { landingSans } from "../lib/landing-fonts";
 export function HeroInput(): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
-  const router = useRouter();
+  const router = useAppRouter();
   const localized = useLocalizedHref();
   const [value, setValue] = useState("");
 
   const submit = (): void => {
-    router.push(localized("/(auth)/sign-up"));
+    router.push(localized("/(auth)/auth"));
   };
 
   return (

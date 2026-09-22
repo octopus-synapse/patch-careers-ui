@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * `PrivacySection` — profile visibility and who-can-message, plus the Consent
  * and Blocked drill-down rows.
@@ -12,7 +13,7 @@ import {
 } from "@patch-careers/api-client";
 import { YStack } from "@patch-careers/ui";
 import { SettingsCard, SettingsRow, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { Ban, ScrollText } from "lucide-react-native";
 import { type ReactElement, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
@@ -26,7 +27,7 @@ export function PrivacySection(): ReactElement {
   const { t } = useI18n();
   const styles = useSet();
   const palette = useEditorialPalette();
-  const router = useRouter();
+  const router = useAppRouter();
   const isDesktopWeb = useIsDesktopWeb();
   const prefsQuery = useGetV1UsersPreferencesFull();
   const patch = usePatchV1UsersPreferencesFull();

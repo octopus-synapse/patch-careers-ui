@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Settings home — two screens behind one route.
  *
@@ -10,18 +11,18 @@
 import { logout } from "@patch-careers/auth";
 import { YStack } from "@patch-careers/ui";
 import { SettingsCard, SettingsRow } from "@patch-careers/ui/editorial";
-import { type Href, useRouter } from "expo-router";
+import { type Href } from "expo-router";
 import { Bell, LockKeyhole, LogOut, Palette, UserRound } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { SettingsDesktopPage } from "@/features/settings";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
-import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
+import { AUTH_ROUTE } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 
 export default function SettingsHome(): ReactElement {
   const { t } = useI18n();
-  const router = useRouter();
+  const router = useAppRouter();
   const isDesktopWeb = useIsDesktopWeb();
   const go = (path: Href): void => router.push(path);
 
@@ -31,7 +32,7 @@ export default function SettingsHome(): ReactElement {
 
   async function signOut(): Promise<void> {
     await logout();
-    router.replace(AUTH_SIGN_IN_ROUTE);
+    router.replace(AUTH_ROUTE);
   }
 
   return (

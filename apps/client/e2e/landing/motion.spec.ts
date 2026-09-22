@@ -75,7 +75,7 @@ test("surface springs settle after pointer exit and the hero CTA still navigates
   await page.mouse.move(20, 160);
   await expect.poll(() => plane.evaluate((el) => getComputedStyle(el).transform)).toBe(original);
   await page.getByRole("button", { name: "See my resume for this job", exact: true }).click();
-  await expect(page).toHaveURL(/\/en\/sign-up/);
+  await expect(page).toHaveURL(/\/en\/auth/);
 });
 
 test("reduced motion reveals the full manifesto immediately, including on mobile", async ({

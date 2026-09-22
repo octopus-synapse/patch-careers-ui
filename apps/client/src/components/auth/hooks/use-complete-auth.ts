@@ -1,27 +1,31 @@
 import { bootstrap, exchangeSessionForTokens } from "@patch-careers/auth";
-import { useRouter } from "expo-router";
+import type { Href } from "expo-router";
 import { useCallback } from "react";
 import { getCurrentAuthenticatedRoute } from "@/navigation/auth-redirect";
+import { useAppRouter } from "@/navigation/use-app-router";
 
 /**
  * Finishes a successful authentication: optionally exchanges a session
  * for tokens, runs `bootstrap()` (swallowing its errors so a degraded
  * profile fetch never blocks entry), then routes to the resolved
  * post-auth home. This is the sequence sign-in, 2fa-verify, verify-email
- * and oauth-callback were each hand-rolling.
+ * previously handled in several auth screens.
  */
 export function useCompleteAuth(): {
-  finishAuthentication: (opts?: { sessionExchangeId?: string }) => Promise<void>;
+  finishAuthentication: (opts?: {
+    sessionExchangeId?: string;
+    destination?: Href;
+  }) => Promise<void>;
 } {
-  const router = useRouter();
+  const router = useAppRouter();
 
   const finishAuthentication = useCallback(
-    async (opts?: { sessionExchangeId?: string }) => {
+    async (opts?: { sessionExchangeId?: string; destination?: Href }) => {
       if (opts?.sessionExchangeId) {
         await exchangeSessionForTokens(opts.sessionExchangeId);
       }
       await bootstrap().catch(() => undefined);
-      router.replace(getCurrentAuthenticatedRoute());
+      router.replace(opts?.destination ?? getCurrentAuthenticatedRoute());
     },
     [router],
   );

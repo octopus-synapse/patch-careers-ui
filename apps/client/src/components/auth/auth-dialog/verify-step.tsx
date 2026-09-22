@@ -1,10 +1,7 @@
 /**
- * Verify step of the unified auth dialog — PRE-signup (identifier-first:
- * e-mail → code → password). Entering the step fires
- * `POST /v1/auth/email-verification/start` (public — no account exists
- * yet); the sixth typed digit submits to `/confirm`, whose success hands
- * back the registration token the create-password step sends with the
- * signup so the account is born verified.
+ * Verify step of the unified auth flow (e-mail → code → password).
+ * It serves both new e-mails and accounts awaiting verification. The
+ * confirmation token authorizes the next step for the identified e-mail.
  *
  * Shares the verify-email screen's parts: `EditorialOtp` cells, the 60s
  * resend cooldown via `cooldownSecondsRemaining`, the same status-line
@@ -27,6 +24,7 @@ import { type ReactElement, useCallback, useEffect, useRef, useState } from "rea
 import { EditorialOtp, type EditorialOtpState } from "@/components/auth/editorial-otp";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
+import { AuthStepTitle } from "./auth-step-title";
 
 const RESEND_COOLDOWN_S = 60;
 const ERROR_RESET_MS = 1100;
@@ -35,15 +33,25 @@ const OTP_CELLS = 6;
 
 const mmss = (s: number): string => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
-type Status = "none" | "loading" | "error" | "sent" | "done";
+type Status =
+  | "none"
+  | "sending"
+  | "loading"
+  | "error"
+  | "sendError"
+  | "rateLimited"
+  | "sent"
+  | "done";
 
 export function VerifyStep({
   mascot,
   email,
+  onChangeEmail,
   onVerified,
 }: {
   readonly mascot: AuthMascotController;
   readonly email: string;
+  readonly onChangeEmail: () => void;
   /** Success — carry the registration token into the create-password step. */
   readonly onVerified: (registrationToken: string) => void;
 }): ReactElement {
@@ -93,21 +101,27 @@ export function VerifyStep({
   const requestCode = useCallback(
     async (announce: boolean) => {
       if (!canResend) return;
-      setLastResendAt(Date.now());
+      const requestedAt = Date.now();
+      setLastResendAt(requestedAt);
+      setNow(requestedAt);
       setCode("");
+      setStatus("sending");
       try {
         const response = await startPreSignupVerification({ email });
         setTestCode(response.testCode ?? null);
-        if (announce) setStatus("sent");
-      } catch {
+        setStatus(announce ? "sent" : "none");
+      } catch (error) {
         setTestCode(null);
-        // Ignore — user can retry after cooldown (the server enforces its own).
+        const rateLimited =
+          typeof error === "object" && error !== null && "status" in error && error.status === 429;
+        setLastResendAt(null);
+        setStatus(rateLimited ? "rateLimited" : "sendError");
       }
     },
     [canResend, email],
   );
 
-  // Entering the step sends the first code (identify said the e-mail is free).
+  // Entering the step sends the first code after identification.
   useEffect(() => {
     if (autoSendRef.current) return;
     autoSendRef.current = true;
@@ -149,7 +163,7 @@ export function VerifyStep({
       ? "done"
       : status === "loading"
         ? "loading"
-        : status === "error"
+        : status === "error" || status === "sendError" || status === "rateLimited"
           ? "error"
           : "idle";
 
@@ -158,25 +172,23 @@ export function VerifyStep({
       ? t("auth.verifyChecking")
       : status === "error"
         ? t("auth.verifyInvalidToken")
-        : status === "sent"
-          ? t("auth.verifyCodeResent")
-          : status === "done"
-            ? t("auth.verifiedTitle")
-            : "";
+        : status === "sendError"
+          ? t("auth.verifySendFailed")
+          : status === "rateLimited"
+            ? t("auth.verifyRateLimited")
+            : status === "sent"
+              ? t("auth.verifyCodeResent")
+              : status === "done"
+                ? t("auth.verifiedTitle")
+                : "";
+  const codeNotSent = status === "sendError" || status === "rateLimited";
+  const waitingForCode = status === "sending" || codeNotSent;
 
   return (
     <YStack gap={16} paddingVertical={22}>
-      <Text
-        fontFamily={editorialFonts.sans}
-        fontSize={34}
-        lineHeight={38}
-        fontWeight="600"
-        letterSpacing={-1.4}
-        textAlign="center"
-        color={dialogPalette.brand}
-      >
-        {t("auth.verifyTitle")}
-      </Text>
+      <AuthStepTitle variant="plan" centered>
+        {codeNotSent ? t("auth.verifySendProblemTitle") : t("auth.verifyTitle")}
+      </AuthStepTitle>
       <Text
         fontFamily={editorialFonts.sans}
         fontSize={13}
@@ -184,7 +196,11 @@ export function VerifyStep({
         textAlign="center"
         color={dialogPalette.muted}
       >
-        {t("auth.verifyIntroShort")}
+        {status === "sending"
+          ? t("auth.verifySendingIntro")
+          : codeNotSent
+            ? t("auth.verifySendProblemIntro")
+            : t("auth.verifyIntroShort")}
       </Text>
       <Text
         fontFamily={editorialFonts.mono}
@@ -195,36 +211,66 @@ export function VerifyStep({
       >
         {maskEmail(email)}
       </Text>
+      <Text
+        onPress={onChangeEmail}
+        accessibilityRole="button"
+        cursor="pointer"
+        fontFamily={editorialFonts.sans}
+        fontSize={11}
+        fontWeight="600"
+        textAlign="center"
+        color={dialogPalette.brandMuted}
+        textDecorationLine="underline"
+        testID="authDialog.changeEmailVerify"
+      >
+        {t("auth.verifyChangeEmail")}
+      </Text>
 
-      <YStack alignItems="center" minHeight={96} justifyContent="center">
-        <EditorialOtp
-          value={code}
-          onChangeText={(next) => {
-            setCode(next);
-            if (status === "sent" || status === "error") setStatus("none");
-          }}
-          state={otpState}
-          accessibilityLabel={t("auth.verifyCodeLabel")}
-          autoFocus
-          testID="authDialog.code"
-        />
-      </YStack>
-
-      <YStack minHeight={18} alignItems="center">
-        {statusMessage ? (
+      {waitingForCode ? (
+        <YStack minHeight={96} alignItems="center" justifyContent="center" paddingHorizontal={18}>
           <Text
-            fontSize={12.5}
             fontFamily={editorialFonts.sans}
-            color={status === "error" ? palette.danger : dialogPalette.muted}
+            fontSize={13}
+            lineHeight={20}
+            textAlign="center"
+            color={codeNotSent ? palette.danger : dialogPalette.muted}
             accessibilityLiveRegion="polite"
           >
-            {statusMessage}
+            {status === "sending" ? t("auth.verifySending") : statusMessage}
           </Text>
-        ) : null}
-      </YStack>
+        </YStack>
+      ) : (
+        <>
+          <YStack alignItems="center" minHeight={96} justifyContent="center">
+            <EditorialOtp
+              value={code}
+              onChangeText={(next) => {
+                setCode(next);
+                if (status === "sent" || status === "error") setStatus("none");
+              }}
+              state={otpState}
+              accessibilityLabel={t("auth.verifyCodeLabel")}
+              autoFocus
+              testID="authDialog.code"
+            />
+          </YStack>
+          <YStack minHeight={18} alignItems="center">
+            {statusMessage ? (
+              <Text
+                fontSize={12.5}
+                fontFamily={editorialFonts.sans}
+                color={status === "error" ? palette.danger : dialogPalette.muted}
+                accessibilityLiveRegion="polite"
+              >
+                {statusMessage}
+              </Text>
+            ) : null}
+          </YStack>
+        </>
+      )}
 
       <YStack alignItems="center" minHeight={24}>
-        {canResend ? (
+        {status === "sending" ? null : canResend ? (
           <Text
             onPress={() => void requestCode(true)}
             accessibilityRole="button"

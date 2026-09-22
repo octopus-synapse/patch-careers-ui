@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /** Username — edit the public @handle (gated by the backend cooldown). */
 
 import {
@@ -15,7 +16,7 @@ import {
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+
 import { Clock } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Text, View } from "react-native";
@@ -29,7 +30,7 @@ export default function UsernameScreen(): ReactElement {
   const { t, locale } = useI18n();
   const styles = useSet();
   const palette = useEditorialPalette();
-  const router = useRouter();
+  const router = useAppRouter();
   const queryClient = useQueryClient();
   const { currentUser } = useAuthState();
   const { data: rules } = useGetV1UsersUsernameRules();

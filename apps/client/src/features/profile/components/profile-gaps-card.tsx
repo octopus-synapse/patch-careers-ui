@@ -22,12 +22,11 @@
 import { YStack } from "@patch-careers/ui";
 import { PillButton } from "@patch-careers/ui/editorial";
 import { ArrowRight, Plus } from "lucide-react-native";
-import { type ReactElement, useState } from "react";
+import { type ComponentProps, type ReactElement, useState } from "react";
 import { Text, View } from "react-native";
 import {
   AddSectionFlowModal,
   type MergedSection,
-  type SectionItem,
   type SectionLocales,
   useResumeSections,
   useSectionItemMutations,
@@ -81,7 +80,7 @@ export function ProfileGapsCard({
   const { t } = useI18n();
   const pf = usePf();
   const { catalog } = useResumeSections(resumeId, locales);
-  const { persistFor, isPending } = useSectionItemMutations(resumeId);
+  const { createFor, isPending } = useSectionItemMutations(resumeId);
   const [addOpen, setAddOpen] = useState(false);
   const [picked, setPicked] = useState<MergedSection | null>(null);
 
@@ -95,10 +94,15 @@ export function ProfileGapsCard({
     );
   if (gaps.length === 0) return null;
 
-  const create = async (section: MergedSection, item: SectionItem): Promise<void> => {
-    await persistFor(section.key)({ kind: "create", item, index: section.items.length });
+  const create: ComponentProps<typeof AddSectionFlowModal>["onCreate"] = async (
+    section,
+    item,
+    translation,
+  ) => {
+    const id = await createFor(section.key, item, translation);
     setAddOpen(false);
     setPicked(null);
+    return id;
   };
 
   const openFor = (section: MergedSection | null): void => {
@@ -141,6 +145,8 @@ export function ProfileGapsCard({
       {/* Keyed by the pick so the modal's `initialPick` seed (read on mount)
           applies when the user goes straight into one section's form. */}
       <AddSectionFlowModal
+        resumeId={resumeId}
+        locales={locales}
         key={picked?.key ?? "catalog"}
         visible={addOpen}
         onClose={() => {

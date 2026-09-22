@@ -6,51 +6,56 @@
  * creates the section implicitly (the items POST is keyed by sectionTypeKey)
  * plus the item in one flow.
  */
-import {
-  type EditorialPalette,
-  editorialPalette,
-  editorialPaletteDark,
-} from "@patch-careers/tokens";
-import { ModalHeader, YStack } from "@patch-careers/ui";
-import {
-  editorialFonts as fonts,
-  PrimaryAction,
-  useEditorialPalette,
-  useThemeName,
-} from "@patch-careers/ui/editorial";
-import { ChevronLeft, ChevronRight } from "lucide-react-native";
+
+import { fetcher } from "@patch-careers/api-client";
+import type { Locale } from "@patch-careers/i18n";
+import { ModalHeader, useToast, YStack } from "@patch-careers/ui";
+import { PrimaryAction, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { ChevronLeft } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from "react-native";
+import type { SectionLocales } from "../hooks/use-resume-sections";
 import { useSectionItemForm } from "../hooks/use-section-item-form";
+import type { RewriteProposal } from "../hooks/use-section-item-mutations";
 import type { MergedSection } from "../lib/section-visibility";
 import { useEd } from "../lib/styles";
 import type { SectionItem } from "../types";
 import { AddLinkForm } from "./add-link-form";
 import { OverlayModal } from "./primitives";
+import {
+  decisionsFromProposal,
+  type FieldDecision,
+  RewriteReviewModal,
+} from "./rewrite-review-modal";
+import { SectionCatalogList } from "./section-catalog-list";
 import { SectionForm } from "./section-form";
 
 /** Form pane — mounted per picked type (key={section.key}) so the RHF form
  *  and its cascades reset cleanly when the user re-picks. */
 function AddItemForm({
   section,
+  resumeId,
+  locales,
   isPending,
   onSave,
   t,
 }: {
   section: MergedSection;
+  resumeId: string | undefined;
+  locales: SectionLocales;
   isPending: boolean;
-  onSave: (item: SectionItem) => Promise<void>;
-  t: (key: string) => string;
+  onSave: (
+    item: SectionItem,
+    translation?: {
+      locale: Locale;
+      data: Record<string, string | string[]>;
+      origin: "manual" | "diverged";
+    },
+  ) => Promise<string>;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }): ReactElement {
   const ed = useEd();
+  const toast = useToast();
   const fields = section.descriptor.fields ?? [];
   const {
     form,
@@ -62,10 +67,85 @@ function AddItemForm({
     handleRolePick,
     hasErrors,
   } = useSectionItemForm(fields);
+  const [review, setReview] = useState<{
+    item: SectionItem;
+    proposal: RewriteProposal;
+    decisions: FieldDecision[];
+  } | null>(null);
+  const [busy, setBusy] = useState(false);
 
   const save = form.handleSubmit(async (values) => {
-    await onSave({ content: { ...values } });
+    const item: SectionItem = { content: { ...values } };
+    if (!resumeId) {
+      await onSave(item);
+      return;
+    }
+    setBusy(true);
+    try {
+      let proposal: RewriteProposal;
+      try {
+        const response = await fetcher<RewriteProposal>({
+          method: "POST",
+          url: `/api/v1/resumes/${resumeId}/sections/${section.key}/items/preview-translation`,
+          data: { locale: locales.content, edited: values },
+        });
+        proposal = response.data;
+      } catch {
+        // Preserve the resume's canonical language when a translation is unavailable.
+        if (locales.content !== locales.canonical) {
+          toast.show({ title: t("sections.rewrite.useOriginalLanguage"), intent: "warn" });
+          return;
+        }
+        await onSave(item);
+        toast.show({ title: t("sections.rewrite.skipped"), intent: "warn" });
+        return;
+      }
+      const decisions = decisionsFromProposal(proposal.keys, proposal.current, proposal.proposal);
+      if (decisions.length === 0) {
+        await onSave(item);
+        return;
+      }
+      setReview({ item, proposal, decisions });
+    } finally {
+      setBusy(false);
+    }
   });
+
+  const finishReview = async (keep: boolean): Promise<void> => {
+    if (!review) return;
+    setBusy(true);
+    try {
+      const data: Record<string, string | string[]> = {};
+      for (const decision of review.decisions) {
+        if (decision.accepted && !keep) data[decision.key] = decision.text;
+      }
+      if (locales.content === locales.canonical) {
+        await onSave(review.item, {
+          locale: review.proposal.locale as Locale,
+          data,
+          origin: keep || Object.keys(data).length === 0 ? "diverged" : "manual",
+        });
+      } else {
+        const source: Record<string, string | string[]> = {};
+        for (const key of review.proposal.keys) {
+          const value = review.item.content?.[key];
+          if (
+            typeof value === "string" ||
+            (Array.isArray(value) && value.every((part) => typeof part === "string"))
+          ) {
+            source[key] = value;
+          }
+        }
+        await onSave(
+          { ...review.item, content: { ...review.item.content, ...data } },
+          { locale: locales.content, data: source, origin: "manual" },
+        );
+      }
+      setReview(null);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return (
     <>
@@ -88,15 +168,41 @@ function AddItemForm({
         <PrimaryAction
           label={t("common.save")}
           onPress={() => void save()}
-          disabled={hasErrors || isPending}
+          disabled={hasErrors || isPending || busy}
         />
       </View>
+      {review ? (
+        <RewriteReviewModal
+          visible
+          localeLabel={review.proposal.locale === "en" ? "English" : "Português"}
+          fields={fields}
+          decisions={review.decisions}
+          onChangeDecision={(key, patch) =>
+            setReview((current) =>
+              current
+                ? {
+                    ...current,
+                    decisions: current.decisions.map((d) =>
+                      d.key === key ? { ...d, ...patch } : d,
+                    ),
+                  }
+                : null,
+            )
+          }
+          onApply={() => void finishReview(false)}
+          onKeep={() => void finishReview(true)}
+          busy={busy}
+          t={t}
+        />
+      ) : null}
     </>
   );
 }
 
 export function AddSectionFlowModal({
   visible,
+  resumeId,
+  locales,
   onClose,
   catalog,
   initialPick,
@@ -105,6 +211,8 @@ export function AddSectionFlowModal({
   t,
 }: {
   visible: boolean;
+  resumeId: string | undefined;
+  locales: SectionLocales;
   onClose: () => void;
   catalog: MergedSection[];
   /**
@@ -114,12 +222,19 @@ export function AddSectionFlowModal({
    */
   initialPick?: MergedSection | undefined;
   /** Persist a new item for the picked type; resolves once committed. */
-  onCreate: (section: MergedSection, item: SectionItem) => Promise<void>;
+  onCreate: (
+    section: MergedSection,
+    item: SectionItem,
+    translation?: {
+      locale: Locale;
+      data: Record<string, string | string[]>;
+      origin: "manual" | "diverged";
+    },
+  ) => Promise<string>;
   isPending: boolean;
   t: (key: string) => string;
 }): ReactElement {
   const ed = useEd();
-  const styles = stylesByTheme[useThemeName()];
   const authTokens = useEditorialPalette();
   const [picked, setPicked] = useState<MergedSection | null>(initialPick ?? null);
 
@@ -128,10 +243,18 @@ export function AddSectionFlowModal({
     onClose();
   };
 
-  const save = async (item: SectionItem): Promise<void> => {
-    if (!picked) return;
-    await onCreate(picked, item);
+  const save = async (
+    item: SectionItem,
+    translation?: {
+      locale: Locale;
+      data: Record<string, string | string[]>;
+      origin: "manual" | "diverged";
+    },
+  ): Promise<string> => {
+    if (!picked) throw new Error("No section selected");
+    const id = await onCreate(picked, item, translation);
     setPicked(initialPick ?? null);
+    return id;
   };
 
   return (
@@ -173,81 +296,42 @@ export function AddSectionFlowModal({
 
           {picked ? (
             picked.key === "links_v1" ? (
-              <AddLinkForm key={picked.key} isPending={isPending} onSave={save} t={t} />
+              <AddLinkForm
+                key={picked.key}
+                isPending={isPending}
+                onSave={async (item) => {
+                  await save(item);
+                }}
+                t={t}
+              />
             ) : (
               <AddItemForm
                 key={picked.key}
                 section={picked}
+                resumeId={resumeId}
+                locales={locales}
                 isPending={isPending}
                 onSave={save}
                 t={t}
               />
             )
           ) : (
-            <ScrollView style={ed.flex} contentContainerStyle={styles.catalogScroll}>
-              {catalog.map((section) => (
-                <Pressable
-                  key={section.key}
-                  accessibilityRole="button"
-                  accessibilityLabel={section.title}
-                  accessibilityState={{ disabled: section.atCapacity }}
-                  disabled={section.atCapacity}
-                  onPress={() => setPicked(section)}
-                  style={({ pressed }) => [
-                    styles.catalogRow,
-                    pressed && styles.catalogRowPressed,
-                    section.atCapacity && styles.catalogRowDisabled,
-                  ]}
-                >
-                  <View style={styles.catalogBody}>
-                    <View style={styles.catalogTitleRow}>
-                      <Text style={styles.catalogTitle}>{section.title}</Text>
-                      {section.items.length > 0 ? (
-                        <Text style={styles.catalogCount}>{section.items.length}</Text>
-                      ) : null}
-                    </View>
-                    <Text style={styles.catalogDesc} numberOfLines={2}>
-                      {section.atCapacity ? t("sections.atCapacity") : section.description}
-                    </Text>
-                  </View>
-                  <ChevronRight size={18} color={authTokens.subtle} strokeWidth={1.75} />
-                </Pressable>
-              ))}
-            </ScrollView>
+            <SectionCatalogList
+              options={catalog.map((section) => ({
+                id: section.key,
+                title: section.title,
+                description: section.atCapacity ? t("sections.atCapacity") : section.description,
+                count: section.items.length,
+                disabled: section.atCapacity,
+              }))}
+              onPick={(key) => {
+                const section = catalog.find((entry) => entry.key === key);
+                if (section) setPicked(section);
+              }}
+            />
           )}
         </View>
       </KeyboardAvoidingView>
     </OverlayModal>
   );
 }
-
-const stylesFor = (p: EditorialPalette) =>
-  // @style-allow stylesheet: modal/sheet styles applied via ScrollView contentContainerStyle and a dynamic Pressable function-style (pressed/atCapacity) — not 1:1 convertible to Tamagui props
-  StyleSheet.create({
-    catalogScroll: { paddingHorizontal: 24, paddingVertical: 12 },
-    catalogRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 12,
-      paddingVertical: 16,
-      borderBottomWidth: 1,
-      borderBottomColor: p.hairline,
-    },
-    catalogRowPressed: { opacity: 0.7 },
-    catalogRowDisabled: { opacity: 0.4 },
-    catalogBody: { flex: 1, gap: 3 },
-    catalogTitleRow: { flexDirection: "row", alignItems: "baseline", gap: 8 },
-    catalogTitle: { fontFamily: fonts.sans, fontSize: 15, color: p.ink },
-    catalogCount: {
-      fontFamily: fonts.mono,
-      fontSize: 12,
-      color: p.subtle,
-    },
-    catalogDesc: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 18, color: p.muted },
-  });
-
-// Precomputed per theme so style-object identity is stable across renders.
-const stylesByTheme = {
-  light: stylesFor(editorialPalette),
-  dark: stylesFor(editorialPaletteDark),
-} as const;

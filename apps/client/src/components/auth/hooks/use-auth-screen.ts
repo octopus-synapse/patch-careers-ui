@@ -1,9 +1,10 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 import type { Locale, Translator } from "@patch-careers/i18n";
 import { useToast } from "@patch-careers/ui";
-import { useRouter } from "expo-router";
+
 import { useI18n } from "@/providers/i18n-provider";
 
-type Router = ReturnType<typeof useRouter>;
+type Router = ReturnType<typeof useAppRouter>;
 type Toast = ReturnType<typeof useToast>;
 
 /**
@@ -18,7 +19,7 @@ export function useAuthScreen(): {
   toast: Toast;
 } {
   const { t, locale } = useI18n();
-  const router = useRouter();
+  const router = useAppRouter();
   const toast = useToast();
   return { t, locale, router, toast };
 }

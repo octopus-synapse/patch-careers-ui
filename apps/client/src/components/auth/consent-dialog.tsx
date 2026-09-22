@@ -54,6 +54,7 @@ export type ConsentDialogProps = {
   onAccept: () => void;
   loading?: boolean | undefined;
   testID?: string | undefined;
+  acceptLabel?: string | undefined;
 };
 
 export function ConsentDialog({
@@ -62,6 +63,7 @@ export function ConsentDialog({
   onAccept,
   loading = false,
   testID,
+  acceptLabel,
 }: ConsentDialogProps): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
@@ -193,7 +195,7 @@ export function ConsentDialog({
             {reachedEnd ? null : <Text style={styles.hint}>{t("auth.consentScrollHint")}</Text>}
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={t("auth.consentAccept")}
+              accessibilityLabel={acceptLabel ?? t("auth.consentAccept")}
               accessibilityState={{ disabled: !canAccept }}
               disabled={!canAccept}
               onPress={onAccept}
@@ -207,7 +209,7 @@ export function ConsentDialog({
               {loading ? (
                 <ActivityIndicator color={palette.onPrimary} />
               ) : (
-                <Text style={styles.acceptLabel}>{t("auth.consentAccept")}</Text>
+                <Text style={styles.acceptLabel}>{acceptLabel ?? t("auth.consentAccept")}</Text>
               )}
             </Pressable>
           </View>
@@ -251,12 +253,12 @@ const stylesFor = (
       borderBottomColor: p.hairline,
     },
     title: {
-      fontFamily: editorialFonts.sans,
+      fontFamily: editorialFonts.serif,
       fontSize: 28,
       lineHeight: 34,
-      fontWeight: "600",
-      letterSpacing: -1,
-      color: dialog.brand,
+      fontWeight: "700",
+      letterSpacing: -1.2,
+      color: p.ink,
       textAlign: "center",
     },
     close: {
@@ -274,12 +276,12 @@ const stylesFor = (
     scrollContent: { paddingHorizontal: 26, paddingTop: 20, paddingBottom: 24 },
     docSpacing: { marginTop: 32, paddingTop: 28, borderTopWidth: 1, borderTopColor: p.hairline },
     docTitle: {
-      fontFamily: editorialFonts.sans,
+      fontFamily: editorialFonts.serif,
       fontSize: 19,
       lineHeight: 24,
       fontWeight: "600",
-      letterSpacing: -0.4,
-      color: dialog.brand,
+      letterSpacing: -1.2,
+      color: p.ink,
     },
     docMeta: {
       fontFamily: editorialFonts.mono,

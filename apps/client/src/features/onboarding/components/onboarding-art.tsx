@@ -1,5 +1,5 @@
 /**
- * Editorial line-art for onboarding empty states and the welcome screen.
+ * Editorial line-art for onboarding empty states.
  * Thin hairline strokes in `ink/muted` with a single `accent` detail — matches
  * the "Editorial Calm" tone (sober, not a colorful illustration pack).
  */
@@ -8,70 +8,9 @@ import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import Svg, { Circle, Line, Path, Rect } from "react-native-svg";
 
-// White tick/detail drawn on top of the filled accent disc.
-// @style-allow color: SVG art colors (illustration palette, not theme tokens)
-const ART = { tick: "#FFFFFF" } as const;
-
 export interface OnboardingArtProps {
   /** Square-ish art; width drives the box, height ≈ width * 0.8. */
   readonly size?: number;
-}
-
-/** A resume page with an accent check — used on the welcome screen. */
-export function WelcomeArt({ size = 132 }: OnboardingArtProps): ReactElement {
-  const { subtle: STROKE, accent: ACCENT } = useEditorialPalette();
-  const h = Math.round(size * 0.86);
-  return (
-    <Svg width={size} height={h} viewBox="0 0 132 114" fill="none">
-      <Rect x={26} y={10} width={70} height={94} rx={8} stroke={STROKE} strokeWidth={1.5} />
-      <Line
-        x1={38}
-        y1={30}
-        x2={84}
-        y2={30}
-        stroke={STROKE}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-      />
-      <Line
-        x1={38}
-        y1={44}
-        x2={72}
-        y2={44}
-        stroke={STROKE}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-      />
-      <Line
-        x1={38}
-        y1={58}
-        x2={84}
-        y2={58}
-        stroke={STROKE}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-      />
-      <Line
-        x1={38}
-        y1={72}
-        x2={66}
-        y2={72}
-        stroke={STROKE}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-      />
-      {/* Filled accent disc with a white tick — pops on warm paper (light)
-          and warm dark paper (dark) without restating the theme bg. */}
-      <Circle cx={94} cy={86} r={18} fill={ACCENT} />
-      <Path
-        d="M86 86l5.5 5.5L103 80"
-        stroke={ART.tick}
-        strokeWidth={2.25}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Svg>
-  );
 }
 
 /** A briefcase outline — work-experience empty state. */

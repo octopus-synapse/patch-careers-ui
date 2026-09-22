@@ -20,6 +20,7 @@ export {
 } from "./components/resume-sections-manager";
 export { RolePicker, type RolePickerProps } from "./components/role-picker";
 export { SectionCard } from "./components/section-card";
+export { SectionCatalogList } from "./components/section-catalog-list";
 export { SectionDetailRow } from "./components/section-detail-row";
 export { SectionForm } from "./components/section-form";
 export { SectionItemEditor } from "./components/section-item-editor";

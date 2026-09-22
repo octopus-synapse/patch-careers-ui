@@ -77,6 +77,9 @@ vi.mock("../confirm-dialog", () => ({
 }));
 
 beforeEach(() => {
+  Object.defineProperty(window, "innerWidth", { configurable: true, value: 1024 });
+  Object.defineProperty(window, "innerHeight", { configurable: true, value: 768 });
+  window.dispatchEvent(new Event("resize"));
   state.path = "/curriculos";
   state.count = 0;
   state.name = "Enzo Patti";
@@ -99,9 +102,9 @@ describe("desktop navbar v12", () => {
       expect(screen.getByRole("button", { name })).toHaveTextContent(String(label));
     }
     fireEvent.click(screen.getByRole("button", { name: `Mensagens, ${count} não lidas` }));
-    expect(state.push).toHaveBeenCalledWith("/messages");
+    expect(state.push).toHaveBeenCalledWith("/messages", undefined);
     fireEvent.click(screen.getByRole("button", { name: `Notificações, ${count} não lidas` }));
-    expect(state.push).toHaveBeenCalledWith("/notifications");
+    expect(state.push).toHaveBeenCalledWith("/notifications", undefined);
   });
 
   it("keeps zero hidden for existing CountBadge consumers", () => {
@@ -119,7 +122,11 @@ describe("desktop navbar v12", () => {
       "aria-current",
       "page",
     );
-    expect(within(nav).getByRole("link", { name: "Início" })).toHaveAttribute("href", "/jobs");
+    expect(within(nav).getByRole("link", { name: "Vagas" })).toHaveAttribute("href", "/jobs");
+    expect(within(nav).getByRole("link", { name: "Candidaturas" })).toHaveAttribute(
+      "href",
+      "/applications",
+    );
     state.path = "/profile/identity";
     view.rerender(<NavBar variant="app" />);
     expect(within(nav).getByRole("link", { name: /Eu/ })).toHaveAttribute("aria-current", "page");
@@ -129,11 +136,17 @@ describe("desktop navbar v12", () => {
     expect(nav.querySelector("[data-nav-active-line]")).toBeNull();
     state.path = "/jobs";
     view.rerender(<NavBar variant="app" />);
-    expect(within(nav).getByRole("link", { name: "Início" })).toHaveAttribute(
+    expect(within(nav).getByRole("link", { name: "Vagas" })).toHaveAttribute(
       "aria-current",
       "page",
     );
     expect(nav.querySelectorAll("[data-nav-active-line]")).toHaveLength(1);
+    state.path = "/applications";
+    view.rerender(<NavBar variant="app" />);
+    expect(within(nav).getByRole("link", { name: "Candidaturas" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
   });
 
   it("opens search from either keyboard shortcut", () => {
@@ -181,5 +194,41 @@ describe("desktop navbar v12", () => {
     if (kind === "onboarding") state.path = "/onboarding";
     const view = renderApp(<NavBar variant="app" />);
     expect(view.container.querySelector("[data-app-navbar]")).toBeNull();
+  });
+});
+
+describe("compact onboarding navbar", () => {
+  it("keeps the auth-style chrome, full menu, and progress below the bar", () => {
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 390 });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 844 });
+    window.dispatchEvent(new Event("resize"));
+
+    renderApp(
+      <NavBar
+        variant="onboarding"
+        account={{ email: "enzo@example.test" }}
+        progress={{ pct: 30, label: "3 / 10" }}
+      />,
+    );
+
+    expect(screen.getByText("patch")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Abrir menu" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Abrir menu da conta" })).toBeInTheDocument();
+    expect(screen.getByRole("progressbar", { name: "3 / 10" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
+
+    expect(screen.getByRole("button", { name: "Fechar" })).toBeInTheDocument();
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+    for (const label of [
+      "Idioma e região",
+      "Tema",
+      "Ajuda",
+      "Privacidade",
+      "Termos de uso",
+      "Sair da conta",
+    ]) {
+      expect(screen.getByRole("menuitem", { name: label })).toBeInTheDocument();
+    }
   });
 });

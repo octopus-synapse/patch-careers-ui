@@ -1,13 +1,9 @@
 /**
  * Onboarding step renderers — the body the wizard switches between per step:
- * the dynamic field form, language pick, supportive step context, the
- * resume-style picker (+ live preview modal), the review hub, and the welcome
- * intro. Extracted from onboarding-wizard.tsx; the wizard just routes to these.
+ * the dynamic field form, language pick, supportive step context, review hub,
+ * and review hub. Extracted from onboarding-wizard.tsx; the wizard just routes to these.
  */
-import {
-  useGetV1OnboardingSessionResumePreview,
-  useGetV1ResumeStyles,
-} from "@patch-careers/api-client";
+import { useGetV1OnboardingSessionResumePreview } from "@patch-careers/api-client";
 import type { Locale, Translator } from "@patch-careers/i18n";
 import type { ColorScheme } from "@patch-careers/state";
 import { PhoneInput } from "@patch-careers/ui";
@@ -18,52 +14,31 @@ import {
   UnderlineInput,
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
-import {
-  ArrowLeft,
-  Check,
-  ChevronRight,
-  Minus,
-  MonitorSmartphone,
-  Moon,
-  Sun,
-  X,
-} from "lucide-react-native";
+import { Check, ChevronRight, Minus, MonitorSmartphone, Moon, Sun, X } from "lucide-react-native";
 import { type ReactElement, useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  Image,
   Platform,
   Pressable,
   Text as RNText,
-  SafeAreaView,
-  ScrollView,
   StyleSheet,
   type TextInput,
   View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
-import { StyleScoreBadge } from "@/components/style-score-badge";
+import { CLASSIC_RESUME_STYLE_ID } from "@/config/classic-resume-style";
 import { AddRow, FieldRenderer, OptionPill, OverlayModal, useEd } from "@/features/sections";
 import { publicProfileDisplayUrl } from "@/lib/public-profile-url";
 import { useI18n } from "@/providers/i18n-provider";
 import type { FlowStepId } from "../lib/flow-plan";
-import {
-  buildReviewSections,
-  missingRequiredTargets,
-  parseResumeStyles,
-  visibleFields,
-} from "../lib/helpers";
+import { buildReviewSections, missingRequiredTargets } from "../lib/helpers";
 import type {
   FormData,
   OnboardingField,
   OnboardingSession,
   OnboardingStep,
-  ResumeStyleOption,
   ReviewSection,
 } from "../types";
 import { LocationPicker } from "./location-picker";
-import { WelcomeArt } from "./onboarding-art";
 import { SectionAddPicker } from "./section-add-picker";
 import { MissingBanner } from "./wizard-chrome";
 
@@ -195,10 +170,12 @@ export function StepForm({
 export function LanguageStep({
   locale,
   onSelect,
+  roomy = false,
   t,
 }: {
   locale: Locale;
   onSelect: (locale: Locale) => void;
+  roomy?: boolean;
   t: (key: string) => string;
 }): ReactElement {
   const ed = useEd();
@@ -226,7 +203,7 @@ export function LanguageStep({
     },
   ];
   return (
-    <View style={ed.langWrap}>
+    <View style={[ed.langWrap, roomy ? ed.mobileLanguageOptions : null]}>
       {options.map((option, index) => {
         const selected = locale === option.value;
         return (
@@ -236,13 +213,20 @@ export function LanguageStep({
               accessibilityState={{ selected }}
               accessibilityLabel={t("onboarding.language.prompt")}
               onPress={() => onSelect(option.value)}
-              style={[ed.langCard, selected ? ed.langCardSelected : null]}
+              style={[ed.languagePlanCard, selected ? ed.languagePlanCardSelected : null]}
             >
               <View style={ed.langText}>
-                <RNText style={ed.langLabel}>{option.native}</RNText>
+                <RNText style={ed.languagePlanLabel}>{option.native}</RNText>
                 <RNText style={ed.langHint}>{option.hint}</RNText>
               </View>
-              {selected ? <Check size={18} color={authTokens.ink} strokeWidth={2} /> : null}
+              <View
+                style={[
+                  ed.languagePlanIndicator,
+                  selected ? ed.languagePlanIndicatorSelected : null,
+                ]}
+              >
+                {selected ? <Check size={15} color={authTokens.panel} strokeWidth={3} /> : null}
+              </View>
             </Pressable>
           </AnimatedField>
         );
@@ -494,188 +478,6 @@ export function LinksEditor({
   );
 }
 
-export function ResumeStylePicker({
-  onSelect,
-  selectedId,
-  step,
-  t,
-}: {
-  onSelect: (id: string) => void;
-  selectedId: string;
-  step: OnboardingStep;
-  t: Translator;
-}): ReactElement {
-  const ed = useEd();
-  const stylesList = parseResumeStyles(step);
-  // Live Style Scores from the catalog (replaces the step payload's stale
-  // hardcoded ATS number), keyed by style id.
-  const stylesQuery = useGetV1ResumeStyles();
-  const scoreById = new Map<string, number>(
-    (stylesQuery.data?.items ?? []).map((s) => [s.id, s.styleScore]),
-  );
-  // Tapping a card opens a full-screen preview; selection happens there.
-  const [previewId, setPreviewId] = useState<string | null>(null);
-  if (stylesList.length === 0) {
-    return (
-      <StepForm
-        fields={visibleFields(step)}
-        data={selectedId ? { resumeStyleId: selectedId } : {}}
-        errors={{}}
-        onChange={(data) => onSelect(data.resumeStyleId ?? "")}
-      />
-    );
-  }
-  const previewed = stylesList.find((style) => style.id === previewId) ?? null;
-  return (
-    <View style={ed.styleStack}>
-      {stylesList.map((style, index) => (
-        <AnimatedField key={style.id} delay={120 + index * 70}>
-          <ResumeStyleCard
-            option={style}
-            liveScore={scoreById.get(style.id)}
-            selected={style.id === selectedId}
-            previewLabel={t("onboarding.resumeStyle.preview")}
-            onPress={() => onSelect(style.id)}
-            onPreview={() => setPreviewId(style.id)}
-          />
-        </AnimatedField>
-      ))}
-      <ResumeStyleModal
-        option={previewed}
-        selected={previewed?.id === selectedId}
-        t={t}
-        onClose={() => setPreviewId(null)}
-        onUse={(id) => {
-          onSelect(id);
-          setPreviewId(null);
-        }}
-      />
-    </View>
-  );
-}
-
-/** Tapping the card SELECTS the style (same gesture as the derive-wizard
- *  picker); the underlined "Visualizar" is the smaller, secondary target
- *  that opens the full preview. Nested Pressables: the inner one wins the
- *  touch, so previewing never toggles the selection. */
-function ResumeStyleCard({
-  onPress,
-  onPreview,
-  option,
-  liveScore,
-  previewLabel,
-  selected,
-}: {
-  onPress: () => void;
-  onPreview: () => void;
-  option: ResumeStyleOption;
-  liveScore?: number | undefined;
-  previewLabel: string;
-  selected: boolean;
-}): ReactElement {
-  const ed = useEd();
-  const authTokens = useEditorialPalette();
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityState={{ selected }}
-      onPress={onPress}
-      style={[ed.styleCard, selected ? ed.styleCardSelected : null]}
-    >
-      {option.thumbnailUrl ? (
-        <Image source={{ uri: option.thumbnailUrl }} style={ed.styleImage} />
-      ) : null}
-      <View style={ed.styleBody}>
-        <View style={ed.styleNameRow}>
-          <RNText style={ed.styleName}>{option.name}</RNText>
-          {selected ? <Check size={16} color={authTokens.ink} strokeWidth={2} /> : null}
-        </View>
-        {option.description ? (
-          <RNText style={ed.styleDesc} numberOfLines={2}>
-            {option.description}
-          </RNText>
-        ) : null}
-        {typeof liveScore === "number" ? (
-          <StyleScoreBadge styleId={option.id} styleScore={liveScore} />
-        ) : null}
-        <Pressable accessibilityRole="button" hitSlop={6} onPress={onPreview}>
-          <RNText style={ed.stylePreviewAction}>{previewLabel}</RNText>
-        </Pressable>
-      </View>
-    </Pressable>
-  );
-}
-
-/** Live HTML preview of the user's IN-PROGRESS resume rendered in the
- *  candidate style (`GET …/onboarding/session/resume-preview`) — the user's
- *  real onboarding data, not the baked sample. Same realtime AST→HTML the
- *  Resume tab shows: embedded via `srcDoc` on web and `WebView` on native.
- *  The hook only mounts while the modal is open (parent guards on `option`),
- *  so the render isn't kicked off until the user actually opens a preview.
- *  `styleId` is the tapped card's style, so switching styles re-renders. */
-function StylePreview({ option }: { option: ResumeStyleOption }): ReactElement {
-  const ed = useEd();
-  const authTokens = useEditorialPalette();
-  const { locale } = useI18n();
-  const preview = useGetV1OnboardingSessionResumePreview(
-    { styleId: option.id, locale },
-    { query: { refetchOnWindowFocus: false, staleTime: 5 * 60_000 } },
-  );
-  const html = preview.data?.html;
-  // Native only: flips when the REAL document finished loading, so the spinner
-  // overlay also hides the blank placeholder page (avoids a white flash).
-  const [docReady, setDocReady] = useState(false);
-
-  if (preview.isError || (!preview.isLoading && !html)) {
-    return (
-      <View style={[ed.modalPreview, ed.modalPreviewEmpty, ed.modalPreviewCenter]}>
-        <RNText style={ed.modalPreviewHint}>Pré-visualização indisponível.</RNText>
-      </View>
-    );
-  }
-  return (
-    <View style={ed.modalPreview}>
-      {Platform.OS === "web" ? (
-        html ? (
-          // RNW renders the host <iframe> through react-dom; `srcDoc` embeds
-          // the document inline (no cross-origin / presigned-URL hop).
-          <iframe
-            srcDoc={html}
-            title={option.name}
-            style={
-              {
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                border: "none",
-              } as unknown as undefined
-            }
-          />
-        ) : null
-      ) : (
-        // Android can't composite a chromium WebView ATTACHED to a Modal
-        // window after that window is already on screen — mounting the
-        // WebView only after the fetch resolved left the first open blank
-        // (a cached reopen mounted it together with the Modal and worked).
-        // Mount it with the modal and swap the document in once it arrives.
-        <WebView
-          originWhitelist={["*"]}
-          source={{ html: html ?? "<!DOCTYPE html><html><body></body></html>" }}
-          style={StyleSheet.absoluteFill}
-          onLoadEnd={() => html && setDocReady(true)}
-        />
-      )}
-      {!html || (Platform.OS !== "web" && !docReady) ? (
-        <View style={[ed.modalPreviewEmpty, ed.modalPreviewCenter, StyleSheet.absoluteFill]}>
-          <ActivityIndicator color={authTokens.ink} />
-        </View>
-      ) : null}
-    </View>
-  );
-}
-
 /** Non-interactive embedded resume document (web iframe / native WebView). */
 function PreviewFrame({ html }: { html: string }): ReactElement {
   return Platform.OS === "web" ? (
@@ -723,61 +525,6 @@ function ReviewStylePreview({ styleId }: { styleId: string }): ReactElement | nu
   );
 }
 
-/** Preview of a resume template (item: resume-style modal). Centered card
- *  over a scrim — same size/positioning as the add-education/experience
- *  editor (`MultiItemEditorModal`). Selection is confirmed here. */
-function ResumeStyleModal({
-  onClose,
-  onUse,
-  option,
-  selected,
-  t,
-}: {
-  onClose: () => void;
-  onUse: (id: string) => void;
-  option: ResumeStyleOption | null;
-  selected: boolean;
-  t: Translator;
-}): ReactElement {
-  const ed = useEd();
-  const authTokens = useEditorialPalette();
-  return (
-    <OverlayModal visible={Boolean(option)} onRequestClose={onClose}>
-      <View style={ed.editorModalOverlay}>
-        {/* Tap outside the card to dismiss */}
-        <Pressable
-          style={ed.editorModalBackdrop}
-          accessibilityRole="button"
-          accessibilityLabel="close"
-          onPress={onClose}
-        />
-        <View style={ed.editorModalCard}>
-          <View style={ed.editorModalHeader}>
-            <RNText style={ed.editorModalTitle}>{option?.name ?? ""}</RNText>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="close"
-              hitSlop={12}
-              onPress={onClose}
-            >
-              <X size={22} color={authTokens.muted} />
-            </Pressable>
-          </View>
-          <ScrollView style={ed.flex} contentContainerStyle={ed.modalScroll}>
-            {option ? <StylePreview option={option} /> : null}
-          </ScrollView>
-          <View style={ed.modalFooter}>
-            <PrimaryAction
-              label={selected ? t("common.save") : t("onboarding.resumeStyle.use")}
-              onPress={() => option && onUse(option.id)}
-            />
-          </View>
-        </View>
-      </View>
-    </OverlayModal>
-  );
-}
-
 export function ReviewSummary({
   addPending,
   onAddSection,
@@ -801,11 +548,10 @@ export function ReviewSummary({
   const activated = new Set(session.activatedExtras ?? []);
   const options = (session.availableExtras ?? [])
     .filter((extra) => !activated.has(extra.id))
-    .map((extra) => ({ id: extra.id, label: extra.label, icon: extra.icon }));
+    .map((extra) => ({ id: extra.id, label: extra.label, description: extra.description }));
   // Right column of a checklist row: the chosen style's name, an item count
   // for multi-item sections, "—" for skipped ones, nothing for form steps.
   const rowValue = (section: ReviewSection): string => {
-    if (section.styleName) return section.styleName;
     if (section.skipped) return "—";
     if (typeof section.count === "number") {
       return section.count === 1
@@ -822,7 +568,7 @@ export function ReviewSummary({
       {session.resumeStyleId ? (
         <AnimatedField delay={100}>
           <View style={ed.reviewHero}>
-            <ReviewStylePreview styleId={session.resumeStyleId} />
+            <ReviewStylePreview styleId={CLASSIC_RESUME_STYLE_ID} />
           </View>
         </AnimatedField>
       ) : null}
@@ -855,7 +601,7 @@ export function ReviewSummary({
 
       {options.length > 0 ? (
         <AddRow
-          label={t("onboarding.addSection")}
+          label={t("sections.addToResume")}
           onPress={() => setPickerOpen(true)}
           disabled={addPending}
           loading={addPending}
@@ -873,70 +619,7 @@ export function ReviewSummary({
           setPickerOpen(false);
           onAddSection(id);
         }}
-        title={t("onboarding.addSection")}
       />
     </View>
-  );
-}
-
-/** Value-prop intro shown before the counted flow (item: welcome screen). */
-export function WelcomeScreen({
-  onStart,
-  onBack,
-  t,
-}: {
-  onStart: () => void;
-  /** Back to the preceding step (theme); omitted when there's nowhere to go. */
-  onBack?: (() => void) | undefined;
-  t: Translator;
-}): ReactElement {
-  const ed = useEd();
-  const authTokens = useEditorialPalette();
-  const insets = useSafeAreaInsets();
-  return (
-    <SafeAreaView style={ed.root}>
-      {/* Absolute so the centered cluster below keeps its exact position
-          whether or not there is somewhere to go back to. `top` comes from the
-          inset because the surrounding SafeAreaView doesn't pad on Android. */}
-      {onBack ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("onboarding.back")}
-          onPress={onBack}
-          hitSlop={12}
-          style={[ed.welcomeBack, { top: insets.top + (Platform.OS === "web" ? 20 : 8) }]}
-          testID="onboarding.welcome.back"
-        >
-          <ArrowLeft size={22} color={authTokens.ink} strokeWidth={1.75} />
-          {Platform.OS === "web" ? (
-            <RNText style={ed.welcomeBackLabel}>{t("onboarding.back").toUpperCase()}</RNText>
-          ) : null}
-        </Pressable>
-      ) : null}
-      <View style={ed.welcomeWrap}>
-        <AnimatedField delay={140}>
-          <View style={ed.welcomeArt}>
-            <WelcomeArt size={148} />
-          </View>
-        </AnimatedField>
-        <AnimatedField delay={220}>
-          <RNText style={ed.welcomeHeading}>
-            <RNText style={ed.headingRegular}>{t("onboarding.title")} </RNText>
-          </RNText>
-        </AnimatedField>
-        <AnimatedField delay={300}>
-          <RNText style={ed.welcomeTagline}>{t("onboarding.welcome.tagline")}</RNText>
-        </AnimatedField>
-        <AnimatedField delay={400}>
-          <View style={ed.welcomeCta}>
-            <PrimaryAction
-              label={t("onboarding.welcome.cta")}
-              onPress={onStart}
-              testID="onboarding.welcome.start"
-            />
-          </View>
-        </AnimatedField>
-      </View>
-    </SafeAreaView>
   );
 }

@@ -22,6 +22,8 @@ export function useGlobalSearch(term: string): {
   const debounced = useDebouncedValue(term.trim(), DEBOUNCE_MS);
   const enabled = debounced.length >= SEARCH_MIN_CHARS;
   const search = useGetV1SearchGlobal({ q: debounced }, { query: { enabled, staleTime: 10_000 } });
-  const groups = (enabled ? (search.data?.groups ?? []) : []).filter((g) => g.items.length > 0);
+  const groups = (enabled ? (search.data?.groups ?? []) : []).filter(
+    (g) => (g.type === "users" || g.type === "jobs") && g.items.length > 0,
+  );
   return { groups, isLoading: enabled && search.isLoading, enabled, debounced };
 }

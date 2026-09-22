@@ -1,12 +1,13 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+
 import type { ReactElement } from "react";
 import { seedExternalJob } from "@/features/jobs";
 import { ResumesScreen } from "@/features/resumes";
 
 export default function CurriculosTab(): ReactElement {
   const queryClient = useQueryClient();
-  const router = useRouter();
+  const router = useAppRouter();
   return (
     <ResumesScreen
       onOpenJob={(job) => {

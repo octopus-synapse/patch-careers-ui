@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * `AccountSection` — the account settings body: the identity card (e-mail,
  * password, 2FA, username, connected accounts) and the "Account actions" card
@@ -16,13 +17,12 @@ import {
 import { logout } from "@patch-careers/auth";
 import { useToast } from "@patch-careers/ui";
 import { SettingsCard, SettingsRow, UnderlineInput } from "@patch-careers/ui/editorial";
-import { type Href, useRouter } from "expo-router";
+import { type Href } from "expo-router";
 import {
   AtSign,
   CreditCard,
   Download,
   KeyRound,
-  Link2,
   Mail,
   ShieldCheck,
   Trash2,
@@ -31,7 +31,7 @@ import {
 import { type ReactElement, useState } from "react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
-import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
+import { AUTH_ROUTE } from "@/navigation/auth-redirect";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 import { SectionHeader } from "./settings-ui";
@@ -44,7 +44,7 @@ const DELETION_CONFIRMATION_PHRASE = "DELETE MY ACCOUNT";
 
 export function AccountSection(): ReactElement {
   const { t } = useI18n();
-  const router = useRouter();
+  const router = useAppRouter();
   const toast = useToast();
   const { currentUser } = useAuthState();
   // Desktop web mirrors the approved demo: denser rows, no leading icons on
@@ -72,7 +72,7 @@ export function AccountSection(): ReactElement {
 
   const finishSignedOut = async (): Promise<void> => {
     await logout();
-    router.replace(AUTH_SIGN_IN_ROUTE);
+    router.replace(AUTH_ROUTE);
   };
   const doExport = (): void => {
     void gdpr.refetch().then(() => setExported(true));
@@ -142,12 +142,6 @@ export function AccountSection(): ReactElement {
           label={t("settings.account.usernameRow")}
           value={currentUser?.username ? `@${currentUser.username}` : ""}
           onPress={() => router.push("/settings/username")}
-        />
-        <SettingsRow
-          dense={dense}
-          icon={isDesktopWeb ? undefined : Link2}
-          label={t("settings.account.connectedRow")}
-          onPress={() => router.push("/settings/connected-accounts")}
         />
         <SettingsRow
           dense={dense}

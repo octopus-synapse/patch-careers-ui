@@ -1,9 +1,9 @@
 /**
  * Onboarding e2e (Expo Web + mocked backend) — walks the CURRENT flow:
- * idioma (auto-advance) → tema → welcome → localização → sobre você
+ * idioma (seleção + Continuar) → localização → sobre você
  * (fullName prefilled from the auth user) → username (suggested handle) →
  * experiência ("Pular") → título profissional → links ("Adicionar link"
- * modal) → formação ("Pular") → estilo (preview modal) → review (checklist)
+ * modal) → formação ("Pular") → review (checklist)
  * → concluir → tela de conclusão → app.
  *
  * The backend is fully mocked via `page.route`; a small mutable
@@ -109,7 +109,14 @@ const steps: Step[] = [
     required: true,
     component: "resume-style",
     fields: [{ key: "resumeStyleId", type: "text", label: "Estilo", required: true }],
-    data: [{ id: "style-1", name: "Verso", description: null, atsScore: 100 }],
+    data: [
+      {
+        id: "01900000-0000-7000-8000-000000000001",
+        name: "Clássico",
+        description: null,
+        atsScore: 100,
+      },
+    ],
   },
   { id: "review", label: "Revisão", description: "", required: true, component: "review" },
 ];
@@ -168,12 +175,24 @@ async function mockBackend(page: Page, state: ServerState): Promise<void> {
     });
   });
 
+  await page.route("**/api/v1/users/preferences/full", async (route) => {
+    await route.fulfill({ json: { preferences: { language: "pt-BR" } } });
+  });
+
+  await page.route("**/api/v1/geo/locations**", async (route) => {
+    await route.fulfill({
+      json: { items: [{ label: "São Paulo, SP, Brasil", countryCode: "BR", stateCode: "SP" }] },
+    });
+  });
+
   await page.route("**/api/v1/users/username/check?**", async (route) => {
     await route.fulfill({ json: { username: "maria_silva", available: true } });
   });
 
   await page.route("**/api/v1/resume-styles", async (route) => {
-    await route.fulfill({ json: { items: [{ id: "style-1", styleScore: 100 }] } });
+    await route.fulfill({
+      json: { items: [{ id: "01900000-0000-7000-8000-000000000001", styleScore: 100 }] },
+    });
   });
 
   await page.route("**/api/v1/onboarding/session/resume-preview**", async (route) => {
@@ -253,7 +272,7 @@ test("onboarding flow atual funciona no Expo Web", async ({ page }) => {
 
   const next = page.getByTestId("onboarding.next");
 
-  // 1. Idioma — tocar a opção auto-avança (sem CTA nos steps locais).
+  // 1. Idioma — selecionar não avança; o CTA confirma a escolha.
   if (
     !(await page
       .getByText("Português (Brasil)")
@@ -264,25 +283,23 @@ test("onboarding flow atual funciona no Expo Web", async ({ page }) => {
   ) {
     throw new Error(`Onboarding não renderizou. URL: ${page.url()}\n${browserErrors.join("\n")}`);
   }
-  await expect(next).toHaveCount(0);
+  await expect(next).toBeVisible();
   await page.getByText("Português (Brasil)").first().click();
+  await expect(page.getByText("Português (Brasil)").first()).toBeVisible();
+  await next.click();
 
-  // 2. Tema — idem.
-  await expect(page.getByText("Claro", { exact: true })).toBeVisible();
-  await page.getByText("Claro", { exact: true }).click();
-
-  // 3. Welcome.
-  await page.getByTestId("onboarding.welcome.start").click();
-
-  // 4. Localização — campo opcional, masthead mostra o contador de passos.
+  // 2. Localização — selecionar uma cidade do catálogo.
   await expect(page.getByText("Onde você", { exact: false })).toBeVisible();
-  await expect(page.getByText("3 / 11")).toBeVisible();
-  await expect(next).toBeEnabled();
+  await expect(page.getByText("2 / 9")).toBeVisible();
+  await page.getByText("Selecione a localização").click();
+  await page.getByPlaceholder("Comece a digitar…").fill("São Paulo");
+  await page.getByRole("button", { name: /São Paulo SP/ }).click();
   await next.click();
 
   // 5. Sobre você — nome vem pré-preenchido do cadastro.
   await expect(page.getByText("Sobre você")).toBeVisible();
   await expect(page.getByRole("textbox").first()).toHaveValue("Maria Silva");
+  await page.getByRole("textbox", { name: "Telefone" }).fill("11978833101");
   await next.click();
 
   // 6. Username — sugestão derivada do nome + check de disponibilidade.
@@ -298,7 +315,7 @@ test("onboarding flow atual funciona no Expo Web", async ({ page }) => {
 
   // 8. Título profissional + resumo.
   await expect(page.getByText("título", { exact: false }).first()).toBeVisible();
-  await page.getByPlaceholder("Engenheira de Software").fill("Engenheira Frontend");
+  await page.getByRole("textbox").first().fill("Engenheira Frontend");
   await page.getByPlaceholder("Conte sua trajetória").fill("Construo apps móveis há cinco anos.");
   await next.click();
 
@@ -318,14 +335,10 @@ test("onboarding flow atual funciona no Expo Web", async ({ page }) => {
   await expect(next).toContainText(/pular/i);
   await next.click();
 
-  // 11. Estilo — card abre o preview; a seleção é confirmada no modal.
-  await expect(page.getByText("Escolha um estilo", { exact: false })).toBeVisible();
-  await page.getByText("Verso").first().click();
-  await page.getByRole("button", { name: /usar este modelo/i }).click();
-  await next.click();
-
-  // 12. Review — checklist compacta + concluir.
+  // A revisão vem direto após a formação; Clássico foi salvo automaticamente.
   await expect(page.getByText("Quase lá", { exact: false })).toBeVisible();
+  await expect(page.getByText("Escolha um estilo", { exact: false })).toHaveCount(0);
+  expect(state.resumeStyleId).toBe("01900000-0000-7000-8000-000000000001");
   await expect(page.getByText("Dados pessoais")).toBeVisible();
   await page.getByTestId("onboarding.complete").click();
 

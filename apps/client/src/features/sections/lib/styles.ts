@@ -96,6 +96,15 @@ const createEd = (
       letterSpacing: -1.2,
       fontWeight: "600",
     },
+    // Matches the auth flow's display title (e.g. "Good to see you again.").
+    displayHeading: {
+      fontFamily: fonts.serif,
+      fontSize: 40,
+      lineHeight: 43,
+      color: authTokens.ink,
+      letterSpacing: -1.2,
+      fontWeight: "700",
+    },
     headingRegular: { fontStyle: "normal" },
     headingItalic: { fontStyle: "italic" },
     // Keep the tail as a separate style slot so the heading can share its
@@ -110,6 +119,7 @@ const createEd = (
       // Full column width (was capped at 380) so blocks share one width rhythm.
     },
     body: { marginTop: 34 },
+    mobileLanguageBody: { marginTop: 42 },
 
     // footer
     footer: {
@@ -119,6 +129,7 @@ const createEd = (
       gap: 12,
       marginTop: 36,
     },
+    mobileLanguageFooter: { marginTop: 52 },
     footerError: { alignItems: "flex-end", marginTop: 10 },
     ghost: { paddingVertical: 10, paddingHorizontal: 2 },
     ghostLabel: {
@@ -246,6 +257,47 @@ const createEd = (
     },
     // language
     langWrap: { gap: 10 },
+    mobileLanguageOptions: { gap: 16 },
+    // Compact counterpart to the sign-up plan cards: both options keep the
+    // exact same footprint, while selection gains the plan tint, stronger
+    // border and filled check control.
+    languagePlanCard: {
+      width: "100%",
+      height: 78,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 12,
+      borderWidth: 1,
+      borderColor: authDialogPalette[theme].inputBorder,
+      borderRadius: 16,
+      paddingHorizontal: 20,
+      backgroundColor: authDialogPalette[theme].input,
+    },
+    languagePlanCardSelected: {
+      borderWidth: 2,
+      borderColor: authDialogPalette[theme].brand,
+      backgroundColor: theme === "light" ? "#F0F4E9" : "#2C382B",
+    },
+    languagePlanLabel: {
+      fontFamily: fonts.sans,
+      fontSize: 17,
+      fontWeight: "600",
+      color: authTokens.ink,
+    },
+    languagePlanIndicator: {
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: authDialogPalette[theme].inputBorder,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    languagePlanIndicatorSelected: {
+      borderWidth: 0,
+      backgroundColor: authDialogPalette[theme].brand,
+    },
     langCard: {
       flexDirection: "row",
       alignItems: "center",
@@ -653,78 +705,6 @@ const createEd = (
       fontSize: 15,
       color: authTokens.body,
       textAlign: "center",
-    },
-
-    // welcome
-    welcomeWrap: {
-      flex: 1,
-      width: "100%",
-      maxWidth: 460,
-      alignSelf: "center",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 18,
-      paddingHorizontal: 28,
-    },
-    welcomeArt: { marginVertical: 8 },
-    welcomeHeading: {
-      fontFamily: fonts.serif,
-      fontSize: 32,
-      lineHeight: 38,
-      color: authTokens.ink,
-      letterSpacing: -0.6,
-      textAlign: "center",
-    },
-    welcomeTagline: {
-      fontFamily: fonts.sans,
-      fontSize: 13.5,
-      lineHeight: 20,
-      color: authTokens.body,
-      textAlign: "center",
-      maxWidth: 320,
-    },
-    welcomeBadge: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 8,
-      borderWidth: 1,
-      borderColor: authTokens.hairlineStrong,
-      borderRadius: 999,
-      paddingHorizontal: 14,
-      paddingVertical: 8,
-      backgroundColor: authTokens.surface,
-    },
-    welcomeBadgeText: {
-      fontFamily: fonts.sans,
-      fontSize: 12,
-      letterSpacing: 0.4,
-      fontWeight: "600",
-      color: authTokens.ink,
-    },
-    welcomeCta: {
-      width: "100%",
-      marginTop: 8,
-      alignItems: "stretch",
-    },
-    // Top-left corner. `top` is supplied by the caller from the safe-area
-    // inset: RN's own SafeAreaView is a no-op on Android, so an absolute child
-    // would otherwise sit under the status bar.
-    welcomeBack: {
-      position: "absolute",
-      left: 20,
-      height: 40,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 8,
-      paddingHorizontal: 6,
-      borderRadius: 999,
-    },
-    welcomeBackLabel: {
-      fontFamily: fonts.mono,
-      fontSize: 10,
-      letterSpacing: 2,
-      color: authTokens.muted,
-      paddingRight: 8,
     },
 
     // retry banner

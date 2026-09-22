@@ -1,9 +1,10 @@
+import { AppRedirect } from "@/navigation/app-redirect";
 /**
  * Privacy — profile visibility + who-can-message, and the Consent/Blocked rows.
  * Frame only; the body is `PrivacySection` (see `account.tsx` for why).
  */
 
-import { Redirect } from "expo-router";
+
 import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { PrivacySection, settingsSectionHref } from "@/features/settings";
@@ -14,7 +15,7 @@ export default function PrivacyScreen(): ReactElement {
   const { t } = useI18n();
   const isDesktopWeb = useIsDesktopWeb();
 
-  if (isDesktopWeb) return <Redirect href={settingsSectionHref("privacy")} />;
+  if (isDesktopWeb) return <AppRedirect href={settingsSectionHref("privacy")} />;
 
   return (
     <SettingsScreenShell

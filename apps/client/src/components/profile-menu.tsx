@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * ProfileMenu — the account menu that opens from the header avatar.
  *
@@ -20,7 +21,7 @@ import {
   useEditorialPalette,
   useThemeName,
 } from "@patch-careers/ui/editorial";
-import { type Href, useRouter } from "expo-router";
+import { type Href } from "expo-router";
 import { ChevronRight, LogOut, MapPin, Settings } from "lucide-react-native";
 import type { ComponentType, ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -37,7 +38,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
+import { AUTH_ROUTE } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 import { ConfirmDialog } from "./confirm-dialog";
 
@@ -108,7 +109,7 @@ export function ProfileMenu({
   const theme = useThemeName();
   const styles = stylesByTheme[theme];
   const overlays = editorialOverlays[theme];
-  const router = useRouter();
+  const router = useAppRouter();
   const insets = useSafeAreaInsets();
   const { width: screenW } = useWindowDimensions();
   const panelWidth = Math.min(360, screenW * 0.86);
@@ -169,7 +170,7 @@ export function ProfileMenu({
     setLogoutConfirmOpen(false);
     await logout();
     // The (tabs) gate redirects on the store reset; replace makes it immediate.
-    router.replace(AUTH_SIGN_IN_ROUTE);
+    router.replace(AUTH_ROUTE);
   };
 
   const translateX = anim.interpolate({

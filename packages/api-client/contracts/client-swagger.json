@@ -179,6 +179,58 @@
         "description": "6-digit numeric TOTP code from the authenticator app.",
         "example": "123456"
       },
+      "CompleteUnverifiedAccountResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId",
+          "email"
+        ]
+      },
+      "CompleteUnverifiedAccountRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "$ref": "#/components/schemas/Email"
+          },
+          "password": {
+            "$ref": "#/components/schemas/Password"
+          },
+          "emailVerificationToken": {
+            "type": "string",
+            "minLength": 1
+          },
+          "acceptedTosVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "acceptedPrivacyVersion": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "emailVerificationToken",
+          "acceptedTosVersion",
+          "acceptedPrivacyVersion"
+        ],
+        "example": {
+          "email": "jane.doe@example.com",
+          "password": "SecurePass123!",
+          "emailVerificationToken": "signed-email-verification-token",
+          "acceptedTosVersion": "1.0.0",
+          "acceptedPrivacyVersion": "1.0.0"
+        }
+      },
       "ConfirmPreSignupVerificationResponse": {
         "type": "object",
         "properties": {
@@ -3655,10 +3707,56 @@
         ]
       }
     },
+    "/api/v1/auth/complete-unverified-account": {
+      "post": {
+        "summary": "Complete an unverified account after email verification",
+        "description": "Updates the existing account in place after a verified email code. Invalidates old sessions; sign-in and any required 2FA follow this step.",
+        "tags": [
+          "accounts"
+        ],
+        "operationId": "completeUnverifiedAccount",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteUnverifiedAccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompleteUnverifiedAccountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "public",
+        "x-guards": [
+          "rate-limit",
+          "multi-step-flow"
+        ]
+      }
+    },
     "/api/v1/auth/email-verification/confirm": {
       "post": {
-        "summary": "Confirm pre-signup e-mail verification code",
-        "description": "Checks the 6-digit code sent by /start and, on success, returns the registration token `POST /v1/accounts` accepts as `emailVerificationToken` — the account is then created with the e-mail already verified.",
+        "summary": "Confirm identifier-first e-mail verification code",
+        "description": "Checks the 6-digit code sent by /start and returns an email verification token. A new account sends it to POST /v1/accounts; a pending account sends it to POST /v1/auth/complete-unverified-account.",
         "tags": [
           "email-verification"
         ],
@@ -3841,8 +3939,8 @@
     },
     "/api/v1/auth/email-verification/start": {
       "post": {
-        "summary": "Start pre-signup e-mail verification (identifier-first)",
-        "description": "Sends a 6-digit code to an e-mail that has no account yet — step 2 of the unified \"sign in or create account\" flow (e-mail → code → password). Rejects e-mails that already have an account; the code lives 15 minutes and resends respect a 60s cooldown.",
+        "summary": "Start identifier-first e-mail verification",
+        "description": "Sends a 6-digit code to a new e-mail or an existing account awaiting verification. Rejects verified accounts; the code lives 15 minutes and resends respect a 60s cooldown.",
         "tags": [
           "email-verification"
         ],
@@ -5322,9 +5420,116 @@
         ]
       }
     },
+    "/api/v1/billing/ai-cost-report": {
+      "get": {
+        "summary": "AI cost percentiles by Patch plan over the last 30 days",
+        "tags": [
+          "billing"
+        ],
+        "operationId": "get_v1_billing_ai_cost_report",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "since": {
+                      "type": "string",
+                      "example": "2026-08-22T00:00:00.000Z"
+                    },
+                    "plans": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "plan": {
+                            "type": "string",
+                            "enum": [
+                              "free",
+                              "go",
+                              "max"
+                            ]
+                          },
+                          "usersWithPricedUsage": {
+                            "type": "integer",
+                            "example": 20
+                          },
+                          "unpricedOperations": {
+                            "type": "integer",
+                            "example": 0
+                          },
+                          "p50Brl": {
+                            "type": "number",
+                            "example": 2.15
+                          },
+                          "p95Brl": {
+                            "type": "number",
+                            "example": 7.72
+                          },
+                          "budgetBrl": {
+                            "type": "number",
+                            "example": 8
+                          }
+                        },
+                        "required": [
+                          "plan",
+                          "usersWithPricedUsage",
+                          "unpricedOperations",
+                          "p50Brl",
+                          "p95Brl",
+                          "budgetBrl"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "since",
+                    "plans"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-permission": "platform:stats_read"
+      }
+    },
     "/api/v1/billing/patch-go": {
       "get": {
-        "summary": "Patch Go subscription and monthly usage",
+        "summary": "Patch subscription and monthly usage",
         "tags": [
           "billing"
         ],
@@ -5346,6 +5551,14 @@
                     "active": {
                       "type": "boolean"
                     },
+                    "plan": {
+                      "type": "string",
+                      "enum": [
+                        "free",
+                        "go",
+                        "max"
+                      ]
+                    },
                     "used": {
                       "type": "integer"
                     },
@@ -5360,16 +5573,27 @@
                     "cancelAtPeriodEnd": {
                       "type": "boolean",
                       "example": false
+                    },
+                    "freeTranslationsUsed": {
+                      "type": "integer",
+                      "example": 3
+                    },
+                    "freeTranslationsLimit": {
+                      "type": "integer",
+                      "example": 20
                     }
                   },
                   "required": [
                     "enabled",
                     "status",
                     "active",
+                    "plan",
                     "used",
                     "limit",
                     "periodEnd",
-                    "cancelAtPeriodEnd"
+                    "cancelAtPeriodEnd",
+                    "freeTranslationsUsed",
+                    "freeTranslationsLimit"
                   ]
                 }
               }
@@ -5401,7 +5625,7 @@
     },
     "/api/v1/billing/patch-go/checkout": {
       "post": {
-        "summary": "Create a Patch Go subscription Checkout session",
+        "summary": "Create a Patch subscription Checkout session",
         "tags": [
           "billing"
         ],
@@ -5412,16 +5636,23 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "market": {
+                  "plan": {
                     "type": "string",
                     "enum": [
-                      "BRL",
-                      "USD"
+                      "go",
+                      "max"
                     ]
+                  },
+                  "billingCountry": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 2,
+                    "example": "BR"
                   }
                 },
                 "required": [
-                  "market"
+                  "plan",
+                  "billingCountry"
                 ]
               }
             }
@@ -11070,7 +11301,8 @@
                           },
                           "companyDomain": {
                             "type": "string",
-                            "nullable": true
+                            "nullable": true,
+                            "example": "example.com"
                           },
                           "location": {
                             "type": "string",
@@ -11293,7 +11525,8 @@
                           },
                           "listingId": {
                             "type": "string",
-                            "nullable": true
+                            "nullable": true,
+                            "example": "01900000-0000-7000-a000-000000000003"
                           },
                           "savedAt": {
                             "type": "string",
@@ -11754,7 +11987,8 @@
                     },
                     "companyDomain": {
                       "type": "string",
-                      "nullable": true
+                      "nullable": true,
+                      "example": "example.com"
                     },
                     "location": {
                       "type": "string",
@@ -12520,7 +12754,8 @@
                           },
                           "companyDomain": {
                             "type": "string",
-                            "nullable": true
+                            "nullable": true,
+                            "example": "example.com"
                           },
                           "location": {
                             "type": "string",
@@ -28340,6 +28575,46 @@
                   "content": {
                     "type": "object",
                     "additionalProperties": {}
+                  },
+                  "initialTranslation": {
+                    "type": "object",
+                    "properties": {
+                      "locale": {
+                        "type": "string",
+                        "enum": [
+                          "pt-BR",
+                          "en"
+                        ]
+                      },
+                      "data": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "origin": {
+                        "type": "string",
+                        "enum": [
+                          "manual",
+                          "diverged"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "locale",
+                      "data",
+                      "origin"
+                    ]
                   }
                 },
                 "example": {
@@ -28481,6 +28756,130 @@
           }
         },
         "x-auth": "jwt"
+      }
+    },
+    "/api/v1/resumes/{resumeId}/sections/{sectionTypeKey}/items/preview-translation": {
+      "post": {
+        "summary": "Preview the other-language copy before creating a section item",
+        "tags": [
+          "translation"
+        ],
+        "operationId": "post_v1_resumes_resumeId_sections_sectionTypeKey_items_preview_translation",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "01900000-0000-7000-a000-000000000010"
+            },
+            "required": true,
+            "name": "resumeId",
+            "in": "path",
+            "example": "01900000-0000-7000-a000-000000000010"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "work_experience_v1"
+            },
+            "required": true,
+            "name": "sectionTypeKey",
+            "in": "path",
+            "example": "work_experience_v1"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "locale": {
+                    "type": "string",
+                    "description": "Locale the person edited in.",
+                    "example": "en"
+                  },
+                  "edited": {
+                    "type": "object",
+                    "additionalProperties": {},
+                    "description": "The item content as edited.",
+                    "example": {
+                      "role": "Software Engineer"
+                    }
+                  }
+                },
+                "required": [
+                  "locale",
+                  "edited"
+                ],
+                "example": {
+                  "locale": "en",
+                  "edited": {
+                    "role": "Senior Software Engineer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewriteProposal"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-permission": "resume:update",
+        "x-guards": [
+          "rate-limit",
+          "feature-flag"
+        ]
       }
     },
     "/api/v1/resumes/{resumeId}/sections/{sectionTypeKey}/items/{itemId}": {
@@ -28629,6 +29028,46 @@
                   "content": {
                     "type": "object",
                     "additionalProperties": {}
+                  },
+                  "initialTranslation": {
+                    "type": "object",
+                    "properties": {
+                      "locale": {
+                        "type": "string",
+                        "enum": [
+                          "pt-BR",
+                          "en"
+                        ]
+                      },
+                      "data": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "origin": {
+                        "type": "string",
+                        "enum": [
+                          "manual",
+                          "diverged"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "locale",
+                      "data",
+                      "origin"
+                    ]
                   }
                 },
                 "example": {
@@ -29185,6 +29624,13 @@
                   "candidateContext": {
                     "type": "string",
                     "maxLength": 3000
+                  },
+                  "targetLocale": {
+                    "type": "string",
+                    "enum": [
+                      "pt-BR",
+                      "en"
+                    ]
                   }
                 },
                 "example": {
@@ -29204,6 +29650,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "targetLocale": {
+                      "type": "string",
+                      "enum": [
+                        "pt-BR",
+                        "en"
+                      ]
+                    },
                     "versionId": {
                       "type": "string",
                       "format": "uuid"
@@ -29353,6 +29806,7 @@
                     }
                   },
                   "required": [
+                    "targetLocale",
                     "versionId",
                     "versionNumber",
                     "label",
@@ -30239,8 +30693,8 @@
     },
     "/api/v1/search/global": {
       "get": {
-        "summary": "Global multi-type search (resumes, users, jobs, posts)",
-        "description": "Returns results grouped by entity type. Each item carries `{id,title,snippet?,href,badge?}` so the frontend can render a generic list. Groups: `resumes`, `users`, `jobs`, `posts`.",
+        "summary": "Search people and jobs",
+        "description": "Returns people and jobs grouped by entity type. Each item carries `{id,title,snippet?,href,badge?}`. Groups: `users`, `jobs`.",
         "tags": [
           "search"
         ],
@@ -30287,9 +30741,7 @@
                             "type": "string",
                             "enum": [
                               "users",
-                              "jobs",
-                              "resumes",
-                              "posts"
+                              "jobs"
                             ]
                           },
                           "label": {
@@ -35757,20 +36209,12 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
           }
         },
         "x-auth": "jwt",
-        "x-permission": "user:profile_read"
+        "x-guards": [
+          "skip-tos-check"
+        ]
       },
       "patch": {
         "summary": "Update all user preferences",
@@ -36171,20 +36615,12 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
           }
         },
         "x-auth": "jwt",
-        "x-permission": "user:profile_update"
+        "x-guards": [
+          "skip-tos-check"
+        ]
       }
     },
     "/api/v1/users/profile": {

@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Messages — a bottom-tab screen (Vagas · Mensagens · Notificações · Perfil).
  *
@@ -11,7 +12,7 @@ import { Divider, EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+
 import { MessageCircle, Search as SearchIcon } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
@@ -48,7 +49,7 @@ function MobileMessagesScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   const tabBarHeight = useBottomTabBarHeight();
   const navInset = useNavBarInset();
-  const router = useRouter();
+  const router = useAppRouter();
   const { t } = useI18n();
   const queryClient = useQueryClient();
   const inbox = useInbox();

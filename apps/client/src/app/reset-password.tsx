@@ -3,7 +3,7 @@
  * the form `https://patchcareers.org/reset-password?token=X` land here).
  *
  * D100: token from the deep link → 2 password inputs + strength meter →
- * POST /v1/auth/reset-password → toast + bounce to /sign-in. "Editorial
+ * POST /v1/auth/reset-password → toast + bounce to /auth. "Editorial
  * Calm" DS. Form: React Hook Form (ADR-0005) — the only client check is the
  * confirm-match (the backend validates strength), kept in the resolver.
  */
@@ -19,9 +19,13 @@ import {
 } from "@patch-careers/ui/editorial";
 import { useLocalSearchParams } from "expo-router";
 import type { ReactElement } from "react";
+import { Platform } from "react-native";
+import { AuthPageFrame } from "@/components/auth/auth-page-frame";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
+import { ResetPasswordCard } from "@/components/auth/reset-password-card";
+import { NavBar } from "@/components/nav-bar/nav-bar";
 import { FormPasswordField, useFieldErrorsForm } from "@/forms";
 import { messageOf, validatePassword } from "@/lib/validation";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
@@ -29,6 +33,23 @@ import { useLocalizedHref } from "@/navigation/locale-prefix";
 type ResetForm = { newPassword: string; confirmPassword: string };
 
 export default function ResetPasswordScreen(): ReactElement {
+  if (Platform.OS === "web") return <WebResetPasswordScreen />;
+  return <NativeResetPasswordScreen />;
+}
+
+function WebResetPasswordScreen(): ReactElement {
+  const { token } = useLocalSearchParams<{ token?: string }>();
+  return (
+    <>
+      <NavBar variant="auth" />
+      <AuthPageFrame>
+        <ResetPasswordCard {...(token ? { token } : {})} />
+      </AuthPageFrame>
+    </>
+  );
+}
+
+function NativeResetPasswordScreen(): ReactElement {
   const { t, router, toast } = useAuthScreen();
   const localized = useLocalizedHref();
   const { submitting, run } = useSubmit();
@@ -58,7 +79,7 @@ export default function ResetPasswordScreen(): ReactElement {
       try {
         await postV1AuthResetPassword({ token: params.token as string, newPassword: pw });
         toast.show({ title: t("auth.resetSuccess"), intent: "success" });
-        router.replace(localized("/(auth)/sign-in"));
+        router.replace(localized("/(auth)/auth"));
       } catch {
         toast.show({ title: t("auth.resetInvalidToken"), intent: "danger" });
       }

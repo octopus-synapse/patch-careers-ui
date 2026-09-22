@@ -35,7 +35,7 @@
     "ios": "pnpm --filter client ios",
     "dev:android": "pnpm --filter client dev:android",
     "dev:ios": "pnpm --filter client dev:ios",
-    "metro": "pnpm --filter client start",
+    "metro": "node tools/scripts/metro-android.mjs",
     "prepare": "husky",
     "test:dom": "nx run client:test:dom"
   },

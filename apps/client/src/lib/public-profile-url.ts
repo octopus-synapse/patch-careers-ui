@@ -8,8 +8,7 @@
  * we don't own.
  *
  * On web the origin is read live from `window.location`, so dev
- * (localhost:8081) and production resolve without configuration — the same
- * trick `oauthWebCallbackUrl()` in `config/api.ts` uses. Native has no
+ * (localhost:8081) and production resolve without configuration. Native has no
  * `window`, and the onboarding preview runs there, so it falls back to the
  * production origin.
  */
@@ -50,6 +49,6 @@ export function publicProfileUrl(username: string, locale: Locale = "pt-BR"): st
  * The same URL without the protocol — what gets rendered. `https://` is noise
  * in a card whose whole job is to be recognised and copied.
  */
-export function publicProfileDisplayUrl(username: string): string {
-  return publicProfileUrl(username).replace(/^https?:\/\//, "");
+export function publicProfileDisplayUrl(username: string, locale: Locale = "pt-BR"): string {
+  return publicProfileUrl(username, locale).replace(/^https?:\/\//, "");
 }

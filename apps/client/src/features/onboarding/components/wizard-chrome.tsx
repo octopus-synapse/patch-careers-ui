@@ -93,12 +93,14 @@ export function StepHeading({
   subtitle,
   tag,
   title,
+  variant = "default",
 }: {
   subtitle?: string;
   /** Small mono label above the title — only the exception is marked
    *  (optional steps get "Opcional"; required steps stay bare). */
   tag?: string;
   title: string;
+  variant?: "default" | "display";
 }): ReactElement {
   const ed = useEd();
   const { head, tail } = splitHeading(title);
@@ -110,10 +112,14 @@ export function StepHeading({
         </AnimatedField>
       ) : null}
       <AnimatedField delay={80}>
-        <RNText style={ed.heading}>
-          {head ? <RNText style={ed.headingRegular}>{head}</RNText> : null}
-          <RNText style={ed.headingAccent}>{tail}</RNText>
-        </RNText>
+        {variant === "display" ? (
+          <RNText style={ed.displayHeading}>{title}</RNText>
+        ) : (
+          <RNText style={ed.heading}>
+            {head ? <RNText style={ed.headingRegular}>{head}</RNText> : null}
+            <RNText style={ed.headingAccent}>{tail}</RNText>
+          </RNText>
+        )}
       </AnimatedField>
       {subtitle ? (
         <AnimatedField delay={170}>

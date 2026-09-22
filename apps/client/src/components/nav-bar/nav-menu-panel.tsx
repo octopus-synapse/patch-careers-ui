@@ -14,6 +14,7 @@
  * identical across all three, so the panel does not jump when you sign in.
  */
 
+import { authDialogPalette } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import {
   editorialFonts,
@@ -23,7 +24,12 @@ import {
   useThemeName,
 } from "@patch-careers/ui/editorial";
 import type { ReactElement, ReactNode } from "react";
-import { MENU_PANEL_OFFSET, MENU_PANEL_WIDTH, NAV_CONTROL_SIZE } from "./nav-bar.contract";
+import {
+  MENU_PANEL_OFFSET,
+  MENU_PANEL_WIDTH,
+  NAV_BAR_HEIGHT_PUBLIC,
+  NAV_CONTROL_SIZE,
+} from "./nav-bar.contract";
 
 const PANEL_PADDING = 10;
 const BANNER_HEIGHT = 84;
@@ -31,6 +37,11 @@ const AVATAR = 68;
 const AVATAR_BEZEL = 4;
 /** How far the avatar rides up over the banner. */
 const AVATAR_OVERLAP = 38;
+const FULLSCREEN_BANNER_HEIGHT = 180;
+const FULLSCREEN_AVATAR = 96;
+const FULLSCREEN_AVATAR_OVERLAP = 52;
+const FULLSCREEN_IDENTITY_BOTTOM_SPACE = 22;
+const FULLSCREEN_MENU_BOTTOM_SPACE = 24;
 
 export type NavMenuIdentity =
   | { readonly kind: "guest"; readonly label: string }
@@ -40,18 +51,85 @@ export function NavMenuPanel({
   identity,
   menuId,
   anchorHeight = NAV_CONTROL_SIZE,
+  fullscreen = false,
   accessibilityLabel,
   children,
 }: {
   readonly identity: NavMenuIdentity;
   readonly menuId?: string | undefined;
   readonly anchorHeight?: number | undefined;
+  readonly fullscreen?: boolean;
   readonly accessibilityLabel: string;
   /** The rows and their separators. */
   readonly children: ReactNode;
 }): ReactElement {
   const palette = useEditorialPalette();
   const theme = useThemeName();
+  const authColors = authDialogPalette[theme];
+
+  if (fullscreen) {
+    return (
+      <YStack
+        id={menuId}
+        position={"fixed" as never}
+        top={0}
+        right={0}
+        bottom={0}
+        left={0}
+        width="100%"
+        backgroundColor={authColors.panel}
+        zIndex={-1}
+        accessibilityRole="menu"
+        accessibilityLabel={accessibilityLabel}
+        style={{ height: "100dvh", overflowY: "auto" }}
+      >
+        <YStack width="100%" minHeight="100%">
+          <YStack
+            height={NAV_BAR_HEIGHT_PUBLIC}
+            backgroundColor={authColors.panel}
+            flexShrink={0}
+          />
+          <PuzzleBanner height={FULLSCREEN_BANNER_HEIGHT} fit="cover" />
+          <YStack
+            alignItems="center"
+            marginTop={-FULLSCREEN_AVATAR_OVERLAP}
+            paddingHorizontal={26}
+            paddingBottom={FULLSCREEN_IDENTITY_BOTTOM_SPACE}
+            gap={12}
+          >
+            <IdentityAvatar
+              photoURL={identity.kind === "person" ? identity.photoURL : undefined}
+              name={identity.label}
+              size={FULLSCREEN_AVATAR}
+              bezel={AVATAR_BEZEL}
+              bezelColor={authColors.panel}
+            />
+            <Text
+              fontFamily={editorialFonts.serifSemiBold}
+              fontSize={24}
+              lineHeight={30}
+              fontWeight="600"
+              letterSpacing={-1.2}
+              color={palette.ink}
+              numberOfLines={1}
+            >
+              {identity.label}
+            </Text>
+          </YStack>
+          <YStack
+            flex={1}
+            width="100%"
+            maxWidth={440}
+            alignSelf="center"
+            paddingHorizontal={26}
+            paddingBottom={FULLSCREEN_MENU_BOTTOM_SPACE}
+          >
+            {children}
+          </YStack>
+        </YStack>
+      </YStack>
+    );
+  }
 
   return (
     <YStack

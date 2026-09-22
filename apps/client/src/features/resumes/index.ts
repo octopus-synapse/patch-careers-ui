@@ -20,7 +20,6 @@ export {
   useResumeList,
   useResumeMutations,
   useResumeSlots,
-  useResumeStyles,
   useTailoredVersions,
 } from "./hooks/queries";
 export { type ContentLocaleState, useContentLocale } from "./hooks/use-content-locale";

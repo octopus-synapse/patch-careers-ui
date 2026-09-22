@@ -8,7 +8,7 @@ describe("isChromePath", () => {
   });
 
   it("keeps it off screens that own the full window", () => {
-    for (const path of ["/sign-in", "/sign-up", "/onboarding", "/verify-email", "/legal-webview"]) {
+    for (const path of ["/auth", "/onboarding", "/verify-email", "/legal-webview"]) {
       expect(isChromePath(path)).toBe(false);
       expect(isChromePath(`/en${path}`)).toBe(false);
     }
@@ -37,6 +37,7 @@ describe("isChromePath", () => {
 describe("activeNavKey", () => {
   it("lights the section a stacked detail belongs to", () => {
     expect(activeNavKey("/job/abc")).toBe("jobs");
+    expect(activeNavKey("/applications")).toBe("applications");
     expect(activeNavKey("/conversation/7")).toBe("messages");
     expect(activeNavKey("/resume/12")).toBe("curriculos");
     expect(activeNavKey("/profile")).toBe("profile");
@@ -44,6 +45,7 @@ describe("activeNavKey", () => {
 
   it("reads the English twins the same way", () => {
     expect(activeNavKey("/en/jobs")).toBe("jobs");
+    expect(activeNavKey("/en/applications")).toBe("applications");
     expect(activeNavKey("/en/messages")).toBe("messages");
   });
 

@@ -32,7 +32,9 @@ export function SearchEmptyState({
   const { t } = useI18n();
   const isDesktopWeb = useIsDesktopWeb();
   const editorialPalette = useEditorialPalette();
-  const recents = useRecentSearchesStore((s) => s.items);
+  const recents = useRecentSearchesStore((s) => s.items).filter(
+    (item) => item.type === "users" || item.type === "jobs",
+  );
   const removeRecent = useRecentSearchesStore((s) => s.remove);
 
   const shortcuts: ExploreShortcut[] = [

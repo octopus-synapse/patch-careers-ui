@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * AppHeader — the global top app bar for the authed tab stack.
  *
@@ -17,7 +18,7 @@
 import { useGetV1NotificationsUnreadCount, useGetV1UsersProfile } from "@patch-careers/api-client";
 import { XStack } from "@patch-careers/ui";
 import { CountBadge, IdentityAvatar, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { Bell } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { AccessibilityInfo, Animated, Pressable, StyleSheet, View } from "react-native";
@@ -95,7 +96,7 @@ export function AppHeader(): ReactElement {
     query: { enabled: isAuthenticated, refetchInterval: 30_000 },
   });
   const unreadNotifications = notifications.data?.count ?? 0;
-  const router = useRouter();
+  const router = useAppRouter();
 
   return (
     <View style={{ paddingTop: insets.top }}>

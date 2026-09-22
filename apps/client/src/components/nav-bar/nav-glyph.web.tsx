@@ -1,8 +1,14 @@
 import type { ReactElement } from "react";
 
-type NavGlyphName = "jobs" | "curriculos" | "messages" | "notifications" | "account";
+type NavGlyphName =
+  | "jobs"
+  | "applications"
+  | "curriculos"
+  | "messages"
+  | "notifications"
+  | "account";
 
-/** The reference uses separate solid paths so details remain cut out of the fill. */
+/** Compact desktop navigation glyphs with outlined and solid active states. */
 export function NavGlyph({
   name,
   color,
@@ -15,10 +21,13 @@ export function NavGlyph({
   readonly size?: number;
 }): ReactElement {
   const shapes = {
-    jobs: filled ? (
-      <path fillRule="evenodd" d="M12 2 2 10h3v11h5v-7h4v7h5V10h3Z" />
+    jobs: (
+      <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M4 6h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Zm-2 5 9 4h2l9-4" />
+    ),
+    applications: filled ? (
+      <path d="M12 2 3 21l9-4 9 4-9-19Z" />
     ) : (
-      <path d="m3 10 9-7 9 7M5 9v12h5v-7h4v7h5V9" />
+      <path d="M12 2 3 21l9-4 9 4-9-19ZM12 17v-6" />
     ),
     curriculos: filled ? (
       <path
@@ -55,6 +64,10 @@ export function NavGlyph({
       <path d="M12 3.7a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8ZM12 15.2c-5.4 0-9.8 3.6-10.4 8.2-.1.9.6 1.6 1.5 1.6h17.8c.9 0 1.6-.7 1.5-1.6-.6-4.6-5-8.2-10.4-8.2Z" />
     ),
   };
+  const outlined = !filled || name === "jobs";
+  let strokeWidth = 2.5;
+  if (name === "jobs" || name === "curriculos" || name === "applications") strokeWidth = 1.8;
+  if (name === "jobs" && filled) strokeWidth = 2.1;
 
   return (
     <svg
@@ -63,9 +76,9 @@ export function NavGlyph({
       viewBox="0 0 24 24"
       aria-hidden="true"
       focusable="false"
-      fill={filled ? color : "none"}
-      stroke={filled ? "none" : color}
-      strokeWidth={name === "jobs" || name === "curriculos" ? 1.8 : 2.5}
+      fill={outlined ? "none" : color}
+      stroke={outlined ? color : "none"}
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
     >

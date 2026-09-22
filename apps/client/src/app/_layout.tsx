@@ -10,7 +10,7 @@
  *               useToast() works from any screen, including the auth
  *               flows mounted under `(auth)`)
  *               └── I18nProvider (resolves locale from system)
- *                   └── AuthProvider (token bootstrap + OAuth callback)
+ *                   └── AuthProvider (session bootstrap)
  *                       ├── NetInfoBanner (sticky)
  *                       └── <Stack /> (Expo Router)
  *
@@ -19,8 +19,13 @@
  * root stack.
  */
 
+import { Inter_700Bold } from "@expo-google-fonts/inter";
 import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
-import { PlayfairDisplay_500Medium, useFonts } from "@expo-google-fonts/playfair-display";
+import {
+  PlayfairDisplay_500Medium,
+  PlayfairDisplay_600SemiBold,
+  useFonts,
+} from "@expo-google-fonts/playfair-display";
 import { editorialPalettes } from "@patch-careers/tokens";
 import { ToastProvider } from "@patch-careers/ui";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
@@ -40,6 +45,7 @@ import { AccountLanguageSync } from "@/features/settings";
 import { DESKTOP_CONTENT_MAX_WIDTH, useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { ensureAppSansFont } from "@/lib/app-sans-font";
 import { ensureWebButtonTextReset } from "@/lib/web-button-text-reset";
+import { withoutLocale } from "@/navigation/route-locale";
 import { AppTamaguiProvider } from "@/providers/app-tamagui-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { useColorSchemeStore, useResolvedScheme } from "@/providers/color-scheme";
@@ -75,14 +81,24 @@ export default function RootLayout(): ReactElement {
   const preferredScheme = useResolvedScheme();
   const isDesktopWeb = useIsDesktopWeb();
   const pathname = usePathname();
-  const isLanding = Platform.OS === "web" && /^\/(?:en\/?)?$/.test(pathname);
-  const scheme = isLanding ? "light" : preferredScheme;
+  const bare = withoutLocale(pathname);
+  const isLanding = Platform.OS === "web" && bare === "/";
+  const isAuthPage = bare === "/auth" || bare === "/reset-password";
+  // Public auth opens on the same light paper as the landing when the visitor
+  // has not chosen a theme. An explicit preference still applies everywhere.
+  const chosenScheme = useColorSchemeStore((state) => state.scheme);
+  const scheme = isLanding || (isAuthPage && chosenScheme === "system") ? "light" : preferredScheme;
   const palette = editorialPalettes[scheme];
   // Discovery reserves room for the carousel arrows outside its 1200px content.
-  const isJobsPage = pathname === "/jobs" || pathname.startsWith("/job/");
+  const isJobsPage = bare === "/jobs" || bare === "/applications" || bare.startsWith("/job/");
   // Editorial display serif + technical mono (bundled assets — no network).
   // editorialFonts maps to these exact family keys.
-  const [fontsLoaded] = useFonts({ PlayfairDisplay_500Medium, JetBrainsMono_500Medium });
+  const [fontsLoaded] = useFonts({
+    PlayfairDisplay_500Medium,
+    PlayfairDisplay_600SemiBold,
+    JetBrainsMono_500Medium,
+    ...(Platform.OS === "web" ? {} : { Inter_700Bold }),
+  });
 
   // React Navigation paints its own Background behind every scene; on desktop
   // web the scenes are narrower than the window (centered column), so that
@@ -108,7 +124,7 @@ export default function RootLayout(): ReactElement {
   // column over full-bleed paper. Mobile/native keeps full-width scenes.
   const contentStyle = useMemo(
     () =>
-      isDesktopWeb
+      isDesktopWeb && !isAuthPage
         ? {
             backgroundColor: palette.bg,
             width: "100%" as const,
@@ -116,7 +132,7 @@ export default function RootLayout(): ReactElement {
             alignSelf: "center" as const,
           }
         : { backgroundColor: palette.bg },
-    [isDesktopWeb, isJobsPage, palette],
+    [isAuthPage, isDesktopWeb, isJobsPage, palette],
   );
 
   useEffect(() => {
@@ -244,7 +260,6 @@ export default function RootLayout(): ReactElement {
                             <Stack.Screen name="u/[username]" options={{ headerShown: false }} />
                             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                             <Stack.Screen name="reset-password" options={{ headerShown: false }} />
-                            <Stack.Screen name="oauth-callback" options={{ headerShown: false }} />
                             <Stack.Screen
                               name="legal-webview"
                               options={{ headerShown: true, title: "" }}

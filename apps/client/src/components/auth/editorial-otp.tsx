@@ -13,7 +13,7 @@ import { authDialogPalette } from "@patch-careers/tokens";
 import { useEditorialPalette } from "@patch-careers/ui";
 import { editorialFonts, useThemeName } from "@patch-careers/ui/editorial";
 import { type ReactElement, type RefObject, useEffect, useRef, useState } from "react";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, TextInput, useWindowDimensions, View } from "react-native";
 import Animated, {
   FadeIn,
   useAnimatedStyle,
@@ -55,6 +55,10 @@ export function EditorialOtp({
   const inputRef = externalRef ?? internalRef;
   const [focused, setFocused] = useState(false);
   const shake = useSharedValue(0);
+  const { width } = useWindowDimensions();
+  // Leave room for the /auth card's mobile gutters, padding and cell gaps.
+  const cellWidth = Math.min(OTP_CELL_WIDTH, Math.max(0, (width - 124) / CELL_COUNT));
+  const cellHeight = Math.min(OTP_CELL_HEIGHT, Math.max(44, cellWidth * 1.15));
 
   useEffect(() => {
     if (state !== "error") return;
@@ -86,6 +90,8 @@ export function EditorialOtp({
             state={state}
             palette={palette}
             accent={dialogPalette.brandMuted}
+            width={cellWidth}
+            height={cellHeight}
           />
         );
       })}
@@ -124,12 +130,16 @@ function Cell({
   state,
   palette,
   accent,
+  width,
+  height,
 }: {
   char: string;
   active: boolean;
   state: EditorialOtpState;
   palette: ReturnType<typeof useEditorialPalette>;
   accent: string;
+  width: number;
+  height: number;
 }): ReactElement {
   const filled = char.length > 0;
   const borderColor =
@@ -151,7 +161,13 @@ function Cell({
   const color = state === "error" ? palette.danger : palette.ink;
 
   return (
-    <View style={[styles.cell, { borderColor, backgroundColor }, active && styles.cellActive]}>
+    <View
+      style={[
+        styles.cell,
+        { width, height, borderColor, backgroundColor },
+        active && styles.cellActive,
+      ]}
+    >
       {filled ? (
         <Animated.Text entering={FadeIn.duration(180)} style={[styles.digit, { color }]}>
           {char}
@@ -193,8 +209,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   cell: {
-    width: OTP_CELL_WIDTH,
-    height: OTP_CELL_HEIGHT,
     borderRadius: 10,
     borderWidth: 1,
     alignItems: "center",

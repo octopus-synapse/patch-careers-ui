@@ -1,6 +1,6 @@
 import { Text, useEditorialPalette, XStack, YStack } from "@patch-careers/ui";
 import { PillButton } from "@patch-careers/ui/editorial";
-import { Link } from "expo-router";
+import { AppLink } from "@/navigation/app-link";
 import { ActivityIndicator } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import { useExternalJobs } from "../hooks/queries";
@@ -132,11 +132,11 @@ export function ApplicationsBoard({
                     </Text>
                   </XStack>
                   {row.id ? (
-                    <Link href={{ pathname: "/job/[id]", params: { id: row.id } }}>
+                    <AppLink href={{ pathname: "/job/[id]", params: { id: row.id } }}>
                       <Text fontSize={14} lineHeight={21} fontWeight="600" color={palette.ink}>
                         {row.title}
                       </Text>
-                    </Link>
+                    </AppLink>
                   ) : (
                     <Text fontSize={14} lineHeight={21} fontWeight="600" color={palette.ink}>
                       {row.title}

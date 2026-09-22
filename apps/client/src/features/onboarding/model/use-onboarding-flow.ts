@@ -4,7 +4,7 @@
  *
  * Owns: the backend session (query + optimistic snapshot), the app-side flow
  * cursor, the per-step draft (via the scoped wizard store), validation gating,
- * resume/welcome flags, and the save/navigate handlers. Returns a view-model
+ * resume state and the save/navigate handlers. Returns a view-model
  * the wizard renders; it holds no JSX itself.
  */
 import {
@@ -17,11 +17,12 @@ import {
 } from "@patch-careers/api-client";
 import { bootstrap } from "@patch-careers/auth";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useWindowDimensions } from "react-native";
+import { CLASSIC_RESUME_STYLE_ID } from "@/config/classic-resume-style";
 import { translateBackendCode } from "@/lib/errors/backend-error";
 import { getCompletedOnboardingRoute } from "@/navigation/auth-redirect";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 import {
@@ -52,11 +53,9 @@ import {
 import {
   clearSessionSnapshot,
   clearStepDraft,
-  markWelcomeSeen,
   readPhoneCountry,
   readSessionSnapshot,
   readStepDraft,
-  readWelcomeSeen,
   savePhoneCountry,
   saveSessionSnapshot,
   saveStepDraft,
@@ -76,7 +75,7 @@ function getErrorStatus(error: unknown): number | undefined {
 export function useOnboardingFlow() {
   const { locale, t, setLocale } = useI18n();
   const { width, height } = useWindowDimensions();
-  const router = useRouter();
+  const router = useAppRouter();
   const queryClient = useQueryClient();
   const { currentUser } = useAuthState();
   const sessionKey = useMemo(() => getV1OnboardingSessionQueryKey({ locale }), [locale]);
@@ -96,8 +95,6 @@ export function useOnboardingFlow() {
   const [saveError, setSaveError] = useState("");
   const refreshedAuthRef = useRef(false);
   const resyncedStepRef = useRef(false);
-  const welcomeSeenRef = useRef(false);
-  const welcomeCheckedRef = useRef(false);
   const lastSaveRef = useRef<{
     stepId: string;
     payload: Parameters<typeof saveBackendStep>[1];
@@ -198,14 +195,6 @@ export function useOnboardingFlow() {
   }, [locale]);
 
   useEffect(() => {
-    if (welcomeCheckedRef.current) return;
-    welcomeCheckedRef.current = true;
-    void readWelcomeSeen().then((seen) => {
-      welcomeSeenRef.current = seen;
-    });
-  }, []);
-
-  useEffect(() => {
     if (!session) return;
     const backendStepId = currentStep?.id;
     if (prevBackendStepIdRef.current === backendStepId) return;
@@ -280,16 +269,16 @@ export function useOnboardingFlow() {
     }
   }
 
-  function introSeen(id: FlowStepId): boolean {
-    return id === "welcome" && welcomeSeenRef.current;
+  async function advanceFromEducation() {
+    // The backend still requires its style step. Persist Clássico invisibly
+    // before showing review, including when the education step was skipped.
+    if (!(await commitSave("resume-style", { resumeStyleId: CLASSIC_RESUME_STYLE_ID }, false)))
+      return;
+    setFlowStepId("review");
   }
 
   function advanceFlow() {
-    let nextFlow = nextFlowStep(flowStepId);
-    // Intro screens (welcome) show once per device — skip when already seen.
-    while (nextFlow?.intro && introSeen(nextFlow.id)) {
-      nextFlow = nextFlowStep(nextFlow.id);
-    }
+    const nextFlow = nextFlowStep(flowStepId);
     if (nextFlow) setFlowStepId(nextFlow.id);
   }
 
@@ -337,7 +326,8 @@ export function useOnboardingFlow() {
         if (!saved) return;
       }
     }
-    advanceFlow();
+    if (flowStepId === "education") await advanceFromEducation();
+    else advanceFlow();
   }
 
   async function handleSkip() {
@@ -348,7 +338,8 @@ export function useOnboardingFlow() {
         : buildNextPayload(currentStep, formData, items);
       if (!(await commitSave(currentStep.id, payload, false))) return;
     }
-    advanceFlow();
+    if (flowStepId === "education") await advanceFromEducation();
+    else advanceFlow();
   }
 
   async function retrySave() {
@@ -356,6 +347,8 @@ export function useOnboardingFlow() {
     if (!pending || isPending) return;
     if (!(await commitSave(pending.stepId, pending.payload, pending.isEdit))) return;
     if (pending.isEdit) setEditStepId(null);
+    else if (pending.stepId === "resume-style") setFlowStepId("review");
+    else if (flowStepId === "education") await advanceFromEducation();
     else advanceFlow();
   }
 
@@ -366,8 +359,7 @@ export function useOnboardingFlow() {
       setEditStepId(null);
       return;
     }
-    let prev = prevFlowStep(flowStepId);
-    while (prev?.intro) prev = prevFlowStep(prev.id);
+    const prev = prevFlowStep(flowStepId);
     if (prev) setFlowStepId(prev.id);
   }
 
@@ -386,9 +378,9 @@ export function useOnboardingFlow() {
     return null;
   }
 
-  function handleComplete() {
+  async function handleComplete() {
     setCompleteError("");
-    if (session?.missingRequired?.length) {
+    if (session?.missingRequired?.some((id) => id !== "resume-style" && id !== "resumeStyleId")) {
       setCompleteError(t("onboarding.missingRequired"));
       return;
     }
@@ -401,13 +393,11 @@ export function useOnboardingFlow() {
     }
     // The locale the person did onboarding in becomes the resume's canonical
     // language (backend ADR-003 §10); the backend falls back to Accept-Language.
+    if (session?.resumeStyleId !== CLASSIC_RESUME_STYLE_ID) {
+      if (!(await commitSave("resume-style", { resumeStyleId: CLASSIC_RESUME_STYLE_ID }, false)))
+        return;
+    }
     complete.mutate({ params: { locale } });
-  }
-
-  function markWelcomeSeenAndAdvance() {
-    welcomeSeenRef.current = true;
-    void markWelcomeSeen();
-    advanceFlow();
   }
 
   /** Refresh auth so guarded routes unlock, then enter the app. */
@@ -469,6 +459,5 @@ export function useOnboardingFlow() {
     handleComplete,
     handleAddSection,
     retrySave,
-    markWelcomeSeenAndAdvance,
   };
 }

@@ -24,7 +24,6 @@ export const settingsPtBR: TranslationDict = {
     usernameRow: "Nome de usuário",
     languageRow: "Idioma",
     languageNames: { ptBR: "Português", en: "English" },
-    connectedRow: "Contas conectadas",
     actions: "Ações da conta",
     languageSaved: "Idioma atualizado.",
     emailUnverified: "Não verificado",
@@ -71,15 +70,6 @@ export const settingsPtBR: TranslationDict = {
       checking: "Verificando…",
       available: "Disponível",
       submit: "Salvar",
-    },
-    connected: {
-      title: "Contas conectadas",
-      connect: "Conectar uma conta",
-      connectWith: "Conectar seu {provider}",
-      disconnect: "Desconectar",
-      disconnectConfirmTitle: "Desconectar {provider}?",
-      disconnectConfirmBody: "Você não poderá mais entrar com {provider}.",
-      lastMethod: "Defina uma senha antes de desconectar seu único método de login.",
     },
   },
   twoFactor: {
@@ -191,6 +181,7 @@ export const settingsPtBR: TranslationDict = {
     themeDescription: "Como o Patch aparece para você.",
     languageLabel: "Idioma",
     languageDescription: "Textos e formatos de data.",
+    languageSaveFailed: "Não foi possível salvar o idioma. Tente novamente.",
   },
   danger: {
     title: "Zona perigosa",
@@ -240,7 +231,6 @@ export const settingsEn: TranslationDict = {
     usernameRow: "Username",
     languageRow: "Language",
     languageNames: { ptBR: "Português", en: "English" },
-    connectedRow: "Connected accounts",
     actions: "Account actions",
     languageSaved: "Language updated.",
     emailUnverified: "Unverified",
@@ -287,15 +277,6 @@ export const settingsEn: TranslationDict = {
       checking: "Checking…",
       available: "Available",
       submit: "Save",
-    },
-    connected: {
-      title: "Connected accounts",
-      connect: "Connect an account",
-      connectWith: "Connect your {provider}",
-      disconnect: "Disconnect",
-      disconnectConfirmTitle: "Disconnect {provider}?",
-      disconnectConfirmBody: "You won't be able to sign in with {provider} anymore.",
-      lastMethod: "Set a password before disconnecting your only login method.",
     },
   },
   twoFactor: {
@@ -406,6 +387,7 @@ export const settingsEn: TranslationDict = {
     themeDescription: "How Patch looks for you.",
     languageLabel: "Language",
     languageDescription: "Text and date formats.",
+    languageSaveFailed: "Could not save your language. Please try again.",
   },
   danger: {
     title: "Danger zone",

@@ -8,6 +8,7 @@
 import { getV1ResumesResumeIdQualityQueryOptions } from "@patch-careers/api-client";
 import { useQueries } from "@tanstack/react-query";
 import { useMasterResumeId, useResumeList } from "@/features/resumes";
+import { usePatchPlan } from "@/features/billing/use-patch-plan";
 
 export function useDefaultMatchResume(): {
   resumeId: string | undefined;
@@ -17,10 +18,12 @@ export function useDefaultMatchResume(): {
 } {
   const { resumes, isLoading: listLoading } = useResumeList();
   const master = useMasterResumeId();
+  const { canUsePaid } = usePatchPlan();
 
   const qualityQueries = useQueries({
     queries: resumes.map((r) => ({
       ...getV1ResumesResumeIdQualityQueryOptions(r.id),
+      enabled: canUsePaid,
       retry: false,
       staleTime: 5 * 60_000,
     })),

@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Conversation thread — the full-screen chat pushed over the tab bar.
  *
@@ -18,7 +19,7 @@
 
 import { Button, Text, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Ban } from "lucide-react-native";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Keyboard, ScrollView, View } from "react-native";
@@ -50,7 +51,7 @@ export default function ConversationScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
   const navInset = useNavBarInset();
-  const router = useRouter();
+  const router = useAppRouter();
   const { t } = useI18n();
   const params = useLocalSearchParams<{
     id: string;

@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * `MascotStage` — the one mascot of the page, in the grid's right-hand column.
  *
@@ -16,7 +17,7 @@
 import { shadows } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import { AuthMascotCard, editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { Pressable } from "react-native";
 import Animated, {
@@ -114,7 +115,7 @@ export function MascotStage({
 }: MascotStageProps): ReactElement {
   const grid = landingGrid(windowWidth);
   const palette = useEditorialPalette();
-  const router = useRouter();
+  const router = useAppRouter();
   const localized = useLocalizedHref();
   const { t } = useI18n();
 
@@ -289,7 +290,7 @@ export function MascotStage({
             >
               {showButton ? (
                 <Pressable
-                  onPress={() => router.push(localized("/(auth)/sign-up"))}
+                  onPress={() => router.push(localized("/(auth)/auth"))}
                   accessibilityRole="button"
                 >
                   <XStack

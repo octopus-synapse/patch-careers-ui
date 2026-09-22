@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Job detail — pushed over the tabs from a list row.
  *
@@ -19,7 +20,7 @@
 import { Divider, EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, PrimaryAction, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+
 import * as WebBrowser from "expo-web-browser";
 import { Bookmark, ChevronLeft, FileQuestion, FileText, Mail } from "lucide-react-native";
 import { type ReactElement, useMemo, useState } from "react";
@@ -46,7 +47,7 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
   const columnProps = isDesktopWeb
     ? ({ width: "100%", maxWidth: DESKTOP_JOBS_COLUMN, alignSelf: "center" } as const)
     : null;
-  const router = useRouter();
+  const router = useAppRouter();
   const queryClient = useQueryClient();
   const { t, locale } = useI18n();
   const { toggle: toggleSave, pendingId } = useToggleSaveJob();

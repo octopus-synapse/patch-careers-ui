@@ -37,6 +37,7 @@ docs/design/*.config.local.js
 # Expo
 .expo
 .expo-shared
+apps/client/src/app/en/
 expo-env.d.ts
 .yarn/
 web-build/

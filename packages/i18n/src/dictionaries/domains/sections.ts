@@ -30,6 +30,9 @@ export const sectionsPtBR: TranslationDict = {
     editA11y: "Editar a reescrita de {field}",
     localePt: "português",
     localeEn: "inglês",
+    skipped: "Item salvo. A tradução para o outro idioma não está disponível agora.",
+    useOriginalLanguage:
+      "A tradução está indisponível. Mude para o idioma original do currículo para adicionar este item.",
   },
   links: {
     kindPickerTitle: "Tipo de link",
@@ -79,6 +82,9 @@ export const sectionsEn: TranslationDict = {
     editA11y: "Edit the rewrite of {field}",
     localePt: "Portuguese",
     localeEn: "English",
+    skipped: "Item saved. Translation into the other language is unavailable right now.",
+    useOriginalLanguage:
+      "Translation is unavailable. Switch to the resume's original language to add this item.",
   },
   links: {
     kindPickerTitle: "Link type",

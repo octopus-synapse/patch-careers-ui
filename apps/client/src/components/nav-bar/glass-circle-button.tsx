@@ -49,6 +49,7 @@ export function GlassCircleButton({
   accessibilityLabel,
   expanded,
   active = false,
+  filledAtRest = false,
   appearance = "default",
   reducedMotion = false,
 }: {
@@ -62,6 +63,8 @@ export function GlassCircleButton({
   readonly expanded?: boolean;
   /** The destination this control leads to is the current one. */
   readonly active?: boolean;
+  /** Keeps menu triggers in the same green used by their hover state. */
+  readonly filledAtRest?: boolean;
   readonly appearance?: "default" | "app";
   readonly reducedMotion?: boolean;
 }): ReactElement {
@@ -74,7 +77,7 @@ export function GlassCircleButton({
   const app = appearance === "app";
   const size = app ? NAV_CONTROL_SIZE_APP : NAV_CONTROL_SIZE;
 
-  const on = expanded === true || active || hovered || (app && pressed) ? 1 : 0;
+  const on = filledAtRest || expanded === true || active || hovered || (app && pressed) ? 1 : 0;
   const timing = reduceMotion || reducedMotion ? INSTANT : app ? APP_TIMING : TIMING;
   const fillColor = app ? (pressed ? appNavControl.pressed : appNavControl.fill) : filled.accent;
 

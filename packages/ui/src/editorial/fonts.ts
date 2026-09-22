@@ -20,6 +20,7 @@ import { Platform } from "react-native";
 
 export const editorialFonts = {
   serif: "PlayfairDisplay_500Medium",
+  serifSemiBold: "PlayfairDisplay_600SemiBold",
   sans: Platform.select({
     web: "Inter, system-ui, sans-serif",
     ios: "-apple-system",

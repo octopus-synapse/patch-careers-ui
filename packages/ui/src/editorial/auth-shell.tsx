@@ -23,8 +23,14 @@ export function AuthShell({
   showEra = true,
   variant = "default",
   corner,
+  backgroundColor,
+  scrollEnabled = true,
 }: {
   children: ReactNode;
+  /** Optional screen color for a flow with a custom card surface. */
+  backgroundColor?: string;
+  /** Disable shell scrolling for a page that fits its content to the viewport. */
+  scrollEnabled?: boolean;
   /**
    * Screen-anchored control in the top-left corner (e.g. a web "Back"):
    * rendered outside the scroll column, offset by the safe-area inset.
@@ -43,14 +49,23 @@ export function AuthShell({
   const editorialPalette = useEditorialPalette();
   const barStyle = useThemeName() === "dark" ? "light-content" : "dark-content";
   const isCard = variant === "card";
+  const surfaceColor = backgroundColor ?? editorialPalette.bg;
   return (
-    <View style={[flexStyle, { backgroundColor: editorialPalette.bg }]}>
-      <StatusBar barStyle={barStyle} backgroundColor={editorialPalette.bg} />
+    <View
+      style={[
+        flexStyle,
+        { backgroundColor: surfaceColor },
+        !scrollEnabled && Platform.OS === "web" ? { overflow: "hidden" } : null,
+      ]}
+    >
+      <StatusBar barStyle={barStyle} backgroundColor={surfaceColor} />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={flexStyle}
       >
         <ScrollView
+          scrollEnabled={scrollEnabled}
+          style={!scrollEnabled && Platform.OS === "web" ? { overflow: "hidden" } : undefined}
           contentContainerStyle={{
             flexGrow: 1,
             paddingHorizontal: isCard ? 0 : 28,

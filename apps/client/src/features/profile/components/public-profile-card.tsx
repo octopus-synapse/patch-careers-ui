@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * <PublicProfileCard> — the URL other people see, and a button to copy it.
  *
@@ -15,7 +16,7 @@
 
 import { YStack } from "@patch-careers/ui";
 import { PillButton } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { ArrowRight, Check, Copy } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
@@ -30,9 +31,9 @@ import { usePf } from "../lib/styles";
 const COPIED_MS = 1600;
 
 export function PublicProfileCard({ username }: { username: string | null }): ReactElement {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const pf = usePf();
-  const router = useRouter();
+  const router = useAppRouter();
   const feedback = useFeedback();
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -46,7 +47,7 @@ export function PublicProfileCard({ username }: { username: string | null }): Re
 
   const copy = async (): Promise<void> => {
     if (!username) return;
-    const ok = await copyToClipboard(publicProfileUrl(username));
+    const ok = await copyToClipboard(publicProfileUrl(username, locale));
     if (!ok) {
       feedback.warning(t("profile.publicProfile.copyFailed"));
       return;
@@ -83,7 +84,7 @@ export function PublicProfileCard({ username }: { username: string | null }): Re
       {username ? (
         <>
           <Text style={pf.publicUrl} selectable>
-            {publicProfileDisplayUrl(username)}
+            {publicProfileDisplayUrl(username, locale)}
           </Text>
           {copied ? <Text style={pf.publicCopied}>{t("profile.publicProfile.copied")}</Text> : null}
         </>

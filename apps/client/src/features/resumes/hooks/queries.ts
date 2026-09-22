@@ -1,7 +1,7 @@
 /**
  * Data layer for the resumes feature: the user's resume list (master first,
  * slots), per-resume detail, tailored versions, and the rename / delete /
- * duplicate / style mutations behind the Currículos sub-tab and the resume
+ * duplicate mutations behind the Currículos sub-tab and the resume
  * detail screen.
  */
 import {
@@ -14,7 +14,6 @@ import {
   getV1ResumesSlotsQueryKey,
   getV1UsersProfileQueryKey,
   useDeleteV1ResumesResumeId,
-  useGetV1ResumeStyles,
   useGetV1Resumes,
   useGetV1ResumesResumeId,
   useGetV1ResumesResumeIdTailoredVersions,
@@ -94,11 +93,6 @@ export function useTailoredVersions(resumeId: string | undefined) {
     query: { enabled: Boolean(resumeId) },
   });
   return { versions: query.data?.versions ?? [], isLoading: query.isLoading };
-}
-
-/** Visual styles (Typst templates) for the create-resume wizard. */
-export function useResumeStyles() {
-  return useGetV1ResumeStyles();
 }
 
 export function useResumeMutations(): {

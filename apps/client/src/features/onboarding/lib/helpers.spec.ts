@@ -17,7 +17,6 @@ import {
   isLastFlowStepForBackend,
   isOptionalStep,
   missingRequiredTargets,
-  parseResumeStyles,
   validateStepFields,
 } from "./helpers";
 
@@ -160,23 +159,11 @@ describe("onboarding helpers", () => {
     expect(buildSkipPayload()).toEqual({ noData: true });
   });
 
-  it("parses resume style options and builds review sections", () => {
-    expect(parseResumeStyles(styleStep)).toEqual([
-      {
-        id: "style-1",
-        name: "Clean",
-        description: "Minimal",
-        category: "system",
-        tags: ["ATS"],
-        thumbnailUrl: "https://example.com/style.png",
-        atsScore: 96,
-      },
-    ]);
-
+  it("builds review sections without a style choice", () => {
     const review = buildReviewSections(session, session.steps);
     expect(review.map((section) => section.stepId)).toContain("personal-info");
     expect(review.map((section) => section.stepId)).toContain("section:project_v1");
-    expect(review.map((section) => section.stepId)).toContain("resume-style");
+    expect(review.map((section) => section.stepId)).not.toContain("resume-style");
   });
 
   it("validates only the requested field slice", () => {
@@ -217,6 +204,7 @@ describe("onboarding helpers", () => {
   it("maps a backend step back to its first flow step (resume cursor)", () => {
     expect(flowStepForBackendStep(session, "personal-info")?.id).toBe("location");
     expect(flowStepForBackendStep(session, "professional-profile")?.id).toBe("headline");
+    expect(flowStepForBackendStep(session, "resume-style")?.id).toBe("review");
     expect(flowStepForBackendStep(session, "welcome")).toBeUndefined();
   });
 

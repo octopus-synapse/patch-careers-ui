@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Resume detail — pushed over the tabs from the Currículos sub-tab. Embedded
  * live preview, metadata, the action row (rename / download PDF / duplicate /
@@ -6,7 +7,7 @@
  */
 import { useGetV1ExportResumeDocx, useGetV1ExportResumePdf } from "@patch-careers/api-client";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import * as WebBrowser from "expo-web-browser";
 import {
   ChevronLeft,
@@ -70,7 +71,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
   const palette = useEditorialPalette();
   const insets = useSafeAreaInsets();
   const navInset = useNavBarInset();
-  const router = useRouter();
+  const router = useAppRouter();
   const detail = useResumeDetail(id);
   const { resumeId: masterResumeId } = useMasterResumeId();
   const { renameResume, deleteResume, isPending } = useResumeMutations();

@@ -3,6 +3,7 @@ import { brandColors, landingScrollPalette } from "@patch-careers/tokens";
 import { Text, XStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
+import { Platform, Text as NativeText } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 const SERIOUS_PIECE =
@@ -21,6 +22,7 @@ export function NavBrand({
   const dark = useThemeName() === "dark";
   const scale = height / 40;
   const markSize = 30 * scale;
+  const dotColor = dark ? palette.ink : landingScrollPalette.brandDot;
 
   return (
     <XStack alignItems="center" gap={9 * scale} height={height}>
@@ -28,18 +30,36 @@ export function NavBrand({
         <Path d={SERIOUS_PIECE} fill={ink ?? palette.ink} />
         <Path d={EAGER_PIECE} fill={dark ? palette.ink : brandColors.olive} />
       </Svg>
-      <Text
-        fontFamily={editorialFonts.sans}
-        fontSize={36 * scale}
-        lineHeight={40 * scale}
-        fontWeight="800"
-        letterSpacing={-2.7 * scale}
-        color={ink ?? palette.ink}
-        paddingBottom={5 * scale}
-      >
-        patch
-        <Text color={dark ? palette.ink : landingScrollPalette.brandDot}>.</Text>
-      </Text>
+      {Platform.OS === "web" ? (
+        <Text
+          fontFamily={editorialFonts.sans}
+          fontSize={36 * scale}
+          lineHeight={40 * scale}
+          fontWeight="800"
+          letterSpacing={-2.7 * scale}
+          color={ink ?? palette.ink}
+          paddingBottom={5 * scale}
+        >
+          patch
+          <Text color={dotColor}>.</Text>
+        </Text>
+      ) : (
+        <NativeText
+          style={{
+            fontFamily: "Inter_700Bold",
+            fontSize: 34 * scale,
+            lineHeight: 38 * scale,
+            letterSpacing: -2.55 * scale,
+            color: ink ?? palette.ink,
+            paddingBottom: 5 * scale,
+            includeFontPadding: false,
+            width: 100 * scale,
+            flexShrink: 0,
+          }}
+        >
+          patch
+        </NativeText>
+      )}
     </XStack>
   );
 }

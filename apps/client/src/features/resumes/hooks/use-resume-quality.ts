@@ -16,6 +16,7 @@ import {
   usePostV1ResumesResumeIdQualityRecompute,
 } from "@patch-careers/api-client";
 import { useQueryClient } from "@tanstack/react-query";
+import { usePatchPlan } from "@/features/billing/use-patch-plan";
 
 export type ResumeQualityState =
   | "loading"
@@ -45,11 +46,12 @@ export function useResumeQuality(
   opts: { enabled?: boolean; updatedAt?: string } = {},
 ): UseResumeQualityResult {
   const queryClient = useQueryClient();
+  const { canUsePaid } = usePatchPlan();
   const updatedAtMs = opts.updatedAt ? Date.parse(opts.updatedAt) : null;
 
   const query = useGetV1ResumesResumeIdQuality(resumeId, {
     query: {
-      enabled: opts.enabled ?? true,
+      enabled: canUsePaid && (opts.enabled ?? true),
       // Poll while the server-side recompute hasn't caught up with the
       // latest edit, then stop.
       refetchInterval: (q) => {
@@ -62,7 +64,7 @@ export function useResumeQuality(
 
   const recomputeMutation = usePostV1ResumesResumeIdQualityRecompute();
 
-  const data = query.data;
+  const data = canUsePaid ? query.data : undefined;
   const isStale = !!(data && updatedAtMs !== null && Date.parse(data.computedAt) < updatedAtMs);
 
   let state: ResumeQualityState;
@@ -82,6 +84,7 @@ export function useResumeQuality(
   }
 
   const recompute = async (): Promise<void> => {
+    if (!canUsePaid) return;
     await recomputeMutation.mutateAsync({ resumeId });
     await queryClient.invalidateQueries({
       queryKey: getV1ResumesResumeIdQualityQueryKey(resumeId),

@@ -1,3 +1,4 @@
+import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * "Perfil" supersection — the identity block. Name, professional title,
  * location, summary (bio) and phone are User-backed (PATCH /v1/users/profile)
@@ -11,7 +12,7 @@ import {
   editorialFonts as fonts,
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+
 import { Briefcase, ChevronRight, FileText, MapPin, Phone, User } from "lucide-react-native";
 import type { ReactElement, ReactNode } from "react";
 import { Pressable } from "react-native";
@@ -27,7 +28,7 @@ export function IdentityCard({
 }): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
-  const router = useRouter();
+  const router = useAppRouter();
   const fields = profileFields(t);
 
   const fieldIcon: Record<ProfileFieldKey, ReactNode> = {

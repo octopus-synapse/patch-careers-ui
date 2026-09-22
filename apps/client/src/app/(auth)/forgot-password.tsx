@@ -20,9 +20,15 @@ import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { FormEmailField, useZodForm } from "@/forms";
 import { validateEmail } from "@/lib/validation";
+import { AppRedirect } from "@/navigation/app-redirect";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
 
 export default function ForgotPasswordScreen(): ReactElement {
+  if (Platform.OS === "web") return <AppRedirect href="/(auth)/auth?step=forgot-password" />;
+  return <NativeForgotPasswordScreen />;
+}
+
+function NativeForgotPasswordScreen(): ReactElement {
   const isWeb = Platform.OS === "web";
   const { t, router } = useAuthScreen();
   const localized = useLocalizedHref();
@@ -66,7 +72,7 @@ export default function ForgotPasswordScreen(): ReactElement {
           </Banner>
           <PrimaryAction
             label={t("auth.signIn")}
-            onPress={() => router.replace(localized("/(auth)/sign-in"))}
+            onPress={() => router.replace(localized("/(auth)/auth"))}
             testID="forgot.backToSignIn"
           />
         </YStack>
