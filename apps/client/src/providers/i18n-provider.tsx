@@ -34,6 +34,7 @@ import {
 } from "react";
 import { Platform } from "react-native";
 import { localeFromPath } from "@/navigation/route-locale";
+import { localeFromLanguageTag } from "@/providers/i18n-locale";
 
 interface I18nContextValue {
   readonly locale: Locale;
@@ -64,14 +65,6 @@ export function translatorFor(locale: Locale): Translator {
 }
 
 const defaultLocale: Locale = "pt-BR";
-
-/**
- * Map a BCP-47 language tag to a supported locale. `pt*` and anything
- * unrecognised stay on pt-BR (primary market); `en*` gets English.
- */
-export function localeFromLanguageTag(tag: string | undefined): Locale {
-  return tag?.toLowerCase().startsWith("en") ? "en" : defaultLocale;
-}
 
 /** The browser language, on web; the product default elsewhere. */
 function deviceLocale(): Locale {

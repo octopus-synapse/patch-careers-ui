@@ -175,7 +175,11 @@ function AddItemForm({
       {review ? (
         <RewriteReviewModal
           visible
-          localeLabel={review.proposal.locale === "en" ? "English" : "Português"}
+          localeLabel={t(
+            review.proposal.locale === "en"
+              ? "settings.account.languageNames.en"
+              : "settings.account.languageNames.ptBR",
+          )}
           fields={fields}
           decisions={review.decisions}
           onChangeDecision={(key, patch) =>

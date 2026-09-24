@@ -17,7 +17,8 @@ import { ActivityIndicator, Platform, View } from "react-native";
 import { GUEST_LOCALE_CHOICE_KEY, localeFromPath } from "@/navigation/route-locale";
 import { twinPath } from "@/navigation/twin-path";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
-import { localeFromLanguageTag, useI18n } from "@/providers/i18n-provider";
+import { localeFromLanguageTag } from "@/providers/i18n-locale";
+import { useI18n } from "@/providers/i18n-provider";
 import { GuestLanguageDialog } from "./guest-language-dialog";
 
 export function AccountLanguageSync(): ReactElement | null {

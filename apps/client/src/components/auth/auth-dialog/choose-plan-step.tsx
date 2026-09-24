@@ -30,12 +30,10 @@ const planFeatures = {
   max: ["go.goCardTranslations", "go.goCardMatch", "go.goCardResume", "go.maxCardLimit"],
 } as const;
 
-function splitPrice(price: string): { amount: string; cadence?: string } {
-  for (const cadence of ["per month", "por mês"]) {
-    const suffix = ` ${cadence}`;
-    if (price.endsWith(suffix)) {
-      return { amount: price.slice(0, -suffix.length), cadence };
-    }
+function splitPrice(price: string, cadence: string): { amount: string; cadence?: string } {
+  const suffix = ` ${cadence}`;
+  if (price.endsWith(suffix)) {
+    return { amount: price.slice(0, -suffix.length), cadence };
   }
   return { amount: price };
 }
@@ -71,7 +69,7 @@ export function ChoosePlanStep({
     const price = t(
       option === "free" ? "go.freePrice" : option === "go" ? "go.brlPrice" : "go.maxBrlPrice",
     );
-    const priceParts = splitPrice(price);
+    const priceParts = splitPrice(price, t("go.monthlyCadence"));
     const tagline = t(
       option === "free" ? "go.freeTagline" : option === "go" ? "go.goTagline" : "go.maxTagline",
     );

@@ -107,7 +107,7 @@ export function AuthPageHeader(): ReactElement {
             style={{ paddingHorizontal: 12, paddingVertical: 10 }}
           >
             <Text style={{ color: palette.brand, fontSize: 15 }}>
-              {locale === "en" ? "Português" : "English"}
+              {t(locale === "en" ? "landing.nav.langPt" : "landing.nav.langEn")}
             </Text>
           </Pressable>
           <Text

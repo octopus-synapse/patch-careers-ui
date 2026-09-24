@@ -6,12 +6,10 @@ import { ArrowUpRight, Check } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Modal, Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { useLocaleSwitch } from "@/navigation/use-locale-switch";
-import { localeFromLanguageTag, useI18n } from "@/providers/i18n-provider";
+import { localeFromLanguageTag } from "@/providers/i18n-locale";
+import { useI18n } from "@/providers/i18n-provider";
 
-const LANGUAGES: { value: Locale; label: string; region: string }[] = [
-  { value: "pt-BR", label: "Português", region: "Brasil" },
-  { value: "en", label: "English", region: "United States" },
-];
+const LANGUAGES: Locale[] = ["pt-BR", "en"];
 
 export function GuestLanguageDialog({
   onConfirm,
@@ -97,14 +95,14 @@ export function GuestLanguageDialog({
 
           <YStack accessibilityRole="radiogroup" gap={9}>
             {LANGUAGES.map((language) => {
-              const active = selected === language.value;
+              const active = selected === language;
               return (
                 <Pressable
-                  key={language.value}
-                  testID={`guestLanguage.${language.value}`}
+                  key={language}
+                  testID={`guestLanguage.${language}`}
                   accessibilityRole="radio"
                   accessibilityState={{ checked: active }}
-                  onPress={() => setSelected(language.value)}
+                  onPress={() => setSelected(language)}
                   style={{
                     minHeight: compact ? 54 : 58,
                     borderWidth: 1,
@@ -127,12 +125,14 @@ export function GuestLanguageDialog({
                         fontWeight: active ? "600" : "400",
                       }}
                     >
-                      {language.label}
+                      {t(language === "en" ? "landing.nav.langEn" : "landing.nav.langPt")}
                     </Text>
                     <Text
                       style={{ color: colors.muted, fontFamily: editorialFonts.sans, fontSize: 12 }}
                     >
-                      {language.region}
+                      {t(
+                        language === "en" ? "landing.nav.langEnRegion" : "landing.nav.langPtRegion",
+                      )}
                     </Text>
                   </YStack>
                   {active ? <Check size={19} color={colors.brand} strokeWidth={2} /> : null}

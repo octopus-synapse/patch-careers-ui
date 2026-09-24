@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { localeFromLanguageTag } from "./i18n-provider";
+import { localeFromLanguageTag } from "./i18n-locale";
 
 describe("localeFromLanguageTag", () => {
   it("maps en variants to en", () => {
