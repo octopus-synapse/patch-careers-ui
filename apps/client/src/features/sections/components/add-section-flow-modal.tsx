@@ -17,6 +17,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from "rea
 import type { SectionLocales } from "../hooks/use-resume-sections";
 import { useSectionItemForm } from "../hooks/use-section-item-form";
 import type { RewriteProposal } from "../hooks/use-section-item-mutations";
+import { sectionModalTitle } from "../lib/section-modal-title";
 import type { MergedSection } from "../lib/section-visibility";
 import { useEd } from "../lib/styles";
 import type { SectionItem } from "../types";
@@ -274,7 +275,9 @@ export function AddSectionFlowModal({
           <View style={ed.editorModalHeader}>
             <YStack flex={1}>
               <ModalHeader
-                title={picked ? picked.title : t("sections.addToResume")}
+                title={
+                  picked ? sectionModalTitle(picked.key, picked.title) : t("sections.addToResume")
+                }
                 compactOnMobile
                 closeLabel={t("common.cancel")}
                 onClose={close}

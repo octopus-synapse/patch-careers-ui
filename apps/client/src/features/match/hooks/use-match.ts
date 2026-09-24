@@ -7,7 +7,7 @@ import {
   type GetV1MatchResumeIdJobId200,
   useGetV1MatchResumeIdJobId,
 } from "@patch-careers/api-client";
-import { usePatchPlan } from "@/features/billing/use-patch-plan";
+import { usePatchPlan } from "@/features/billing";
 
 export function useMatch(
   resumeId: string | undefined,

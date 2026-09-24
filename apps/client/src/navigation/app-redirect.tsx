@@ -5,6 +5,7 @@ import { hrefForLocale, localeFromPath } from "./route-locale";
 
 export function AppRedirect(props: ComponentProps<typeof Redirect>): ReactElement {
   const pathname = usePathname();
-  const href = Platform.OS === "web" ? hrefForLocale(props.href, localeFromPath(pathname)) : props.href;
+  const href =
+    Platform.OS === "web" ? hrefForLocale(props.href, localeFromPath(pathname)) : props.href;
   return <Redirect {...props} href={href} />;
 }

@@ -61,4 +61,26 @@ describe("fieldsFromDefinition", () => {
     });
     expect(fields.map((field) => field.key)).toEqual(["company"]);
   });
+
+  it("maps a URL widget to a URL editor field", () => {
+    const fields = fieldsFromDefinition({
+      fields: [
+        {
+          key: "credentialUrl",
+          type: "string",
+          required: false,
+          label: "Link da Credencial",
+          meta: { widget: "url" },
+        },
+      ],
+    });
+
+    expect(fields[0]).toEqual({
+      key: "credentialUrl",
+      type: "url",
+      label: "Link da Credencial",
+      required: false,
+      widget: "url",
+    });
+  });
 });

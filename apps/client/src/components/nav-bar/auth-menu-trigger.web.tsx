@@ -47,13 +47,13 @@ export function AuthMenuTrigger({
       focusVisibleStyle={{ outlineColor: palette.brand, outlineWidth: 2, outlineStyle: "solid" }}
     >
       {open ? (
-        <X size={24} color={AUTH_MENU_ICON_COLOR[theme]} strokeWidth={2.3} aria-hidden="true" />
+        <X size={24} color={AUTH_MENU_ICON_COLOR[theme]} strokeWidth={2.3} aria-hidden />
       ) : (
         <StaggeredMenu
           size={AUTH_MENU_ICON_SIZE}
           color={AUTH_MENU_ICON_COLOR[theme]}
           strokeWidth={AUTH_MENU_STROKE_WIDTH}
-          aria-hidden="true"
+          aria-hidden
         />
       )}
     </XStack>

@@ -119,6 +119,9 @@ importers:
       '@expo-google-fonts/jetbrains-mono':
         specifier: ^0.4.1
         version: 0.4.1
+      '@expo-google-fonts/manrope':
+        specifier: ^0.4.2
+        version: 0.4.2
       '@expo-google-fonts/playfair-display':
         specifier: ^0.4.2
         version: 0.4.2
@@ -1947,6 +1950,9 @@ packages:
 
   '@expo-google-fonts/jetbrains-mono@0.4.1':
     resolution: {integrity: sha512-CslACrtMOcRwoWXCO7OMEI+9w3fukWSoBtvNz46OqPoogEuuoY0tkDY1O8sFumk8t0pC6Cx0Xr95O0TOQhpkug==}
+
+  '@expo-google-fonts/manrope@0.4.2':
+    resolution: {integrity: sha512-BZsKe8d9BJrVnIQIZcTS7/Kac0TbXnqs/+8EBSiQxrmK6GoCO6eTkmr50D1weIk/EoF20pTmAkpWICnovATr/g==}
 
   '@expo-google-fonts/playfair-display@0.4.2':
     resolution: {integrity: sha512-mWhBV59RUjSS3aYpytUb7UyHHTnXcHh7epAn7gq+M4XAEh5PuMKUrP8eiUfkJLb6UwHZCi7EhQpUzxHu5OL96w==}
@@ -11312,6 +11318,8 @@ snapshots:
   '@expo-google-fonts/inter@0.4.2': {}
 
   '@expo-google-fonts/jetbrains-mono@0.4.1': {}
+
+  '@expo-google-fonts/manrope@0.4.2': {}
 
   '@expo-google-fonts/playfair-display@0.4.2': {}
 

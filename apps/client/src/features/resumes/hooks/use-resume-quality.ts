@@ -16,7 +16,7 @@ import {
   usePostV1ResumesResumeIdQualityRecompute,
 } from "@patch-careers/api-client";
 import { useQueryClient } from "@tanstack/react-query";
-import { usePatchPlan } from "@/features/billing/use-patch-plan";
+import { usePatchPlan } from "@/features/billing";
 
 export type ResumeQualityState =
   | "loading"

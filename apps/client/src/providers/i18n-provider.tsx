@@ -93,8 +93,8 @@ interface I18nProviderProps {
 
 export function I18nProvider({ children, locale }: I18nProviderProps): ReactElement {
   const pathname = usePathname();
-  const [active, setActive] = useState<Locale>(() =>
-    locale ?? (Platform.OS === "web" ? localeFromPath(pathname) : deviceLocale()),
+  const [active, setActive] = useState<Locale>(
+    () => locale ?? (Platform.OS === "web" ? localeFromPath(pathname) : deviceLocale()),
   );
   const [hydrated, setHydrated] = useState<boolean>(() => locale !== undefined);
   // A pinned provider (the `/en` tree) renders a fixed locale; a language

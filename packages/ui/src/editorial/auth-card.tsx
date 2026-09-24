@@ -29,11 +29,13 @@ export const AUTH_CARD_PADDING_Y = 34;
 
 export function AuthCard({
   children,
+  contentStyle,
   panelStyle,
   onContentLayout,
   animateIn = true,
 }: {
   children: ReactNode;
+  contentStyle?: StyleProp<ViewStyle>;
   panelStyle?: StyleProp<ViewStyle>;
   onContentLayout?: (e: LayoutChangeEvent) => void;
   /** Off when the screen must open on another screen's exact frame. */
@@ -52,7 +54,9 @@ export function AuthCard({
           panelStyle,
         ]}
       >
-        <View onLayout={onContentLayout}>{children}</View>
+        <View style={contentStyle} onLayout={onContentLayout}>
+          {children}
+        </View>
       </Animated.View>
     </Animated.View>
   );

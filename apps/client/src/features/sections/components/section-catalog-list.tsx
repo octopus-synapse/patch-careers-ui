@@ -51,7 +51,9 @@ export function SectionCatalogList({
           <View style={styles.catalogBody}>
             <View style={styles.catalogTitleRow}>
               <Text style={styles.catalogTitle}>{option.title}</Text>
-              {option.count ? <Text style={styles.catalogCount}>{option.count}</Text> : null}
+              {option.count !== undefined ? (
+                <Text style={styles.catalogCount}>{option.count}</Text>
+              ) : null}
             </View>
             <Text style={styles.catalogDesc} numberOfLines={2}>
               {option.description}

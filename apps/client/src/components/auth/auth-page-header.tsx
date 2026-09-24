@@ -1,4 +1,5 @@
 import { authDialogPalette } from "@patch-careers/tokens";
+import { Divider, XStack, YStack } from "@patch-careers/ui";
 import { useThemeName } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
@@ -41,14 +42,7 @@ export function AuthPageHeader(): ReactElement {
         zIndex: 10,
       }}
     >
-      <View
-        style={{
-          height: 50,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <XStack height={50} alignItems="center" justifyContent="space-between">
         <Pressable
           accessibilityRole="link"
           accessibilityLabel="Patch"
@@ -78,7 +72,7 @@ export function AuthPageHeader(): ReactElement {
             strokeWidth={AUTH_MENU_STROKE_WIDTH}
           />
         </Pressable>
-      </View>
+      </XStack>
       {open ? (
         <View
           style={{
@@ -109,6 +103,7 @@ export function AuthPageHeader(): ReactElement {
               void switchLocale(locale === "en" ? "pt-BR" : "en");
               setOpen(false);
             }}
+            // @style-allow inline: native Pressable requires its hit-area spacing through the style prop
             style={{ paddingHorizontal: 12, paddingVertical: 10 }}
           >
             <Text style={{ color: palette.brand, fontSize: 15 }}>
@@ -131,16 +126,19 @@ export function AuthPageHeader(): ReactElement {
               setScheme(scheme === "dark" ? "light" : "dark");
               setOpen(false);
             }}
+            // @style-allow inline: native Pressable requires its hit-area spacing through the style prop
             style={{ paddingHorizontal: 12, paddingVertical: 10 }}
           >
             <Text style={{ color: palette.brand, fontSize: 15 }}>
               {t(scheme === "dark" ? "profile.menu.theme.light" : "profile.menu.theme.dark")}
             </Text>
           </Pressable>
-          <View style={{ height: 1, backgroundColor: palette.inputBorder, marginVertical: 8 }} />
-          <View style={{ paddingHorizontal: 12, paddingVertical: 10 }}>
+          <YStack marginVertical={8}>
+            <Divider color={palette.inputBorder} />
+          </YStack>
+          <YStack paddingHorizontal={12} paddingVertical={10}>
             <Text style={{ color: palette.brand, fontSize: 15 }}>{t("landing.nav.help")}</Text>
-          </View>
+          </YStack>
           {(["privacy", "terms"] as const).map((kind) => (
             <Pressable
               key={kind}
@@ -149,6 +147,7 @@ export function AuthPageHeader(): ReactElement {
                 setOpen(false);
                 void Linking.openURL(`https://patchcareers.org/${kind}`);
               }}
+              // @style-allow inline: native Pressable requires its hit-area spacing through the style prop
               style={{ paddingHorizontal: 12, paddingVertical: 10 }}
             >
               <Text style={{ color: palette.brand, fontSize: 15 }}>

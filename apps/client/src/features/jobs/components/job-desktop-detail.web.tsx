@@ -1,13 +1,12 @@
-import { useAppRouter } from "@/navigation/use-app-router";
 import { editorialPalette } from "@patch-careers/tokens";
 import { Sheet, Text, useEditorialPalette, useToast, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, PillButton } from "@patch-careers/ui/editorial";
-
 import { Bookmark, ChevronLeft, ExternalLink, FileText, Mail } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView } from "react-native";
 import { MatchBreakdown } from "@/features/match";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import { useJobOpportunity } from "../hooks/use-job-opportunity";
 import { useJobsWorkspace } from "../hooks/use-jobs-workspace";
@@ -16,8 +15,8 @@ import { useToggleSaveJob } from "../hooks/use-save-job";
 import { type PreparationDocument, safeJobUrl } from "../lib/discovery";
 import { jobMetaLine, toTitleCase } from "../lib/helpers";
 import { DidYouApplySheet } from "./did-you-apply-sheet";
-import { JobComposer } from "./job-composer.web";
-import { JobLogo } from "./job-logo.web";
+import { JobComposer } from "./job-composer";
+import { JobLogo } from "./job-logo";
 import { JobsEmpty } from "./job-shelf.web";
 
 export function JobDesktopDetail({ id }: { id: string }) {

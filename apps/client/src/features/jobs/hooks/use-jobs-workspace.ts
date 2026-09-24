@@ -40,6 +40,24 @@ export function useJobsWorkspace() {
   });
   const mutation = useMutation({
     scope: { id: `jobs-workspace-${currentUser?.userId}` },
+    onMutate: async ({ job, update }) => {
+      await client.cancelQueries({ queryKey: key });
+      const previous = client.getQueryData<GetV1MeUiState200>(key);
+      if (previous) {
+        const entry = readWorkspace(previous.state ?? {}).find(
+          (item) => item.job.externalId === job.externalId,
+        );
+        const next = update(entry ?? emptyEntry(job));
+        const entryKey = workspaceKey(entry?.job.id ?? job.id);
+        client.setQueryData<GetV1MeUiState200>(key, {
+          state: { ...previous.state, [entryKey]: next },
+        });
+      }
+      return { previous };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previous) client.setQueryData(key, context.previous);
+    },
     mutationFn: async ({
       job,
       update,

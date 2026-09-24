@@ -21,6 +21,7 @@
 
 import { Inter_700Bold } from "@expo-google-fonts/inter";
 import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
+import { Manrope_500Medium } from "@expo-google-fonts/manrope";
 import {
   PlayfairDisplay_500Medium,
   PlayfairDisplay_600SemiBold,
@@ -97,6 +98,7 @@ export default function RootLayout(): ReactElement {
     PlayfairDisplay_500Medium,
     PlayfairDisplay_600SemiBold,
     JetBrainsMono_500Medium,
+    Manrope_500Medium,
     ...(Platform.OS === "web" ? {} : { Inter_700Bold }),
   });
 

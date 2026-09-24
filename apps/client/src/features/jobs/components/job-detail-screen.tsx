@@ -1,1 +1,1 @@
-export { JobDetailScreen } from "./job-detail-legacy";
+export { JobMobileDetail as JobDetailScreen } from "./job-mobile-detail";

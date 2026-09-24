@@ -1,4 +1,3 @@
-import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * Resume detail — pushed over the tabs from the Currículos sub-tab. Embedded
  * live preview, metadata, the action row (rename / download PDF / duplicate /
@@ -7,7 +6,6 @@ import { useAppRouter } from "@/navigation/use-app-router";
  */
 import { useGetV1ExportResumeDocx, useGetV1ExportResumePdf } from "@patch-careers/api-client";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
-
 import * as WebBrowser from "expo-web-browser";
 import {
   ChevronLeft,
@@ -26,6 +24,7 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { StyleScoreBadge } from "@/components/style-score-badge";
 import { ResumeSectionsManager, type SectionsManagerHandle } from "@/features/sections";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import { useMasterResumeId, useResumeDetail, useResumeMutations } from "../hooks/queries";
 import { useContentLocale } from "../hooks/use-content-locale";

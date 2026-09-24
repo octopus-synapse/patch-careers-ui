@@ -79,6 +79,7 @@ export {
   TAB_ICON_BAND,
   TAB_ICON_SIZE,
   TabBarItem,
+  type TabBarItemPresentation,
   type TabBarItemSize,
 } from "./tab-bar";
 export { ToggleField, type ToggleFieldProps } from "./toggle-field";

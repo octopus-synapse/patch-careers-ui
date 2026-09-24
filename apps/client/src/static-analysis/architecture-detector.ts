@@ -30,9 +30,10 @@ export const SRC_DIR = path.join(__dirname, "..");
  * Features that MAY be imported by other features (shared domain). ADR-0010.
  * `fit` + `match` are the scoring foundation: `match` consumes `fit`'s profile
  * status (gating) and `resumes`; the Jobs tab consumes `match`'s Recomendadas
- * section + breakdown. Both are cross-cutting score primitives, not leaf UI.
+ * section + breakdown. `billing` owns the cross-cutting paid-plan capability
+ * gate used by those domains. These are shared domain primitives, not leaf UI.
  */
-export const FOUNDATION_FEATURES = new Set(["sections", "resumes", "fit", "match"]);
+export const FOUNDATION_FEATURES = new Set(["sections", "resumes", "fit", "match", "billing"]);
 
 export type ImportRule = "cross-feature" | "deep-import";
 

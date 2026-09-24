@@ -37,6 +37,7 @@ import { I18nProvider, translatorFor } from "@/providers/i18n-provider";
 import { type SectionLocales, useResumeSections } from "../hooks/use-resume-sections";
 import { useSectionItemForm } from "../hooks/use-section-item-form";
 import { type RewriteProposal, useSectionItemMutations } from "../hooks/use-section-item-mutations";
+import { sectionModalTitle } from "../lib/section-modal-title";
 import type { MergedSection } from "../lib/section-visibility";
 import { useEd } from "../lib/styles";
 import { fieldValueFromText } from "../lib/text-diff";
@@ -228,7 +229,7 @@ function EditItemModal({
     <>
       <SectionItemModal
         visible={!review}
-        title={editing.section.title}
+        title={sectionModalTitle(editing.section.key, editing.section.title)}
         fields={fields}
         control={form.control}
         readOnlyKeys={derivedKeys}

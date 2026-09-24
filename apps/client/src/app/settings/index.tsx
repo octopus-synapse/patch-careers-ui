@@ -11,7 +11,7 @@ import { useAppRouter } from "@/navigation/use-app-router";
 import { logout } from "@patch-careers/auth";
 import { YStack } from "@patch-careers/ui";
 import { SettingsCard, SettingsRow } from "@patch-careers/ui/editorial";
-import { type Href } from "expo-router";
+import type { Href } from "expo-router";
 import { Bell, LockKeyhole, LogOut, Palette, UserRound } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";

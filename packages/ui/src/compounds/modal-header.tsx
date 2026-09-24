@@ -1,10 +1,9 @@
-import { authDialogPalette } from "@patch-careers/tokens";
 import { X } from "lucide-react-native";
 import type { ReactNode } from "react";
 import { Pressable, useWindowDimensions } from "react-native";
 import { editorialFonts } from "../editorial/fonts";
 import { TText, TXStack } from "../internal/tamagui-shim";
-import { useThemeName } from "../internal/use-theme-name";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
 
 export type ModalHeaderProps = {
   title: string;
@@ -26,7 +25,7 @@ export function ModalHeader({
   compactOnMobile = false,
   leadingAction,
 }: ModalHeaderProps) {
-  const dialogPalette = authDialogPalette[useThemeName()];
+  const palette = useEditorialPalette();
   const { width } = useWindowDimensions();
   const compact = compactOnMobile && width < 600;
 
@@ -41,13 +40,13 @@ export function ModalHeader({
         accessibilityRole="header"
         flex={1}
         textAlign="center"
-        fontFamily={editorialFonts.sans}
+        fontFamily={editorialFonts.serif}
         fontSize={compact ? 23 : 28}
         lineHeight={compact ? 28 : 34}
         letterSpacing={compact ? -0.6 : -1}
-        fontWeight="600"
+        fontWeight="700"
         fontStyle="normal"
-        color={dialogPalette.brand}
+        color={palette.ink}
       >
         {title}
       </TText>
@@ -59,7 +58,7 @@ export function ModalHeader({
           disabled={closeDisabled}
           onPress={onClose}
         >
-          <X size={22} color={dialogPalette.muted} />
+          <X size={22} color={palette.muted} />
         </Pressable>
       </TXStack>
     </TXStack>

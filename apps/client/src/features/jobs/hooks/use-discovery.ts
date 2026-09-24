@@ -1,7 +1,7 @@
 import { getV1JobsRecommended } from "@patch-careers/api-client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { usePatchPlan } from "@/features/billing/use-patch-plan";
+import { usePatchPlan } from "@/features/billing";
 import { useAuthState } from "@/providers/auth-provider";
 import {
   matchesDiscoveryFilters,

@@ -25,7 +25,27 @@ export function ActiveFilterChips({
   onChange: (filters: JobsFilters) => void;
 }): ReactElement | null {
   const { t, locale } = useI18n();
-  const chips = activeFilterChips(filters, t, locale);
+  const chips = [
+    ...(filters.search
+      ? [
+          {
+            key: "search",
+            label: filters.search,
+            remove: (f: JobsFilters) => ({ ...f, search: "" }),
+          },
+        ]
+      : []),
+    ...(filters.location
+      ? [
+          {
+            key: "location",
+            label: filters.location,
+            remove: (f: JobsFilters) => ({ ...f, location: "" }),
+          },
+        ]
+      : []),
+    ...activeFilterChips(filters, t, locale),
+  ];
   if (chips.length === 0) return null;
   return (
     <ScrollView

@@ -1,7 +1,7 @@
 import { postV1MatchBatch } from "@patch-careers/api-client";
 import { type QueryClient, useQueries, useQueryClient } from "@tanstack/react-query";
+import { usePatchPlan } from "@/features/billing";
 import { useMasterResumeId } from "@/features/resumes";
-import { usePatchPlan } from "@/features/billing/use-patch-plan";
 import { createMatchBatcher } from "../lib/match-batcher";
 
 const batchers = new WeakMap<QueryClient, ReturnType<typeof createMatchBatcher>>();

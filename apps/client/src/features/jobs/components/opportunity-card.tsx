@@ -6,7 +6,7 @@ import { AppLink } from "@/navigation/app-link";
 import { useI18n } from "@/providers/i18n-provider";
 import type { Opportunity } from "../lib/discovery";
 import { toTitleCase } from "../lib/helpers";
-import { JobLogo } from "./job-logo.web";
+import { JobLogo } from "./job-logo";
 import { JobScore } from "./job-score";
 
 export function OpportunityCard({

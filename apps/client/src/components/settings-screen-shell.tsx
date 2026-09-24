@@ -1,5 +1,3 @@
-import { useAppRouter } from "@/navigation/use-app-router";
-import { withoutLocale } from "@/navigation/route-locale";
 /**
  * `SettingsScreenShell` — standalone screen frame (slim back bar + centered
  * serif title + scroll body) shared by the settings routes and the Profile tab.
@@ -33,6 +31,8 @@ import {
 } from "@/features/settings";
 import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
+import { withoutLocale } from "@/navigation/route-locale";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 
 export function SettingsScreenShell({

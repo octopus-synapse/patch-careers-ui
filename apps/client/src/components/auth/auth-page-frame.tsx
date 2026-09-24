@@ -1,4 +1,5 @@
 import { authDialogPalette } from "@patch-careers/tokens";
+import { YStack } from "@patch-careers/ui";
 import { AuthShell, useThemeName } from "@patch-careers/ui/editorial";
 import type { ReactElement, ReactNode } from "react";
 import { Platform, useWindowDimensions, View } from "react-native";
@@ -41,7 +42,7 @@ export function AuthPageFrame({
     : Math.min(AUTH_PAGE_PANEL_WIDTH, (width * (plan ? 0.96 : 0.92)) / scale);
 
   return (
-    <View style={{ flex: 1 }}>
+    <YStack flex={1}>
       <AuthShell
         variant="card"
         showEra={false}
@@ -66,6 +67,6 @@ export function AuthPageFrame({
         </View>
       </AuthShell>
       {showHeader && Platform.OS !== "web" ? <AuthPageHeader /> : null}
-    </View>
+    </YStack>
   );
 }

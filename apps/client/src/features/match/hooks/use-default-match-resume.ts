@@ -7,8 +7,8 @@
  */
 import { getV1ResumesResumeIdQualityQueryOptions } from "@patch-careers/api-client";
 import { useQueries } from "@tanstack/react-query";
+import { usePatchPlan } from "@/features/billing";
 import { useMasterResumeId, useResumeList } from "@/features/resumes";
-import { usePatchPlan } from "@/features/billing/use-patch-plan";
 
 export function useDefaultMatchResume(): {
   resumeId: string | undefined;

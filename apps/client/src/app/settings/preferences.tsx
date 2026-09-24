@@ -4,7 +4,6 @@ import { AppRedirect } from "@/navigation/app-redirect";
  * (see `account.tsx` for why).
  */
 
-
 import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { PreferencesSection, settingsSectionHref } from "@/features/settings";

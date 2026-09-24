@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView } from "react-native";
 import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useAppRouter } from "@/navigation/use-app-router";
+import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 import { seedExternalJob } from "../hooks/queries";
 import { useDiscovery } from "../hooks/use-discovery";
@@ -18,11 +19,12 @@ import { balancedPages } from "../lib/balanced-pages";
 import type { DiscoveryGroup, Opportunity } from "../lib/discovery";
 import { discoveryParams, readDiscoveryRoute } from "../lib/discovery-route";
 import { activeFilterChips } from "../lib/helpers";
+import { useJobsLayoutStore } from "../model/jobs-layout-store";
 import { EMPTY_JOBS_FILTERS, type JobsFilters, type JobsScope } from "../types";
 import { DiscoveryFilters } from "./discovery-filters";
-import { JobComposer } from "./job-composer.web";
+import { JobComposer } from "./job-composer";
 import { JobGrid, JobShelf, JobsEmpty } from "./job-shelf.web";
-import { OpportunityCard } from "./opportunity-card.web";
+import { OpportunityCard } from "./opportunity-card";
 
 export function JobsDesktopScreen() {
   const PAGE_SIZE = 12;
@@ -30,6 +32,7 @@ export function JobsDesktopScreen() {
   const inset = useNavBarInset();
   const { t, locale } = useI18n();
   const router = useAppRouter();
+  const { currentUser } = useAuthState();
   const client = useQueryClient();
   const params = useLocalSearchParams<Record<string, string | string[]>>();
   const routeKey = JSON.stringify(params);
@@ -43,7 +46,13 @@ export function JobsDesktopScreen() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [recommendedPage, setRecommendedPage] = useState(1);
   const [fixedRecommendedPageSizes, setFixedRecommendedPageSizes] = useState<number[]>([]);
-  const [recommendedLayout, setRecommendedLayout] = useState<"list" | "grid">("list");
+  const recommendedLayout = useJobsLayoutStore((state) =>
+    currentUser ? (state.layouts[currentUser.userId] ?? "list") : "list",
+  );
+  const setStoredLayout = useJobsLayoutStore((state) => state.setLayout);
+  const setRecommendedLayout = (layout: "list" | "grid") => {
+    if (currentUser) setStoredLayout(currentUser.userId, layout);
+  };
   const recommendedListRef = useRef<HTMLDivElement>(null);
   const workspace = useJobsWorkspace();
   const data = useDiscovery(filters, workspace.entries);
@@ -178,9 +187,9 @@ export function JobsDesktopScreen() {
   };
   const recommendedSource = data.recommended.data?.items.length ? data.recommended : data.catalog;
   const recommendedHasNext = recommendedSource.hasNextPage;
-  const recommendedTotal = data.recommended.data?.items.length
-    ? data.recommended.data.total
-    : data.catalog.total;
+  const recommendedTotal =
+    (data.recommended.data?.items.length ? data.recommended.data.total : data.catalog.total) ??
+    recommendedJobs.length;
   const recommendedPages = balancedPages(
     recommendedJobs,
     PAGE_SIZE,
@@ -369,6 +378,7 @@ export function JobsDesktopScreen() {
                   tabRefs.current[index] = node as unknown as HTMLElement;
                 }}
                 accessibilityRole="tab"
+                accessibilityLabel={tab.label}
                 accessibilityState={{ selected: scope === tab.key }}
                 tabIndex={scope === tab.key ? 0 : -1}
                 nativeID={`jobs-tab-${tab.key}`}

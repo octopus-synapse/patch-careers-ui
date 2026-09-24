@@ -1,5 +1,6 @@
 import type { Locale } from "@patch-careers/i18n";
 import { authDialogPalette } from "@patch-careers/tokens";
+import { YStack } from "@patch-careers/ui";
 import { BrandMark, editorialFonts, useThemeName } from "@patch-careers/ui/editorial";
 import { ArrowUpRight, Check } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
@@ -74,7 +75,7 @@ export function GuestLanguageDialog({
                 lineHeight: 37,
                 fontWeight: "800",
                 letterSpacing: -2.2,
-                color: "#151515",
+                color: colors.wordmark,
               }}
             >
               patch
@@ -94,7 +95,7 @@ export function GuestLanguageDialog({
             {t("landing.languageConfirm.title")}
           </Text>
 
-          <View accessibilityRole="radiogroup" style={{ gap: 9 }}>
+          <YStack accessibilityRole="radiogroup" gap={9}>
             {LANGUAGES.map((language) => {
               const active = selected === language.value;
               return (
@@ -117,7 +118,7 @@ export function GuestLanguageDialog({
                     gap: 12,
                   }}
                 >
-                  <View style={{ flex: 1, gap: 2 }}>
+                  <YStack flex={1} gap={2}>
                     <Text
                       style={{
                         color: colors.brand,
@@ -133,12 +134,12 @@ export function GuestLanguageDialog({
                     >
                       {language.region}
                     </Text>
-                  </View>
+                  </YStack>
                   {active ? <Check size={19} color={colors.brand} strokeWidth={2} /> : null}
                 </Pressable>
               );
             })}
-          </View>
+          </YStack>
 
           <Pressable
             testID="guestLanguage.confirm"
@@ -157,7 +158,7 @@ export function GuestLanguageDialog({
           >
             <Text
               style={{
-                color: "#FFFFFF",
+                color: colors.onPrimary,
                 fontFamily: editorialFonts.sans,
                 fontSize: 13,
                 fontWeight: "500",
@@ -165,7 +166,7 @@ export function GuestLanguageDialog({
             >
               {t("landing.languageConfirm.confirm")}
             </Text>
-            <ArrowUpRight size={18} color="#FFFFFF" strokeWidth={1.8} />
+            <ArrowUpRight size={18} color={colors.onPrimary} strokeWidth={1.8} />
           </Pressable>
         </ScrollView>
       </View>

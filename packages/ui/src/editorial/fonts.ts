@@ -27,5 +27,6 @@ export const editorialFonts = {
     android: "sans-serif",
     default: "system-ui",
   }),
+  navigation: "Manrope_500Medium",
   mono: "JetBrainsMono_500Medium",
 } as const;

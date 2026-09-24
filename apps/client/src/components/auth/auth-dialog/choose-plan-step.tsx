@@ -3,7 +3,8 @@ import { Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import { ArrowLeft, ArrowUpRight, Check } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
-import { Pressable, ScrollView, TextInput, useWindowDimensions } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, useWindowDimensions } from "react-native";
+import { ConsentDialog } from "@/components/auth/consent-dialog";
 import { useI18n } from "@/providers/i18n-provider";
 import { AuthStepTitle } from "./auth-step-title";
 
@@ -29,25 +30,37 @@ const planFeatures = {
   max: ["go.goCardTranslations", "go.goCardMatch", "go.goCardResume", "go.maxCardLimit"],
 } as const;
 
+function splitPrice(price: string): { amount: string; cadence?: string } {
+  for (const cadence of ["per month", "por mês"]) {
+    const suffix = ` ${cadence}`;
+    if (price.endsWith(suffix)) {
+      return { amount: price.slice(0, -suffix.length), cadence };
+    }
+  }
+  return { amount: price };
+}
+
 export function ChoosePlanStep({
   onContinue,
   onBack,
+  requireAccountConsent = false,
+  submitting = false,
 }: {
-  readonly onContinue: (plan: SignupPlan, billingCountry: string) => void;
+  readonly onContinue: (plan: SignupPlan) => void | Promise<void>;
   readonly onBack: () => void;
+  readonly requireAccountConsent?: boolean;
+  readonly submitting?: boolean;
 }): ReactElement {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const palette = useEditorialPalette();
   const theme = useThemeName();
   const dialogPalette = authDialogPalette[theme];
   const { width } = useWindowDimensions();
   const columns = width >= 1180;
   const [plan, setPlan] = useState<SignupPlan | null>(null);
-  const [billingCountry, setBillingCountry] = useState(locale === "pt-BR" ? "BR" : "US");
-  const country = billingCountry.trim().toUpperCase();
-  const validCountry = /^[A-Z]{2}$/.test(country);
-  const canContinue = plan !== null && (plan === "free" || validCountry);
-  const selectedBackground = theme === "light" ? "#F0F4E9" : "#2C382B";
+  const [consentOpen, setConsentOpen] = useState(false);
+  const canContinue = plan !== null && !submitting;
+  const selectedBackground = dialogPalette.selected;
 
   const cards = plans.map((option) => {
     const selected = plan === option;
@@ -56,16 +69,9 @@ export function ChoosePlanStep({
       option === "free" ? "go.freeTitle" : option === "go" ? "go.paidTitle" : "go.maxTitle",
     );
     const price = t(
-      option === "free"
-        ? "go.freePrice"
-        : option === "go"
-          ? country === "BR"
-            ? "go.brlPrice"
-            : "go.usdPrice"
-          : country === "BR"
-            ? "go.maxBrlPrice"
-            : "go.maxUsdPrice",
+      option === "free" ? "go.freePrice" : option === "go" ? "go.brlPrice" : "go.maxBrlPrice",
     );
+    const priceParts = splitPrice(price);
     const tagline = t(
       option === "free" ? "go.freeTagline" : option === "go" ? "go.goTagline" : "go.maxTagline",
     );
@@ -78,8 +84,8 @@ export function ChoosePlanStep({
         key={option}
         accessibilityRole="radio"
         accessibilityState={{ checked: selected }}
-        accessibilityLabel={`${title}, ${price}${featured ? `, ${t("go.mostPopular")}` : ""}`}
-        onPress={() => setPlan(option)}
+        accessibilityLabel={`${title}, ${option === "free" ? tagline : price}${featured ? `, ${t("go.mostPopular")}` : ""}`}
+        onPress={submitting ? undefined : () => setPlan(option)}
         testID={`authDialog.plan.${option}`}
         style={{ flex: columns ? 1 : undefined, minWidth: 0 }}
       >
@@ -107,7 +113,7 @@ export function ChoosePlanStep({
                   fontSize={11}
                   lineHeight={15}
                   fontWeight="700"
-                  color="#FFFFFF"
+                  color={dialogPalette.onPrimary}
                 >
                   {t("go.mostPopular")}
                 </Text>
@@ -147,21 +153,34 @@ export function ChoosePlanStep({
           >
             {tagline}
           </Text>
-          <Text
-            fontFamily={editorialFonts.sans}
-            fontSize={24}
-            lineHeight={30}
-            fontWeight="700"
-            letterSpacing={-0.5}
-            color={dialogPalette.brand}
-            marginTop={23}
-          >
-            {price}
-          </Text>
+          {option !== "free" ? (
+            <XStack alignItems="baseline" gap={7} marginTop={23} minHeight={30}>
+              <Text
+                fontFamily={editorialFonts.sans}
+                fontSize={22}
+                lineHeight={27}
+                fontWeight="600"
+                letterSpacing={-0.35}
+                color={palette.ink}
+              >
+                {priceParts.amount}
+              </Text>
+              {priceParts.cadence ? (
+                <Text
+                  fontFamily={editorialFonts.sans}
+                  fontSize={12}
+                  lineHeight={16}
+                  color={dialogPalette.muted}
+                >
+                  {priceParts.cadence}
+                </Text>
+              ) : null}
+            </XStack>
+          ) : null}
           <YStack
             height={1}
             backgroundColor={dialogPalette.inputBorder}
-            marginTop={20}
+            marginTop={option === "free" ? 26 : 18}
             marginBottom={20}
           />
           {includes ? (
@@ -179,7 +198,12 @@ export function ChoosePlanStep({
           <YStack gap={14}>
             {features.map((feature) => (
               <XStack key={feature} gap={12} alignItems="flex-start">
-                <Check size={16} color={dialogPalette.brandMuted} style={{ marginTop: 3 }} />
+                <Check
+                  size={16}
+                  color={dialogPalette.brandMuted}
+                  // @style-allow inline: lucide icons expose alignment only through their native style prop
+                  style={{ marginTop: 3 }}
+                />
                 <Text
                   flex={1}
                   fontFamily={editorialFonts.sans}
@@ -197,64 +221,14 @@ export function ChoosePlanStep({
     );
   });
 
-  const billingCountryControl = (
-    <XStack alignItems="center" gap={12} flexWrap="wrap">
-      <Text fontFamily={editorialFonts.sans} fontSize={13} color={palette.ink}>
-        {t("go.chooseMarket")}
-      </Text>
-      <TextInput
-        value={billingCountry}
-        onChangeText={setBillingCountry}
-        autoCapitalize="characters"
-        maxLength={2}
-        accessibilityLabel={t("go.billingCountry")}
-        testID="authDialog.billingCountry"
-        style={{
-          width: 64,
-          borderWidth: 1,
-          borderColor: dialogPalette.inputBorder,
-          borderRadius: 8,
-          padding: 8,
-          fontSize: 14,
-          textAlign: "center",
-          color: palette.ink,
-          backgroundColor: dialogPalette.input,
-        }}
-      />
-    </XStack>
-  );
-
   const content = (
     <YStack gap={columns ? 24 : width < 600 ? 26 : 20} width="100%">
-      <XStack alignItems="flex-end" justifyContent="space-between" gap={16} flexWrap="wrap">
-        <YStack flex={1} minWidth={width < 600 ? 240 : 360}>
-          <AuthStepTitle variant="plan">{t("go.choosePlanTitle")}</AuthStepTitle>
-          <Text
-            fontFamily={editorialFonts.sans}
-            fontSize={14}
-            lineHeight={21}
-            color={dialogPalette.muted}
-            marginTop={8}
-          >
-            {t("go.lead")}
-          </Text>
-        </YStack>
-        {columns && plan !== null && plan !== "free" ? billingCountryControl : null}
-      </XStack>
+      <YStack width="100%" maxWidth={640} alignSelf="center" alignItems="center">
+        <AuthStepTitle variant="plan" centered isPage>
+          {t("go.choosePlanTitle")}
+        </AuthStepTitle>
+      </YStack>
       {columns ? <XStack gap={14}>{cards}</XStack> : <YStack gap={14}>{cards}</YStack>}
-      {!columns && plan !== null && plan !== "free" ? billingCountryControl : null}
-      {plan !== null && plan !== "free" ? (
-        <YStack gap={4}>
-          {!validCountry ? (
-            <Text color={palette.danger} fontSize={12}>
-              {t("go.invalidCountry")}
-            </Text>
-          ) : null}
-          <Text fontFamily={editorialFonts.sans} fontSize={12} color={dialogPalette.muted}>
-            {t("go.countryNote")}
-          </Text>
-        </YStack>
-      ) : null}
     </YStack>
   );
 
@@ -263,9 +237,10 @@ export function ChoosePlanStep({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t("common.back")}
-        onPress={onBack}
+        disabled={submitting}
+        onPress={submitting ? undefined : onBack}
         testID="authDialog.planBack"
-        style={{ flex: 0.42 }}
+        style={columns ? { width: 220 } : { flex: 0.42 }}
       >
         <XStack
           minHeight={56}
@@ -291,13 +266,21 @@ export function ChoosePlanStep({
       </Pressable>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={t("common.continue")}
-        accessibilityState={{ disabled: !canContinue }}
+        accessibilityLabel={t(
+          requireAccountConsent ? "auth.createAccountAndContinue" : "common.continue",
+        )}
+        accessibilityState={{ disabled: !canContinue, busy: submitting }}
         disabled={!canContinue}
         onPress={() => {
-          if (plan) onContinue(plan, country);
+          if (!plan) return;
+          if (requireAccountConsent) {
+            setConsentOpen(true);
+            return;
+          }
+          void onContinue(plan);
         }}
         testID="authDialog.planContinue"
+        // @style-allow inline: native Pressable requires its layout through the style prop
         style={{ flex: 1 }}
       >
         <XStack
@@ -309,15 +292,21 @@ export function ChoosePlanStep({
           backgroundColor={dialogPalette.primary}
           opacity={canContinue ? 1 : 0.45}
         >
-          <Text
-            fontFamily={editorialFonts.sans}
-            fontWeight="700"
-            fontSize={15}
-            color={palette.onPrimary}
-          >
-            {t("common.continue")}
-          </Text>
-          <ArrowUpRight size={18} color={palette.onPrimary} />
+          {submitting ? (
+            <ActivityIndicator size="small" color={palette.onPrimary} />
+          ) : (
+            <>
+              <Text
+                fontFamily={editorialFonts.sans}
+                fontWeight="700"
+                fontSize={15}
+                color={palette.onPrimary}
+              >
+                {t(requireAccountConsent ? "auth.createAccountAndContinue" : "common.continue")}
+              </Text>
+              <ArrowUpRight size={18} color={palette.onPrimary} />
+            </>
+          )}
         </XStack>
       </Pressable>
     </XStack>
@@ -327,6 +316,7 @@ export function ChoosePlanStep({
     return (
       <YStack width="100%" flex={1} minHeight={0} overflow="hidden">
         <ScrollView
+          // @style-allow inline: native ScrollView requires viewport sizing through the style prop
           style={{ width: "100%", flex: 1, minHeight: 0 }}
           contentContainerStyle={{ paddingTop: 64, paddingBottom: 26 }}
           nestedScrollEnabled
@@ -346,6 +336,16 @@ export function ChoosePlanStep({
         >
           {actions}
         </YStack>
+        <ConsentDialog
+          open={consentOpen}
+          onOpenChange={setConsentOpen}
+          loading={submitting}
+          onAccept={() => {
+            if (!plan) return;
+            void Promise.resolve(onContinue(plan)).finally(() => setConsentOpen(false));
+          }}
+          testID="authDialog.planConsentDialog"
+        />
       </YStack>
     );
   }
@@ -354,6 +354,16 @@ export function ChoosePlanStep({
     <YStack gap={columns ? 24 : 20} width="100%">
       {content}
       {actions}
+      <ConsentDialog
+        open={consentOpen}
+        onOpenChange={setConsentOpen}
+        loading={submitting}
+        onAccept={() => {
+          if (!plan) return;
+          void Promise.resolve(onContinue(plan)).finally(() => setConsentOpen(false));
+        }}
+        testID="authDialog.planConsentDialog"
+      />
     </YStack>
   );
 }

@@ -1,10 +1,9 @@
-import { useAppRouter } from "@/navigation/use-app-router";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
-
 import { motion } from "framer-motion";
 import { type ReactElement, useState } from "react";
 import { useWindowDimensions } from "react-native";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import { useLandingMotionContext } from "../hooks/use-landing-motion";
 import { useLandingAccents } from "../hooks/use-landing-palettes";

@@ -3,7 +3,6 @@
  * the dynamic field form, language pick, supportive step context, review hub,
  * and review hub. Extracted from onboarding-wizard.tsx; the wizard just routes to these.
  */
-import { useGetV1OnboardingSessionResumePreview } from "@patch-careers/api-client";
 import type { Locale, Translator } from "@patch-careers/i18n";
 import type { ColorScheme } from "@patch-careers/state";
 import { PhoneInput } from "@patch-careers/ui";
@@ -16,19 +15,9 @@ import {
 } from "@patch-careers/ui/editorial";
 import { Check, ChevronRight, Minus, MonitorSmartphone, Moon, Sun, X } from "lucide-react-native";
 import { type ReactElement, useRef, useState } from "react";
-import {
-  Platform,
-  Pressable,
-  Text as RNText,
-  StyleSheet,
-  type TextInput,
-  View,
-} from "react-native";
-import WebView from "react-native-webview";
-import { CLASSIC_RESUME_STYLE_ID } from "@/config/classic-resume-style";
+import { Pressable, Text as RNText, type TextInput, View } from "react-native";
 import { AddRow, FieldRenderer, OptionPill, OverlayModal, useEd } from "@/features/sections";
 import { publicProfileDisplayUrl } from "@/lib/public-profile-url";
-import { useI18n } from "@/providers/i18n-provider";
 import type { FlowStepId } from "../lib/flow-plan";
 import { buildReviewSections, missingRequiredTargets } from "../lib/helpers";
 import type {
@@ -170,12 +159,10 @@ export function StepForm({
 export function LanguageStep({
   locale,
   onSelect,
-  roomy = false,
   t,
 }: {
   locale: Locale;
   onSelect: (locale: Locale) => void;
-  roomy?: boolean;
   t: (key: string) => string;
 }): ReactElement {
   const ed = useEd();
@@ -203,7 +190,7 @@ export function LanguageStep({
     },
   ];
   return (
-    <View style={[ed.langWrap, roomy ? ed.mobileLanguageOptions : null]}>
+    <View style={ed.langWrap}>
       {options.map((option, index) => {
         const selected = locale === option.value;
         return (
@@ -478,53 +465,6 @@ export function LinksEditor({
   );
 }
 
-/** Non-interactive embedded resume document (web iframe / native WebView). */
-function PreviewFrame({ html }: { html: string }): ReactElement {
-  return Platform.OS === "web" ? (
-    <iframe
-      srcDoc={html}
-      title="preview"
-      style={
-        {
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          border: "none",
-        } as unknown as undefined
-      }
-    />
-  ) : (
-    <WebView
-      originWhitelist={["*"]}
-      source={{ html }}
-      style={StyleSheet.absoluteFill}
-      scrollEnabled={false}
-    />
-  );
-}
-
-/** Live preview of the user's real resume in the selected style — the review
- *  hub's hero ("this exists because of you"). Same endpoint/data as the modal
- *  preview (shares the query cache); the A4 page auto-fits via the document's
- *  own fit script. `pointerEvents="none"` keeps the surface inert. */
-function ReviewStylePreview({ styleId }: { styleId: string }): ReactElement | null {
-  const ed = useEd();
-  const { locale } = useI18n();
-  const preview = useGetV1OnboardingSessionResumePreview(
-    { styleId, locale },
-    { query: { refetchOnWindowFocus: false, staleTime: 5 * 60_000 } },
-  );
-  const html = preview.data?.html;
-  if (!html) return null;
-  return (
-    <View style={ed.reviewPreviewBox} pointerEvents="none">
-      <PreviewFrame html={html} />
-    </View>
-  );
-}
-
 export function ReviewSummary({
   addPending,
   onAddSection,
@@ -545,10 +485,24 @@ export function ReviewSummary({
   const sections = buildReviewSections(session, steps);
   const missing = missingRequiredTargets(session);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const activated = new Set(session.activatedExtras ?? []);
-  const options = (session.availableExtras ?? [])
-    .filter((extra) => !activated.has(extra.id))
-    .map((extra) => ({ id: extra.id, label: extra.label, description: extra.description }));
+  const sectionSteps = steps.filter((step) => Boolean(step.sectionTypeKey));
+  const sectionStepIds = new Set(sectionSteps.map((step) => step.id));
+  const catalogSteps = [
+    ...sectionSteps,
+    ...(session.availableExtras ?? []).filter((extra) => !sectionStepIds.has(extra.id)),
+  ];
+  const itemCountByKey = new Map(
+    (session.sections ?? []).map((section) => [
+      section.sectionTypeKey,
+      section.noData ? 0 : (section.items?.length ?? 0),
+    ]),
+  );
+  const options = catalogSteps.map((step) => ({
+    id: step.id,
+    label: step.label,
+    description: step.description,
+    count: step.sectionTypeKey ? (itemCountByKey.get(step.sectionTypeKey) ?? 0) : 0,
+  }));
   // Right column of a checklist row: the chosen style's name, an item count
   // for multi-item sections, "—" for skipped ones, nothing for form steps.
   const rowValue = (section: ReviewSection): string => {
@@ -564,16 +518,7 @@ export function ReviewSummary({
     <View>
       {missing.length > 0 ? <MissingBanner targets={missing} onFix={onEdit} t={t} /> : null}
 
-      {/* The resume itself leads — the payoff the flow has been building to. */}
-      {session.resumeStyleId ? (
-        <AnimatedField delay={100}>
-          <View style={ed.reviewHero}>
-            <ReviewStylePreview styleId={CLASSIC_RESUME_STYLE_ID} />
-          </View>
-        </AnimatedField>
-      ) : null}
-
-      <AnimatedField delay={160}>
+      <AnimatedField delay={100}>
         <View style={ed.reviewList}>
           {sections.map((section) => (
             <Pressable
@@ -617,7 +562,8 @@ export function ReviewSummary({
         options={options}
         onPick={(id) => {
           setPickerOpen(false);
-          onAddSection(id);
+          if (sectionStepIds.has(id)) onEdit(id);
+          else onAddSection(id);
         }}
       />
     </View>

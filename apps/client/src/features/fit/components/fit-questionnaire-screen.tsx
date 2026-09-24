@@ -1,4 +1,3 @@
-import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * <FitQuestionnaireScreen> — the 25-question Fit Profile flow, one question
  * per screen (Editorial Calm). An intro, then a question at a time with a
@@ -12,10 +11,10 @@ import { useAppRouter } from "@/navigation/use-app-router";
  * available from the intro too, so a dev never taps through 25 screens.
  */
 import { PrimaryAction, useEditorialPalette } from "@patch-careers/ui/editorial";
-
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Pressable, SafeAreaView, Text, View } from "react-native";
 import { isDevTestFillEnabled } from "@/config/dev-flags";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import { useFitQuestions, useSubmitFitAnswers } from "../hooks/queries";
 import { useFit } from "../lib/styles";

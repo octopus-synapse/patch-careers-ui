@@ -13,5 +13,5 @@ export function useLocalePathPrefix(): "" | "/en" {
 /** Prefix any internal path with the current web locale. */
 export function useLocalizedHref(): (path: `/${string}`) => Href {
   const locale = localeFromPath(usePathname());
-  return (path) => (Platform.OS === "web" ? hrefForLocale(path as Href, locale) : path as Href);
+  return (path) => (Platform.OS === "web" ? hrefForLocale(path as Href, locale) : (path as Href));
 }

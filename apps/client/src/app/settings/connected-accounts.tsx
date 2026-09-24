@@ -1,6 +1,5 @@
-import { AppRedirect } from "@/navigation/app-redirect";
-
 import type { ReactElement } from "react";
+import { AppRedirect } from "@/navigation/app-redirect";
 import { useLocalizedHref } from "@/navigation/locale-prefix";
 
 /** Old bookmark target; provider management is disabled. */

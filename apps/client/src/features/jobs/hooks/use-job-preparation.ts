@@ -45,7 +45,7 @@ export function useJobPreparation() {
       )
         throw new Error(t("jobs.desktop.importNoDescription"));
       const preview = imported?.preview;
-      const id = `import-${crypto.randomUUID()}`;
+      const id = `import-${globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
       return {
         id,
         externalId: id,

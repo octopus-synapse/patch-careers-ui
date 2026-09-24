@@ -1,6 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
+import { completeUnverifiedAccount, signup } from "@patch-careers/api-client";
+import { login } from "@patch-careers/auth";
 import { authDialogPalette } from "@patch-careers/tokens";
-import { Text, XStack, YStack } from "@patch-careers/ui";
+import { Text, useToast, XStack, YStack } from "@patch-careers/ui";
 import {
   BrandMark,
   editorialFonts,
@@ -11,6 +13,10 @@ import {
 import { useRouter } from "expo-router";
 import { type ReactElement, useEffect, useState } from "react";
 import { Platform, Pressable } from "react-native";
+import { PRIVACY_VERSION, TOS_VERSION } from "@/components/auth/consent-versions";
+import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
+import { useSubmit } from "@/components/auth/hooks/use-submit";
+import { extractApiErrorMessages } from "@/components/auth/validation";
 import { AUTH_FLOW_RESET_EVENT } from "@/navigation/auth-flow-reset";
 import { useI18n } from "@/providers/i18n-provider";
 import { AuthFlowPanel } from "./auth-flow-panel";
@@ -45,18 +51,21 @@ export function AuthFlowCard({
   readonly initialStep?: "email" | "forgotPassword";
   readonly onPlanStepChange?: (isPlanStep: boolean) => void;
 }): ReactElement {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const palette = useEditorialPalette();
   const dialogPalette = authDialogPalette[useThemeName()];
+  const toast = useToast();
   const router = useRouter();
+  const { finishAuthentication } = useCompleteAuth();
+  const { submitting, run } = useSubmit();
   const isPage = variant === "page";
   const mascot = useAuthMascot();
   const [step, setStep] = useState<Step>(initialStep);
   const [mode, setMode] = useState<AccountMode>("new");
   const [email, setEmail] = useState("");
   const [registrationToken, setRegistrationToken] = useState("");
-  const [signupPlan, setSignupPlan] = useState<SignupPlan>("free");
-  const [billingCountry, setBillingCountry] = useState("BR");
+  const [pendingPassword, setPendingPassword] = useState("");
+  const [pendingKeepSignedIn, setPendingKeepSignedIn] = useState(false);
 
   useEffect(() => {
     onPlanStepChange?.(step === "choosePlan");
@@ -70,8 +79,8 @@ export function AuthFlowCard({
       setMode("new");
       setEmail("");
       setRegistrationToken("");
-      setSignupPlan("free");
-      setBillingCountry("BR");
+      setPendingPassword("");
+      setPendingKeepSignedIn(false);
     };
     window.addEventListener(AUTH_FLOW_RESET_EVENT, reset);
     return () => window.removeEventListener(AUTH_FLOW_RESET_EVENT, reset);
@@ -95,6 +104,7 @@ export function AuthFlowCard({
   const toEmailStep = (): void => {
     mascot.reset();
     setRegistrationToken("");
+    setPendingPassword("");
     setStep("email");
   };
 
@@ -111,12 +121,89 @@ export function AuthFlowCard({
   const onBranch = (branch: AuthBranch, identifiedEmail: string): void => {
     setEmail(identifiedEmail);
     setRegistrationToken("");
+    setPendingPassword("");
     if (branch === "signIn" || branch === "unavailable") {
       setStep(branch);
       return;
     }
     setMode(branch === "resumeUnverified" ? "resume" : "new");
     setStep("verifyEmail");
+  };
+
+  const finalizeAccount = async (
+    plan: SignupPlan,
+    password: string,
+    keepSignedIn: boolean,
+  ): Promise<void> => {
+    await run(async () => {
+      let accountCompleted = false;
+      try {
+        const payload = {
+          email,
+          password,
+          acceptedTosVersion: TOS_VERSION,
+          acceptedPrivacyVersion: PRIVACY_VERSION,
+          emailVerificationToken: registrationToken,
+        };
+        if (mode === "resume") {
+          await completeUnverifiedAccount(payload);
+        } else {
+          await signup(payload);
+        }
+        accountCompleted = true;
+
+        let sessionExchangeId: string | undefined;
+        try {
+          const result = await login(email, password, { keepSignedIn });
+          if (result.twoFactorRequired) {
+            router.replace({
+              pathname: "/(auth)/2fa-verify",
+              params: { userId: result.userId, keepSignedIn: keepSignedIn ? "1" : "0" },
+            });
+            return;
+          }
+          sessionExchangeId = result.sessionExchangeId ?? undefined;
+        } catch {
+          setStep("signIn");
+          return;
+        }
+
+        setPendingPassword("");
+        mascot.celebrate({ settle: true });
+        await finishAuthentication({
+          ...(sessionExchangeId ? { sessionExchangeId } : {}),
+          ...(!isPage
+            ? { destination: { pathname: "/onboarding", params: { choosePlan: "1" } } as const }
+            : plan === "free"
+              ? {}
+              : {
+                  destination: {
+                    pathname: "/go",
+                    params: { startCheckout: plan },
+                  },
+                }),
+        });
+      } catch (err) {
+        mascot.grimace();
+        if (accountCompleted) {
+          setStep("signIn");
+          return;
+        }
+
+        const messages = extractApiErrorMessages(err, locale, t, "auth.signupFailed");
+        if (messages.fields.email) {
+          toEmailStep();
+          toast.show({ title: messages.fields.email, intent: "danger" });
+          return;
+        }
+        if (messages.fields.password) {
+          setStep("createAccount");
+          toast.show({ title: messages.fields.password, intent: "danger" });
+          return;
+        }
+        if (messages.toast) toast.show({ title: messages.toast, intent: "danger" });
+      }
+    });
   };
 
   const header = !isPage ? (
@@ -191,21 +278,16 @@ export function AuthFlowCard({
           onChangeEmail={toEmailStep}
           onVerified={(token) => {
             setRegistrationToken(token);
-            setStep(isPage ? "choosePlan" : "createAccount");
+            setStep("createAccount");
           }}
         />
       ) : null}
       {step === "choosePlan" ? (
         <ChoosePlanStep
-          onBack={() => {
-            setRegistrationToken("");
-            setStep("verifyEmail");
-          }}
-          onContinue={(plan, country) => {
-            setSignupPlan(plan);
-            setBillingCountry(country);
-            setStep("createAccount");
-          }}
+          requireAccountConsent
+          submitting={submitting}
+          onBack={() => setStep("createAccount")}
+          onContinue={(plan) => finalizeAccount(plan, pendingPassword, pendingKeepSignedIn)}
         />
       ) : null}
       {step === "createAccount" ? (
@@ -213,12 +295,19 @@ export function AuthFlowCard({
           mascot={mascot}
           email={email}
           mode={mode}
-          registrationToken={registrationToken}
-          signupPlan={signupPlan}
-          billingCountry={billingCountry}
-          choosePlanInOnboarding={!isPage}
+          initialPassword={pendingPassword}
+          deferAccountCreation={isPage}
+          submitting={submitting}
           onChangeEmail={toEmailStep}
-          onRequireSignIn={() => setStep("signIn")}
+          onContinue={(password, keepSignedIn) => {
+            setPendingPassword(password);
+            setPendingKeepSignedIn(keepSignedIn);
+            if (isPage) {
+              setStep("choosePlan");
+              return;
+            }
+            return finalizeAccount("free", password, keepSignedIn);
+          }}
         />
       ) : null}
       {step === "unavailable" ? (

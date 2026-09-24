@@ -21,7 +21,7 @@ function scoreTone(value: number): "red" | "orange" | "yellow" | "light-green" |
 /** Product demonstrations remain fully readable while the chapter camera follows the scroll. */
 export function ProductChapter(props: ChapterContentProps): ReactElement | null {
   const { chapter } = props;
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const router = useAppRouter();
   const localized = useLocalizedHref();
   const copy = (key: string) => t(`landing.scroll.${key}`);
@@ -169,7 +169,7 @@ export function ProductChapter(props: ChapterContentProps): ReactElement | null 
                     className="lp-note lp-link"
                     onClick={() => router.push(localized("/go"))}
                   >
-                    {t("go.title")} · {t(locale === "pt-BR" ? "go.brlPrice" : "go.usdPrice")}
+                    {t("go.title")} · {t("go.brlPrice")}
                   </button>
                   <p className="lp-note">{t("landing.chapters.cta.noCard")}</p>
                 </div>

@@ -21,11 +21,13 @@ export function GhostButton({
   danger,
   disabled,
   label,
+  muted,
   onPress,
 }: {
   danger?: boolean;
   disabled?: boolean;
   label: string;
+  muted?: boolean;
   onPress: () => void;
 }): ReactElement {
   const ed = useEd();
@@ -38,7 +40,14 @@ export function GhostButton({
       hitSlop={8}
       style={ed.ghost}
     >
-      <Text style={[ed.ghostLabel, danger ? ed.ghostDanger : null, disabled ? ed.dim : null]}>
+      <Text
+        style={[
+          ed.ghostLabel,
+          muted ? ed.ghostMuted : null,
+          danger ? ed.ghostDanger : null,
+          disabled ? ed.dim : null,
+        ]}
+      >
         {label}
       </Text>
     </Pressable>

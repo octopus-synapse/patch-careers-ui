@@ -7,9 +7,14 @@ export type PatchPlanStatus = {
   status: string;
   active: boolean;
   plan: "free" | "go" | "max";
+  pendingPlan: "go" | "max" | null;
   used: number;
   limit: number;
   periodEnd: string | null;
+  quotaPeriodEnd: string | null;
+  renews: boolean;
+  billingSource: string | null;
+  creditBalanceCents: number;
   cancelAtPeriodEnd: boolean;
   freeTranslationsUsed: number;
   freeTranslationsLimit: number;
@@ -23,14 +28,11 @@ export function usePatchPlan(pollForActivation = false) {
   const query = useQuery({
     queryKey: [...patchPlanKey, currentUser?.userId],
     queryFn: async () =>
-      (await fetcher<PatchPlanStatus>({ method: "GET", url: "/api/v1/billing/patch-go" })).data,
+      (await fetcher<PatchPlanStatus>({ method: "GET", url: "/api/v1/billing/subscription" })).data,
     enabled: hasBootstrapped && isAuthenticated,
     staleTime: 60_000,
     refetchInterval: pollForActivation
-      ? (query) =>
-          query.state.data?.active || query.state.data?.status === "country_mismatch"
-            ? false
-            : 5_000
+      ? (query) => (query.state.data?.active ? false : 5_000)
       : false,
   });
   return {

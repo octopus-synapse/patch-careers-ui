@@ -1,4 +1,3 @@
-import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * "Perfil" sub-tab body — a settings-style list of supersections (Identidade,
  * then each master-resume section the user has actually filled: Experiência,
@@ -8,7 +7,6 @@ import { useAppRouter } from "@/navigation/use-app-router";
  * Below the list sit the resume quality panel and the CV preview banner.
  */
 import { SettingsCard, SettingsRow, useEditorialPalette } from "@patch-careers/ui/editorial";
-
 import {
   Award,
   BadgeCheck,
@@ -33,6 +31,7 @@ import {
   useMasterResumeId,
 } from "@/features/resumes";
 import { type MergedSection, useResumeSections } from "@/features/sections";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import type { EditableProfile } from "../lib/profile-fields";
 import { usePf } from "../lib/styles";

@@ -4,7 +4,6 @@ import { AppRedirect } from "@/navigation/app-redirect";
  * Frame only; the body is `PrivacySection` (see `account.tsx` for why).
  */
 
-
 import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { PrivacySection, settingsSectionHref } from "@/features/settings";

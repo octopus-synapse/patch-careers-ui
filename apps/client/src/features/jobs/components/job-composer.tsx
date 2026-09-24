@@ -1,18 +1,18 @@
-import { useAppRouter } from "@/navigation/use-app-router";
 import { FetcherError } from "@patch-careers/api-client";
 import { Input, Text, useEditorialPalette, useToast, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, PillButton } from "@patch-careers/ui/editorial";
-
 import { ArrowRight, ChevronLeft, FileText, Link as LinkIcon, Mail } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, Pressable } from "react-native";
+import { ActivityIndicator, Pressable, useWindowDimensions } from "react-native";
 import { copyToClipboard } from "@/lib/clipboard";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import { documentsFromPreparation, useJobPreparation } from "../hooks/use-job-preparation";
 import { type ComposerDraft, useJobsWorkspace } from "../hooks/use-jobs-workspace";
 import { type Opportunity, type PreparationDocument, safeJobUrl } from "../lib/discovery";
-import { JobLogo } from "./job-logo.web";
+import { exportLetter, exportResume } from "../lib/export-document";
+import { JobLogo } from "./job-logo";
 
 type Step = "input" | "choice" | "resume" | "letter" | "generating" | "preview";
 
@@ -21,16 +21,20 @@ export function JobComposer({
   initialKind,
   initialDocument,
   inModal = false,
+  compact = false,
 }: {
   initialJob?: Opportunity;
   initialKind?: "resume" | "letter";
   initialDocument?: PreparationDocument | undefined;
   inModal?: boolean;
+  compact?: boolean;
 }) {
   const palette = useEditorialPalette();
   const { t } = useI18n();
   const toast = useToast();
   const router = useAppRouter();
+  const { width } = useWindowDimensions();
+  const narrow = compact || width < 768;
   const workspace = useJobsWorkspace();
   const preparation = useJobPreparation();
   const form = useForm({
@@ -263,20 +267,9 @@ export function JobComposer({
         const result = await preparation.exportPdf.mutateAsync(current);
         const url = safeJobUrl(result.downloadUrl);
         if (!url) throw new Error("invalid export URL");
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.target = "_blank";
-        anchor.rel = "noopener noreferrer";
-        anchor.click();
+        await exportResume(url);
       } else {
-        const url = URL.createObjectURL(
-          new Blob([form.getValues("document")], { type: "text/plain;charset=utf-8" }),
-        );
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.download = "cover-letter.txt";
-        anchor.click();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        await exportLetter(form.getValues("document"));
       }
     } catch {
       setError(t("jobs.applyFlow.downloadError"));
@@ -291,10 +284,10 @@ export function JobComposer({
   return (
     <YStack
       testID="job-composer"
-      marginBottom={inModal ? 0 : 31}
-      padding={inModal || step === "input" ? 0 : 28}
-      paddingTop={inModal ? 0 : step === "input" ? 24 : 28}
-      paddingBottom={inModal ? 12 : 32}
+      marginBottom={inModal ? 0 : compact ? 22 : 31}
+      padding={inModal || step === "input" ? 0 : narrow ? 18 : 28}
+      paddingTop={inModal ? 0 : step === "input" ? (compact ? 18 : 24) : narrow ? 18 : 28}
+      paddingBottom={inModal ? 12 : compact ? 22 : 32}
       borderRadius={inModal ? 0 : 24}
       borderWidth={inModal ? 0 : 1}
       borderColor={palette.hairline}
@@ -318,8 +311,8 @@ export function JobComposer({
               accessibilityRole="header"
               fontFamily={editorialFonts.serif}
               fontWeight="400"
-              fontSize={36}
-              lineHeight={45}
+              fontSize={compact ? 26 : 36}
+              lineHeight={compact ? 34 : 45}
               letterSpacing={-0.8}
               color={palette.ink}
             >
@@ -335,7 +328,7 @@ export function JobComposer({
               {t("jobs.desktop.composerHelp")}
             </Text>
           </YStack>
-          <XStack gap={12} alignItems="flex-start">
+          <XStack gap={12} alignItems="flex-start" flexDirection={narrow ? "column" : "row"}>
             <YStack flex={1} position="relative">
               <Controller
                 control={form.control}
@@ -369,27 +362,38 @@ export function JobComposer({
                 <LinkIcon size={17} color={palette.muted} />
               </YStack>
             </YStack>
-            <PillButton
-              label={t(busy ? "jobs.desktop.importing" : "common.continue")}
-              minHeight={54}
-              borderRadius={12}
-              disabled={!input.trim() || busy}
-              onPress={importInput}
-              iconPosition="end"
-              renderIcon={({ color }) => <ArrowRight size={15} color={color} />}
-            />
+            <YStack width={narrow ? "100%" : undefined}>
+              <PillButton
+                label={t(busy ? "jobs.desktop.importing" : "common.continue")}
+                minHeight={54}
+                borderRadius={12}
+                disabled={!input.trim() || busy}
+                onPress={importInput}
+                iconPosition="end"
+                renderIcon={({ color }) => <ArrowRight size={15} color={color} />}
+              />
+            </YStack>
           </XStack>
         </YStack>
       ) : null}
       {step === "choice" && job ? (
-        <XStack gap={36} alignItems="center">
+        <XStack
+          gap={narrow ? 18 : 36}
+          alignItems="center"
+          flexDirection={narrow ? "column" : "row"}
+        >
           <YStack flex={1} gap={15}>
             <ComposerJob job={job} />
             <Text fontSize={12} color={palette.muted}>
               {t("jobs.desktop.choose")}
             </Text>
           </YStack>
-          <XStack flex={1.5} gap={14}>
+          <XStack
+            width={narrow ? "100%" : undefined}
+            flex={narrow ? undefined : 1.5}
+            gap={14}
+            flexDirection={narrow ? "column" : "row"}
+          >
             {(["resume", "letter"] as const).map((option) => (
               <YStack key={option} flex={1}>
                 <Pressable

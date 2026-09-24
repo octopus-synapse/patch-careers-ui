@@ -21,7 +21,7 @@ import {
   useEditorialPalette,
   useThemeName,
 } from "@patch-careers/ui/editorial";
-import { type Href } from "expo-router";
+import type { Href } from "expo-router";
 import { ChevronRight, LogOut, MapPin, Settings } from "lucide-react-native";
 import type { ComponentType, ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";

@@ -39,7 +39,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Polyline } from "react-native-svg";
-import { usePatchPlan } from "@/features/billing/use-patch-plan";
+import { usePatchPlan } from "@/features/billing";
 import { useMasterResumeId, useResumeMutations } from "@/features/resumes";
 import { RolePicker } from "@/features/sections";
 import { useAppRouter } from "@/navigation/use-app-router";

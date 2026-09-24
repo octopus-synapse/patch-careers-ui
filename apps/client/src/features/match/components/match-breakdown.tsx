@@ -1,4 +1,3 @@
-import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * <MatchBreakdown> — the compatibility panel on a job detail. Shows the
  * overall score ring + available sub-scores and skill gaps (deep-linking
@@ -7,10 +6,10 @@ import { useAppRouter } from "@/navigation/use-app-router";
  */
 import { ScoreExplainSheet, ScorePanel, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
-
 import { Info } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import { useDefaultMatchResume } from "../hooks/use-default-match-resume";
 import { useMatch } from "../hooks/use-match";

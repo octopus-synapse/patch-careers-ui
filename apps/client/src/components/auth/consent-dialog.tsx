@@ -1,11 +1,11 @@
 /**
- * ConsentDialog — the sign-up consent gate.
+ * ConsentDialog — the sign-up legal-document reader.
  *
  * The Terms of Service and Privacy Policy are rendered IN the dialog (from
  * the `legal.*` dictionary, version-locked to the payload's TOS/PRIVACY
- * versions), not linked out: the user reads here and "Accept" only unlocks
- * once the scroll reaches the end. Minimal chrome — serif title, a close
- * glyph top-right, the two documents, one pill. No secondary action.
+ * versions), not linked out: acceptance only unlocks once the scroll reaches
+ * the end. The parent decides whether acceptance marks the plan-step checkbox
+ * or immediately submits a compact sign-up flow.
  *
  * Self-contained RN Modal + Animated card on the dialog scrim, same
  * construction as <ConfirmDialog> so it sits pixel-consistent with it.
@@ -50,7 +50,7 @@ const END_THRESHOLD = 24;
 export type ConsentDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Accept → the screen submits the signup with the published versions. */
+  /** Called after the user reaches the end and explicitly accepts. */
   onAccept: () => void;
   loading?: boolean | undefined;
   testID?: string | undefined;

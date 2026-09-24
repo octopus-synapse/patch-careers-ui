@@ -3,7 +3,7 @@ import { brandColors, landingScrollPalette } from "@patch-careers/tokens";
 import { Text, XStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
-import { Platform, Text as NativeText } from "react-native";
+import { Text as NativeText, Platform } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 const SERIOUS_PIECE =

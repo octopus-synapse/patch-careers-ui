@@ -7,11 +7,11 @@ import { useNavBarInset } from "@/hooks/use-nav-bar-inset";
 import { useI18n } from "@/providers/i18n-provider";
 import { useJobsWorkspace } from "../hooks/use-jobs-workspace";
 import { ApplicationsBoard } from "./applications-board.web";
-import { JobsScreen } from "./jobs-screen";
+import { ApplicationsMobileScreen } from "./applications-mobile-screen";
 
 export function ApplicationsHomeScreen() {
   const isDesktopWeb = useIsDesktopWeb();
-  return isDesktopWeb ? <DesktopApplications /> : <JobsScreen initialScope="applications" />;
+  return isDesktopWeb ? <DesktopApplications /> : <ApplicationsMobileScreen />;
 }
 
 function DesktopApplications() {

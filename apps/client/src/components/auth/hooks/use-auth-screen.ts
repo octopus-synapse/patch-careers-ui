@@ -1,6 +1,6 @@
-import { useAppRouter } from "@/navigation/use-app-router";
 import type { Locale, Translator } from "@patch-careers/i18n";
 import { useToast } from "@patch-careers/ui";
+import { useAppRouter } from "@/navigation/use-app-router";
 
 import { useI18n } from "@/providers/i18n-provider";
 

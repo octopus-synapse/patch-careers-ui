@@ -2,7 +2,7 @@
  * Shared frosted tab-bar primitives — the "glyph over a small-caps label on a
  * blurred translucent surface" material, factored out so the bottom navigation
  * bar (EditorialTabBar) and in-screen scope tabs (e.g. Jobs "Todas | Salvas")
- * render the EXACT same thing. iOS/WhatsApp-style frosted glass via expo-blur,
+ * share the same material. iOS/WhatsApp-style frosted glass via expo-blur,
  * with a theme wash on top so the editorial color still reads over whatever
  * shows through. Active = ink + (caller-chosen) filled glyph; inactive = muted.
  *
@@ -43,6 +43,7 @@ const SIZES = {
   comfortable: { icon: 25, band: 30, paddingTop: 15, paddingBottom: 13, gap: 7 },
 } as const;
 export type TabBarItemSize = keyof typeof SIZES;
+export type TabBarItemPresentation = "standard" | "mobileNavigation";
 
 /**
  * The frosted material on its own: the blur and its wash, both filling the
@@ -107,6 +108,8 @@ export function TabBarItem({
   badge,
   accessibilityLabel,
   size = "compact",
+  presentation = "standard",
+  showActiveIndicator = true,
 }: {
   label: string;
   focused: boolean;
@@ -115,10 +118,23 @@ export function TabBarItem({
   badge?: ReactNode;
   accessibilityLabel?: string;
   size?: TabBarItemSize;
+  /** Compact mobile dock: active glyph gets the brand fill and drops its label. */
+  presentation?: TabBarItemPresentation;
+  /** Disable when the parent renders one shared sliding selection indicator. */
+  showActiveIndicator?: boolean;
 }): ReactElement {
   const theme = useThemeName();
   const palette = theme === "dark" ? editorialPaletteDark : editorialPalette;
-  const color = focused ? palette.ink : palette.muted;
+  const isMobileNavigation = presentation === "mobileNavigation";
+  const color = focused
+    ? isMobileNavigation
+      ? palette.onPrimary
+      : palette.ink
+    : isMobileNavigation
+      ? palette.ink
+      : palette.muted;
+  const labelColor = isMobileNavigation ? palette.muted : color;
+  const iconSize = isMobileNavigation ? (focused ? 24 : 20) : SIZES[size].icon;
   const styles = stylesBySize[size];
   return (
     <Pressable
@@ -126,18 +142,40 @@ export function TabBarItem({
       accessibilityState={{ selected: focused }}
       accessibilityLabel={accessibilityLabel ?? label}
       onPress={onPress}
-      style={({ pressed }) => [styles.tab, pressed && press.tab]}
+      style={({ pressed }) => [
+        styles.tab,
+        isMobileNavigation && navigationStyles.tab,
+        pressed && press.tab,
+      ]}
     >
-      <View style={styles.iconBand}>
+      <View
+        style={[
+          styles.iconBand,
+          isMobileNavigation && navigationStyles.iconBand,
+          isMobileNavigation && focused && showActiveIndicator && navigationStyles.activeIndicator,
+          isMobileNavigation &&
+            focused &&
+            showActiveIndicator && { backgroundColor: palette.primary },
+        ]}
+      >
         {/* Tight wrapper so the badge anchors to the glyph's corner. */}
         <View style={press.glyph}>
-          {renderIcon({ focused, color, size: SIZES[size].icon })}
+          {renderIcon({ focused, color, size: iconSize })}
           {badge}
         </View>
       </View>
-      <Text style={[styles.label, { color }]} numberOfLines={1}>
-        {label}
-      </Text>
+      {!isMobileNavigation || !focused ? (
+        <Text
+          style={[
+            styles.label,
+            isMobileNavigation && navigationStyles.label,
+            { color: labelColor },
+          ]}
+          numberOfLines={1}
+        >
+          {label}
+        </Text>
+      ) : null}
     </Pressable>
   );
 }
@@ -152,6 +190,27 @@ const press = StyleSheet.create({
   tab: { opacity: 0.55 },
   // Containing block for the absolutely-positioned badge.
   glyph: { position: "relative" },
+});
+
+const navigationStyles = StyleSheet.create({
+  tab: {
+    paddingTop: 2,
+    paddingBottom: 2,
+    gap: 3,
+  },
+  activeIndicator: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+  },
+  iconBand: { height: 24 },
+  label: {
+    fontFamily: fonts.navigation,
+    fontSize: 11,
+    lineHeight: 14,
+    letterSpacing: -0.1,
+    textTransform: "none",
+  },
 });
 
 const sizeStyles = (s: (typeof SIZES)[TabBarItemSize]) =>

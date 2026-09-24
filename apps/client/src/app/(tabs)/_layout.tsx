@@ -1,16 +1,15 @@
-import { AppRedirect } from "@/navigation/app-redirect";
 import type { ReactElement } from "react";
+import { AppRedirect } from "@/navigation/app-redirect";
 
 /**
  * Bottom tab bar (D51 — fixed bottom tab) with 4 tabs:
  *
- *   Vagas · Mensagens · Currículos · Perfil
+ *   Vagas · Candidaturas · Currículos · Perfil
  *
- * "Candidaturas" was folded into the Vagas tab as a third scope
- * (Todas · Salvas · Candidaturas), so it no longer has its own tab. Messages
- * was promoted from an AppHeader quick-action to its own tab. Notificações
- * left the bar for the AppHeader bell (its inbox is the stacked
- * `/notifications` screen), freeing the slot for Currículos.
+ * Candidaturas has a dedicated mobile workflow. Messages remains available
+ * on desktop, but is temporarily absent from the primary mobile navigation.
+ * Notificações lives behind the AppHeader bell as the stacked
+ * `/notifications` screen.
  *
  * Labels come from the i18n dictionaries (`tabs.*`) so they follow the
  * user's locale. Icons come from Expo Vector Icons so active tabs can use
@@ -83,6 +82,7 @@ export default function TabsLayout(): ReactElement | null {
       <Tabs.Screen
         name="jobs"
         options={{
+          ...headerlessTab,
           title: `${t("jobs.documentTitle")} | Patch Careers`,
           tabBarLabel: t("tabs.jobs"),
           tabBarIcon: tabIcon("briefcase-outline", "briefcase"),
@@ -92,9 +92,19 @@ export default function TabsLayout(): ReactElement | null {
         name="messages"
         options={{
           ...headerlessTab,
+          ...(!isDesktopWeb ? { href: null } : {}),
           title: `${t("tabs.messages")} | Patch Careers`,
           tabBarLabel: t("tabs.messages"),
           tabBarIcon: tabIcon("chatbubble-ellipses-outline", "chatbubble-ellipses"),
+        }}
+      />
+      <Tabs.Screen
+        name="applications"
+        options={{
+          ...headerlessTab,
+          title: `${t("tabs.applications")} | Patch Careers`,
+          tabBarLabel: t("tabs.applications"),
+          tabBarIcon: tabIcon("reader-outline", "reader"),
         }}
       />
       <Tabs.Screen
@@ -111,7 +121,9 @@ export default function TabsLayout(): ReactElement | null {
           ...headerlessTab,
           title: `${t("tabs.profile")} | Patch Careers`,
           tabBarLabel: t("tabs.profile"),
-          tabBarIcon: ({ focused, size }) => <ProfileTabIcon focused={focused} size={size} />,
+          tabBarIcon: ({ focused, size }) => (
+            <ProfileTabIcon focused={focused} size={size} showPresence={!focused} />
+          ),
         }}
       />
     </Tabs>

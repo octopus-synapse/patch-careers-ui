@@ -17,7 +17,7 @@ import {
 import { logout } from "@patch-careers/auth";
 import { useToast } from "@patch-careers/ui";
 import { SettingsCard, SettingsRow, UnderlineInput } from "@patch-careers/ui/editorial";
-import { type Href } from "expo-router";
+import type { Href } from "expo-router";
 import {
   AtSign,
   CreditCard,

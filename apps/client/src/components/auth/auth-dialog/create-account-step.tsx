@@ -1,17 +1,9 @@
 /**
- * Password step of the unified auth flow — the e-mail is already known,
- * so this asks only for a password (with the strength meter) and then
- * raises the same `<ConsentDialog>` gate the sign-up screen uses;
- * accepting there is what actually submits. Name is intentionally not
- * collected here — it moves to the first onboarding step (backend
- * defaults it from the e-mail handle meanwhile).
- *
- * The e-mail was verified one step earlier. New accounts use signup;
- * pending accounts are completed in place. Both then log in, respecting
- * any 2FA requirement, before normal post-auth routing.
+ * Password step of the unified auth flow. On `/auth`, it only validates
+ * and stages the password while the short-lived registration token proves
+ * the e-mail was verified; account creation happens after plan selection.
+ * The compact landing dialog keeps its existing consent-and-submit path.
  */
-import { completeUnverifiedAccount, signup } from "@patch-careers/api-client";
-import { login } from "@patch-careers/auth";
 import { authDialogPalette } from "@patch-careers/tokens";
 import { Icon, Input, Text, XStack, YStack } from "@patch-careers/ui";
 import {
@@ -26,50 +18,39 @@ import { type ReactElement, useState } from "react";
 import { Controller } from "react-hook-form";
 import { ActivityIndicator, Pressable } from "react-native";
 import { ConsentDialog } from "@/components/auth/consent-dialog";
-import { PRIVACY_VERSION, TOS_VERSION } from "@/components/auth/consent-versions";
-import { fieldErrorsSetter } from "@/components/auth/helpers/apply-field-errors";
-import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-error";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
-import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
 import { useKeepSignedIn } from "@/components/auth/hooks/use-keep-signed-in";
 import { useMascotForm } from "@/components/auth/hooks/use-mascot-form";
-import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { KeepSignedInRow } from "@/components/auth/keep-signed-in-row";
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
-import { extractApiErrorMessages, validateSignup } from "@/components/auth/validation";
+import { validateSignup } from "@/components/auth/validation";
 import { useFieldErrorsForm } from "@/forms";
 import { AuthStepTitle } from "./auth-step-title";
-import type { SignupPlan } from "./choose-plan-step";
 
 type PasswordForm = { password: string };
 
 export function CreateAccountStep({
   mascot,
   email,
-  registrationToken,
-  signupPlan,
-  billingCountry,
-  choosePlanInOnboarding,
+  initialPassword = "",
+  deferAccountCreation = false,
+  submitting = false,
   onChangeEmail,
-  onRequireSignIn,
+  onContinue,
   mode,
 }: {
   readonly mascot: AuthMascotController;
   readonly email: string;
-  /** Proof from the verify step that this e-mail is already confirmed. */
-  readonly registrationToken: string;
-  readonly signupPlan: SignupPlan;
-  readonly billingCountry: string;
-  readonly choosePlanInOnboarding?: boolean;
+  readonly initialPassword?: string;
+  readonly deferAccountCreation?: boolean;
+  readonly submitting?: boolean;
   readonly onChangeEmail: () => void;
-  readonly onRequireSignIn: () => void;
+  readonly onContinue: (password: string, keepSignedIn: boolean) => void | Promise<void>;
   readonly mode: "new" | "resume";
 }): ReactElement {
-  const { t, locale, router, toast } = useAuthScreen();
+  const { t } = useAuthScreen();
   const palette = useEditorialPalette();
   const dialogPalette = authDialogPalette[useThemeName()];
-  const { finishAuthentication } = useCompleteAuth();
-  const { submitting, run } = useSubmit();
   const keep = useKeepSignedIn();
   const [consentOpen, setConsentOpen] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -81,105 +62,27 @@ export function CreateAccountStep({
       const errors = validateSignup({ name: "-", email, password: values.password }, t);
       return errors?.password ? { password: errors.password } : null;
     },
-    { defaultValues: { password: "" } },
+    { defaultValues: { password: initialPassword } },
   );
   const bind = useMascotForm(mascot, form);
   const password = form.watch("password");
 
-  // "Continue" only validates and raises the consent gate; the request is
-  // sent from `acceptAndSignup` once the user has accepted (LGPD).
   const onSubmit = form.handleSubmit(
-    () => setConsentOpen(true),
+    ({ password: nextPassword }) => {
+      if (deferAccountCreation) {
+        void onContinue(nextPassword, keep.keepSignedIn);
+        return;
+      }
+      setConsentOpen(true);
+    },
     () => mascot.grimace(),
   );
 
-  async function acceptAndSignup(): Promise<void> {
-    const { password: pw } = form.getValues();
-    await run(async () => {
-      let accountCompleted = false;
-      try {
-        const payload = {
-          email,
-          password: pw,
-          acceptedTosVersion: TOS_VERSION,
-          acceptedPrivacyVersion: PRIVACY_VERSION,
-          emailVerificationToken: registrationToken,
-        };
-        if (mode === "resume") {
-          await completeUnverifiedAccount(payload);
-        } else {
-          await signup(payload);
-        }
-        accountCompleted = true;
-        // Same recipe as sign-up.tsx: signup only sets an httpOnly cookie;
-        // log in for a real Bearer session. The account is born verified,
-        // so finishAuthentication routes straight to onboarding. A login
-        // failure must NOT read as a signup failure — the account exists;
-        // finish with whatever session the cookie carries (worst case the
-        // redirect lands on sign-in and the user logs in manually).
-        let sessionExchangeId: string | undefined;
-        let loginFailed = false;
-        try {
-          const result = await login(
-            email,
-            pw,
-            keep.enabled ? { keepSignedIn: keep.keepSignedIn } : undefined,
-          );
-          if (result.twoFactorRequired) {
-            setConsentOpen(false);
-            router.replace({
-              pathname: "/(auth)/2fa-verify",
-              params: { userId: result.userId, keepSignedIn: keep.keepSignedIn ? "1" : "0" },
-            });
-            return;
-          }
-          sessionExchangeId = result.sessionExchangeId ?? undefined;
-        } catch {
-          loginFailed = true;
-        }
-        setConsentOpen(false);
-        if (loginFailed) {
-          onRequireSignIn();
-          return;
-        }
-        mascot.celebrate({ settle: true });
-        await finishAuthentication({
-          ...(sessionExchangeId ? { sessionExchangeId } : {}),
-          ...(choosePlanInOnboarding
-            ? { destination: { pathname: "/onboarding", params: { choosePlan: "1" } } as const }
-            : signupPlan === "free"
-              ? {}
-              : {
-                  destination: {
-                    pathname: "/go",
-                    params: { startCheckout: signupPlan, billingCountry },
-                  },
-                }),
-        });
-      } catch (err) {
-        setConsentOpen(false);
-        mascot.grimace();
-        if (accountCompleted) {
-          onRequireSignIn();
-          return;
-        }
-        const emailError = extractApiErrorMessages(err, locale, t, "auth.signupFailed").fields
-          .email;
-        if (emailError) {
-          onChangeEmail();
-          toast.show({ title: emailError, intent: "danger" });
-          return;
-        }
-        handleAuthApiError(err, {
-          locale,
-          t,
-          toast,
-          setFieldErrors: fieldErrorsSetter(form, ["password"]),
-          fallbackKey: "auth.signupFailed",
-        });
-      }
-    });
-  }
+  const continueWithConsent = (): void => {
+    setConsentOpen(false);
+    const { password: nextPassword } = form.getValues();
+    void onContinue(nextPassword, keep.keepSignedIn);
+  };
 
   return (
     <YStack gap={22} paddingTop={4} paddingBottom={8}>
@@ -339,7 +242,7 @@ export function CreateAccountStep({
         onOpenChange={setConsentOpen}
         loading={submitting}
         acceptLabel={mode === "resume" ? t("auth.consentAcceptContinue") : undefined}
-        onAccept={() => void acceptAndSignup()}
+        onAccept={continueWithConsent}
         testID="authDialog.consent"
       />
     </YStack>

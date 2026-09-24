@@ -36,6 +36,8 @@ export function AuthFlowPanel({
   const dialogPalette = authDialogPalette[useThemeName()];
   const isPage = variant === "page";
   const transparentMobile = mobileTransparent && width < 600;
+  const transparentPlanPage = isPage && isPlanStep && width >= 600;
+  const transparentPanel = transparentMobile || transparentPlanPage;
   const paddingTop = isPlanStep ? 22 : isPage ? AUTH_PAGE_PANEL_PADDING_Y : width < 600 ? 25 : 30;
   const paddingBottom = isPlanStep ? 22 : isPage ? AUTH_PAGE_PANEL_PADDING_Y : 35;
   const panelHeight = isPage
@@ -64,12 +66,21 @@ export function AuthFlowPanel({
             ? DIALOG_PLAN_PANEL_WIDTH
             : DIALOG_PANEL_WIDTH,
         height: panelHeight,
-        backgroundColor: transparentMobile ? "transparent" : dialogPalette.panel,
+        backgroundColor: transparentPanel ? "transparent" : dialogPalette.panel,
         borderRadius: 17,
-        borderWidth: transparentMobile ? 0 : 1,
+        borderWidth: transparentPanel ? 0 : 1,
         borderColor: dialogPalette.panelBorder,
-        paddingHorizontal:
-          width < 600 ? (isPlanStep ? 16 : 25) : isPlanStep ? 24 : isPage ? 44 : 35,
+        paddingHorizontal: transparentPlanPage
+          ? 0
+          : width < 600
+            ? isPlanStep
+              ? 16
+              : 25
+            : isPlanStep
+              ? 24
+              : isPage
+                ? 44
+                : 35,
         paddingTop,
         paddingBottom,
       }}
@@ -77,7 +88,7 @@ export function AuthFlowPanel({
       <View
         style={{
           width: "100%",
-          height: panelHeight - paddingTop - paddingBottom - (transparentMobile ? 0 : 2),
+          height: panelHeight - paddingTop - paddingBottom - (transparentPanel ? 0 : 2),
         }}
       >
         {header ? <View style={{ height: isPlanStep ? 46 : 76 }}>{header}</View> : null}
@@ -86,6 +97,7 @@ export function AuthFlowPanel({
         ) : (
           <ScrollView
             key={isPlanStep ? "plans" : "form"}
+            // @style-allow inline: native ScrollView requires viewport sizing through the style prop
             style={{ width: "100%", flex: 1 }}
             contentContainerStyle={{
               flexGrow: 1,

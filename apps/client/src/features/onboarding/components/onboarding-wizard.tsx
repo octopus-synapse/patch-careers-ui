@@ -33,14 +33,12 @@ import {
   ThemeStep,
 } from "./wizard-steps";
 
-/**
- * The wizard card is deliberately fatter than the auth card's 460: its steps
- * are working surfaces (section lists, editors, autocompletes), and at 460
- * the panel read as a thin strip on a desktop viewport.
- */
-const WIZARD_CARD_MAX_WIDTH = 640;
+/** Stable desktop frame: content changes and scrolls inside it without making
+ * the surrounding card jump in width or height between steps. */
+const WIZARD_CARD_MAX_WIDTH = 560;
+const DESKTOP_WIZARD_CARD_HEIGHT = 560;
 const MOBILE_WIZARD_BREAKPOINT = 600;
-const MOBILE_LANGUAGE_BODY_HEIGHT = 172;
+const MOBILE_WIZARD_VERTICAL_INSET = 40;
 
 export function OnboardingWizard(): ReactElement {
   // Scope the draft store to one wizard mount; it is discarded on exit.
@@ -208,7 +206,6 @@ function OnboardingWizardInner(): ReactElement {
   // A subtitle key that isn't translated falls back to the raw key path — hide it.
   const subtitleText = stepSubtitle.startsWith("onboarding.flow.") ? "" : stepSubtitle;
   const isMobileLayout = width > 0 && width < MOBILE_WIZARD_BREAKPOINT;
-  const isCompactMobileLanguage = isMobileLayout && flowStepId === "language" && !editStep;
 
   // Tighten gutters on small phones; cap the column to the available width.
   const horizontalPadding = width > 0 && width < 375 ? 20 : 28;
@@ -219,16 +216,22 @@ function OnboardingWizardInner(): ReactElement {
     width > 0
       ? Math.min(WIZARD_CARD_MAX_WIDTH, width - horizontalPadding * 2)
       : WIZARD_CARD_MAX_WIDTH;
-  // The body gets one fixed height for ALL steps so the masthead and footer
-  // never shift between steps — short steps just center their content in it,
-  // taller steps scroll within it. Scaled to the viewport, clamped for sanity.
-  // Reserve room for navbar + card padding, heading and footer. With the
-  // mascot removed, the reclaimed headroom lets the form breathe on desktop.
-  const bodyHeight = isCompactMobileLanguage
-    ? MOBILE_LANGUAGE_BODY_HEIGHT
-    : height > 0
-      ? Math.max(240, Math.min(400, height - 420))
-      : 340;
+  const mobilePanelHeight =
+    height > 0 ? height - NAV_BAR_HEIGHT_PUBLIC - MOBILE_WIZARD_VERTICAL_INSET : undefined;
+  const showPrimaryAction = !isLocal || showLocalContinue;
+  const primaryAction = showComplete
+    ? {
+        label: t("onboarding.complete"),
+        loading: complete.isPending,
+        onPress: handleComplete,
+        testID: "onboarding.complete",
+      }
+    : {
+        label: showSkipCta ? t("onboarding.skipCta") : t("onboarding.next"),
+        loading: nextStep.isPending || gotoStep.isPending,
+        onPress: goNext,
+        testID: "onboarding.next",
+      };
 
   return (
     <SafeAreaView style={ed.root}>
@@ -279,9 +282,10 @@ function OnboardingWizardInner(): ReactElement {
                 // On phones the wizard belongs directly to the page rather than
                 // looking like a second surface nested inside it.
                 isMobileLayout
-                  ? { backgroundColor: "transparent", borderWidth: 0, borderRadius: 0 }
-                  : null,
+                  ? [ed.mobileWizardPanel, { height: mobilePanelHeight }]
+                  : { height: DESKTOP_WIZARD_CARD_HEIGHT },
               ]}
+              contentStyle={isMobileLayout ? ed.mobileWizardContent : ed.desktopWizardContent}
             >
               <StepTransition key={headingKey} direction={directionRef.current}>
                 {isDevTestFillEnabled() && !editStep ? (
@@ -290,13 +294,12 @@ function OnboardingWizardInner(): ReactElement {
                     onFillStep={() => testFill.fillStep(flowStepId)}
                     onFillAll={() => void testFill.fillAll()}
                     disabled={isPending || testFill.isRunning}
-                    roomy={isCompactMobileLanguage}
                   />
                 ) : null}
                 <StepHeading
                   title={stepTitle}
                   subtitle={subtitleText}
-                  variant={flowStepId === "language" && !editStep ? "display" : "default"}
+                  variant="display"
                   {...(isOptionalFlow ? { tag: t("onboarding.step.optional") } : {})}
                 />
               </StepTransition>
@@ -304,17 +307,14 @@ function OnboardingWizardInner(): ReactElement {
               {/* Fixed-height body: same on every step. Content centers inside it;
                 if a step is taller than the box, it scrolls within the box —
                 with the editorial scrollbar signalling the overflow. */}
-              <View
-                style={[
-                  ed.body,
-                  isCompactMobileLanguage ? ed.mobileLanguageBody : null,
-                  { height: bodyHeight },
-                ]}
-              >
+              <View style={[ed.body, isMobileLayout ? ed.mobileWizardBody : ed.desktopWizardBody]}>
                 <ScrollView
                   key={`scroll:${headingKey}`}
                   style={ed.flex}
-                  contentContainerStyle={ed.bodyScroll}
+                  contentContainerStyle={[
+                    ed.bodyScroll,
+                    isMobileLayout ? null : ed.desktopBodyScroll,
+                  ]}
                   keyboardShouldPersistTaps="handled"
                   showsVerticalScrollIndicator={false}
                   scrollEventThrottle={16}
@@ -338,7 +338,6 @@ function OnboardingWizardInner(): ReactElement {
                           onSelect={(next) => {
                             void switchLocale(next);
                           }}
-                          roomy={isCompactMobileLanguage}
                           t={t}
                         />
                       )
@@ -397,33 +396,32 @@ function OnboardingWizardInner(): ReactElement {
                 />
               </View>
 
-              <View style={[ed.footer, isCompactMobileLanguage ? ed.mobileLanguageFooter : null]}>
+              <View
+                style={[ed.footer, isMobileLayout ? ed.mobileWizardFooter : ed.desktopWizardFooter]}
+              >
                 {showBack ? (
-                  <GhostButton label={t("onboarding.back")} onPress={goBack} disabled={isPending} />
-                ) : showLocalContinue ? null : (
-                  <View />
-                )}
-                {/* Language requires explicit confirmation; other local
-                  single-choice steps auto-advance. The CTA is otherwise always
-                  pressable: pressing it validates and surfaces inline errors. */}
-                {isLocal && !showLocalContinue ? null : showComplete ? (
-                  <PrimaryAction
-                    label={t("onboarding.complete")}
-                    loading={complete.isPending}
+                  <GhostButton
+                    label={t("onboarding.back")}
+                    onPress={goBack}
                     disabled={isPending}
-                    onPress={handleComplete}
-                    testID="onboarding.complete"
+                    muted
                   />
-                ) : (
-                  <PrimaryAction
-                    label={showSkipCta ? t("onboarding.skipCta") : t("onboarding.next")}
-                    loading={nextStep.isPending || gotoStep.isPending}
-                    disabled={isPending}
-                    onPress={goNext}
-                    testID="onboarding.next"
-                    fullWidth={showLocalContinue}
-                  />
-                )}
+                ) : null}
+                {/* Every step uses the same action slot. Language confirms its
+                  choice; other local single-choice steps still auto-advance. */}
+                {showPrimaryAction ? (
+                  <View
+                    style={
+                      flowStepId === "language"
+                        ? ed.languageWizardAction
+                        : isMobileLayout
+                          ? ed.mobileWizardAction
+                          : ed.desktopWizardAction
+                    }
+                  >
+                    <PrimaryAction {...primaryAction} disabled={isPending} fullWidth />
+                  </View>
+                ) : null}
               </View>
               {saveError ? (
                 <RetryBanner

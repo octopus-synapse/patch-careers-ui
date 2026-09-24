@@ -9,7 +9,6 @@ import { AppRedirect } from "@/navigation/app-redirect";
  * still exists for mobile and for deep links, which desktop forwards inward.
  */
 
-
 import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { AccountSection, settingsSectionHref } from "@/features/settings";

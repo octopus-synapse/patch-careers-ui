@@ -13,8 +13,8 @@ import {
 } from "@patch-careers/api-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { usePatchPlan } from "@/features/billing";
 import { useMasterResumeId } from "@/features/resumes";
-import { usePatchPlan } from "@/features/billing/use-patch-plan";
 import { useFeedback } from "@/hooks/use-feedback";
 import { useI18n } from "@/providers/i18n-provider";
 import { type PickedImage, uploadProfileImage } from "../lib/upload-profile-image";
@@ -40,7 +40,10 @@ export function useProfileCompleteness(): { percent: number | null; isLoading: b
   const quality = useGetV1ResumesResumeIdQuality(resumeId ?? "", {
     query: { enabled: canUsePaid && Boolean(resumeId) },
   });
-  return { percent: canUsePaid ? quality.data?.completenessScore ?? null : null, isLoading: canUsePaid && quality.isLoading };
+  return {
+    percent: canUsePaid ? (quality.data?.completenessScore ?? null) : null,
+    isLoading: canUsePaid && quality.isLoading,
+  };
 }
 
 /** Profile field edits + avatar photo change, both invalidating the profile cache. */

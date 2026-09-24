@@ -2,37 +2,66 @@ import { fetcher } from "@patch-careers/api-client";
 import { Text, useToast, YStack } from "@patch-careers/ui";
 import { editorialFonts, PrimaryAction, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useLocalSearchParams } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
-import { Linking, Platform, ScrollView, TextInput } from "react-native";
-import { usePatchPlan } from "@/features/billing/use-patch-plan";
+import { Alert, Platform, ScrollView } from "react-native";
+import { usePatchPlan } from "@/features/billing";
 import { AUTH_ROUTE } from "@/navigation/auth-redirect";
 import { useAppRouter } from "@/navigation/use-app-router";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
+
+type BillingPayment = {
+  id: string;
+  status: string;
+  amountCents: number;
+  currency: string;
+  paidAt: string | null;
+};
+
+type BillingOffer = {
+  code: string;
+  plan: "go" | "max";
+  paymentMethod: "card" | "pix";
+  termMonths: 1 | 3 | 12;
+  amountCents: number;
+  listAmountCents: number;
+  founderRemaining: number | null;
+};
 
 export default function PatchGoScreen(): ReactElement | null {
   const { t, locale } = useI18n();
   const palette = useEditorialPalette();
   const router = useAppRouter();
   const toast = useToast();
-  const {
-    checkout,
-    startCheckout,
-    billingCountry: requestedCountry,
-  } = useLocalSearchParams<{
+  const { checkout, startCheckout } = useLocalSearchParams<{
     checkout?: string;
     startCheckout?: string;
-    billingCountry?: string;
   }>();
   const { hasBootstrapped } = useAuthBootstrap();
   const { isAuthenticated, currentUser } = useAuthState();
   const [opening, setOpening] = useState(false);
-  const [billingCountry, setBillingCountry] = useState(
-    requestedCountry ?? (locale === "pt-BR" ? "BR" : "US"),
-  );
   const autoCheckoutStarted = useRef(false);
-  const country = billingCountry.trim().toUpperCase();
   const billing = usePatchPlan(checkout === "success");
+  const [payments, setPayments] = useState<BillingPayment[]>([]);
+  const [offers, setOffers] = useState<BillingOffer[]>([]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !billing.data?.enabled) return;
+    void fetcher<{ items: BillingOffer[] }>({ method: "GET", url: "/api/v1/billing/offers" })
+      .then((response) => setOffers(response.data.items))
+      .catch(() => setOffers([]));
+  }, [billing.data?.enabled, isAuthenticated]);
+
+  useEffect(() => {
+    if (!billing.data?.active) return;
+    void fetcher<{ items: BillingPayment[] }>({
+      method: "GET",
+      url: "/api/v1/billing/subscription/payments?page=1&limit=12",
+    })
+      .then((response) => setPayments(response.data.items))
+      .catch(() => setPayments([]));
+  }, [billing.data?.active]);
 
   useEffect(() => {
     if (checkout === "success" && isAuthenticated) void billing.refetch();
@@ -50,36 +79,85 @@ export default function PatchGoScreen(): ReactElement | null {
   }, [checkout, billing.data?.active, currentUser, router]);
 
   const openBilling = useCallback(
-    async (plan?: "go" | "max"): Promise<void> => {
+    async (plan?: "go" | "max", requestedOffer?: string): Promise<void> => {
       if (!isAuthenticated) {
         router.push(AUTH_ROUTE);
         return;
       }
-      if (plan && !/^[A-Z]{2}$/.test(country)) {
-        toast.show({ title: t("go.invalidCountry"), intent: "danger" });
-        return;
-      }
       setOpening(true);
       try {
-        const path = plan ? "checkout" : "portal";
-        const response = await fetcher<{ url: string }>({
-          method: "POST",
-          url: `/api/v1/billing/patch-go/${path}`,
-          ...(plan ? { data: { plan, billingCountry: country } } : {}),
-        });
-        if (Platform.OS === "web") {
-          window.location.assign(response.data.url);
-        } else {
-          await Linking.openURL(response.data.url);
+        if (!plan) return;
+        if (Platform.OS !== "web") {
+          toast.show({ title: t("go.mobileBillingComingSoon"), intent: "neutral" });
+          return;
         }
+        const response = await fetcher<{ id: string }>({
+          method: "POST",
+          url: "/api/v1/billing/checkouts",
+          data: { offerCode: requestedOffer ?? `${plan}_card_month` },
+        });
+        window.location.assign(
+          `/billing/checkout?checkout=${encodeURIComponent(response.data.id)}`,
+        );
       } catch {
         toast.show({ title: t("go.error"), intent: "danger" });
       } finally {
         setOpening(false);
       }
     },
-    [country, isAuthenticated, router, t, toast],
+    [isAuthenticated, router, t, toast],
   );
+
+  const cancelSubscription = useCallback(async () => {
+    setOpening(true);
+    try {
+      await fetcher({ method: "POST", url: "/api/v1/billing/subscription/cancel" });
+      await billing.refetch();
+    } catch {
+      toast.show({ title: t("go.error"), intent: "danger" });
+    } finally {
+      setOpening(false);
+    }
+  }, [billing.refetch, t, toast]);
+
+  const confirmCancellation = useCallback(() => {
+    if (Platform.OS === "web") {
+      if (window.confirm(`${t("go.cancelConfirmTitle")}\n\n${t("go.cancelConfirmBody")}`)) {
+        void cancelSubscription();
+      }
+      return;
+    }
+    Alert.alert(t("go.cancelConfirmTitle"), t("go.cancelConfirmBody"), [
+      { text: t("go.keepSubscription"), style: "cancel" },
+      {
+        text: t("go.cancelConfirmAction"),
+        style: "destructive",
+        onPress: () => void cancelSubscription(),
+      },
+    ]);
+  }, [cancelSubscription, t]);
+
+  const updatePaymentMethod = useCallback(async () => {
+    setOpening(true);
+    try {
+      const returnUrl =
+        Platform.OS === "web"
+          ? `${window.location.origin}/go?paymentMethod=success`
+          : "patchcareers://go?paymentMethod=success";
+      const response = await fetcher<{ url: string }>({
+        method: "POST",
+        url: "/api/v1/billing/subscription/payment-method-session",
+        data: { returnUrl },
+      });
+      if (Platform.OS === "web") window.location.assign(response.data.url);
+      else await WebBrowser.openAuthSessionAsync(response.data.url, returnUrl);
+      await billing.refetch();
+    } catch {
+      toast.show({ title: t("go.error"), intent: "danger" });
+    } finally {
+      setOpening(false);
+    }
+  }, [billing.refetch, t, toast]);
 
   useEffect(() => {
     if (
@@ -106,6 +184,21 @@ export default function PatchGoScreen(): ReactElement | null {
 
   const state = billing.data;
   const endDate = state?.periodEnd ? new Date(state.periodEnd).toLocaleDateString(locale) : null;
+  const offerFor = (plan: "go" | "max", months: 3 | 12) =>
+    offers.find(
+      (offer) =>
+        offer.plan === plan && offer.paymentMethod === "pix" && offer.termMonths === months,
+    );
+  const cardOfferFor = (plan: "go" | "max") =>
+    offers.find((offer) => offer.plan === plan && offer.paymentMethod === "card");
+  const offerPrice = (plan: "go" | "max", months: 3 | 12) => {
+    const offer = offerFor(plan, months);
+    return offer
+      ? new Intl.NumberFormat(locale, { style: "currency", currency: "BRL" }).format(
+          offer.amountCents / 100,
+        )
+      : "";
+  };
 
   return (
     <YStack flex={1} backgroundColor={palette.bg}>
@@ -122,6 +215,16 @@ export default function PatchGoScreen(): ReactElement | null {
           <Text fontFamily={editorialFonts.serif} fontSize={38} color={palette.ink}>
             {t("go.title")}
           </Text>
+          {state?.creditBalanceCents ? (
+            <Text fontFamily={editorialFonts.sans} fontSize={14} color={palette.accent}>
+              {t("go.creditBalance", {
+                value: new Intl.NumberFormat(locale, {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(state.creditBalanceCents / 100),
+              })}
+            </Text>
+          ) : null}
           <Text fontFamily={editorialFonts.sans} fontSize={16} lineHeight={24} color={palette.body}>
             {t("go.lead")}
           </Text>
@@ -159,30 +262,6 @@ export default function PatchGoScreen(): ReactElement | null {
             ) : null}
           </YStack>
 
-          <YStack gap={8}>
-            <Text fontFamily={editorialFonts.sans} fontSize={14} color={palette.body}>
-              {t("go.billingCountry")}
-            </Text>
-            <TextInput
-              value={billingCountry}
-              onChangeText={setBillingCountry}
-              autoCapitalize="characters"
-              maxLength={2}
-              accessibilityLabel={t("go.billingCountry")}
-              placeholder="BR / US / GB"
-              style={{
-                borderWidth: 1,
-                borderColor: palette.hairline,
-                borderRadius: 12,
-                padding: 12,
-                color: palette.ink,
-              }}
-            />
-            <Text fontFamily={editorialFonts.sans} fontSize={12} color={palette.muted}>
-              {t("go.countryNote")}
-            </Text>
-          </YStack>
-
           <YStack
             borderWidth={1}
             borderColor={palette.accent}
@@ -196,7 +275,7 @@ export default function PatchGoScreen(): ReactElement | null {
               fontSize={18}
               color={palette.ink}
             >
-              {t("go.paidTitle")} · {t(country === "BR" ? "go.brlPrice" : "go.usdPrice")}
+              {t("go.paidTitle")} · {t("go.brlPrice")}
             </Text>
             <Text
               fontFamily={editorialFonts.sans}
@@ -221,18 +300,48 @@ export default function PatchGoScreen(): ReactElement | null {
                     {t("go.ending")}
                   </Text>
                 ) : null}
-                <PrimaryAction
-                  label={t("go.manage")}
-                  onPress={() => void openBilling()}
-                  loading={opening}
-                />
+                <Text fontFamily={editorialFonts.sans} fontWeight="700" color={palette.accent}>
+                  {t("go.currentPlan")}
+                </Text>
+                {offerFor("go", 3) ? (
+                  <PrimaryAction
+                    label={t("go.payPixQuarter", { price: offerPrice("go", 3) })}
+                    onPress={() => void openBilling("go", offerFor("go", 3)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
+                {offerFor("go", 12) ? (
+                  <PrimaryAction
+                    label={t("go.payPixYear", { price: offerPrice("go", 12) })}
+                    onPress={() => void openBilling("go", offerFor("go", 12)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
               </YStack>
             ) : state?.active ? (
-              <PrimaryAction
-                label={t("go.changePlan")}
-                onPress={() => void openBilling()}
-                loading={opening}
-              />
+              <YStack gap={10}>
+                {state.renews && cardOfferFor("go") ? (
+                  <PrimaryAction
+                    label={t("go.changePlan")}
+                    onPress={() => void openBilling("go")}
+                    loading={opening}
+                  />
+                ) : null}
+                {offerFor("go", 3) ? (
+                  <PrimaryAction
+                    label={t("go.payPixQuarter", { price: offerPrice("go", 3) })}
+                    onPress={() => void openBilling("go", offerFor("go", 3)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
+                {offerFor("go", 12) ? (
+                  <PrimaryAction
+                    label={t("go.payPixYear", { price: offerPrice("go", 12) })}
+                    onPress={() => void openBilling("go", offerFor("go", 12)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
+              </YStack>
             ) : !isAuthenticated ? (
               <PrimaryAction label={t("go.signIn")} onPress={() => router.push(AUTH_ROUTE)} />
             ) : billing.isLoading ? (
@@ -250,11 +359,27 @@ export default function PatchGoScreen(): ReactElement | null {
                     {t("go.pending")}
                   </Text>
                 ) : null}
-                <PrimaryAction
-                  label={t("go.subscribe")}
-                  onPress={() => void openBilling("go")}
-                  loading={opening}
-                />
+                {cardOfferFor("go") ? (
+                  <PrimaryAction
+                    label={t("go.subscribeMonthly")}
+                    onPress={() => void openBilling("go")}
+                    loading={opening}
+                  />
+                ) : null}
+                {offerFor("go", 3) ? (
+                  <PrimaryAction
+                    label={t("go.payPixQuarter", { price: offerPrice("go", 3) })}
+                    onPress={() => void openBilling("go", offerFor("go", 3)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
+                {offerFor("go", 12) ? (
+                  <PrimaryAction
+                    label={t("go.payPixYear", { price: offerPrice("go", 12) })}
+                    onPress={() => void openBilling("go", offerFor("go", 12)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
               </YStack>
             )}
           </YStack>
@@ -272,7 +397,7 @@ export default function PatchGoScreen(): ReactElement | null {
               fontSize={18}
               color={palette.ink}
             >
-              {t("go.maxTitle")} · {t(country === "BR" ? "go.maxBrlPrice" : "go.maxUsdPrice")}
+              {t("go.maxTitle")} · {t("go.maxBrlPrice")}
             </Text>
             <Text
               fontFamily={editorialFonts.sans}
@@ -297,18 +422,48 @@ export default function PatchGoScreen(): ReactElement | null {
                     {t("go.ending")}
                   </Text>
                 ) : null}
-                <PrimaryAction
-                  label={t("go.manage")}
-                  onPress={() => void openBilling()}
-                  loading={opening}
-                />
+                <Text fontFamily={editorialFonts.sans} fontWeight="700" color={palette.accent}>
+                  {t("go.currentPlan")}
+                </Text>
+                {offerFor("max", 3) ? (
+                  <PrimaryAction
+                    label={t("go.payPixQuarter", { price: offerPrice("max", 3) })}
+                    onPress={() => void openBilling("max", offerFor("max", 3)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
+                {offerFor("max", 12) ? (
+                  <PrimaryAction
+                    label={t("go.payPixYear", { price: offerPrice("max", 12) })}
+                    onPress={() => void openBilling("max", offerFor("max", 12)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
               </YStack>
             ) : state?.active ? (
-              <PrimaryAction
-                label={t("go.changePlan")}
-                onPress={() => void openBilling()}
-                loading={opening}
-              />
+              <YStack gap={10}>
+                {state.renews && cardOfferFor("max") ? (
+                  <PrimaryAction
+                    label={t("go.changePlan")}
+                    onPress={() => void openBilling("max")}
+                    loading={opening}
+                  />
+                ) : null}
+                {offerFor("max", 3) ? (
+                  <PrimaryAction
+                    label={t("go.payPixQuarter", { price: offerPrice("max", 3) })}
+                    onPress={() => void openBilling("max", offerFor("max", 3)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
+                {offerFor("max", 12) ? (
+                  <PrimaryAction
+                    label={t("go.payPixYear", { price: offerPrice("max", 12) })}
+                    onPress={() => void openBilling("max", offerFor("max", 12)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
+              </YStack>
             ) : !isAuthenticated ? (
               <PrimaryAction label={t("go.signIn")} onPress={() => router.push(AUTH_ROUTE)} />
             ) : billing.isLoading ? (
@@ -320,18 +475,92 @@ export default function PatchGoScreen(): ReactElement | null {
                 {t("go.unavailable")}
               </Text>
             ) : (
-              <PrimaryAction
-                label={t("go.subscribe")}
-                onPress={() => void openBilling("max")}
-                loading={opening}
-              />
+              <YStack gap={10}>
+                {cardOfferFor("max") ? (
+                  <PrimaryAction
+                    label={t("go.subscribeMonthly")}
+                    onPress={() => void openBilling("max")}
+                    loading={opening}
+                  />
+                ) : null}
+                {offerFor("max", 3) ? (
+                  <PrimaryAction
+                    label={t("go.payPixQuarter", { price: offerPrice("max", 3) })}
+                    onPress={() => void openBilling("max", offerFor("max", 3)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
+                {offerFor("max", 12) ? (
+                  <PrimaryAction
+                    label={t("go.payPixYear", { price: offerPrice("max", 12) })}
+                    onPress={() => void openBilling("max", offerFor("max", 12)?.code)}
+                    loading={opening}
+                  />
+                ) : null}
+                {offerFor("max", 12)?.founderRemaining != null ? (
+                  <Text fontFamily={editorialFonts.sans} fontSize={12} color={palette.muted}>
+                    {t("go.founderRemaining", {
+                      count: offerFor("max", 12)?.founderRemaining ?? 0,
+                    })}
+                  </Text>
+                ) : null}
+              </YStack>
             )}
           </YStack>
 
-          {state?.status === "country_mismatch" ? (
+          {state?.pendingPlan ? (
             <Text fontFamily={editorialFonts.sans} fontSize={14} color={palette.ink}>
-              {t("go.countryMismatch")}
+              {t("go.pendingPlan", { plan: state.pendingPlan === "max" ? "Max" : "Go" })}
             </Text>
+          ) : null}
+
+          {state?.active ? (
+            <YStack gap={10}>
+              <PrimaryAction
+                label={t("go.updatePaymentMethod")}
+                onPress={() => void updatePaymentMethod()}
+                loading={opening}
+              />
+              {!state.cancelAtPeriodEnd ? (
+                <PrimaryAction
+                  label={t("go.cancelSubscription")}
+                  onPress={confirmCancellation}
+                  loading={opening}
+                />
+              ) : null}
+            </YStack>
+          ) : null}
+
+          {payments.length > 0 ? (
+            <YStack gap={8}>
+              <Text fontFamily={editorialFonts.sans} fontWeight="700" color={palette.ink}>
+                {t("go.paymentHistory")}
+              </Text>
+              {payments.map((payment) => (
+                <Text
+                  key={payment.id}
+                  fontFamily={editorialFonts.sans}
+                  fontSize={13}
+                  color={palette.body}
+                >
+                  {payment.paidAt
+                    ? new Date(payment.paidAt).toLocaleDateString(locale)
+                    : t("go.paymentPending")}{" "}
+                  ·{" "}
+                  {new Intl.NumberFormat(locale, {
+                    style: "currency",
+                    currency: payment.currency,
+                  }).format(payment.amountCents / 100)}{" "}
+                  ·{" "}
+                  {t(
+                    `go.paymentStatus${payment.status
+                      .split("_")
+                      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+                      .join("")}`,
+                  )}
+                </Text>
+              ))}
+            </YStack>
           ) : null}
 
           {checkout === "success" && isAuthenticated ? (

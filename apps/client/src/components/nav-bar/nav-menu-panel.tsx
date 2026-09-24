@@ -81,6 +81,7 @@ export function NavMenuPanel({
         zIndex={-1}
         accessibilityRole="menu"
         accessibilityLabel={accessibilityLabel}
+        // @style-allow inline: CSS viewport units and overflow are web-only escape-hatch values
         style={{ height: "100dvh", overflowY: "auto" }}
       >
         <YStack width="100%" minHeight="100%">

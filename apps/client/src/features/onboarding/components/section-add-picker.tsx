@@ -9,6 +9,7 @@ export interface SectionAddOption {
   id: string;
   label: string;
   description: string;
+  count?: number;
 }
 
 export interface SectionAddPickerProps {
@@ -52,6 +53,7 @@ export function SectionAddPicker({
               id: option.id,
               title: option.label,
               description: option.description,
+              ...(option.count !== undefined ? { count: option.count } : {}),
             }))}
             onPick={onPick}
           />

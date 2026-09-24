@@ -1,4 +1,4 @@
-import { readdir, readFile, mkdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -37,15 +37,24 @@ async function sync() {
   }
   const expected = new Map([
     ["_layout.web.tsx", `${marker}export { default } from "@/navigation/english-layout";\n`],
-    ["_layout.tsx", `${marker}import { Stack } from "expo-router";\nexport default function NativeEnglishLayout() { return <Stack />; }\n`],
+    [
+      "_layout.tsx",
+      `${marker}import { Stack } from "expo-router";\nexport default function NativeEnglishLayout() { return <Stack />; }\n`,
+    ],
   ]);
   for (const [target, source] of chosen) {
     const from = path.posix.dirname(path.posix.join("en", target));
     let importPath = path.posix.relative(from, source).replace(/\.tsx$/, "");
     if (!importPath.startsWith(".")) importPath = `./${importPath}`;
-    expected.set(target, `${marker}export { default } from "${importPath}";\nexport * from "${importPath}";\n`);
+    expected.set(
+      target,
+      `${marker}export { default } from "${importPath}";\nexport * from "${importPath}";\n`,
+    );
     const nativeTarget = target.replace(/\.web\.tsx$/, ".tsx");
-    expected.set(nativeTarget, `${marker}import { Redirect } from "expo-router";\nexport default function NativeEnglishRedirect() { return <Redirect href="/" />; }\n`);
+    expected.set(
+      nativeTarget,
+      `${marker}import { Redirect } from "expo-router";\nexport default function NativeEnglishRedirect() { return <Redirect href="/" />; }\n`,
+    );
   }
 
   async function clean(dir, relative = "") {
@@ -55,7 +64,8 @@ async function sync() {
       if (entry.isDirectory()) await clean(absolute, name);
       else if (!expected.has(name)) {
         const text = await readFile(absolute, "utf8");
-        if (!text.startsWith(marker)) throw new Error(`Unmanaged file in generated route tree: ${absolute}`);
+        if (!text.startsWith(marker))
+          throw new Error(`Unmanaged file in generated route tree: ${absolute}`);
         if (check) throw new Error(`Stale generated route: ${absolute}`);
         await rm(absolute);
       }

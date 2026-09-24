@@ -213,10 +213,13 @@ export const identityMediaControl = {
 export type AuthDialogColors = {
   panel: string;
   panelBorder: string;
+  selected: string;
   brand: string;
   brandMuted: string;
   primary: string;
   primaryPress: string;
+  onPrimary: string;
+  wordmark: string;
   input: string;
   inputBorder: string;
   focus: string;
@@ -228,10 +231,13 @@ export const authDialogPalette = {
   light: {
     panel: brandColors.ivory,
     panelBorder: "#CBD6BA",
+    selected: "#F0F4E9",
     brand: brandColors.forest,
     brandMuted: "#657C56",
     primary: brandColors.forest,
     primaryPress: brandColors.forestPressed,
+    onPrimary: "#FFFFFF",
+    wordmark: "#151515",
     input: "#FFFEF8",
     inputBorder: "#CBD7BA",
     focus: brandColors.focusSoft,
@@ -243,10 +249,13 @@ export const authDialogPalette = {
   dark: {
     panel: "#232720",
     panelBorder: "#4B5C41",
+    selected: "#2C382B",
     brand: "#DCE8D2",
     brandMuted: brandColors.leaf,
     primary: brandColors.olive,
     primaryPress: brandColors.olivePressed,
+    onPrimary: "#FFFFFF",
+    wordmark: "#151515",
     input: "#1A1F18",
     inputBorder: "#4B5C41",
     focus: brandColors.leaf,

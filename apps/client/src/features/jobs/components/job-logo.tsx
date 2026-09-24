@@ -2,7 +2,8 @@ import { getV1CompaniesSearch } from "@patch-careers/api-client";
 import { Text, useEditorialPalette, YStack } from "@patch-careers/ui";
 import { useQuery } from "@tanstack/react-query";
 import Constants from "expo-constants";
-import { useEffect, useRef, useState } from "react";
+import { Image } from "expo-image";
+import { useState } from "react";
 import { normalize, type Opportunity, safeJobUrl } from "../lib/discovery";
 
 const failedImages = new Set<string>();
@@ -25,36 +26,15 @@ export function JobLogo({
   hero?: boolean;
 }) {
   const palette = useEditorialPalette();
-  const host = useRef<HTMLSpanElement>(null);
-  const [visible, setVisible] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [loaded, setLoaded] = useState(false);
   const extra = Constants.expoConfig?.extra as { logoDevPublishableKey?: string } | undefined;
   const token =
     extra?.logoDevPublishableKey?.trim() ||
     process.env.EXPO_PUBLIC_LOGO_DEV_PUBLISHABLE_KEY?.trim();
   const companyKey = normalizeCompany(job.company);
-  useEffect(() => {
-    if (!host.current || typeof IntersectionObserver === "undefined") {
-      setVisible(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "80px" },
-    );
-    observer.observe(host.current);
-    return () => observer.disconnect();
-  }, []);
   const lookup = useQuery({
     queryKey: ["job-company-domain", companyKey],
     enabled:
-      visible &&
       Boolean(token) &&
       !job.companyDomain &&
       !job.companyLogoUrl &&
@@ -88,50 +68,48 @@ export function JobLogo({
   const height = hero ? 54 : size;
   const inset = hero ? 7 : 3;
   return (
-    <span ref={host} aria-hidden="true">
-      <YStack
-        width={width}
-        height={height}
-        borderRadius={hero ? 14 : size}
-        overflow="hidden"
-        alignItems="center"
-        justifyContent="center"
-        backgroundColor={palette.panel}
-        borderWidth={hero ? 0 : 1}
-        borderColor={palette.hairline}
-      >
-        <Text fontSize={hero ? 18 : 11} fontWeight="600" color={palette.body}>
-          {job.company
-            .split(/\s+/)
-            .slice(0, 2)
-            .map((word) => word[0])
-            .join("")
-            .toUpperCase()}
-        </Text>
-        {visible && url && !failed && !failedImages.has(url) ? (
-          <img
-            src={url}
-            alt=""
-            width={width - inset * 2}
-            height={height - inset * 2}
-            loading="lazy"
-            decoding="async"
-            onLoad={() => setLoaded(true)}
-            onError={() => {
-              failedImages.add(url);
-              setFailed(true);
-            }}
-            style={{
-              position: "absolute",
-              inset,
-              borderRadius: hero ? 9 : "50%",
-              objectFit: "contain",
-              backgroundColor: palette.panel,
-              opacity: loaded ? 1 : 0,
-            }}
-          />
-        ) : null}
-      </YStack>
-    </span>
+    <YStack
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+      position="relative"
+      width={width}
+      height={height}
+      borderRadius={hero ? 14 : size}
+      overflow="hidden"
+      alignItems="center"
+      justifyContent="center"
+      backgroundColor={palette.panel}
+      borderWidth={hero ? 0 : 1}
+      borderColor={palette.hairline}
+    >
+      <Text fontSize={hero ? 18 : 11} fontWeight="600" color={palette.body}>
+        {job.company
+          .split(/\s+/)
+          .slice(0, 2)
+          .map((word) => word[0])
+          .join("")
+          .toUpperCase()}
+      </Text>
+      {url && !failed && !failedImages.has(url) ? (
+        <Image
+          source={{ uri: url }}
+          cachePolicy="disk"
+          contentFit="contain"
+          onError={() => {
+            failedImages.add(url);
+            setFailed(true);
+          }}
+          style={{
+            position: "absolute",
+            top: inset,
+            right: inset,
+            bottom: inset,
+            left: inset,
+            borderRadius: hero ? 9 : size,
+            backgroundColor: palette.panel,
+          }}
+        />
+      ) : null}
+    </YStack>
   );
 }

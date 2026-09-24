@@ -11,7 +11,6 @@ import { AppRedirect } from "@/navigation/app-redirect";
  * stuck on with a session.
  */
 
-
 import type { ReactElement } from "react";
 import { NavBar } from "@/components/nav-bar/nav-bar";
 import { LandingHead, LandingScreen } from "@/features/landing";

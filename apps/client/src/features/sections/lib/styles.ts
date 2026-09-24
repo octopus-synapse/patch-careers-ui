@@ -49,10 +49,14 @@ const createEd = (
       paddingBottom: 28,
     },
     column: { width: "100%", maxWidth: 460, alignSelf: "center" },
+    mobileWizardPanel: { backgroundColor: "transparent", borderWidth: 0, borderRadius: 0 },
+    mobileWizardContent: { flex: 1 },
+    desktopWizardContent: { flex: 1 },
     // Body content sits at the TOP of the fixed box (right under the subtitle), so
     // short steps read top-anchored while the box itself stays centered in the
     // viewport. flexGrow keeps the scroll area full-height; taller steps scroll.
     bodyScroll: { flexGrow: 1, justifyContent: "flex-start" },
+    desktopBodyScroll: { paddingRight: 14, paddingBottom: 8 },
 
     // masthead + progress
     mastheadWrap: { marginBottom: 36 },
@@ -119,7 +123,8 @@ const createEd = (
       // Full column width (was capped at 380) so blocks share one width rhythm.
     },
     body: { marginTop: 34 },
-    mobileLanguageBody: { marginTop: 42 },
+    mobileWizardBody: { flex: 1, minHeight: 0, marginTop: 42 },
+    desktopWizardBody: { flex: 1, minHeight: 0, marginTop: 26 },
 
     // footer
     footer: {
@@ -129,7 +134,11 @@ const createEd = (
       gap: 12,
       marginTop: 36,
     },
-    mobileLanguageFooter: { marginTop: 52 },
+    mobileWizardFooter: { justifyContent: "flex-end", gap: 28 },
+    desktopWizardFooter: { marginTop: 24 },
+    mobileWizardAction: { width: "72%" },
+    desktopWizardAction: { width: 220 },
+    languageWizardAction: { width: "100%" },
     footerError: { alignItems: "flex-end", marginTop: 10 },
     ghost: { paddingVertical: 10, paddingHorizontal: 2 },
     ghostLabel: {
@@ -138,6 +147,7 @@ const createEd = (
       letterSpacing: 0.4,
       color: authDialogPalette[theme].brand,
     },
+    ghostMuted: { color: authTokens.muted },
     ghostDanger: { color: authTokens.danger },
     dim: { opacity: 0.4 },
 
@@ -256,8 +266,7 @@ const createEd = (
       color: authTokens.ink,
     },
     // language
-    langWrap: { gap: 10 },
-    mobileLanguageOptions: { gap: 16 },
+    langWrap: { gap: 16 },
     // Compact counterpart to the sign-up plan cards: both options keep the
     // exact same footprint, while selection gains the plan tint, stronger
     // border and filled check control.
@@ -277,7 +286,7 @@ const createEd = (
     languagePlanCardSelected: {
       borderWidth: 2,
       borderColor: authDialogPalette[theme].brand,
-      backgroundColor: theme === "light" ? "#F0F4E9" : "#2C382B",
+      backgroundColor: authDialogPalette[theme].selected,
     },
     languagePlanLabel: {
       fontFamily: fonts.sans,
@@ -639,18 +648,7 @@ const createEd = (
       color: authTokens.muted,
     },
 
-    // review — the resume preview leads, the steps read as a quiet checklist
-    reviewHero: { alignItems: "center", marginBottom: 20 },
-    // A4 portrait box for the live preview (also the completion screen's).
-    reviewPreviewBox: {
-      width: 176,
-      aspectRatio: 1 / Math.SQRT2,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: authTokens.hairline,
-      overflow: "hidden",
-      backgroundColor: authTokens.surface,
-    },
+    // review — the steps read as a quiet checklist
     reviewList: { marginBottom: 8 },
     reviewRow: {
       flexDirection: "row",

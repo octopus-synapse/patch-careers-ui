@@ -1,4 +1,3 @@
-import { useAppRouter } from "@/navigation/use-app-router";
 /**
  * "Perfil" supersection — the identity block. Name, professional title,
  * location, summary (bio) and phone are User-backed (PATCH /v1/users/profile)
@@ -12,10 +11,10 @@ import {
   editorialFonts as fonts,
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
-
 import { Briefcase, ChevronRight, FileText, MapPin, Phone, User } from "lucide-react-native";
 import type { ReactElement, ReactNode } from "react";
 import { Pressable } from "react-native";
+import { useAppRouter } from "@/navigation/use-app-router";
 import { useI18n } from "@/providers/i18n-provider";
 import { type EditableProfile, type ProfileFieldKey, profileFields } from "../lib/profile-fields";
 

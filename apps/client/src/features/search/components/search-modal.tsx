@@ -21,7 +21,7 @@ import { editorialOverlays } from "@patch-careers/tokens";
 import { Icon, Input, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
-import { type Href } from "expo-router";
+import type { Href } from "expo-router";
 import { Search, X } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import {

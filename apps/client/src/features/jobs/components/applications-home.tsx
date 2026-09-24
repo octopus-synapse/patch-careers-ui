@@ -1,5 +1,5 @@
-import { JobsScreen } from "./jobs-screen";
+import { ApplicationsMobileScreen } from "./applications-mobile-screen";
 
 export function ApplicationsHomeScreen() {
-  return <JobsScreen initialScope="applications" />;
+  return <ApplicationsMobileScreen />;
 }

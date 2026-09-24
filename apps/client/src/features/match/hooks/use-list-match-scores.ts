@@ -9,8 +9,8 @@
  */
 import { postV1MatchBatch } from "@patch-careers/api-client";
 import { useQueries } from "@tanstack/react-query";
+import { usePatchPlan } from "@/features/billing";
 import { useDefaultMatchResume } from "./use-default-match-resume";
-import { usePatchPlan } from "@/features/billing/use-patch-plan";
 
 const CHUNK_SIZE = 20;
 const STALE_MS = 10 * 60_000;

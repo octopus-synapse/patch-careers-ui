@@ -6,7 +6,7 @@
  */
 
 import { type GetV1MeScoresQueryResponse, useGetV1MeScores } from "@patch-careers/api-client";
-import { usePatchPlan } from "@/features/billing/use-patch-plan";
+import { usePatchPlan } from "@/features/billing";
 
 export type MeScores = GetV1MeScoresQueryResponse;
 

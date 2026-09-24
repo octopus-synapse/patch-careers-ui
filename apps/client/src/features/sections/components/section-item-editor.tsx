@@ -20,6 +20,7 @@ import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeabl
 import { useI18n } from "@/providers/i18n-provider";
 import { useSectionItemForm } from "../hooks/use-section-item-form";
 import { itemCardParts, itemSummary } from "../lib/helpers";
+import { sectionModalTitle } from "../lib/section-modal-title";
 import { useEd, webNoOutline } from "../lib/styles";
 import type { SectionDescriptor, SectionField, SectionItem, SectionPersistAction } from "../types";
 import { AddRow } from "./primitives";
@@ -304,7 +305,9 @@ export function SectionItemEditor({
       {underlying}
       <SectionItemModal
         visible={isEditing}
-        title={isNew ? addLabel : t("onboarding.editItem")}
+        title={
+          isNew ? sectionModalTitle(step.sectionTypeKey ?? "", addLabel) : t("onboarding.editItem")
+        }
         fields={fields}
         control={form.control}
         readOnlyKeys={derivedKeys}

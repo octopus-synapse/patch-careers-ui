@@ -14,17 +14,15 @@ export function TestFillBar({
   onFillStep,
   onFillAll,
   disabled,
-  roomy = false,
 }: {
   flowStepId: FlowStepId;
   onFillStep: () => void;
   onFillAll: () => void;
   disabled?: boolean;
-  roomy?: boolean;
 }): ReactElement {
   const isFirst = flowStepId === "language";
   return (
-    <XStack gap={12} marginBottom={roomy ? 16 : 8}>
+    <XStack gap={12} marginBottom={16}>
       <GhostButton label="test" onPress={onFillStep} disabled={disabled ?? false} />
       {isFirst ? (
         <GhostButton label="test all" onPress={onFillAll} disabled={disabled ?? false} />
