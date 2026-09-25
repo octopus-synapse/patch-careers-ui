@@ -109,6 +109,7 @@ const createEd = (
       letterSpacing: -1.2,
       fontWeight: "700",
     },
+    displayHeadingLarge: { fontSize: 48, lineHeight: 52 },
     headingRegular: { fontStyle: "normal" },
     headingItalic: { fontStyle: "italic" },
     // Keep the tail as a separate style slot so the heading can share its

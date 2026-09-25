@@ -19,6 +19,7 @@ export type LanguageOptionCardProps = {
   description: string;
   selected: boolean;
   onPress: () => void;
+  size?: "default" | "large";
   accessibilityLabel?: string;
   labelColor?: string;
   descriptionColor?: string;
@@ -30,6 +31,7 @@ export function LanguageOptionCard({
   description,
   selected,
   onPress,
+  size = "default",
   accessibilityLabel,
   labelColor,
   descriptionColor,
@@ -37,6 +39,7 @@ export function LanguageOptionCard({
 }: LanguageOptionCardProps): ReactElement {
   const palette = useEditorialPalette();
   const dialog = authDialogPalette[useThemeName()];
+  const large = size === "large";
 
   return (
     <TXStack
@@ -46,14 +49,14 @@ export function LanguageOptionCard({
       onPress={onPress}
       testID={testID}
       width="100%"
-      height={78}
+      height={large ? 104 : 78}
       alignItems="center"
       justifyContent="space-between"
       gap={12}
       borderWidth={selected ? 2 : 1}
       borderColor={selected ? dialog.brand : dialog.inputBorder}
       borderRadius={16}
-      paddingHorizontal={20}
+      paddingHorizontal={large ? 24 : 20}
       backgroundColor={selected ? dialog.selected : dialog.input}
       cursor="pointer"
       hoverStyle={{ opacity: 0.88 }}

@@ -199,6 +199,7 @@ export function LanguageStep({
               label={option.native}
               description={option.hint}
               selected={selected}
+              size="large"
               accessibilityLabel={t("onboarding.language.prompt")}
               onPress={() => onSelect(option.value)}
             />

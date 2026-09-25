@@ -94,6 +94,7 @@ export function StepHeading({
   tag,
   title,
   variant = "default",
+  large = false,
 }: {
   subtitle?: string;
   /** Small mono label above the title — only the exception is marked
@@ -101,6 +102,7 @@ export function StepHeading({
   tag?: string;
   title: string;
   variant?: "default" | "display";
+  large?: boolean;
 }): ReactElement {
   const ed = useEd();
   const { head, tail } = splitHeading(title);
@@ -113,7 +115,9 @@ export function StepHeading({
       ) : null}
       <AnimatedField delay={80}>
         {variant === "display" ? (
-          <RNText style={ed.displayHeading}>{title}</RNText>
+          <RNText style={[ed.displayHeading, large ? ed.displayHeadingLarge : null]}>
+            {title}
+          </RNText>
         ) : (
           <RNText style={ed.heading}>
             {head ? <RNText style={ed.headingRegular}>{head}</RNText> : null}

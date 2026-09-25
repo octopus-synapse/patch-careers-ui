@@ -300,6 +300,7 @@ function OnboardingWizardInner(): ReactElement {
                   title={stepTitle}
                   subtitle={subtitleText}
                   variant="display"
+                  large={flowStepId === "language"}
                   {...(isOptionalFlow ? { tag: t("onboarding.step.optional") } : {})}
                 />
               </StepTransition>
