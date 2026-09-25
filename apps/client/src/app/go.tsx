@@ -3,9 +3,17 @@ import { Text, useToast, YStack } from "@patch-careers/ui";
 import { editorialFonts, PrimaryAction, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
+import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Alert, Platform, ScrollView } from "react-native";
-import { type BillingOfferCode, useBillingOffers, usePatchPlan } from "@/features/billing";
+import { AuthFlowPanel } from "@/components/auth/auth-dialog/auth-flow-panel";
+import { ChoosePlanStep } from "@/components/auth/auth-dialog/choose-plan-step";
+import { AuthPageFrame } from "@/components/auth/auth-page-frame";
+import {
+  type BillingOfferCode,
+  createBillingCheckoutRoute,
+  useBillingOffers,
+  usePatchPlan,
+} from "@/features/billing";
 import { AUTH_ROUTE } from "@/navigation/auth-redirect";
 import { useAppRouter } from "@/navigation/use-app-router";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
@@ -24,15 +32,12 @@ export default function PatchGoScreen(): ReactElement | null {
   const palette = useEditorialPalette();
   const router = useAppRouter();
   const toast = useToast();
-  const { checkout, startCheckout, offerCode } = useLocalSearchParams<{
+  const { checkout } = useLocalSearchParams<{
     checkout?: string;
-    startCheckout?: string;
-    offerCode?: string;
   }>();
   const { hasBootstrapped } = useAuthBootstrap();
   const { isAuthenticated, currentUser } = useAuthState();
   const [opening, setOpening] = useState(false);
-  const autoCheckoutStarted = useRef(false);
   const billing = usePatchPlan(checkout === "success");
   const billingOffers = useBillingOffers();
   const [payments, setPayments] = useState<BillingPayment[]>([]);
@@ -76,14 +81,8 @@ export default function PatchGoScreen(): ReactElement | null {
           toast.show({ title: t("go.mobileBillingComingSoon"), intent: "neutral" });
           return;
         }
-        const response = await fetcher<{ id: string }>({
-          method: "POST",
-          url: "/api/v1/billing/checkouts",
-          data: { offerCode: requestedOffer ?? `${plan}_card_month` },
-        });
-        window.location.assign(
-          `/billing/checkout?checkout=${encodeURIComponent(response.data.id)}`,
-        );
+        const route = await createBillingCheckoutRoute(requestedOffer ?? `${plan}_card_month`);
+        window.location.assign(String(route));
       } catch {
         toast.show({ title: t("go.error"), intent: "danger" });
       } finally {
@@ -144,37 +143,84 @@ export default function PatchGoScreen(): ReactElement | null {
     }
   }, [billing.refetch, t, toast]);
 
-  useEffect(() => {
-    if (
-      autoCheckoutStarted.current ||
-      !hasBootstrapped ||
-      !isAuthenticated ||
-      !billing.data?.enabled ||
-      billing.data.active ||
-      (startCheckout !== "go" && startCheckout !== "max")
-    )
-      return;
-    if (billingOffers.isLoading) return;
-    autoCheckoutStarted.current = true;
-    const requestedOffer = offers.find(
-      (offer) => offer.code === offerCode && offer.plan === startCheckout,
-    )?.code;
-    void openBilling(startCheckout, requestedOffer);
-  }, [
-    hasBootstrapped,
-    isAuthenticated,
-    billing.data?.enabled,
-    billing.data?.active,
-    billingOffers.isLoading,
-    startCheckout,
-    offerCode,
-    offers,
-    openBilling,
-  ]);
+  const scheduleDowngrade = useCallback(async () => {
+    setOpening(true);
+    try {
+      await fetcher({
+        method: "POST",
+        url: "/api/v1/billing/subscription/change-plan",
+        data: { plan: "go" },
+      });
+      await billing.refetch();
+    } catch {
+      toast.show({ title: t("go.error"), intent: "danger" });
+    } finally {
+      setOpening(false);
+    }
+  }, [billing.refetch, t, toast]);
+
+  const cancelDowngrade = useCallback(async () => {
+    setOpening(true);
+    try {
+      await fetcher({
+        method: "POST",
+        url: "/api/v1/billing/subscription/change-plan/cancel",
+      });
+      await billing.refetch();
+    } catch {
+      toast.show({ title: t("go.error"), intent: "danger" });
+    } finally {
+      setOpening(false);
+    }
+  }, [billing.refetch, t, toast]);
 
   if (!hasBootstrapped) return null;
 
   const state = billing.data;
+  const openCheckoutId = state?.openCheckout?.id;
+
+  if (isAuthenticated && openCheckoutId && state && !state.active) {
+    return (
+      <YStack flex={1} backgroundColor={palette.bg} padding={24} justifyContent="center">
+        <YStack width="100%" maxWidth={560} alignSelf="center" gap={18}>
+          <Text fontFamily={editorialFonts.serif} fontSize={38} color={palette.ink}>
+            {t("go.checkoutPendingTitle")}
+          </Text>
+          <Text fontFamily={editorialFonts.sans} fontSize={16} color={palette.body}>
+            {t("go.checkoutPendingBody")}
+          </Text>
+          <PrimaryAction
+            label={t("go.continuePayment")}
+            onPress={() =>
+              router.push(`/billing/checkout?checkout=${encodeURIComponent(openCheckoutId)}`)
+            }
+          />
+        </YStack>
+      </YStack>
+    );
+  }
+
+  if (isAuthenticated && state && !state.active && !state.openCheckout) {
+    return (
+      <AuthPageFrame plan>
+        <AuthFlowPanel variant="page" isPlanStep>
+          <ChoosePlanStep
+            submitting={opening}
+            onBack={() => router.back()}
+            onContinue={async (plan, selectedOffer) => {
+              if (plan === "free") {
+                router.back();
+                return;
+              }
+              if (!selectedOffer) return;
+              await openBilling(plan, selectedOffer);
+            }}
+          />
+        </AuthFlowPanel>
+      </AuthPageFrame>
+    );
+  }
+
   const endDate = state?.periodEnd ? new Date(state.periodEnd).toLocaleDateString(locale) : null;
   const offerFor = (plan: "go" | "max", months: 3 | 12) =>
     offers.find(
@@ -220,6 +266,15 @@ export default function PatchGoScreen(): ReactElement | null {
           <Text fontFamily={editorialFonts.sans} fontSize={16} lineHeight={24} color={palette.body}>
             {t("go.lead")}
           </Text>
+
+          {openCheckoutId ? (
+            <PrimaryAction
+              label={t("go.continuePayment")}
+              onPress={() =>
+                router.push(`/billing/checkout?checkout=${encodeURIComponent(openCheckoutId)}`)
+              }
+            />
+          ) : null}
 
           <YStack
             borderWidth={1}
@@ -312,27 +367,16 @@ export default function PatchGoScreen(): ReactElement | null {
               </YStack>
             ) : state?.active ? (
               <YStack gap={10}>
-                {state.renews && cardOfferFor("go") ? (
+                {state.renews && !state.pendingPlan ? (
                   <PrimaryAction
-                    label={t("go.changePlan")}
-                    onPress={() => void openBilling("go")}
+                    label={t("go.scheduleDowngrade")}
+                    onPress={() => void scheduleDowngrade()}
                     loading={opening}
                   />
                 ) : null}
-                {offerFor("go", 3) ? (
-                  <PrimaryAction
-                    label={t("go.payPixQuarter", { price: offerPrice("go", 3) })}
-                    onPress={() => void openBilling("go", offerFor("go", 3)?.code)}
-                    loading={opening}
-                  />
-                ) : null}
-                {offerFor("go", 12) ? (
-                  <PrimaryAction
-                    label={t("go.payPixYear", { price: offerPrice("go", 12) })}
-                    onPress={() => void openBilling("go", offerFor("go", 12)?.code)}
-                    loading={opening}
-                  />
-                ) : null}
+                <Text fontFamily={editorialFonts.sans} fontSize={13} color={palette.muted}>
+                  {t("go.downgradeAtPeriodEnd")}
+                </Text>
               </YStack>
             ) : !isAuthenticated ? (
               <PrimaryAction label={t("go.signIn")} onPress={() => router.push(AUTH_ROUTE)} />
@@ -501,12 +545,19 @@ export default function PatchGoScreen(): ReactElement | null {
           </YStack>
 
           {state?.pendingPlan ? (
-            <Text fontFamily={editorialFonts.sans} fontSize={14} color={palette.ink}>
-              {t("go.pendingPlan", { plan: state.pendingPlan === "max" ? "Max" : "Go" })}
-            </Text>
+            <YStack gap={8}>
+              <Text fontFamily={editorialFonts.sans} fontSize={14} color={palette.ink}>
+                {t("go.pendingPlan", { plan: state.pendingPlan === "max" ? "Max" : "Go" })}
+              </Text>
+              <PrimaryAction
+                label={t("go.cancelPlanChange")}
+                onPress={() => void cancelDowngrade()}
+                loading={opening}
+              />
+            </YStack>
           ) : null}
 
-          {state?.active ? (
+          {state?.active && state.paymentMode === "card_recurring" && state.renews ? (
             <YStack gap={10}>
               <PrimaryAction
                 label={t("go.updatePaymentMethod")}

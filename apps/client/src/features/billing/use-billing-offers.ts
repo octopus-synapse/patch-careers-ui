@@ -26,15 +26,20 @@ export const billingOffersKey = ["billing-offers"] as const;
 
 /** Public catalogue used before account creation and on the plans page. */
 export function useBillingOffers() {
-  return useQuery({
+  const query = useQuery({
     queryKey: billingOffersKey,
     queryFn: async () =>
       (
-        await fetcher<{ items: BillingOffer[] }>({
+        await fetcher<{ checkoutEnabled: boolean; items: BillingOffer[] }>({
           method: "GET",
           url: "/api/v1/billing/offers",
         })
-      ).data.items,
+      ).data,
     staleTime: 5 * 60_000,
   });
+  return {
+    ...query,
+    data: query.data?.items,
+    checkoutEnabled: query.data?.checkoutEnabled ?? false,
+  };
 }

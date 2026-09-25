@@ -14,18 +14,20 @@ import { useAppRouter } from "@/navigation/use-app-router";
 export function useCompleteAuth(): {
   finishAuthentication: (opts?: {
     sessionExchangeId?: string;
-    destination?: Href;
+    destination?: Href | (() => Promise<Href>);
   }) => Promise<void>;
 } {
   const router = useAppRouter();
 
   const finishAuthentication = useCallback(
-    async (opts?: { sessionExchangeId?: string; destination?: Href }) => {
+    async (opts?: { sessionExchangeId?: string; destination?: Href | (() => Promise<Href>) }) => {
       if (opts?.sessionExchangeId) {
         await exchangeSessionForTokens(opts.sessionExchangeId);
       }
       await bootstrap().catch(() => undefined);
-      router.replace(opts?.destination ?? getCurrentAuthenticatedRoute());
+      const destination =
+        typeof opts?.destination === "function" ? await opts.destination() : opts?.destination;
+      router.replace(destination ?? getCurrentAuthenticatedRoute());
     },
     [router],
   );

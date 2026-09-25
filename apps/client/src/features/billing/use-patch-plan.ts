@@ -1,6 +1,7 @@
 import { fetcher } from "@patch-careers/api-client";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
+import type { BillingOfferCode } from "./use-billing-offers";
 
 export type PatchPlanStatus = {
   enabled: boolean;
@@ -14,10 +15,17 @@ export type PatchPlanStatus = {
   quotaPeriodEnd: string | null;
   renews: boolean;
   billingSource: string | null;
+  paymentMode: "card_recurring" | "pix_prepaid" | null;
   creditBalanceCents: number;
   cancelAtPeriodEnd: boolean;
   freeTranslationsUsed: number;
   freeTranslationsLimit: number;
+  openCheckout: {
+    id: string;
+    offerCode: BillingOfferCode;
+    status: string;
+    expiresAt: string;
+  } | null;
 };
 
 export const patchPlanKey = ["patch-go-billing"] as const;

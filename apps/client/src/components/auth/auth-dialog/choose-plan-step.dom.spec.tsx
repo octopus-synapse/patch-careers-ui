@@ -2,9 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, renderApp, screen, waitFor } from "@/test/render";
 import { ChoosePlanStep } from "./choose-plan-step";
 
+let checkoutEnabled = true;
+
 vi.mock("expo-router", () => ({ usePathname: () => "/en/auth" }));
 vi.mock("@/features/billing", () => ({
   useBillingOffers: () => ({
+    checkoutEnabled,
     data: [
       {
         code: "go_card_month",
@@ -34,6 +37,7 @@ vi.mock("@/features/billing", () => ({
 }));
 
 beforeEach(() => {
+  checkoutEnabled = true;
   Object.defineProperty(window, "innerWidth", { configurable: true, value: 390 });
   Object.defineProperty(window, "innerHeight", { configurable: true, value: 844 });
 });
@@ -98,5 +102,17 @@ describe("choose plan mobile actions", () => {
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
 
     expect(onContinue).toHaveBeenCalledWith("go", "go_pix_year");
+  });
+
+  it("does not allow a paid selection while checkout is disabled", () => {
+    checkoutEnabled = false;
+    const onContinue = vi.fn();
+    renderApp(<ChoosePlanStep onBack={vi.fn()} onContinue={onContinue} />, { locale: "en" });
+
+    fireEvent.click(screen.getByRole("radio", { name: /Go/ }));
+
+    expect(screen.getByText("Subscriptions are not open yet.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
+    expect(onContinue).not.toHaveBeenCalled();
   });
 });

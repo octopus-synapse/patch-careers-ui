@@ -8,11 +8,11 @@
 
 O cartão renova mensalmente. O Pix é pré-pago e já inclui desconto: no Go, equivale a R$ 36,63/mês no trimestre ou R$ 33,33/mês no ano; no Max, equivale a R$ 133,30/mês no trimestre ou R$ 99,99/mês no ano. Enquanto houver vagas da oferta fundador, o Max anual por Pix custa R$ 999,90.
 
-Uma preparação é debitada por geração de versão de CV para uma vaga. Falhas de geração devolvem a unidade. Go e Max usam o ciclo de cobrança da Stripe; Free renova suas ações de tradução no primeiro dia de cada mês UTC. Traduções em cache não consomem a cota. O CV preparado pode escolher português, inglês ou detectar o idioma da vaga. Quando é outro idioma, o backend conclui a tradução do CV antes do preparo e usa a versão localizada no PDF. A carta acompanha a preparação quando há fatos suficientes para gerá-la.
+Uma preparação é debitada por geração de versão de CV para uma vaga. Falhas de geração devolvem a unidade. Go e Max usam o ciclo de cobrança do Mercado Pago; Free renova suas ações de tradução no primeiro dia de cada mês UTC. Traduções em cache não consomem a cota. O CV preparado pode escolher português, inglês ou detectar o idioma da vaga. Quando é outro idioma, o backend conclui a tradução do CV antes do preparo e usa a versão localizada no PDF. A carta acompanha a preparação quando há fatos suficientes para gerá-la.
 
 No cadastro em `/auth`, a pessoa escolhe Free, Go ou Max depois de verificar o e-mail. Para Go e Max, escolhe também cartão mensal ou uma das durações pré-pagas no Pix. Toda conta nasce no Free; a escolha paga abre o Checkout Transparente do Mercado Pago após criar a conta e iniciar a sessão. O acesso pago só começa após a confirmação do provedor.
 
-As ofertas atuais são cobradas em BRL. O cartão cria uma assinatura recorrente; o Pix concede acesso pré-pago pelo prazo escolhido. Uma troca de plano aplica o valor não utilizado como crédito Patch, e a renovação do cartão pode ser cancelada sem encerrar o acesso já pago.
+As ofertas atuais são cobradas em BRL. O cartão cria uma assinatura recorrente; o Pix concede acesso pré-pago pelo prazo escolhido. O upgrade para Max é imediato e aplica o valor não utilizado como crédito Patch. O downgrade recorrente de Max para Go entra na próxima renovação e pode ser cancelado antes dela. Um Max pré-pago não pode ser reduzido antes do vencimento; durante um Go pré-pago, o upgrade imediato para Max usa Pix. A renovação do cartão pode ser cancelada sem encerrar o acesso já pago.
 
 ## Ativação
 

@@ -68,7 +68,9 @@ export function ChoosePlanStep({
   const paidOffers = plan === "go" || plan === "max" ? offers.filter((x) => x.plan === plan) : [];
   const selectedOffer = offers.find((offer) => offer.code === offerCode);
   const canContinue =
-    plan !== null && (plan === "free" || selectedOffer?.plan === plan) && !submitting;
+    plan !== null &&
+    (plan === "free" || (billingOffers.checkoutEnabled && selectedOffer?.plan === plan)) &&
+    !submitting;
   const selectedBackground = dialogPalette.selected;
 
   useEffect(() => {
@@ -293,7 +295,7 @@ export function ChoosePlanStep({
                 {t("go.pricingLoading")}
               </Text>
             </XStack>
-          ) : paidOffers.length === 0 ? (
+          ) : !billingOffers.checkoutEnabled || paidOffers.length === 0 ? (
             <Text fontFamily={editorialFonts.sans} fontSize={13} color={dialogPalette.muted}>
               {t("go.unavailable")}
             </Text>

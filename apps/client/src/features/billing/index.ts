@@ -1,3 +1,4 @@
+export { createBillingCheckoutRoute } from "./start-checkout";
 export {
   type BillingOffer,
   type BillingOfferCode,

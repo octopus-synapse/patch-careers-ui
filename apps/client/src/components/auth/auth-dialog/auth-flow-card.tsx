@@ -17,7 +17,7 @@ import { PRIVACY_VERSION, TOS_VERSION } from "@/components/auth/consent-versions
 import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { extractApiErrorMessages } from "@/components/auth/validation";
-import type { BillingOfferCode } from "@/features/billing";
+import { type BillingOfferCode, createBillingCheckoutRoute } from "@/features/billing";
 import { AUTH_FLOW_RESET_EVENT } from "@/navigation/auth-flow-reset";
 import { useI18n } from "@/providers/i18n-provider";
 import { AuthFlowPanel } from "./auth-flow-panel";
@@ -179,9 +179,14 @@ export function AuthFlowCard({
             : plan === "free"
               ? {}
               : {
-                  destination: {
-                    pathname: "/go",
-                    params: { startCheckout: plan, ...(offerCode ? { offerCode } : {}) },
+                  destination: async () => {
+                    if (!offerCode) return "/go" as const;
+                    try {
+                      return await createBillingCheckoutRoute(offerCode);
+                    } catch {
+                      toast.show({ title: t("go.error"), intent: "danger" });
+                      return "/go" as const;
+                    }
                   },
                 }),
         });

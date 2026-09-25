@@ -4,6 +4,7 @@ import { editorialFonts, PrimaryAction, useEditorialPalette } from "@patch-caree
 import { useLocalSearchParams } from "expo-router";
 import Head from "expo-router/head";
 import { type FormEvent, type ReactElement, useEffect, useRef, useState } from "react";
+import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 
 type Checkout = {
@@ -86,6 +87,8 @@ function loadMercadoPago(): Promise<void> {
 export default function CheckoutScreen(): ReactElement {
   const { checkout: checkoutId } = useLocalSearchParams<{ checkout?: string }>();
   const { t, locale } = useI18n();
+  const { hasBootstrapped } = useAuthBootstrap();
+  const { currentUser } = useAuthState();
   const palette = useEditorialPalette();
   const inputStyle = {
     width: "100%",
@@ -124,9 +127,6 @@ export default function CheckoutScreen(): ReactElement {
         });
         if (!mounted) return;
         setCheckout(response.data);
-        if (response.data.status === "approved") {
-          window.setTimeout(() => window.location.assign("/go?checkout=success"), 900);
-        }
       } catch {
         if (mounted) setError(t("go.checkoutError"));
       }
@@ -145,6 +145,15 @@ export default function CheckoutScreen(): ReactElement {
       window.clearInterval(poll);
     };
   }, [checkoutId, checkoutKind, checkoutStatus, t]);
+
+  useEffect(() => {
+    if (checkoutStatus !== "approved" || !hasBootstrapped) return;
+    const destination = currentUser?.hasCompletedOnboarding
+      ? "/go?checkout=success"
+      : "/onboarding";
+    const handle = window.setTimeout(() => window.location.assign(destination), 900);
+    return () => window.clearTimeout(handle);
+  }, [checkoutStatus, currentUser?.hasCompletedOnboarding, hasBootstrapped]);
 
   useEffect(() => {
     if (
