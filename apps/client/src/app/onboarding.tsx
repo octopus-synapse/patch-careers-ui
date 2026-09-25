@@ -32,13 +32,13 @@ export default function OnboardingScreen(): ReactElement | null {
         <AuthFlowPanel variant="page" isPlanStep>
           <ChoosePlanStep
             onBack={() => router.replace("/onboarding")}
-            onContinue={(plan) => {
+            onContinue={(plan, offerCode) => {
               if (plan === "free") {
                 router.replace("/onboarding");
               } else {
                 router.replace({
                   pathname: "/go",
-                  params: { startCheckout: plan },
+                  params: { startCheckout: plan, ...(offerCode ? { offerCode } : {}) },
                 });
               }
             }}

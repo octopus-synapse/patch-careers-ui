@@ -17,6 +17,7 @@ import { PRIVACY_VERSION, TOS_VERSION } from "@/components/auth/consent-versions
 import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { extractApiErrorMessages } from "@/components/auth/validation";
+import type { BillingOfferCode } from "@/features/billing";
 import { AUTH_FLOW_RESET_EVENT } from "@/navigation/auth-flow-reset";
 import { useI18n } from "@/providers/i18n-provider";
 import { AuthFlowPanel } from "./auth-flow-panel";
@@ -134,6 +135,7 @@ export function AuthFlowCard({
     plan: SignupPlan,
     password: string,
     keepSignedIn: boolean,
+    offerCode?: BillingOfferCode,
   ): Promise<void> => {
     await run(async () => {
       let accountCompleted = false;
@@ -179,7 +181,7 @@ export function AuthFlowCard({
               : {
                   destination: {
                     pathname: "/go",
-                    params: { startCheckout: plan },
+                    params: { startCheckout: plan, ...(offerCode ? { offerCode } : {}) },
                   },
                 }),
         });
@@ -287,7 +289,9 @@ export function AuthFlowCard({
           requireAccountConsent
           submitting={submitting}
           onBack={() => setStep("createAccount")}
-          onContinue={(plan) => finalizeAccount(plan, pendingPassword, pendingKeepSignedIn)}
+          onContinue={(plan, offerCode) =>
+            finalizeAccount(plan, pendingPassword, pendingKeepSignedIn, offerCode)
+          }
         />
       ) : null}
       {step === "createAccount" ? (

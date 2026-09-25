@@ -2,9 +2,10 @@ import { authDialogPalette, brandColors } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import { ArrowLeft, ArrowUpRight, Check } from "lucide-react-native";
-import { type ReactElement, useState } from "react";
+import { type ReactElement, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, useWindowDimensions } from "react-native";
 import { ConsentDialog } from "@/components/auth/consent-dialog";
+import { type BillingOffer, type BillingOfferCode, useBillingOffers } from "@/features/billing";
 import { useI18n } from "@/providers/i18n-provider";
 import { AuthStepTitle } from "./auth-step-title";
 
@@ -38,27 +39,66 @@ function splitPrice(price: string, cadence: string): { amount: string; cadence?:
   return { amount: price };
 }
 
+function formatPrice(locale: string, cents: number): string {
+  return new Intl.NumberFormat(locale, { style: "currency", currency: "BRL" }).format(cents / 100);
+}
+
 export function ChoosePlanStep({
   onContinue,
   onBack,
   requireAccountConsent = false,
   submitting = false,
 }: {
-  readonly onContinue: (plan: SignupPlan) => void | Promise<void>;
+  readonly onContinue: (plan: SignupPlan, offerCode?: BillingOfferCode) => void | Promise<void>;
   readonly onBack: () => void;
   readonly requireAccountConsent?: boolean;
   readonly submitting?: boolean;
 }): ReactElement {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const palette = useEditorialPalette();
   const theme = useThemeName();
   const dialogPalette = authDialogPalette[theme];
   const { width } = useWindowDimensions();
   const columns = width >= 1180;
   const [plan, setPlan] = useState<SignupPlan | null>(null);
+  const [offerCode, setOfferCode] = useState<BillingOfferCode | null>(null);
   const [consentOpen, setConsentOpen] = useState(false);
-  const canContinue = plan !== null && !submitting;
+  const billingOffers = useBillingOffers();
+  const offers = billingOffers.data ?? [];
+  const paidOffers = plan === "go" || plan === "max" ? offers.filter((x) => x.plan === plan) : [];
+  const selectedOffer = offers.find((offer) => offer.code === offerCode);
+  const canContinue =
+    plan !== null && (plan === "free" || selectedOffer?.plan === plan) && !submitting;
   const selectedBackground = dialogPalette.selected;
+
+  useEffect(() => {
+    if (plan !== "go" && plan !== "max") return;
+    if (selectedOffer?.plan === plan) return;
+    const defaultOffer =
+      offers.find((offer) => offer.plan === plan && offer.paymentMethod === "card") ??
+      offers.find((offer) => offer.plan === plan);
+    setOfferCode(defaultOffer?.code ?? null);
+  }, [offers, plan, selectedOffer?.plan]);
+
+  const choosePlan = (option: SignupPlan): void => {
+    setPlan(option);
+    if (option === "free") setOfferCode(null);
+  };
+
+  const submitSelection = (): void | Promise<void> => {
+    if (!plan || !canContinue) return;
+    return plan === "free" ? onContinue(plan) : onContinue(plan, offerCode ?? undefined);
+  };
+
+  const continueWithSelection = (): void => {
+    void submitSelection();
+  };
+
+  const offerLabel = (offer: BillingOffer): string => {
+    if (offer.paymentMethod === "card") return t("go.cardMonthlyOption");
+    if (offer.code === "max_pix_year_founder") return t("go.pixFounderOption");
+    return offer.termMonths === 3 ? t("go.pixQuarterOption") : t("go.pixYearOption");
+  };
 
   const cards = plans.map((option) => {
     const selected = plan === option;
@@ -83,7 +123,7 @@ export function ChoosePlanStep({
         accessibilityRole="radio"
         accessibilityState={{ checked: selected }}
         accessibilityLabel={`${title}, ${option === "free" ? tagline : price}${featured ? `, ${t("go.mostPopular")}` : ""}`}
-        onPress={submitting ? undefined : () => setPlan(option)}
+        onPress={submitting ? undefined : () => choosePlan(option)}
         testID={`authDialog.plan.${option}`}
         style={{ flex: columns ? 1 : undefined, minWidth: 0 }}
       >
@@ -227,6 +267,139 @@ export function ChoosePlanStep({
         </AuthStepTitle>
       </YStack>
       {columns ? <XStack gap={14}>{cards}</XStack> : <YStack gap={14}>{cards}</YStack>}
+      {plan === "go" || plan === "max" ? (
+        <YStack
+          width="100%"
+          borderWidth={1}
+          borderColor={dialogPalette.inputBorder}
+          borderRadius={16}
+          backgroundColor={dialogPalette.input}
+          padding={20}
+          gap={12}
+        >
+          <Text
+            fontFamily={editorialFonts.sans}
+            fontSize={15}
+            lineHeight={21}
+            fontWeight="700"
+            color={palette.ink}
+          >
+            {t("go.choosePaymentOption")}
+          </Text>
+          {billingOffers.isLoading ? (
+            <XStack gap={10} alignItems="center">
+              <ActivityIndicator size="small" color={dialogPalette.brand} />
+              <Text fontFamily={editorialFonts.sans} fontSize={13} color={dialogPalette.muted}>
+                {t("go.pricingLoading")}
+              </Text>
+            </XStack>
+          ) : paidOffers.length === 0 ? (
+            <Text fontFamily={editorialFonts.sans} fontSize={13} color={dialogPalette.muted}>
+              {t("go.unavailable")}
+            </Text>
+          ) : (
+            <YStack gap={9} accessibilityRole="radiogroup">
+              {paidOffers.map((offer) => {
+                const offerSelected = offer.code === offerCode;
+                const monthlyCents = Math.round(offer.amountCents / offer.termMonths);
+                return (
+                  <Pressable
+                    key={offer.code}
+                    accessibilityRole="radio"
+                    accessibilityState={{ checked: offerSelected }}
+                    accessibilityLabel={`${offerLabel(offer)}, ${formatPrice(locale, offer.amountCents)}`}
+                    disabled={submitting}
+                    onPress={() => setOfferCode(offer.code)}
+                    testID={`authDialog.offer.${offer.code}`}
+                  >
+                    <XStack
+                      minHeight={62}
+                      alignItems="center"
+                      gap={12}
+                      borderWidth={offerSelected ? 2 : 1}
+                      borderColor={offerSelected ? dialogPalette.brand : dialogPalette.inputBorder}
+                      borderRadius={10}
+                      paddingHorizontal={14}
+                      paddingVertical={10}
+                      backgroundColor={offerSelected ? selectedBackground : dialogPalette.panel}
+                    >
+                      <YStack
+                        width={20}
+                        height={20}
+                        borderRadius={10}
+                        borderWidth={offerSelected ? 0 : 1}
+                        borderColor={dialogPalette.inputBorder}
+                        backgroundColor={offerSelected ? dialogPalette.brand : "transparent"}
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        {offerSelected ? (
+                          <Check size={13} color={dialogPalette.panel} strokeWidth={3} />
+                        ) : null}
+                      </YStack>
+                      <YStack flex={1} minWidth={0}>
+                        <Text
+                          fontFamily={editorialFonts.sans}
+                          fontSize={14}
+                          lineHeight={20}
+                          fontWeight="700"
+                          color={palette.ink}
+                        >
+                          {offerLabel(offer)}
+                        </Text>
+                        {offer.termMonths > 1 ? (
+                          <Text
+                            fontFamily={editorialFonts.sans}
+                            fontSize={12}
+                            lineHeight={18}
+                            color={dialogPalette.muted}
+                          >
+                            {t("go.monthlyEquivalent", {
+                              price: formatPrice(locale, monthlyCents),
+                            })}
+                          </Text>
+                        ) : null}
+                      </YStack>
+                      <YStack alignItems="flex-end">
+                        {offer.listAmountCents > offer.amountCents ? (
+                          <Text
+                            fontFamily={editorialFonts.sans}
+                            fontSize={11}
+                            lineHeight={16}
+                            color={dialogPalette.muted}
+                            textDecorationLine="line-through"
+                          >
+                            {formatPrice(locale, offer.listAmountCents)}
+                          </Text>
+                        ) : null}
+                        <Text
+                          fontFamily={editorialFonts.sans}
+                          fontSize={15}
+                          lineHeight={20}
+                          fontWeight="700"
+                          color={dialogPalette.brand}
+                        >
+                          {formatPrice(locale, offer.amountCents)}
+                        </Text>
+                        {offer.listAmountCents > offer.amountCents ? (
+                          <Text
+                            fontFamily={editorialFonts.sans}
+                            fontSize={11}
+                            lineHeight={16}
+                            color={dialogPalette.brandMuted}
+                          >
+                            {t("go.pixDiscount")}
+                          </Text>
+                        ) : null}
+                      </YStack>
+                    </XStack>
+                  </Pressable>
+                );
+              })}
+            </YStack>
+          )}
+        </YStack>
+      ) : null}
     </YStack>
   );
 
@@ -275,7 +448,7 @@ export function ChoosePlanStep({
             setConsentOpen(true);
             return;
           }
-          void onContinue(plan);
+          continueWithSelection();
         }}
         testID="authDialog.planContinue"
         // @style-allow inline: native Pressable requires its layout through the style prop
@@ -340,7 +513,7 @@ export function ChoosePlanStep({
           loading={submitting}
           onAccept={() => {
             if (!plan) return;
-            void Promise.resolve(onContinue(plan)).finally(() => setConsentOpen(false));
+            void Promise.resolve(submitSelection()).finally(() => setConsentOpen(false));
           }}
           testID="authDialog.planConsentDialog"
         />
@@ -358,7 +531,7 @@ export function ChoosePlanStep({
         loading={submitting}
         onAccept={() => {
           if (!plan) return;
-          void Promise.resolve(onContinue(plan)).finally(() => setConsentOpen(false));
+          void Promise.resolve(submitSelection()).finally(() => setConsentOpen(false));
         }}
         testID="authDialog.planConsentDialog"
       />

@@ -3,6 +3,35 @@ import { cleanup, fireEvent, renderApp, screen, waitFor } from "@/test/render";
 import { ChoosePlanStep } from "./choose-plan-step";
 
 vi.mock("expo-router", () => ({ usePathname: () => "/en/auth" }));
+vi.mock("@/features/billing", () => ({
+  useBillingOffers: () => ({
+    data: [
+      {
+        code: "go_card_month",
+        plan: "go",
+        paymentMethod: "card",
+        recurring: true,
+        termMonths: 1,
+        amountCents: 3_999,
+        listAmountCents: 3_999,
+        currency: "BRL",
+        founderRemaining: null,
+      },
+      {
+        code: "go_pix_year",
+        plan: "go",
+        paymentMethod: "pix",
+        recurring: false,
+        termMonths: 12,
+        amountCents: 39_990,
+        listAmountCents: 47_988,
+        currency: "BRL",
+        founderRemaining: null,
+      },
+    ],
+    isLoading: false,
+  }),
+}));
 
 beforeEach(() => {
   Object.defineProperty(window, "innerWidth", { configurable: true, value: 390 });
@@ -58,5 +87,16 @@ describe("choose plan mobile actions", () => {
     await waitFor(() =>
       expect(screen.queryByTestId("authDialog.planConsentDialog")).not.toBeInTheDocument(),
     );
+  });
+
+  it("keeps the selected paid offer when continuing", () => {
+    const onContinue = vi.fn();
+    renderApp(<ChoosePlanStep onBack={vi.fn()} onContinue={onContinue} />, { locale: "en" });
+
+    fireEvent.click(screen.getByRole("radio", { name: /Go/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Pix · 12 months/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+
+    expect(onContinue).toHaveBeenCalledWith("go", "go_pix_year");
   });
 });

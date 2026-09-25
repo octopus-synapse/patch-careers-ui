@@ -5,7 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Platform, ScrollView } from "react-native";
-import { usePatchPlan } from "@/features/billing";
+import { type BillingOfferCode, useBillingOffers, usePatchPlan } from "@/features/billing";
 import { AUTH_ROUTE } from "@/navigation/auth-redirect";
 import { useAppRouter } from "@/navigation/use-app-router";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
@@ -19,39 +19,24 @@ type BillingPayment = {
   paidAt: string | null;
 };
 
-type BillingOffer = {
-  code: string;
-  plan: "go" | "max";
-  paymentMethod: "card" | "pix";
-  termMonths: 1 | 3 | 12;
-  amountCents: number;
-  listAmountCents: number;
-  founderRemaining: number | null;
-};
-
 export default function PatchGoScreen(): ReactElement | null {
   const { t, locale } = useI18n();
   const palette = useEditorialPalette();
   const router = useAppRouter();
   const toast = useToast();
-  const { checkout, startCheckout } = useLocalSearchParams<{
+  const { checkout, startCheckout, offerCode } = useLocalSearchParams<{
     checkout?: string;
     startCheckout?: string;
+    offerCode?: string;
   }>();
   const { hasBootstrapped } = useAuthBootstrap();
   const { isAuthenticated, currentUser } = useAuthState();
   const [opening, setOpening] = useState(false);
   const autoCheckoutStarted = useRef(false);
   const billing = usePatchPlan(checkout === "success");
+  const billingOffers = useBillingOffers();
   const [payments, setPayments] = useState<BillingPayment[]>([]);
-  const [offers, setOffers] = useState<BillingOffer[]>([]);
-
-  useEffect(() => {
-    if (!isAuthenticated || !billing.data?.enabled) return;
-    void fetcher<{ items: BillingOffer[] }>({ method: "GET", url: "/api/v1/billing/offers" })
-      .then((response) => setOffers(response.data.items))
-      .catch(() => setOffers([]));
-  }, [billing.data?.enabled, isAuthenticated]);
+  const offers = billingOffers.data ?? [];
 
   useEffect(() => {
     if (!billing.data?.active) return;
@@ -79,7 +64,7 @@ export default function PatchGoScreen(): ReactElement | null {
   }, [checkout, billing.data?.active, currentUser, router]);
 
   const openBilling = useCallback(
-    async (plan?: "go" | "max", requestedOffer?: string): Promise<void> => {
+    async (plan?: "go" | "max", requestedOffer?: BillingOfferCode): Promise<void> => {
       if (!isAuthenticated) {
         router.push(AUTH_ROUTE);
         return;
@@ -169,14 +154,21 @@ export default function PatchGoScreen(): ReactElement | null {
       (startCheckout !== "go" && startCheckout !== "max")
     )
       return;
+    if (billingOffers.isLoading) return;
     autoCheckoutStarted.current = true;
-    void openBilling(startCheckout);
+    const requestedOffer = offers.find(
+      (offer) => offer.code === offerCode && offer.plan === startCheckout,
+    )?.code;
+    void openBilling(startCheckout, requestedOffer);
   }, [
     hasBootstrapped,
     isAuthenticated,
     billing.data?.enabled,
     billing.data?.active,
+    billingOffers.isLoading,
     startCheckout,
+    offerCode,
+    offers,
     openBilling,
   ]);
 
