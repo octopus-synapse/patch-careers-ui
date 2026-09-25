@@ -24,12 +24,14 @@ export function AuthFlowPanel({
   variant = "dialog",
   isPlanStep = false,
   mobileTransparent = false,
+  contentPlacement = "center",
   header,
 }: {
   readonly children: ReactNode;
   readonly variant?: "dialog" | "page";
   readonly isPlanStep?: boolean;
   readonly mobileTransparent?: boolean;
+  readonly contentPlacement?: "center" | "upper";
   readonly header?: ReactNode;
 }): ReactElement {
   const { width, height } = useWindowDimensions();
@@ -101,7 +103,11 @@ export function AuthFlowPanel({
             style={{ width: "100%", flex: 1 }}
             contentContainerStyle={{
               flexGrow: 1,
-              justifyContent: isPlanStep && width < 800 ? "flex-start" : "center",
+              justifyContent:
+                (isPlanStep && width < 800) || contentPlacement === "upper"
+                  ? "flex-start"
+                  : "center",
+              paddingTop: contentPlacement === "upper" ? (height < 600 ? 36 : 72) : 0,
             }}
             showsVerticalScrollIndicator={false}
           >

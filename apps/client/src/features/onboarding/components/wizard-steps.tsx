@@ -9,6 +9,7 @@ import { PhoneInput } from "@patch-careers/ui";
 import {
   AnimatedField,
   FieldError,
+  LanguageOptionCard,
   PrimaryAction,
   UnderlineInput,
   useEditorialPalette,
@@ -166,7 +167,6 @@ export function LanguageStep({
   t: (key: string) => string;
 }): ReactElement {
   const ed = useEd();
-  const authTokens = useEditorialPalette();
   // `hint` is written in each target language (like `native`), so it reads the
   // same regardless of the current UI locale — and it gives the short language
   // step enough body to fill the step without looking sparse.
@@ -190,31 +190,18 @@ export function LanguageStep({
     },
   ];
   return (
-    <View style={ed.langWrap}>
+    <View style={[ed.langWrap, ed.languageChoiceWrap]}>
       {options.map((option, index) => {
         const selected = locale === option.value;
         return (
           <AnimatedField key={option.value} delay={120 + index * 80}>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityState={{ selected }}
+            <LanguageOptionCard
+              label={option.native}
+              description={option.hint}
+              selected={selected}
               accessibilityLabel={t("onboarding.language.prompt")}
               onPress={() => onSelect(option.value)}
-              style={[ed.languagePlanCard, selected ? ed.languagePlanCardSelected : null]}
-            >
-              <View style={ed.langText}>
-                <RNText style={ed.languagePlanLabel}>{option.native}</RNText>
-                <RNText style={ed.langHint}>{option.hint}</RNText>
-              </View>
-              <View
-                style={[
-                  ed.languagePlanIndicator,
-                  selected ? ed.languagePlanIndicatorSelected : null,
-                ]}
-              >
-                {selected ? <Check size={15} color={authTokens.panel} strokeWidth={3} /> : null}
-              </View>
-            </Pressable>
+            />
           </AnimatedField>
         );
       })}

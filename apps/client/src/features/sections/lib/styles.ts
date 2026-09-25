@@ -267,46 +267,10 @@ const createEd = (
     },
     // language
     langWrap: { gap: 16 },
-    // Compact counterpart to the sign-up plan cards: both options keep the
-    // exact same footprint, while selection gains the plan tint, stronger
-    // border and filled check control.
-    languagePlanCard: {
-      width: "100%",
-      height: 78,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: 12,
-      borderWidth: 1,
-      borderColor: authDialogPalette[theme].inputBorder,
-      borderRadius: 16,
-      paddingHorizontal: 20,
-      backgroundColor: authDialogPalette[theme].input,
-    },
-    languagePlanCardSelected: {
-      borderWidth: 2,
-      borderColor: authDialogPalette[theme].brand,
-      backgroundColor: authDialogPalette[theme].selected,
-    },
-    languagePlanLabel: {
-      fontFamily: fonts.sans,
-      fontSize: 17,
-      fontWeight: "600",
-      color: authTokens.ink,
-    },
-    languagePlanIndicator: {
-      width: 24,
-      height: 24,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: authDialogPalette[theme].inputBorder,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    languagePlanIndicatorSelected: {
-      borderWidth: 0,
-      backgroundColor: authDialogPalette[theme].brand,
-    },
+    // The language step has no supporting content beneath its two choices.
+    // Give the cards some breathing room from the heading so the group sits
+    // closer to the visual centre between the title and full-width action.
+    languageChoiceWrap: { paddingTop: 56 },
     langCard: {
       flexDirection: "row",
       alignItems: "center",

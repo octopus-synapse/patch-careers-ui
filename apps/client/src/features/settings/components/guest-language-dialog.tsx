@@ -1,13 +1,19 @@
 import type { Locale } from "@patch-careers/i18n";
 import { authDialogPalette } from "@patch-careers/tokens";
 import { YStack } from "@patch-careers/ui";
-import { BrandMark, editorialFonts, useThemeName } from "@patch-careers/ui/editorial";
-import { ArrowUpRight, Check } from "lucide-react-native";
+import {
+  BrandMark,
+  editorialFonts,
+  LanguageOptionCard,
+  useEditorialPalette,
+  useThemeName,
+} from "@patch-careers/ui/editorial";
+import { ArrowUpRight } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Modal, Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { useLocaleSwitch } from "@/navigation/use-locale-switch";
 import { localeFromLanguageTag } from "@/providers/i18n-locale";
-import { useI18n } from "@/providers/i18n-provider";
+import { translatorFor } from "@/providers/i18n-provider";
 
 const LANGUAGES: Locale[] = ["pt-BR", "en"];
 
@@ -16,12 +22,13 @@ export function GuestLanguageDialog({
 }: {
   readonly onConfirm: () => void;
 }): ReactElement {
-  const { t } = useI18n();
   const colors = authDialogPalette[useThemeName()];
+  const palette = useEditorialPalette();
   const switchLocale = useLocaleSwitch();
   const { width, height } = useWindowDimensions();
   const compact = height < 550;
   const [selected, setSelected] = useState<Locale>(() => localeFromLanguageTag(navigator.language));
+  const selectedT = translatorFor(selected);
 
   const confirm = async (): Promise<void> => {
     if (await switchLocale(selected)) onConfirm();
@@ -81,62 +88,34 @@ export function GuestLanguageDialog({
           </View>
 
           <Text
+            numberOfLines={2}
             style={{
-              color: colors.brand,
+              color: palette.ink,
               fontFamily: editorialFonts.serif,
               fontSize: width < 400 ? 34 : 38,
               lineHeight: width < 400 ? 38 : 41,
+              height: width < 400 ? 76 : 82,
               letterSpacing: -1.2,
-              marginBottom: compact ? 44 : 48,
+              marginBottom: compact ? 22 : 24,
             }}
           >
-            {t("landing.languageConfirm.title")}
+            {selectedT("landing.languageConfirm.title")}
           </Text>
 
-          <YStack accessibilityRole="radiogroup" gap={9}>
+          <YStack accessibilityRole="radiogroup" gap={16}>
             {LANGUAGES.map((language) => {
               const active = selected === language;
               return (
-                <Pressable
+                <LanguageOptionCard
                   key={language}
                   testID={`guestLanguage.${language}`}
-                  accessibilityRole="radio"
-                  accessibilityState={{ checked: active }}
+                  label={selectedT(language === "en" ? "landing.nav.langEn" : "landing.nav.langPt")}
+                  description={selectedT(
+                    language === "en" ? "landing.nav.langEnRegion" : "landing.nav.langPtRegion",
+                  )}
+                  selected={active}
                   onPress={() => setSelected(language)}
-                  style={{
-                    minHeight: compact ? 54 : 58,
-                    borderWidth: 1,
-                    borderColor: active ? colors.brand : colors.inputBorder,
-                    backgroundColor: colors.input,
-                    borderRadius: 7,
-                    paddingHorizontal: 17,
-                    paddingVertical: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 12,
-                  }}
-                >
-                  <YStack flex={1} gap={2}>
-                    <Text
-                      style={{
-                        color: colors.brand,
-                        fontFamily: editorialFonts.sans,
-                        fontSize: 15,
-                        fontWeight: active ? "600" : "400",
-                      }}
-                    >
-                      {t(language === "en" ? "landing.nav.langEn" : "landing.nav.langPt")}
-                    </Text>
-                    <Text
-                      style={{ color: colors.muted, fontFamily: editorialFonts.sans, fontSize: 12 }}
-                    >
-                      {t(
-                        language === "en" ? "landing.nav.langEnRegion" : "landing.nav.langPtRegion",
-                      )}
-                    </Text>
-                  </YStack>
-                  {active ? <Check size={19} color={colors.brand} strokeWidth={2} /> : null}
-                </Pressable>
+                />
               );
             })}
           </YStack>
@@ -164,7 +143,7 @@ export function GuestLanguageDialog({
                 fontWeight: "500",
               }}
             >
-              {t("landing.languageConfirm.confirm")}
+              {selectedT("landing.languageConfirm.confirm")}
             </Text>
             <ArrowUpRight size={18} color={colors.onPrimary} strokeWidth={1.8} />
           </Pressable>

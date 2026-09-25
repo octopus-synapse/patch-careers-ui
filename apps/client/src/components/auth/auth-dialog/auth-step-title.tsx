@@ -23,36 +23,46 @@ export function AuthStepTitle({
   const { width } = useWindowDimensions();
   const displayTitle = variant === "hero" || variant === "plan";
   const serif = displayTitle || variant === "notice";
-  const fontSize = displayTitle
-    ? isPage
-      ? 48
-      : 40
-    : variant === "notice"
-      ? 27
-      : variant === "success"
-        ? isPage && width >= 600
-          ? 38
-          : 34
-        : variant === "centered"
-          ? 34
-          : isPage
-            ? 44
-            : 38;
-  const lineHeight = displayTitle
-    ? isPage
-      ? 51
-      : 43
-    : variant === "notice"
-      ? 32
-      : variant === "success"
-        ? isPage && width >= 600
-          ? 42
-          : 38
-        : variant === "centered"
-          ? 38
-          : isPage
-            ? 48
-            : 41;
+  const fontSize =
+    variant === "hero"
+      ? isPage
+        ? 48
+        : 46
+      : variant === "plan"
+        ? isPage
+          ? 48
+          : 40
+        : variant === "notice"
+          ? 27
+          : variant === "success"
+            ? isPage && width >= 600
+              ? 38
+              : 34
+            : variant === "centered"
+              ? 34
+              : isPage
+                ? 44
+                : 38;
+  const lineHeight =
+    variant === "hero"
+      ? isPage
+        ? 51
+        : 49
+      : variant === "plan"
+        ? isPage
+          ? 51
+          : 43
+        : variant === "notice"
+          ? 32
+          : variant === "success"
+            ? isPage && width >= 600
+              ? 42
+              : 38
+            : variant === "centered"
+              ? 38
+              : isPage
+                ? 48
+                : 41;
 
   return (
     <Text

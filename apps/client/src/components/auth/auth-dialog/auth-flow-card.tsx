@@ -325,6 +325,7 @@ export function AuthFlowCard({
       variant={variant}
       isPlanStep={step === "choosePlan"}
       mobileTransparent={isPage}
+      contentPlacement={!isPage && step === "email" ? "upper" : "center"}
       header={header}
     >
       {content}

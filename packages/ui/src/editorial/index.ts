@@ -61,6 +61,10 @@ export {
 export { IdentityAvatar, type IdentityAvatarProps } from "./identity-avatar";
 export { IdentityMasthead, type IdentityMastheadProps } from "./identity-masthead";
 export { InlineLink, type InlineLinkProps } from "./inline-link";
+export {
+  LanguageOptionCard,
+  type LanguageOptionCardProps,
+} from "./language-option-card";
 export { editorialFadeInDown } from "./motion";
 export { OAuthButton, type OAuthButtonProps } from "./oauth-button";
 export { OrDivider } from "./or-divider";
