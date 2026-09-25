@@ -6,11 +6,13 @@ import * as WebBrowser from "expo-web-browser";
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Alert, Platform, ScrollView } from "react-native";
 import { AuthFlowPanel } from "@/components/auth/auth-dialog/auth-flow-panel";
-import { ChoosePlanStep } from "@/components/auth/auth-dialog/choose-plan-step";
+import { ChoosePlanStep, type SignupPlan } from "@/components/auth/auth-dialog/choose-plan-step";
 import { AuthPageFrame } from "@/components/auth/auth-page-frame";
 import {
   type BillingOfferCode,
+  cancelBillingCheckout,
   createBillingCheckoutRoute,
+  PendingCheckoutDialog,
   useBillingOffers,
   usePatchPlan,
 } from "@/features/billing";
@@ -38,10 +40,21 @@ export default function PatchGoScreen(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();
   const { isAuthenticated, currentUser } = useAuthState();
   const [opening, setOpening] = useState(false);
+  const [requestedChoice, setRequestedChoice] = useState<{
+    plan: SignupPlan;
+    offerCode?: BillingOfferCode;
+  } | null>(null);
+  const [switching, setSwitching] = useState(false);
+  const [switchError, setSwitchError] = useState<string | null>(null);
   const billing = usePatchPlan(checkout === "success");
   const billingOffers = useBillingOffers();
   const [payments, setPayments] = useState<BillingPayment[]>([]);
   const offers = billingOffers.data ?? [];
+  const state = billing.data;
+  const openCheckoutId = state?.openCheckout?.id;
+  const resumeCheckout = (offerCode: BillingOfferCode) => {
+    void openBilling(offerCode.startsWith("max_") ? "max" : "go", offerCode);
+  };
 
   useEffect(() => {
     if (!billing.data?.active) return;
@@ -81,7 +94,27 @@ export default function PatchGoScreen(): ReactElement | null {
           toast.show({ title: t("go.mobileBillingComingSoon"), intent: "neutral" });
           return;
         }
-        const route = await createBillingCheckoutRoute(requestedOffer ?? `${plan}_card_month`);
+        const selectedOffer = requestedOffer ?? `${plan}_card_month`;
+        const latest = await billing.refetch();
+        if (latest.isError || !latest.data) throw new Error("billing-status-unavailable");
+        const open = latest.data.openCheckout;
+        if (open) {
+          if (open.offerCode === selectedOffer) {
+            // Repeating the same offer is idempotent and also recovers a Pix
+            // order whose provider response was lost before we saved its QR.
+            const route = await createBillingCheckoutRoute(selectedOffer);
+            window.location.assign(String(route));
+            return;
+          }
+          if (open.offerCode.includes("_pix_")) {
+            setSwitchError(null);
+            setRequestedChoice({ plan, offerCode: selectedOffer });
+            return;
+          }
+          toast.show({ title: t("go.continuePayment"), intent: "neutral" });
+          return;
+        }
+        const route = await createBillingCheckoutRoute(selectedOffer);
         window.location.assign(String(route));
       } catch {
         toast.show({ title: t("go.error"), intent: "danger" });
@@ -89,7 +122,7 @@ export default function PatchGoScreen(): ReactElement | null {
         setOpening(false);
       }
     },
-    [isAuthenticated, router, t, toast],
+    [billing.refetch, isAuthenticated, router, t, toast],
   );
 
   const cancelSubscription = useCallback(async () => {
@@ -176,48 +209,121 @@ export default function PatchGoScreen(): ReactElement | null {
 
   if (!hasBootstrapped) return null;
 
-  const state = billing.data;
-  const openCheckoutId = state?.openCheckout?.id;
+  const selectPlan = async (plan: SignupPlan, offerCode?: BillingOfferCode) => {
+    try {
+      const latest = await billing.refetch();
+      if (latest.isError || !latest.data) throw new Error("billing-status-unavailable");
+      const open = latest.data.openCheckout;
+      if (open) {
+        if (offerCode && offerCode === open.offerCode) {
+          await openBilling(plan === "free" ? undefined : plan, offerCode);
+          return;
+        }
+        if (!open.offerCode.includes("_pix_")) {
+          toast.show({ title: t("go.continuePayment"), intent: "neutral" });
+          return;
+        }
+        setSwitchError(null);
+        setRequestedChoice({ plan, ...(offerCode ? { offerCode } : {}) });
+        return;
+      }
+      if (plan === "free") router.back();
+      else if (offerCode) await openBilling(plan, offerCode);
+    } catch {
+      toast.show({ title: t("go.error"), intent: "danger" });
+    }
+  };
 
-  if (isAuthenticated && openCheckoutId && state && !state.active) {
-    return (
-      <YStack flex={1} backgroundColor={palette.bg} padding={24} justifyContent="center">
-        <YStack width="100%" maxWidth={560} alignSelf="center" gap={18}>
-          <Text fontFamily={editorialFonts.serif} fontSize={38} color={palette.ink}>
-            {t("go.checkoutPendingTitle")}
-          </Text>
-          <Text fontFamily={editorialFonts.sans} fontSize={16} color={palette.body}>
-            {t("go.checkoutPendingBody")}
-          </Text>
-          <PrimaryAction
-            label={t("go.continuePayment")}
-            onPress={() =>
-              router.push(`/billing/checkout?checkout=${encodeURIComponent(openCheckoutId)}`)
-            }
-          />
+  const confirmSwitch = async () => {
+    if (!requestedChoice || switching) return;
+    setSwitching(true);
+    setSwitchError(null);
+    try {
+      const latest = await billing.refetch();
+      if (latest.isError || !latest.data) throw new Error("billing-status-unavailable");
+      const open = latest.data.openCheckout;
+      if (open) {
+        const result = await cancelBillingCheckout(open.id);
+        if (result === "approved") {
+          setRequestedChoice(null);
+          await billing.refetch();
+          toast.show({ title: t("go.switchCheckoutPaid"), intent: "neutral" });
+          if (!currentUser?.hasCompletedOnboarding) router.replace("/onboarding");
+          return;
+        }
+        if (result !== "canceled") throw new Error("checkout-not-canceled");
+      }
+      const choice = requestedChoice;
+      if (choice.plan === "free") {
+        void billing.refetch();
+        router.back();
+      } else if (choice.offerCode) await openBilling(choice.plan, choice.offerCode);
+      setRequestedChoice(null);
+    } catch {
+      setSwitchError(t("go.switchCheckoutError"));
+    } finally {
+      setSwitching(false);
+    }
+  };
+
+  if (isAuthenticated && state && !state.active) {
+    const pendingCard = state.openCheckout;
+    if (pendingCard && !pendingCard.offerCode.includes("_pix_")) {
+      return (
+        <YStack flex={1} backgroundColor={palette.bg} padding={24} justifyContent="center">
+          <YStack width="100%" maxWidth={560} alignSelf="center" gap={18}>
+            <Text fontFamily={editorialFonts.serif} fontSize={38} color={palette.ink}>
+              {t("go.checkoutPendingTitle")}
+            </Text>
+            <Text fontFamily={editorialFonts.sans} fontSize={16} color={palette.body}>
+              {t("go.checkoutProcessing")}
+            </Text>
+            <PrimaryAction
+              label={t("go.continuePayment")}
+              onPress={() => resumeCheckout(pendingCard.offerCode)}
+            />
+          </YStack>
         </YStack>
-      </YStack>
-    );
-  }
-
-  if (isAuthenticated && state && !state.active && !state.openCheckout) {
+      );
+    }
     return (
-      <AuthPageFrame plan>
-        <AuthFlowPanel variant="page" isPlanStep>
-          <ChoosePlanStep
-            submitting={opening}
-            onBack={() => router.back()}
-            onContinue={async (plan, selectedOffer) => {
-              if (plan === "free") {
-                router.back();
-                return;
-              }
-              if (!selectedOffer) return;
-              await openBilling(plan, selectedOffer);
-            }}
-          />
-        </AuthFlowPanel>
-      </AuthPageFrame>
+      <>
+        <AuthPageFrame plan>
+          {openCheckoutId ? (
+            <YStack alignSelf="center" width="100%" maxWidth={560} gap={12} padding={18}>
+              <Text fontFamily={editorialFonts.sans} fontWeight="700" color={palette.ink}>
+                {t("go.checkoutPendingTitle")}
+              </Text>
+              <Text fontFamily={editorialFonts.sans} color={palette.body}>
+                {t("go.checkoutPendingBody")}
+              </Text>
+              <PrimaryAction
+                label={t("go.continuePayment")}
+                onPress={() => {
+                  const open = state.openCheckout;
+                  if (open) resumeCheckout(open.offerCode);
+                }}
+              />
+            </YStack>
+          ) : null}
+          <AuthFlowPanel variant="page" isPlanStep>
+            <ChoosePlanStep
+              submitting={opening || switching}
+              onBack={() => router.back()}
+              onContinue={selectPlan}
+            />
+          </AuthFlowPanel>
+        </AuthPageFrame>
+        <PendingCheckoutDialog
+          visible={Boolean(requestedChoice)}
+          busy={switching}
+          error={switchError}
+          onKeep={() => {
+            if (!switching) setRequestedChoice(null);
+          }}
+          onCancelAndSwitch={() => void confirmSwitch()}
+        />
+      </>
     );
   }
 
@@ -267,12 +373,13 @@ export default function PatchGoScreen(): ReactElement | null {
             {t("go.lead")}
           </Text>
 
-          {openCheckoutId ? (
+          {openCheckoutId && Platform.OS === "web" ? (
             <PrimaryAction
               label={t("go.continuePayment")}
-              onPress={() =>
-                router.push(`/billing/checkout?checkout=${encodeURIComponent(openCheckoutId)}`)
-              }
+              onPress={() => {
+                const open = state?.openCheckout;
+                if (open) resumeCheckout(open.offerCode);
+              }}
             />
           ) : null}
 
@@ -619,6 +726,15 @@ export default function PatchGoScreen(): ReactElement | null {
           </Text>
         </YStack>
       </ScrollView>
+      <PendingCheckoutDialog
+        visible={Boolean(requestedChoice)}
+        busy={switching}
+        error={switchError}
+        onKeep={() => {
+          if (!switching) setRequestedChoice(null);
+        }}
+        onCancelAndSwitch={() => void confirmSwitch()}
+      />
     </YStack>
   );
 }

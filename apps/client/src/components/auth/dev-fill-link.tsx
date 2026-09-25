@@ -1,6 +1,8 @@
 /**
- * DEV-only "test" affordance in the card's top-right corner: one tap drops
- * seeded/valid values into the form. Renders nothing unless the dev
+ * DEV-only "test" affordance in the card's top-right corner. Most forms
+ * prefill locally; checkout tokenizes and submits the test card in one click
+ * because a cross-origin secure card iframe cannot be scripted. Renders
+ * nothing unless the dev
  * test-fill flag is on (same gate as the onboarding test-fill).
  */
 import { Text, YStack } from "@patch-careers/ui";

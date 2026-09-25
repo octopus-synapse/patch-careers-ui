@@ -18,13 +18,14 @@ import { getNotificationService } from "../service/notification-service";
 import { useRegisterDevice, useUnregisterDevice } from "./queries";
 
 export function usePushRegistration(): { ensureRegistered: () => Promise<boolean> } {
-  const { isAuthenticated } = useAuthState();
+  const { isAuthenticated, currentUser } = useAuthState();
   const { hasBootstrapped } = useAuthBootstrap();
   const { register } = useRegisterDevice();
   const { unregister } = useUnregisterDevice();
   const registeredRef = useRef(false);
 
   const ensureRegistered = useCallback(async () => {
+    if (!currentUser?.hasCompletedOnboarding) return false;
     if (registeredRef.current) return true;
     const service = getNotificationService();
     if ((await service.getPermissionStatus()) !== "granted") return false;
@@ -39,12 +40,13 @@ export function usePushRegistration(): { ensureRegistered: () => Promise<boolean
       console.warn("[notifications] failed to register push device", error);
       return false;
     }
-  }, [register]);
+  }, [register, currentUser?.hasCompletedOnboarding]);
 
   // Auto-register when already authorized (permission granted in a prior run).
   useEffect(() => {
-    if (isAuthenticated && hasBootstrapped) void ensureRegistered();
-  }, [isAuthenticated, hasBootstrapped, ensureRegistered]);
+    if (isAuthenticated && hasBootstrapped && currentUser?.hasCompletedOnboarding)
+      void ensureRegistered();
+  }, [isAuthenticated, hasBootstrapped, currentUser?.hasCompletedOnboarding, ensureRegistered]);
 
   // Unregister on the authenticated → signed-out transition.
   const prevAuth = useRef(isAuthenticated);

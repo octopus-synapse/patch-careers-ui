@@ -32,7 +32,7 @@ import { ToastProvider } from "@patch-careers/ui";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { PortalProvider } from "@tamagui/portal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack, usePathname } from "expo-router";
+import { Stack, usePathname, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { type ReactElement, useEffect, useMemo } from "react";
@@ -48,7 +48,7 @@ import { ensureAppSansFont } from "@/lib/app-sans-font";
 import { ensureWebButtonTextReset } from "@/lib/web-button-text-reset";
 import { withoutLocale } from "@/navigation/route-locale";
 import { AppTamaguiProvider } from "@/providers/app-tamagui-provider";
-import { AuthProvider } from "@/providers/auth-provider";
+import { AuthProvider, useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 import { useColorSchemeStore, useResolvedScheme } from "@/providers/color-scheme";
 import { I18nProvider } from "@/providers/i18n-provider";
 import { NotificationsProvider } from "@/providers/notifications-provider";
@@ -72,6 +72,29 @@ const queryClient = new QueryClient({
 // Static fill style for the gesture-handler root — a non-Tamagui host that takes
 // a plain `style`, so it lives as a stable module const rather than inline.
 const ROOT_FLEX = { flex: 1 };
+
+function OnboardingRouteGuard(): null {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { hasBootstrapped } = useAuthBootstrap();
+  const { currentUser, isAuthenticated } = useAuthState();
+  useEffect(() => {
+    if (!hasBootstrapped || !isAuthenticated || !currentUser || currentUser.hasCompletedOnboarding)
+      return;
+    const path = withoutLocale(pathname);
+    if (
+      path === "/" ||
+      path === "/onboarding" ||
+      path === "/auth" ||
+      path === "/verify-email" ||
+      path === "/legal-webview" ||
+      path.startsWith("/billing/checkout")
+    )
+      return;
+    router.replace("/onboarding");
+  }, [hasBootstrapped, isAuthenticated, currentUser, pathname, router]);
+  return null;
+}
 
 // Web-only global CSS patch (see the module doc) — before first render so no
 // centered-text flash. No-op on native.
@@ -267,6 +290,7 @@ export default function RootLayout(): ReactElement {
                               options={{ headerShown: true, title: "" }}
                             />
                           </Stack>
+                          <OnboardingRouteGuard />
                         </ThemeProvider>
                       </NotificationsProvider>
                     </AuthProvider>

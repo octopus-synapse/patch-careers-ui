@@ -1,8 +1,18 @@
+import { Text, useToast, YStack } from "@patch-careers/ui";
 import { AuthCard, FieldError, PrimaryAction } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, View } from "react-native";
+import { AuthFlowPanel } from "@/components/auth/auth-dialog/auth-flow-panel";
+import { ChoosePlanStep, type SignupPlan } from "@/components/auth/auth-dialog/choose-plan-step";
+import { AuthPageFrame } from "@/components/auth/auth-page-frame";
 import { NAV_BAR_HEIGHT_PUBLIC, NavBar } from "@/components/nav-bar/nav-bar";
 import { isDevTestFillEnabled } from "@/config/dev-flags";
+import {
+  type BillingOfferCode,
+  cancelBillingCheckout,
+  PendingCheckoutDialog,
+  usePatchPlan,
+} from "@/features/billing";
 import { GhostButton, SectionItemEditor, useEd } from "@/features/sections";
 import { useLocaleSwitch } from "@/navigation/use-locale-switch";
 import { useAuthState } from "@/providers/auth-provider";
@@ -51,6 +61,14 @@ export function OnboardingWizard(): ReactElement {
 
 function OnboardingWizardInner(): ReactElement {
   const ed = useEd();
+  const toast = useToast();
+  const billing = usePatchPlan();
+  const [requestedChoice, setRequestedChoice] = useState<{
+    plan: SignupPlan;
+    offerCode?: BillingOfferCode;
+  } | null>(null);
+  const [switching, setSwitching] = useState(false);
+  const [switchError, setSwitchError] = useState<string | null>(null);
   const switchLocale = useLocaleSwitch();
   const { currentUser } = useAuthState();
   const {
@@ -60,11 +78,12 @@ function OnboardingWizardInner(): ReactElement {
     width,
     height,
     sessionQuery,
+    flowQuery,
+    persistedFlow,
     fallbackSession,
     session,
     flowStep,
     flowStepId,
-    setFlowStepId,
     editStep,
     editStepId,
     currentStep,
@@ -86,6 +105,9 @@ function OnboardingWizardInner(): ReactElement {
     complete,
     retryLoad,
     handleNext,
+    handlePlanContinue,
+    handleOpenPayment,
+    moveTo,
     handleBack,
     handleGoto,
     handleComplete,
@@ -97,8 +119,8 @@ function OnboardingWizardInner(): ReactElement {
   const scheme = useColorSchemeStore((s) => s.scheme);
   const setScheme = useColorSchemeStore((s) => s.setScheme);
 
-  const total = countedTotal();
-  const stepNumber = editStep ? total : countedIndexOf(flowStepId) + 1;
+  const total = countedTotal(persistedFlow?.selectedPlan);
+  const stepNumber = editStep ? total : countedIndexOf(flowStepId, persistedFlow?.selectedPlan) + 1;
 
   // Body scroll metrics for the editorial scrollbar (BodyScrollBar): the body
   // is a fixed-height box, so overflow is invisible without an indicator.
@@ -142,20 +164,25 @@ function OnboardingWizardInner(): ReactElement {
   // the UI is gated by `isDevTestFillEnabled()` so it never renders in prod.
   const testFill = useTestFill({
     session,
+    flowStepId,
     saveStep: (stepId, payload) =>
       commitSave(stepId, payload as Parameters<typeof commitSave>[1], false),
-    setFlowStepId,
+    moveStep: moveTo,
     setFormData,
     setItems,
     setLocale,
     setScheme,
   });
 
-  if (sessionQuery.isLoading && !fallbackSession) {
+  if (
+    (sessionQuery.isLoading && !fallbackSession) ||
+    flowQuery.isLoading ||
+    (persistedFlow && persistedFlow.step !== flowStepId)
+  ) {
     return <CenteredState label={t("common.loading")} />;
   }
 
-  if (!session || !flowStep) {
+  if (!session || !flowStep || !persistedFlow) {
     return (
       <CenteredState
         label={sessionQuery.isFetching ? t("common.loading") : t("onboarding.loadFailed")}
@@ -165,10 +192,166 @@ function OnboardingWizardInner(): ReactElement {
     );
   }
 
+  const progress = { pct: (stepNumber / total) * 100, label: `${stepNumber} / ${total}` };
+  const account = currentUser?.email
+    ? { email: currentUser.email, ...(currentUser.name ? { name: currentUser.name } : {}) }
+    : undefined;
+
+  const resumeConfirmedPlan = async (active: boolean, activePlan: string): Promise<boolean> => {
+    if (!active) return false;
+    toast.show({ title: t("go.switchCheckoutPaid"), intent: "neutral" });
+    if (
+      !persistedFlow?.selectedPlan ||
+      persistedFlow.selectedPlan === "free" ||
+      persistedFlow.selectedPlan !== activePlan
+    )
+      return true;
+    await moveTo("payment", {
+      plan: persistedFlow.selectedPlan,
+      ...(persistedFlow.selectedOfferCode
+        ? { offerCode: persistedFlow.selectedOfferCode as BillingOfferCode }
+        : {}),
+    });
+    return true;
+  };
+
+  const selectPlan = async (plan: SignupPlan, offerCode?: BillingOfferCode) => {
+    try {
+      const latest = await billing.refetch();
+      if (latest.isError || !latest.data) throw new Error("billing-status-unavailable");
+      if (await resumeConfirmedPlan(latest.data.active, latest.data.plan)) return;
+      const open = latest.data.openCheckout;
+      if (open && (plan === "free" || offerCode !== open.offerCode)) {
+        if (!open.offerCode.includes("_pix_")) {
+          toast.show({ title: t("go.continuePayment"), intent: "neutral" });
+          return;
+        }
+        setSwitchError(null);
+        setRequestedChoice({ plan, ...(offerCode ? { offerCode } : {}) });
+        return;
+      }
+      await handlePlanContinue(plan, offerCode);
+    } catch {
+      toast.show({ title: t("go.checkoutError"), intent: "danger" });
+    }
+  };
+
+  const confirmSwitch = async () => {
+    if (!requestedChoice || switching) return;
+    setSwitching(true);
+    setSwitchError(null);
+    try {
+      const latest = await billing.refetch();
+      if (latest.isError || !latest.data) throw new Error("billing-status-unavailable");
+      if (await resumeConfirmedPlan(latest.data.active, latest.data.plan)) {
+        setRequestedChoice(null);
+        return;
+      }
+      const open = latest.data.openCheckout;
+      if (open) {
+        const result = await cancelBillingCheckout(open.id);
+        if (result === "approved") {
+          setRequestedChoice(null);
+          const confirmed = await billing.refetch();
+          await resumeConfirmedPlan(
+            true,
+            confirmed.data?.plan ?? persistedFlow?.selectedPlan ?? "",
+          );
+          return;
+        }
+        if (result !== "canceled") throw new Error("checkout-not-canceled");
+      }
+      const choice = requestedChoice;
+      void billing.refetch();
+      await handlePlanContinue(choice.plan, choice.offerCode);
+      setRequestedChoice(null);
+    } catch {
+      setSwitchError(t("go.switchCheckoutError"));
+    } finally {
+      setSwitching(false);
+    }
+  };
+
+  if (flowStepId === "plan") {
+    return (
+      <SafeAreaView style={ed.root}>
+        <NavBar variant="onboarding" progress={progress} {...(account ? { account } : {})} />
+        <AuthPageFrame plan>
+          {billing.data?.openCheckout ? (
+            <YStack alignSelf="center" width="100%" maxWidth={560} gap={10} padding={18}>
+              <Text fontWeight="700">{t("go.checkoutPendingTitle")}</Text>
+              <Text>{t("go.checkoutPendingBody")}</Text>
+              <PrimaryAction
+                label={t("go.continuePayment")}
+                onPress={() => void handleOpenPayment()}
+              />
+            </YStack>
+          ) : null}
+          <AuthFlowPanel variant="page" isPlanStep>
+            <ChoosePlanStep
+              submitting={isPending || switching}
+              onBack={() => void handleBack()}
+              onContinue={selectPlan}
+            />
+          </AuthFlowPanel>
+          {saveError ? (
+            <RetryBanner label={saveError} onRetry={() => void retryLoad()} disabled={isPending} />
+          ) : null}
+        </AuthPageFrame>
+        <PendingCheckoutDialog
+          visible={Boolean(requestedChoice)}
+          busy={switching}
+          error={switchError}
+          onKeep={() => {
+            if (!switching) setRequestedChoice(null);
+          }}
+          onCancelAndSwitch={() => void confirmSwitch()}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  if (flowStepId === "payment") {
+    return (
+      <SafeAreaView style={ed.root}>
+        <NavBar variant="onboarding" progress={progress} {...(account ? { account } : {})} />
+        <AuthPageFrame>
+          <AuthCard panelStyle={{ width: "100%", maxWidth: 560 }}>
+            <YStack gap={20} padding={24}>
+              <Text fontSize={30} fontWeight="700">
+                {t("onboarding.flow.payment.title")}
+              </Text>
+              <Text>{t("onboarding.flow.payment.subtitle")}</Text>
+              <PrimaryAction
+                label={t("go.checkoutTitle")}
+                onPress={() => void handleOpenPayment()}
+                loading={isPending}
+                fullWidth
+              />
+              <GhostButton
+                label={t("onboarding.back")}
+                onPress={() => void handleBack()}
+                disabled={isPending}
+              />
+              {saveError ? (
+                <RetryBanner
+                  label={saveError}
+                  onRetry={() => void handleOpenPayment()}
+                  disabled={isPending}
+                />
+              ) : null}
+            </YStack>
+          </AuthCard>
+        </AuthPageFrame>
+      </SafeAreaView>
+    );
+  }
+
   const isLocal = !editStep && flowStep.kind === "local";
   const isReview = !editStep && flowStep.kind === "review";
+  const isLanguageStep = isLocal && flowStepId === "language";
   const showComplete = isReview;
-  const showLocalContinue = isLocal && flowStepId === "language";
+  const showLocalContinue = isLanguageStep;
   const isOptionalFlow = !showComplete && !isLocal && !editStep && flowStep.optional;
   const showBack = Boolean(editStep) || Boolean(prevFlowStep(flowStepId));
   // Requiredness: a field is required when the contract's complete-time schema
@@ -238,25 +421,7 @@ function OnboardingWizardInner(): ReactElement {
       {/* The landing's chrome, in its signed-in variant. On compact web the
           progress becomes a quiet 2px rule directly below the navbar, leaving
           the navbar itself identical to the auth shell. */}
-      <NavBar
-        variant="onboarding"
-        {...(editStep || !flowStep.hideMasthead
-          ? {
-              progress: {
-                pct: (stepNumber / total) * 100,
-                label: `${stepNumber} / ${total}`,
-              },
-            }
-          : {})}
-        {...(currentUser?.email
-          ? {
-              account: {
-                email: currentUser.email,
-                ...(currentUser.name ? { name: currentUser.name } : {}),
-              },
-            }
-          : {})}
-      />
+      <NavBar variant="onboarding" progress={progress} {...(account ? { account } : {})} />
       <KeyboardAvoidingView
         style={ed.flex}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -308,15 +473,23 @@ function OnboardingWizardInner(): ReactElement {
               {/* Fixed-height body: same on every step. Content centers inside it;
                 if a step is taller than the box, it scrolls within the box —
                 with the editorial scrollbar signalling the overflow. */}
-              <View style={[ed.body, isMobileLayout ? ed.mobileWizardBody : ed.desktopWizardBody]}>
+              <View
+                style={[
+                  ed.body,
+                  isMobileLayout ? ed.mobileWizardBody : ed.desktopWizardBody,
+                  isLanguageStep ? ed.languageWizardBody : null,
+                ]}
+              >
                 <ScrollView
                   key={`scroll:${headingKey}`}
                   style={ed.flex}
                   contentContainerStyle={[
                     ed.bodyScroll,
                     isMobileLayout ? null : ed.desktopBodyScroll,
+                    isLanguageStep ? ed.languageBodyScroll : null,
                   ]}
                   keyboardShouldPersistTaps="handled"
+                  scrollEnabled={!isLanguageStep}
                   showsVerticalScrollIndicator={false}
                   scrollEventThrottle={16}
                   onScroll={(event) =>
@@ -390,11 +563,13 @@ function OnboardingWizardInner(): ReactElement {
                     />
                   </StepTransition>
                 </ScrollView>
-                <BodyScrollBar
-                  contentHeight={bodyContentHeight}
-                  viewportHeight={bodyViewportHeight}
-                  scrollY={bodyScrollY}
-                />
+                {!isLanguageStep ? (
+                  <BodyScrollBar
+                    contentHeight={bodyContentHeight}
+                    viewportHeight={bodyViewportHeight}
+                    scrollY={bodyScrollY}
+                  />
+                ) : null}
               </View>
 
               <View

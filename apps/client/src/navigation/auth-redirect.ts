@@ -15,7 +15,7 @@ export type AuthenticatedRoute =
 
 export function getAuthenticatedRoute(user: User | null): AuthenticatedRoute {
   if (user?.needsEmailVerification) return VERIFY_EMAIL_ROUTE;
-  if (user && !user.isAdmin && !user.hasCompletedOnboarding) return ONBOARDING_ROUTE;
+  if (user && !user.hasCompletedOnboarding) return ONBOARDING_ROUTE;
   return DEFAULT_APP_ROUTE;
 }
 

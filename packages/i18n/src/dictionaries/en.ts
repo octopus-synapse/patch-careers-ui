@@ -328,6 +328,11 @@ export const en: TranslationDict = {
         title: "Choose your language",
         subtitle: "",
       },
+      plan: { title: "Choose your plan", subtitle: "Choose how to start with Patch." },
+      payment: {
+        title: "Complete payment",
+        subtitle: "Your plan starts after payment is confirmed.",
+      },
       theme: {
         title: "Choose your theme",
         subtitle: "",

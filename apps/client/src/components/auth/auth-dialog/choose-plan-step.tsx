@@ -1,9 +1,15 @@
 import { authDialogPalette, brandColors } from "@patch-careers/tokens";
 import { Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
-import { ArrowLeft, ArrowUpRight, Check } from "lucide-react-native";
+import { ArrowLeft, ArrowUpRight, Check, CreditCard, QrCode } from "lucide-react-native";
 import { type ReactElement, useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, useWindowDimensions } from "react-native";
+import {
+  ActivityIndicator,
+  Platform,
+  Pressable,
+  ScrollView,
+  useWindowDimensions,
+} from "react-native";
 import { ConsentDialog } from "@/components/auth/consent-dialog";
 import { type BillingOffer, type BillingOfferCode, useBillingOffers } from "@/features/billing";
 import { useI18n } from "@/providers/i18n-provider";
@@ -67,9 +73,13 @@ export function ChoosePlanStep({
   const offers = billingOffers.data ?? [];
   const paidOffers = plan === "go" || plan === "max" ? offers.filter((x) => x.plan === plan) : [];
   const selectedOffer = offers.find((offer) => offer.code === offerCode);
+  // StoreKit / Play Billing products and external-billing enrollment must be
+  // configured before native paid checkout can be offered. Web checkout does
+  // not satisfy either store's in-app purchase rules.
+  const paidCheckoutAvailable = Platform.OS === "web" && billingOffers.checkoutEnabled;
   const canContinue =
     plan !== null &&
-    (plan === "free" || (billingOffers.checkoutEnabled && selectedOffer?.plan === plan)) &&
+    (plan === "free" || (paidCheckoutAvailable && selectedOffer?.plan === plan)) &&
     !submitting;
   const selectedBackground = dialogPalette.selected;
 
@@ -270,24 +280,27 @@ export function ChoosePlanStep({
       </YStack>
       {columns ? <XStack gap={14}>{cards}</XStack> : <YStack gap={14}>{cards}</YStack>}
       {plan === "go" || plan === "max" ? (
-        <YStack
-          width="100%"
-          borderWidth={1}
-          borderColor={dialogPalette.inputBorder}
-          borderRadius={16}
-          backgroundColor={dialogPalette.input}
-          padding={20}
-          gap={12}
-        >
-          <Text
-            fontFamily={editorialFonts.sans}
-            fontSize={15}
-            lineHeight={21}
-            fontWeight="700"
-            color={palette.ink}
-          >
-            {t("go.choosePaymentOption")}
-          </Text>
+        <YStack width="100%" gap={16} paddingTop={8}>
+          <YStack gap={4}>
+            <Text
+              fontFamily={editorialFonts.serif}
+              fontSize={28}
+              lineHeight={34}
+              fontWeight="700"
+              letterSpacing={-0.6}
+              color={palette.ink}
+            >
+              {t("go.choosePaymentOption")}
+            </Text>
+            <Text
+              fontFamily={editorialFonts.sans}
+              fontSize={14}
+              lineHeight={21}
+              color={dialogPalette.muted}
+            >
+              {t("go.choosePaymentLead")}
+            </Text>
+          </YStack>
           {billingOffers.isLoading ? (
             <XStack gap={10} alignItems="center">
               <ActivityIndicator size="small" color={dialogPalette.brand} />
@@ -295,109 +308,235 @@ export function ChoosePlanStep({
                 {t("go.pricingLoading")}
               </Text>
             </XStack>
-          ) : !billingOffers.checkoutEnabled || paidOffers.length === 0 ? (
+          ) : paidOffers.length === 0 ? (
             <Text fontFamily={editorialFonts.sans} fontSize={13} color={dialogPalette.muted}>
               {t("go.unavailable")}
             </Text>
           ) : (
-            <YStack gap={9} accessibilityRole="radiogroup">
-              {paidOffers.map((offer) => {
-                const offerSelected = offer.code === offerCode;
-                const monthlyCents = Math.round(offer.amountCents / offer.termMonths);
-                return (
-                  <Pressable
-                    key={offer.code}
-                    accessibilityRole="radio"
-                    accessibilityState={{ checked: offerSelected }}
-                    accessibilityLabel={`${offerLabel(offer)}, ${formatPrice(locale, offer.amountCents)}`}
-                    disabled={submitting}
-                    onPress={() => setOfferCode(offer.code)}
-                    testID={`authDialog.offer.${offer.code}`}
-                  >
-                    <XStack
-                      minHeight={62}
-                      alignItems="center"
-                      gap={12}
-                      borderWidth={offerSelected ? 2 : 1}
-                      borderColor={offerSelected ? dialogPalette.brand : dialogPalette.inputBorder}
-                      borderRadius={10}
-                      paddingHorizontal={14}
-                      paddingVertical={10}
-                      backgroundColor={offerSelected ? selectedBackground : dialogPalette.panel}
-                    >
-                      <YStack
-                        width={20}
-                        height={20}
-                        borderRadius={10}
-                        borderWidth={offerSelected ? 0 : 1}
-                        borderColor={dialogPalette.inputBorder}
-                        backgroundColor={offerSelected ? dialogPalette.brand : "transparent"}
-                        alignItems="center"
-                        justifyContent="center"
+            <YStack gap={10}>
+              {columns ? (
+                <XStack gap={12} accessibilityRole="radiogroup">
+                  {paidOffers.map((offer) => {
+                    const offerSelected = offer.code === offerCode;
+                    const monthlyCents = Math.round(offer.amountCents / offer.termMonths);
+                    const PaymentIcon = offer.paymentMethod === "card" ? CreditCard : QrCode;
+                    return (
+                      <Pressable
+                        key={offer.code}
+                        accessibilityRole="radio"
+                        accessibilityState={{ checked: offerSelected }}
+                        accessibilityLabel={`${offerLabel(offer)}, ${formatPrice(locale, offer.amountCents)}`}
+                        disabled={submitting}
+                        onPress={() => setOfferCode(offer.code)}
+                        testID={`authDialog.offer.${offer.code}`}
+                        style={{ flex: columns ? 1 : undefined, minWidth: 0 }}
                       >
-                        {offerSelected ? (
-                          <Check size={13} color={dialogPalette.panel} strokeWidth={3} />
-                        ) : null}
-                      </YStack>
-                      <YStack flex={1} minWidth={0}>
-                        <Text
-                          fontFamily={editorialFonts.sans}
-                          fontSize={14}
-                          lineHeight={20}
-                          fontWeight="700"
-                          color={palette.ink}
+                        <YStack
+                          height="100%"
+                          minHeight={164}
+                          borderWidth={offerSelected ? 2 : 1}
+                          borderColor={
+                            offerSelected ? dialogPalette.brand : dialogPalette.inputBorder
+                          }
+                          borderRadius={14}
+                          padding={18}
+                          backgroundColor={offerSelected ? selectedBackground : dialogPalette.input}
+                          gap={14}
                         >
-                          {offerLabel(offer)}
-                        </Text>
-                        {offer.termMonths > 1 ? (
-                          <Text
-                            fontFamily={editorialFonts.sans}
-                            fontSize={12}
-                            lineHeight={18}
-                            color={dialogPalette.muted}
-                          >
-                            {t("go.monthlyEquivalent", {
-                              price: formatPrice(locale, monthlyCents),
-                            })}
-                          </Text>
-                        ) : null}
-                      </YStack>
-                      <YStack alignItems="flex-end">
-                        {offer.listAmountCents > offer.amountCents ? (
-                          <Text
-                            fontFamily={editorialFonts.sans}
-                            fontSize={11}
-                            lineHeight={16}
-                            color={dialogPalette.muted}
-                            textDecorationLine="line-through"
-                          >
-                            {formatPrice(locale, offer.listAmountCents)}
-                          </Text>
-                        ) : null}
-                        <Text
-                          fontFamily={editorialFonts.sans}
-                          fontSize={15}
-                          lineHeight={20}
-                          fontWeight="700"
-                          color={dialogPalette.brand}
+                          <XStack alignItems="center" justifyContent="space-between">
+                            <YStack
+                              width={38}
+                              height={38}
+                              borderRadius={10}
+                              backgroundColor={dialogPalette.panel}
+                              alignItems="center"
+                              justifyContent="center"
+                            >
+                              <PaymentIcon size={19} color={dialogPalette.brand} />
+                            </YStack>
+                            <YStack
+                              width={22}
+                              height={22}
+                              borderRadius={11}
+                              borderWidth={offerSelected ? 0 : 1}
+                              borderColor={dialogPalette.inputBorder}
+                              backgroundColor={offerSelected ? dialogPalette.brand : "transparent"}
+                              alignItems="center"
+                              justifyContent="center"
+                            >
+                              {offerSelected ? (
+                                <Check size={14} color={dialogPalette.panel} strokeWidth={3} />
+                              ) : null}
+                            </YStack>
+                          </XStack>
+                          <YStack flex={1} justifyContent="space-between" gap={10}>
+                            <Text
+                              fontFamily={editorialFonts.sans}
+                              fontSize={14}
+                              lineHeight={20}
+                              fontWeight="700"
+                              color={palette.ink}
+                            >
+                              {offerLabel(offer)}
+                            </Text>
+                            <YStack>
+                              {offer.listAmountCents > offer.amountCents ? (
+                                <Text
+                                  fontFamily={editorialFonts.sans}
+                                  fontSize={11}
+                                  lineHeight={16}
+                                  color={dialogPalette.muted}
+                                  textDecorationLine="line-through"
+                                >
+                                  {formatPrice(locale, offer.listAmountCents)}
+                                </Text>
+                              ) : null}
+                              <Text
+                                fontFamily={editorialFonts.sans}
+                                fontSize={20}
+                                lineHeight={26}
+                                fontWeight="700"
+                                color={palette.ink}
+                              >
+                                {formatPrice(locale, offer.amountCents)}
+                              </Text>
+                              {offer.termMonths > 1 ? (
+                                <Text
+                                  fontFamily={editorialFonts.sans}
+                                  fontSize={11}
+                                  lineHeight={16}
+                                  color={dialogPalette.muted}
+                                >
+                                  {t("go.monthlyEquivalent", {
+                                    price: formatPrice(locale, monthlyCents),
+                                  })}
+                                </Text>
+                              ) : null}
+                            </YStack>
+                          </YStack>
+                        </YStack>
+                      </Pressable>
+                    );
+                  })}
+                </XStack>
+              ) : (
+                <YStack gap={9} accessibilityRole="radiogroup">
+                  {paidOffers.map((offer) => {
+                    const offerSelected = offer.code === offerCode;
+                    const monthlyCents = Math.round(offer.amountCents / offer.termMonths);
+                    const PaymentIcon = offer.paymentMethod === "card" ? CreditCard : QrCode;
+                    return (
+                      <Pressable
+                        key={offer.code}
+                        accessibilityRole="radio"
+                        accessibilityState={{ checked: offerSelected }}
+                        accessibilityLabel={`${offerLabel(offer)}, ${formatPrice(locale, offer.amountCents)}`}
+                        disabled={submitting}
+                        onPress={() => setOfferCode(offer.code)}
+                        testID={`authDialog.offer.${offer.code}`}
+                      >
+                        <XStack
+                          minHeight={76}
+                          alignItems="center"
+                          gap={12}
+                          borderWidth={offerSelected ? 2 : 1}
+                          borderColor={
+                            offerSelected ? dialogPalette.brand : dialogPalette.inputBorder
+                          }
+                          borderRadius={12}
+                          paddingHorizontal={14}
+                          paddingVertical={11}
+                          backgroundColor={offerSelected ? selectedBackground : dialogPalette.input}
                         >
-                          {formatPrice(locale, offer.amountCents)}
-                        </Text>
-                        {offer.listAmountCents > offer.amountCents ? (
-                          <Text
-                            fontFamily={editorialFonts.sans}
-                            fontSize={11}
-                            lineHeight={16}
-                            color={dialogPalette.brandMuted}
+                          <YStack
+                            width={38}
+                            height={38}
+                            borderRadius={10}
+                            backgroundColor={dialogPalette.panel}
+                            alignItems="center"
+                            justifyContent="center"
                           >
-                            {t("go.pixDiscount")}
-                          </Text>
-                        ) : null}
-                      </YStack>
-                    </XStack>
-                  </Pressable>
-                );
-              })}
+                            <PaymentIcon size={19} color={dialogPalette.brand} />
+                          </YStack>
+                          <YStack flex={1} minWidth={0}>
+                            <Text
+                              fontFamily={editorialFonts.sans}
+                              fontSize={14}
+                              lineHeight={20}
+                              fontWeight="700"
+                              color={palette.ink}
+                            >
+                              {offerLabel(offer)}
+                            </Text>
+                            {offer.termMonths > 1 ? (
+                              <Text
+                                fontFamily={editorialFonts.sans}
+                                fontSize={12}
+                                lineHeight={18}
+                                color={dialogPalette.muted}
+                              >
+                                {t("go.monthlyEquivalent", {
+                                  price: formatPrice(locale, monthlyCents),
+                                })}
+                              </Text>
+                            ) : null}
+                          </YStack>
+                          <YStack alignItems="flex-end">
+                            {offer.listAmountCents > offer.amountCents ? (
+                              <Text
+                                fontFamily={editorialFonts.sans}
+                                fontSize={11}
+                                lineHeight={16}
+                                color={dialogPalette.muted}
+                                textDecorationLine="line-through"
+                              >
+                                {formatPrice(locale, offer.listAmountCents)}
+                              </Text>
+                            ) : null}
+                            <Text
+                              fontFamily={editorialFonts.sans}
+                              fontSize={15}
+                              lineHeight={20}
+                              fontWeight="700"
+                              color={dialogPalette.brand}
+                            >
+                              {formatPrice(locale, offer.amountCents)}
+                            </Text>
+                          </YStack>
+                          <YStack
+                            width={20}
+                            height={20}
+                            borderRadius={10}
+                            borderWidth={offerSelected ? 0 : 1}
+                            borderColor={dialogPalette.inputBorder}
+                            backgroundColor={offerSelected ? dialogPalette.brand : "transparent"}
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            {offerSelected ? (
+                              <Check size={13} color={dialogPalette.panel} strokeWidth={3} />
+                            ) : null}
+                          </YStack>
+                        </XStack>
+                      </Pressable>
+                    );
+                  })}
+                </YStack>
+              )}
+              {!paidCheckoutAvailable ? (
+                <Text
+                  fontFamily={editorialFonts.sans}
+                  fontSize={12}
+                  lineHeight={18}
+                  color={dialogPalette.muted}
+                >
+                  {t(
+                    Platform.OS === "web"
+                      ? "go.checkoutUnavailableHint"
+                      : "go.nativeCheckoutUnavailableHint",
+                  )}
+                </Text>
+              ) : null}
             </YStack>
           )}
         </YStack>

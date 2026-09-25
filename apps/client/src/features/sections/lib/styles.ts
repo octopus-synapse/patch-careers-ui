@@ -126,6 +126,8 @@ const createEd = (
     body: { marginTop: 34 },
     mobileWizardBody: { flex: 1, minHeight: 0, marginTop: 42 },
     desktopWizardBody: { flex: 1, minHeight: 0, marginTop: 26 },
+    languageWizardBody: { marginTop: 24 },
+    languageBodyScroll: { justifyContent: "center", paddingRight: 0, paddingBottom: 0 },
 
     // footer
     footer: {
@@ -268,10 +270,6 @@ const createEd = (
     },
     // language
     langWrap: { gap: 16 },
-    // The language step has no supporting content beneath its two choices.
-    // Give the cards some breathing room from the heading so the group sits
-    // closer to the visual centre between the title and full-width action.
-    languageChoiceWrap: { paddingTop: 56 },
     langCard: {
       flexDirection: "row",
       alignItems: "center",

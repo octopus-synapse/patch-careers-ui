@@ -22,7 +22,8 @@ import { useI18n } from "@/providers/i18n-provider";
 import { GuestLanguageDialog } from "./guest-language-dialog";
 
 export function AccountLanguageSync(): ReactElement | null {
-  const { isAuthenticated } = useAuthState();
+  const { isAuthenticated, currentUser } = useAuthState();
+  const accountReady = isAuthenticated && Boolean(currentUser?.hasCompletedOnboarding);
   const { hasBootstrapped } = useAuthBootstrap();
   const { locale, setLocale, hydrated } = useI18n();
   const palette = useEditorialPalette();
@@ -30,7 +31,7 @@ export function AccountLanguageSync(): ReactElement | null {
   const router = useRouter();
   const queryClient = useQueryClient();
   const prefs = useGetV1UsersPreferencesFull({
-    query: { enabled: isAuthenticated, staleTime: 5 * 60_000 },
+    query: { enabled: accountReady, staleTime: 5 * 60_000 },
   });
   const patch = usePatchV1UsersPreferencesFull();
   const accountLanguage = prefs.data?.preferences.language;
@@ -42,6 +43,7 @@ export function AccountLanguageSync(): ReactElement | null {
     const search = window.location.search;
     const hash = window.location.hash;
     if (isAuthenticated) {
+      if (!accountReady) return;
       if (!prefs.isSuccess) return;
       const preferred = isLocale(accountLanguage) ? accountLanguage : "pt-BR";
       if (localeFromPath(pathname) !== preferred) {
@@ -68,12 +70,20 @@ export function AccountLanguageSync(): ReactElement | null {
       return;
     }
     setConfirmGuestLanguage(true);
-  }, [hasBootstrapped, isAuthenticated, prefs.isSuccess, accountLanguage, pathname, router]);
+  }, [
+    hasBootstrapped,
+    isAuthenticated,
+    accountReady,
+    prefs.isSuccess,
+    accountLanguage,
+    pathname,
+    router,
+  ]);
 
   // Adopt, once per sign-in, only when this device never chose.
   useEffect(() => {
     if (Platform.OS === "web") return;
-    if (!isAuthenticated) {
+    if (!accountReady) {
       adopted.current = false;
       return;
     }
@@ -90,13 +100,13 @@ export function AccountLanguageSync(): ReactElement | null {
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated, hydrated, accountLanguage, locale, setLocale]);
+  }, [accountReady, hydrated, accountLanguage, locale, setLocale]);
 
   // Write-through: the interface moved and the account is behind.
   // biome-ignore lint/correctness/useExhaustiveDependencies: `patch`/`queryClient` are stable; listing `patch` would re-fire on every mutation state change.
   useEffect(() => {
     if (Platform.OS === "web") return;
-    if (!isAuthenticated || !adopted.current || !isLocale(accountLanguage)) return;
+    if (!accountReady || !adopted.current || !isLocale(accountLanguage)) return;
     if (accountLanguage === locale || patch.isPending) return;
     patch.mutate(
       { data: { language: locale } },
@@ -105,12 +115,12 @@ export function AccountLanguageSync(): ReactElement | null {
           void queryClient.invalidateQueries({ queryKey: getV1UsersPreferencesFullQueryKey() }),
       },
     );
-  }, [isAuthenticated, accountLanguage, locale]);
+  }, [accountReady, accountLanguage, locale]);
 
   const waitingForAccountLocale =
     Platform.OS === "web" &&
     hasBootstrapped &&
-    isAuthenticated &&
+    accountReady &&
     !prefs.isError &&
     (!prefs.isSuccess ||
       (isLocale(accountLanguage) && accountLanguage !== localeFromPath(pathname)));

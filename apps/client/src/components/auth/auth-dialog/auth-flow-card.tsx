@@ -17,12 +17,10 @@ import { PRIVACY_VERSION, TOS_VERSION } from "@/components/auth/consent-versions
 import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { extractApiErrorMessages } from "@/components/auth/validation";
-import { type BillingOfferCode, createBillingCheckoutRoute } from "@/features/billing";
 import { AUTH_FLOW_RESET_EVENT } from "@/navigation/auth-flow-reset";
 import { useI18n } from "@/providers/i18n-provider";
 import { AuthFlowPanel } from "./auth-flow-panel";
 import type { AuthBranch } from "./branch-for-identity";
-import { ChoosePlanStep, type SignupPlan } from "./choose-plan-step";
 import { CreateAccountStep } from "./create-account-step";
 import { EmailStep } from "./email-step";
 import { ForgotPasswordStep } from "./forgot-password-step";
@@ -30,14 +28,7 @@ import { SignInStep } from "./sign-in-step";
 import { UnavailableStep } from "./unavailable-step";
 import { VerifyStep } from "./verify-step";
 
-type Step =
-  | "email"
-  | "signIn"
-  | "verifyEmail"
-  | "choosePlan"
-  | "createAccount"
-  | "unavailable"
-  | "forgotPassword";
+type Step = "email" | "signIn" | "verifyEmail" | "createAccount" | "unavailable" | "forgotPassword";
 type AccountMode = "new" | "resume";
 
 /** The same steps and state machine serve the landing modal and /auth. */
@@ -65,12 +56,7 @@ export function AuthFlowCard({
   const [mode, setMode] = useState<AccountMode>("new");
   const [email, setEmail] = useState("");
   const [registrationToken, setRegistrationToken] = useState("");
-  const [pendingPassword, setPendingPassword] = useState("");
-  const [pendingKeepSignedIn, setPendingKeepSignedIn] = useState(false);
-
-  useEffect(() => {
-    onPlanStepChange?.(step === "choosePlan");
-  }, [onPlanStepChange, step]);
+  useEffect(() => onPlanStepChange?.(false), [onPlanStepChange]);
 
   useEffect(() => {
     if (!isPage || typeof window === "undefined") return;
@@ -80,8 +66,6 @@ export function AuthFlowCard({
       setMode("new");
       setEmail("");
       setRegistrationToken("");
-      setPendingPassword("");
-      setPendingKeepSignedIn(false);
     };
     window.addEventListener(AUTH_FLOW_RESET_EVENT, reset);
     return () => window.removeEventListener(AUTH_FLOW_RESET_EVENT, reset);
@@ -105,7 +89,6 @@ export function AuthFlowCard({
   const toEmailStep = (): void => {
     mascot.reset();
     setRegistrationToken("");
-    setPendingPassword("");
     setStep("email");
   };
 
@@ -122,7 +105,6 @@ export function AuthFlowCard({
   const onBranch = (branch: AuthBranch, identifiedEmail: string): void => {
     setEmail(identifiedEmail);
     setRegistrationToken("");
-    setPendingPassword("");
     if (branch === "signIn" || branch === "unavailable") {
       setStep(branch);
       return;
@@ -131,12 +113,7 @@ export function AuthFlowCard({
     setStep("verifyEmail");
   };
 
-  const finalizeAccount = async (
-    plan: SignupPlan,
-    password: string,
-    keepSignedIn: boolean,
-    offerCode?: BillingOfferCode,
-  ): Promise<void> => {
+  const finalizeAccount = async (password: string, keepSignedIn: boolean): Promise<void> => {
     await run(async () => {
       let accountCompleted = false;
       try {
@@ -170,25 +147,10 @@ export function AuthFlowCard({
           return;
         }
 
-        setPendingPassword("");
         mascot.celebrate({ settle: true });
         await finishAuthentication({
           ...(sessionExchangeId ? { sessionExchangeId } : {}),
-          ...(!isPage
-            ? { destination: { pathname: "/onboarding", params: { choosePlan: "1" } } as const }
-            : plan === "free"
-              ? {}
-              : {
-                  destination: async () => {
-                    if (!offerCode) return "/go" as const;
-                    try {
-                      return await createBillingCheckoutRoute(offerCode);
-                    } catch {
-                      toast.show({ title: t("go.error"), intent: "danger" });
-                      return "/go" as const;
-                    }
-                  },
-                }),
+          destination: "/onboarding",
         });
       } catch (err) {
         mascot.grimace();
@@ -253,12 +215,7 @@ export function AuthFlowCard({
   ) : null;
 
   const content = (
-    <YStack
-      width="100%"
-      maxWidth={step === "choosePlan" ? undefined : 500}
-      alignSelf="center"
-      {...(step === "choosePlan" ? { height: "100%", minHeight: 0 } : {})}
-    >
+    <YStack width="100%" maxWidth={500} alignSelf="center">
       {step === "email" ? (
         <EmailStep mascot={mascot} initialEmail={email} onBranch={onBranch} isPage={isPage} />
       ) : null}
@@ -289,34 +246,14 @@ export function AuthFlowCard({
           }}
         />
       ) : null}
-      {step === "choosePlan" ? (
-        <ChoosePlanStep
-          requireAccountConsent
-          submitting={submitting}
-          onBack={() => setStep("createAccount")}
-          onContinue={(plan, offerCode) =>
-            finalizeAccount(plan, pendingPassword, pendingKeepSignedIn, offerCode)
-          }
-        />
-      ) : null}
       {step === "createAccount" ? (
         <CreateAccountStep
           mascot={mascot}
           email={email}
           mode={mode}
-          initialPassword={pendingPassword}
-          deferAccountCreation={isPage}
           submitting={submitting}
           onChangeEmail={toEmailStep}
-          onContinue={(password, keepSignedIn) => {
-            setPendingPassword(password);
-            setPendingKeepSignedIn(keepSignedIn);
-            if (isPage) {
-              setStep("choosePlan");
-              return;
-            }
-            return finalizeAccount("free", password, keepSignedIn);
-          }}
+          onContinue={finalizeAccount}
         />
       ) : null}
       {step === "unavailable" ? (
@@ -328,7 +265,7 @@ export function AuthFlowCard({
   return (
     <AuthFlowPanel
       variant={variant}
-      isPlanStep={step === "choosePlan"}
+      isPlanStep={false}
       mobileTransparent={isPage}
       contentPlacement={!isPage && step === "email" ? "upper" : "center"}
       header={header}

@@ -330,6 +330,11 @@ export const ptBR: TranslationDict = {
         title: "Escolha seu idioma",
         subtitle: "",
       },
+      plan: { title: "Escolha seu plano", subtitle: "Escolha como começar no Patch." },
+      payment: {
+        title: "Conclua o pagamento",
+        subtitle: "Seu plano começa após a confirmação do pagamento.",
+      },
       theme: {
         title: "Escolha seu tema",
         subtitle: "",

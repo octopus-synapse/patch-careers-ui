@@ -104,14 +104,20 @@ describe("choose plan mobile actions", () => {
     expect(onContinue).toHaveBeenCalledWith("go", "go_pix_year");
   });
 
-  it("does not allow a paid selection while checkout is disabled", () => {
+  it("shows paid options but does not allow checkout while billing is disabled", () => {
     checkoutEnabled = false;
     const onContinue = vi.fn();
     renderApp(<ChoosePlanStep onBack={vi.fn()} onContinue={onContinue} />, { locale: "en" });
 
     fireEvent.click(screen.getByRole("radio", { name: /Go/ }));
 
-    expect(screen.getByText("Subscriptions are not open yet.")).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: /Card · monthly renewal/ })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: /Pix · 12 months/ })).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "You can review the options now; subscription checkout will be available soon.",
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
     expect(onContinue).not.toHaveBeenCalled();
   });

@@ -63,6 +63,7 @@ export default function TabsLayout(): ReactElement | null {
   if (!hasBootstrapped) return null;
   if (!isAuthenticated) return <AppRedirect href={AUTH_ROUTE} />;
   if (currentUser?.needsEmailVerification) return <AppRedirect href={VERIFY_EMAIL_ROUTE} />;
+  if (!currentUser?.hasCompletedOnboarding) return <AppRedirect href="/onboarding" />;
 
   return (
     <Tabs

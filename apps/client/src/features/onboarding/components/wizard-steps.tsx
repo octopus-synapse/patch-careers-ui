@@ -190,7 +190,7 @@ export function LanguageStep({
     },
   ];
   return (
-    <View style={[ed.langWrap, ed.languageChoiceWrap]}>
+    <View style={ed.langWrap}>
       {options.map((option, index) => {
         const selected = locale === option.value;
         return (

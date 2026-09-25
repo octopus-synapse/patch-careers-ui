@@ -10,6 +10,7 @@ const state = vi.hoisted(() => ({
   name: "Enzo Patti",
   desktop: true,
   authenticated: true,
+  completedOnboarding: true,
   push: vi.fn(),
   replace: vi.fn(),
   logout: vi.fn(),
@@ -30,7 +31,11 @@ vi.mock("@patch-careers/api-client", () => ({
 vi.mock("@patch-careers/auth", () => ({ logout: () => state.logout() }));
 vi.mock("@/providers/auth-provider", () => ({
   useAuthState: () => ({
-    currentUser: { name: state.name, email: "enzo@example.test" },
+    currentUser: {
+      name: state.name,
+      email: "enzo@example.test",
+      hasCompletedOnboarding: state.completedOnboarding,
+    },
     isAuthenticated: state.authenticated,
   }),
 }));
@@ -85,11 +90,17 @@ beforeEach(() => {
   state.name = "Enzo Patti";
   state.desktop = true;
   state.authenticated = true;
+  state.completedOnboarding = true;
   vi.clearAllMocks();
 });
 afterEach(cleanup);
 
 describe("desktop navbar v12", () => {
+  it("does not show app chrome during mandatory onboarding", () => {
+    state.completedOnboarding = false;
+    renderApp(<NavBar variant="app" />);
+    expect(screen.queryByRole("navigation", { name: "Navegação principal" })).toBeNull();
+  });
   it.each([
     [0, "0"],
     [1, "1"],

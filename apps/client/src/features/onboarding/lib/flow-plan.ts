@@ -15,6 +15,8 @@
 
 export type FlowStepId =
   | "language"
+  | "plan"
+  | "payment"
   | "theme"
   | "location"
   | "personal"
@@ -59,8 +61,19 @@ export const FLOW_PLAN: readonly FlowStep[] = [
     id: "language",
     kind: "local",
     optional: false,
-    hideMasthead: true,
     titleKey: "onboarding.flow.language.title",
+  },
+  {
+    id: "plan",
+    kind: "local",
+    optional: false,
+    titleKey: "onboarding.flow.plan.title",
+  },
+  {
+    id: "payment",
+    kind: "local",
+    optional: false,
+    titleKey: "onboarding.flow.payment.title",
   },
   {
     id: "location",
@@ -133,17 +146,20 @@ export function flowIndexOf(id: FlowStepId): number {
 }
 
 /** The counted steps, in order. */
-export function countedFlowSteps(): FlowStep[] {
-  return [...FLOW_PLAN];
+export function countedFlowSteps(selectedPlan?: "free" | "go" | "max" | null): FlowStep[] {
+  return FLOW_PLAN.filter((step) => selectedPlan !== "free" || step.id !== "payment");
 }
 
 /** 0-based index of a step within the counted steps. */
-export function countedIndexOf(id: FlowStepId): number {
-  return countedFlowSteps().findIndex((step) => step.id === id);
+export function countedIndexOf(
+  id: FlowStepId,
+  selectedPlan?: "free" | "go" | "max" | null,
+): number {
+  return countedFlowSteps(selectedPlan).findIndex((step) => step.id === id);
 }
 
-export function countedTotal(): number {
-  return countedFlowSteps().length;
+export function countedTotal(selectedPlan?: "free" | "go" | "max" | null): number {
+  return countedFlowSteps(selectedPlan).length;
 }
 
 export function flowStepAt(index: number): FlowStep | undefined {

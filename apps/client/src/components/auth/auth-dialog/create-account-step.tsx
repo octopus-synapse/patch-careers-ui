@@ -1,9 +1,4 @@
-/**
- * Password step of the unified auth flow. On `/auth`, it only validates
- * and stages the password while the short-lived registration token proves
- * the e-mail was verified; account creation happens after plan selection.
- * The compact landing dialog keeps its existing consent-and-submit path.
- */
+/** Password and consent step shared by /auth and the landing dialog. */
 import { authDialogPalette } from "@patch-careers/tokens";
 import { Icon, Input, Text, XStack, YStack } from "@patch-careers/ui";
 import {
@@ -33,7 +28,6 @@ export function CreateAccountStep({
   mascot,
   email,
   initialPassword = "",
-  deferAccountCreation = false,
   submitting = false,
   onChangeEmail,
   onContinue,
@@ -42,7 +36,6 @@ export function CreateAccountStep({
   readonly mascot: AuthMascotController;
   readonly email: string;
   readonly initialPassword?: string;
-  readonly deferAccountCreation?: boolean;
   readonly submitting?: boolean;
   readonly onChangeEmail: () => void;
   readonly onContinue: (password: string, keepSignedIn: boolean) => void | Promise<void>;
@@ -68,11 +61,7 @@ export function CreateAccountStep({
   const password = form.watch("password");
 
   const onSubmit = form.handleSubmit(
-    ({ password: nextPassword }) => {
-      if (deferAccountCreation) {
-        void onContinue(nextPassword, keep.keepSignedIn);
-        return;
-      }
+    () => {
       setConsentOpen(true);
     },
     () => mascot.grimace(),

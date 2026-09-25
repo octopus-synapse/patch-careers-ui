@@ -136,6 +136,7 @@ export function NavBar({ variant, progress, account }: NavBarProps): ReactElemen
     (isDesktopWeb &&
       isAuthenticated &&
       !currentUser?.needsEmailVerification &&
+      Boolean(currentUser?.hasCompletedOnboarding) &&
       isChromePath(pathname));
 
   const profile = useGetV1UsersProfile({ query: { enabled: show && isApp } });

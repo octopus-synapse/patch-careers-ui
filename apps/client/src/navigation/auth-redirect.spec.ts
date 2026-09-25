@@ -40,8 +40,8 @@ describe("getAuthenticatedRoute", () => {
     );
   });
 
-  it("lets admins bypass onboarding", () => {
-    expect(getAuthenticatedRoute({ ...baseUser, isAdmin: true })).toBe(DEFAULT_APP_ROUTE);
+  it("keeps incomplete admins in onboarding too", () => {
+    expect(getAuthenticatedRoute({ ...baseUser, isAdmin: true })).toBe(ONBOARDING_ROUTE);
   });
 
   it("falls back to the app route while user hydration catches up", () => {

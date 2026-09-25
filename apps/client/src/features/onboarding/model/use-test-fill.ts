@@ -37,8 +37,12 @@ const DEFAULT_THEME: ColorScheme = "dark";
 
 type TestFillDeps = {
   session: OnboardingSession | undefined;
+  flowStepId: FlowStepId;
   saveStep: (stepId: string, payload: Record<string, unknown>) => Promise<boolean>;
-  setFlowStepId: (id: FlowStepId) => void;
+  moveStep: (
+    to: FlowStepId,
+    options?: { locale?: "en" | "pt-BR"; plan?: "free" },
+  ) => Promise<boolean>;
   setFormData: (value: FormData | ((prev: FormData) => FormData)) => void;
   setItems: (items: SectionItem[]) => void;
   setLocale: (locale: Locale) => void;
@@ -61,7 +65,8 @@ async function resolveLocationLabel(): Promise<string> {
 }
 
 export function useTestFill(deps: TestFillDeps) {
-  const { session, saveStep, setFlowStepId, setFormData, setItems, setLocale, setScheme } = deps;
+  const { session, flowStepId, saveStep, moveStep, setFormData, setItems, setLocale, setScheme } =
+    deps;
   const [isRunning, setIsRunning] = useState(false);
 
   /** Per-step: fill the current step's data and stay on it. */
@@ -91,23 +96,29 @@ export function useTestFill(deps: TestFillDeps) {
   /** Fill everything, persisting each backend step, then go to review. Stops on
    * the first failed save. */
   async function fillAll(): Promise<void> {
-    if (isRunning) return;
+    if (isRunning || flowStepId !== "language") return;
     setIsRunning(true);
     try {
       // Local preference steps (no backend).
       setLocale("pt-BR");
       setScheme(DEFAULT_THEME);
+      if (!(await moveStep("plan", { locale: "pt-BR" }))) return;
+      if (!(await moveStep("location", { plan: "free" }))) return;
 
       // personal-info = location (server-validated) + name/phone, one backend step.
       const location = await resolveLocationLabel();
       if (!(await saveStep("personal-info", { location, ...FORM_FIXTURES.personal }))) return;
+      if (!(await moveStep("personal"))) return;
+      if (!(await moveStep("username"))) return;
 
       // username (unique per run).
       if (!(await saveStep("username", { username: makeTestUsername() }))) return;
+      if (!(await moveStep("experience"))) return;
 
       // experience section.
       const expStepId = backendStepIdFor("experience");
       if (expStepId && !(await saveStep(expStepId, { items: EXPERIENCE_ITEMS }))) return;
+      if (!(await moveStep("headline"))) return;
 
       // professional-profile = headline + summary + links, one backend step.
       if (
@@ -118,6 +129,8 @@ export function useTestFill(deps: TestFillDeps) {
       ) {
         return;
       }
+      if (!(await moveStep("links"))) return;
+      if (!(await moveStep("education"))) return;
 
       // education section.
       const eduStepId = backendStepIdFor("education");
@@ -125,8 +138,8 @@ export function useTestFill(deps: TestFillDeps) {
 
       if (!(await saveStep("resume-style", { resumeStyleId: CLASSIC_RESUME_STYLE_ID }))) return;
 
-      // Land on the review hub.
-      setFlowStepId("review");
+      // Land on the review hub with the durable cursor in sync.
+      await moveStep("review");
     } finally {
       setIsRunning(false);
     }

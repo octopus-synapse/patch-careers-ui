@@ -16,15 +16,22 @@ import {
   usePostV1OnboardingSessionNext,
 } from "@patch-careers/api-client";
 import { bootstrap } from "@patch-careers/auth";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useWindowDimensions } from "react-native";
 import { CLASSIC_RESUME_STYLE_ID } from "@/config/classic-resume-style";
+import { type BillingOfferCode, createBillingCheckoutRoute } from "@/features/billing";
 import { translateBackendCode } from "@/lib/errors/backend-error";
 import { getCompletedOnboardingRoute } from "@/navigation/auth-redirect";
 import { useAppRouter } from "@/navigation/use-app-router";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
+import {
+  getPersistedFlow,
+  movePersistedFlow,
+  type OnboardingPlan,
+  savePersistedDraft,
+} from "../lib/flow-api";
 import {
   FLOW_PLAN,
   type FlowStep,
@@ -40,7 +47,6 @@ import {
   canContinueStep,
   defaultCountryFromLocale,
   fieldsForFlowStep,
-  flowStepForBackendStep,
   getSavedDataForStep,
   getSavedItemsForStep,
   isFormStepEmpty,
@@ -93,8 +99,17 @@ export function useOnboardingFlow() {
   const [phoneCountryIso, setPhoneCountryIso] = useState<string | undefined>(undefined);
   const [attemptedSteps, setAttemptedSteps] = useState<ReadonlySet<string>>(() => new Set());
   const [saveError, setSaveError] = useState("");
+  const [flowMoving, setFlowMoving] = useState(false);
   const refreshedAuthRef = useRef(false);
-  const resyncedStepRef = useRef(false);
+  const flowQuery = useQuery({
+    queryKey: ["onboarding-flow", currentUser?.email],
+    queryFn: getPersistedFlow,
+    enabled: Boolean(currentUser),
+  });
+  const persistedFlow = flowQuery.data;
+  const persistedStep = persistedFlow?.step;
+  const selectedLocale = persistedFlow?.selectedLocale;
+  const paymentResumeStep = persistedStep === "payment" ? persistedFlow?.resumeStep : undefined;
   const lastSaveRef = useRef<{
     stepId: string;
     payload: Parameters<typeof saveBackendStep>[1];
@@ -116,9 +131,8 @@ export function useOnboardingFlow() {
   const retryLoad = async () => {
     setFallbackSession(null);
     await clearSessionSnapshot();
-    resyncedStepRef.current = false;
     refreshedAuthRef.current = false;
-    await sessionQuery.refetch();
+    await Promise.all([sessionQuery.refetch(), flowQuery.refetch()]);
   };
 
   const persistSession = async (nextSession: OnboardingSession) => {
@@ -157,7 +171,11 @@ export function useOnboardingFlow() {
   });
 
   const isPending =
-    nextStep.isPending || gotoStep.isPending || extras.isPending || complete.isPending;
+    nextStep.isPending ||
+    gotoStep.isPending ||
+    extras.isPending ||
+    complete.isPending ||
+    flowMoving;
 
   useEffect(() => {
     void readSessionSnapshot().then((snapshot) => {
@@ -180,12 +198,14 @@ export function useOnboardingFlow() {
   }, [sessionQuery.data]);
 
   useEffect(() => {
-    if (!session || resyncedStepRef.current) return;
-    resyncedStepRef.current = true;
-    const resumed = flowStepForBackendStep(session, session.currentStep);
-    if (!resumed) return;
-    setFlowStepId(resumed.id);
-  }, [session]);
+    if (persistedStep) setFlowStepId(persistedStep);
+  }, [persistedStep]);
+
+  useEffect(() => {
+    if (selectedLocale && selectedLocale !== locale) {
+      void setLocale(selectedLocale as "en" | "pt-BR");
+    }
+  }, [selectedLocale, locale, setLocale]);
 
   useEffect(() => {
     void readPhoneCountry().then((iso) => {
@@ -197,8 +217,9 @@ export function useOnboardingFlow() {
   useEffect(() => {
     if (!session) return;
     const backendStepId = currentStep?.id;
-    if (prevBackendStepIdRef.current === backendStepId) return;
-    prevBackendStepIdRef.current = backendStepId;
+    const draftKey = `${backendStepId}:${flowStepId}`;
+    if (prevBackendStepIdRef.current === draftKey) return;
+    prevBackendStepIdRef.current = draftKey;
     const saved = getSavedDataForStep(session, currentStep);
     // Prefill so typing steps become confirming steps: the signup name seeds
     // personal-info, and the name seeds a username suggestion (the live
@@ -223,17 +244,110 @@ export function useOnboardingFlow() {
         : {},
     );
     if (!backendStepId) return;
+    const siblingDraftId =
+      flowStepId === "personal" ? "location" : flowStepId === "links" ? "headline" : null;
+    const siblingDraft = siblingDraftId
+      ? (persistedFlow?.drafts[siblingDraftId] as
+          | { data?: Record<string, string>; items?: typeof items }
+          | undefined)
+      : undefined;
+    if (siblingDraft?.data) setFormData((prev) => ({ ...prev, ...siblingDraft.data }));
+    const serverDraft = persistedFlow?.drafts[flowStepId] as
+      | { data?: Record<string, string>; items?: typeof items }
+      | undefined;
+    if (serverDraft?.data) setFormData((prev) => ({ ...prev, ...serverDraft.data }));
+    if (serverDraft?.items) setItems(serverDraft.items);
     void readStepDraft(backendStepId).then((draft) => {
-      if (!draft || prevBackendStepIdRef.current !== backendStepId) return;
+      if (!draft || prevBackendStepIdRef.current !== draftKey) return;
+      if (serverDraft) return;
       if (Object.keys(draft.data).length > 0) setFormData((prev) => ({ ...prev, ...draft.data }));
       if (draft.items.length > 0) setItems(draft.items);
     });
-  }, [currentStep, session, attemptedSteps, currentUser, setFormData, setItems, t]);
+  }, [
+    currentStep,
+    session,
+    attemptedSteps,
+    currentUser,
+    setFormData,
+    setItems,
+    t,
+    persistedFlow?.drafts,
+    flowStepId,
+  ]);
 
   useEffect(() => {
     if (!currentStep) return;
     void saveStepDraft(currentStep.id, formData, items);
   }, [currentStep, formData, items]);
+
+  const canSaveDraft = Boolean(currentStep) && persistedStep === flowStepId;
+  useEffect(() => {
+    if (!canSaveDraft) return;
+    const timer = setTimeout(() => {
+      void savePersistedDraft(flowStepId, { data: formData, items }).catch(() => undefined);
+    }, 850);
+    return () => clearTimeout(timer);
+  }, [canSaveDraft, flowStepId, formData, items]);
+
+  async function moveTo(
+    to: FlowStepId,
+    options?: { locale?: "en" | "pt-BR"; plan?: OnboardingPlan; offerCode?: BillingOfferCode },
+  ) {
+    setSaveError("");
+    setFlowMoving(true);
+    try {
+      const next = await movePersistedFlow({ to, ...options });
+      queryClient.setQueryData(["onboarding-flow", currentUser?.email], next);
+      setFlowStepId(next.step);
+      return true;
+    } catch {
+      setSaveError(t("onboarding.saveFailed"));
+      return false;
+    } finally {
+      setFlowMoving(false);
+    }
+  }
+
+  async function handlePlanContinue(plan: OnboardingPlan, offerCode?: BillingOfferCode) {
+    if (
+      !(await moveTo(plan === "free" ? (persistedFlow?.resumeStep ?? "location") : "payment", {
+        plan,
+        ...(offerCode ? { offerCode } : {}),
+      }))
+    )
+      return;
+    if (plan === "free" || !offerCode) return;
+    try {
+      router.push(await createBillingCheckoutRoute(offerCode));
+    } catch {
+      setSaveError(t("go.checkoutError"));
+    }
+  }
+
+  async function handleOpenPayment() {
+    if (!persistedFlow?.selectedOfferCode) return;
+    setSaveError("");
+    try {
+      router.push(await createBillingCheckoutRoute(persistedFlow.selectedOfferCode));
+    } catch {
+      setSaveError(t("go.checkoutError"));
+    }
+  }
+
+  useEffect(() => {
+    if (flowStepId !== "payment" || !paymentResumeStep) return;
+    const check = () => {
+      void movePersistedFlow({ to: paymentResumeStep })
+        .then((next) => {
+          queryClient.setQueryData(["onboarding-flow", currentUser?.email], next);
+          setFlowStepId(next.step);
+        })
+        .catch(() => undefined);
+    };
+    check();
+    const interval = setInterval(check, 4000);
+    return () => clearInterval(interval);
+  }, [flowStepId, paymentResumeStep, queryClient, currentUser?.email]);
 
   async function saveBackendStep(
     stepId: string,
@@ -242,6 +356,17 @@ export function useOnboardingFlow() {
     await gotoStep.mutateAsync({ data: { stepId }, params: { locale } });
     await nextStep.mutateAsync({ data: payload, params: { locale } });
     await clearStepDraft(stepId);
+  }
+
+  async function persistCurrentDraft(): Promise<boolean> {
+    if (!currentStep || flowStepId !== persistedStep) return true;
+    try {
+      await savePersistedDraft(flowStepId, { data: formData, items });
+      return true;
+    } catch {
+      setSaveError(t("onboarding.saveFailed"));
+      return false;
+    }
   }
 
   async function handleAddSection(extraId: string) {
@@ -274,12 +399,12 @@ export function useOnboardingFlow() {
     // before showing review, including when the education step was skipped.
     if (!(await commitSave("resume-style", { resumeStyleId: CLASSIC_RESUME_STYLE_ID }, false)))
       return;
-    setFlowStepId("review");
+    await moveTo("review");
   }
 
-  function advanceFlow() {
+  async function advanceFlow() {
     const nextFlow = nextFlowStep(flowStepId);
-    if (nextFlow) setFlowStepId(nextFlow.id);
+    if (nextFlow && (await persistCurrentDraft())) await moveTo(nextFlow.id);
   }
 
   function markAttempted(stepId: string) {
@@ -293,6 +418,11 @@ export function useOnboardingFlow() {
 
   async function handleNext() {
     if (!flowStep || isPending) return;
+    if (flowStepId === "language") {
+      await moveTo("plan", { locale });
+      return;
+    }
+    if (flowStepId === "plan" || flowStepId === "payment") return;
     if (editStep) {
       const editErrors = validateStepFields(editStep, formData, t);
       setErrors(editErrors);
@@ -327,7 +457,7 @@ export function useOnboardingFlow() {
       }
     }
     if (flowStepId === "education") await advanceFromEducation();
-    else advanceFlow();
+    else await advanceFlow();
   }
 
   async function handleSkip() {
@@ -339,28 +469,36 @@ export function useOnboardingFlow() {
       if (!(await commitSave(currentStep.id, payload, false))) return;
     }
     if (flowStepId === "education") await advanceFromEducation();
-    else advanceFlow();
+    else await advanceFlow();
   }
 
   async function retrySave() {
     const pending = lastSaveRef.current;
-    if (!pending || isPending) return;
+    if (isPending) return;
+    if (!pending) {
+      if (await persistCurrentDraft()) setSaveError("");
+      return;
+    }
     if (!(await commitSave(pending.stepId, pending.payload, pending.isEdit))) return;
     if (pending.isEdit) setEditStepId(null);
-    else if (pending.stepId === "resume-style") setFlowStepId("review");
+    else if (pending.stepId === "resume-style") await moveTo("review");
     else if (flowStepId === "education") await advanceFromEducation();
-    else advanceFlow();
+    else await advanceFlow();
   }
 
-  function handleBack() {
+  async function handleBack() {
     if (isPending) return;
     setSaveError("");
+    if (!(await persistCurrentDraft())) return;
     if (editStep) {
       setEditStepId(null);
       return;
     }
-    const prev = prevFlowStep(flowStepId);
-    if (prev) setFlowStepId(prev.id);
+    const prev =
+      flowStepId === persistedFlow?.resumeStep && persistedFlow?.selectedPlan === "free"
+        ? FLOW_PLAN[1]
+        : prevFlowStep(flowStepId);
+    if (prev) await moveTo(prev.id);
   }
 
   function handleGoto(stepId: string) {
@@ -420,6 +558,8 @@ export function useOnboardingFlow() {
     height,
     // session + derived step
     sessionQuery,
+    flowQuery,
+    persistedFlow,
     fallbackSession,
     session,
     flowStep,
@@ -453,6 +593,9 @@ export function useOnboardingFlow() {
     commitSave,
     retryLoad,
     handleNext,
+    handlePlanContinue,
+    handleOpenPayment,
+    moveTo,
     handleSkip,
     handleBack,
     handleGoto,

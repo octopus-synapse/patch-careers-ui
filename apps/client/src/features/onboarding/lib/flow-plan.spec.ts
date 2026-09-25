@@ -11,9 +11,11 @@ import {
 } from "./flow-plan";
 
 describe("flowPlan", () => {
-  it("opens with the language pick, continues to location, and ends at review", () => {
+  it("opens with language, then plan and payment, and ends at review", () => {
     expect(FLOW_PLAN[0]?.id).toBe("language");
-    expect(FLOW_PLAN[1]?.id).toBe("location");
+    expect(FLOW_PLAN[1]?.id).toBe("plan");
+    expect(FLOW_PLAN[2]?.id).toBe("payment");
+    expect(FLOW_PLAN[3]?.id).toBe("location");
     expect(FLOW_PLAN[FLOW_PLAN.length - 1]?.id).toBe("review");
   });
 
@@ -21,6 +23,8 @@ describe("flowPlan", () => {
     expect(countedTotal()).toBe(FLOW_PLAN.length);
     expect(countedFlowSteps()[0]?.id).toBe("language");
     expect(countedIndexOf("language")).toBe(0);
+    expect(countedTotal("free")).toBe(FLOW_PLAN.length - 1);
+    expect(countedIndexOf("location", "free")).toBe(2);
   });
 
   it("orders experience before headline (headline suggested from the job)", () => {
@@ -47,8 +51,8 @@ describe("flowPlan", () => {
   });
 
   it("navigates next/prev correctly", () => {
-    expect(nextFlowStep("language")?.id).toBe("location");
-    expect(prevFlowStep("location")?.id).toBe("language");
+    expect(nextFlowStep("language")?.id).toBe("plan");
+    expect(prevFlowStep("location")?.id).toBe("payment");
     expect(prevFlowStep("language")).toBeUndefined();
     expect(nextFlowStep("review")).toBeUndefined();
   });
